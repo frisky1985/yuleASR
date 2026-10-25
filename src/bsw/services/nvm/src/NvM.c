@@ -254,6 +254,11 @@ typedef struct
 
 STATIC NvM_InternalStateType NvM_InternalState;
 
+/* Staging buffer for CRC-protected NV frames. Caller RAM blocks are only
+ * NvBlockLength bytes long, so the CRC tail (1/2/4 bytes) is appended to this
+ * internal buffer instead of caller-owned memory. */
+STATIC uint8 NvM_CrcScratch[NVM_MAX_BLOCK_SIZE + 4U];
+
 #define NVM_STOP_SEC_VAR_CLEARED_UNSPECIFIED
 #include "MemMap.h"
 
@@ -297,6 +302,12 @@ STATIC uint8 NvM_CalculateCrc8(const uint8* DataPtr, uint16 Length);
 STATIC uint16 NvM_CalculateCrc16(const uint8* DataPtr, uint16 Length);
 STATIC uint32 NvM_CalculateCrc32(const uint8* DataPtr, uint16 Length);
 STATIC uint8 NvM_GetCrcSize(NvM_BlockCrcType CrcType);
+
+STATIC boolean NvM_BlockUsesCrc(const NvM_BlockDescriptorType* blockDesc);
+STATIC const uint8* NvM_StageWriteFrame(const NvM_BlockDescriptorType* blockDesc, const void* SrcPtr);
+STATIC uint8* NvM_StageReadFrame(const NvM_BlockDescriptorType* blockDesc, void* CallerPtr, uint16* LengthPtr);
+STATIC const uint8* NvM_GetReadFrame(const NvM_BlockDescriptorType* blockDesc, const void* CallerPtr);
+STATIC void NvM_ReleaseReadFrame(const NvM_BlockDescriptorType* blockDesc, void* DestPtr);
 
 /** @req SWS_NvM_00113 */
 STATIC void NvM_CopyRomDataToRam(NvM_BlockIdType BlockId, void* DestPtr);
@@ -549,6 +560,135 @@ STATIC uint8 NvM_GetCrcSize(NvM_BlockCrcType CrcType)
 }
 
 /**
+ * @brief   TRUE when the block carries a CRC tail on the NV frame
+ */
+STATIC boolean NvM_BlockUsesCrc(const NvM_BlockDescriptorType* blockDesc)
+{
+    return ((blockDesc->BlockUseCrc == TRUE) && (blockDesc->CrcType != NVM_CRC_NONE)) ? TRUE : FALSE;
+}
+
+/**
+ * @brief   Stage a CRC-protected write frame in internal memory
+ *
+ * Copies the caller block into NvM_CrcScratch and appends the CRC tail so that
+ * caller-owned RAM is never written past NvBlockLength. Returns the staging
+ * buffer, or NULL_PTR when the frame does not fit NVM_MAX_BLOCK_SIZE.
+ */
+STATIC const uint8* NvM_StageWriteFrame(const NvM_BlockDescriptorType* blockDesc, const void* SrcPtr)
+{
+    const uint8* frame = (const uint8*)SrcPtr;
+    uint8 crcSize;
+    uint32 calcCrc;
+
+    if (NvM_BlockUsesCrc(blockDesc) == TRUE)
+    {
+        crcSize = NvM_GetCrcSize(blockDesc->CrcType);
+
+        if (((uint32)blockDesc->NvBlockLength + (uint32)crcSize) <= (uint32)sizeof(NvM_CrcScratch))
+        {
+            (void)memcpy(NvM_CrcScratch, SrcPtr, (size_t)blockDesc->NvBlockLength);
+            calcCrc = NvM_CalculateCrc(NvM_CrcScratch, blockDesc->NvBlockLength, blockDesc->CrcType);
+
+            if (crcSize == 1U)
+            {
+                NvM_CrcScratch[blockDesc->NvBlockLength] = (uint8)calcCrc;
+            }
+            else if (crcSize == 2U)
+            {
+                NvM_CrcScratch[blockDesc->NvBlockLength] = (uint8)(calcCrc >> 8U);
+                NvM_CrcScratch[blockDesc->NvBlockLength + 1U] = (uint8)calcCrc;
+            }
+            else if (crcSize == 4U)
+            {
+                NvM_CrcScratch[blockDesc->NvBlockLength] = (uint8)(calcCrc >> 24U);
+                NvM_CrcScratch[blockDesc->NvBlockLength + 1U] = (uint8)(calcCrc >> 16U);
+                NvM_CrcScratch[blockDesc->NvBlockLength + 2U] = (uint8)(calcCrc >> 8U);
+                NvM_CrcScratch[blockDesc->NvBlockLength + 3U] = (uint8)calcCrc;
+            }
+            else
+            {
+                /* No action needed */
+            }
+
+            frame = NvM_CrcScratch;
+        }
+        else
+        {
+            frame = NULL_PTR;
+        }
+    }
+
+    return frame;
+}
+
+/**
+ * @brief   Select the read destination and raw frame length
+ *
+ * CRC-protected frames are read into NvM_CrcScratch so the CRC tail never
+ * lands past the end of the caller RAM block. Returns NULL_PTR when the frame
+ * does not fit NVM_MAX_BLOCK_SIZE.
+ */
+STATIC uint8* NvM_StageReadFrame(const NvM_BlockDescriptorType* blockDesc, void* CallerPtr, uint16* LengthPtr)
+{
+    uint8* dst = (uint8*)CallerPtr;
+    uint16 length = blockDesc->NvBlockLength;
+
+    if (NvM_BlockUsesCrc(blockDesc) == TRUE)
+    {
+        uint8 crcSize = NvM_GetCrcSize(blockDesc->CrcType);
+
+        if (((uint32)blockDesc->NvBlockLength + (uint32)crcSize) <= (uint32)sizeof(NvM_CrcScratch))
+        {
+            length = (uint16)(blockDesc->NvBlockLength + crcSize);
+            dst = NvM_CrcScratch;
+        }
+        else
+        {
+            dst = NULL_PTR;
+        }
+    }
+
+    *LengthPtr = length;
+    return dst;
+}
+
+/**
+ * @brief   Source of the CRC tail for a completed read (staging or caller RAM)
+ */
+STATIC const uint8* NvM_GetReadFrame(const NvM_BlockDescriptorType* blockDesc, const void* CallerPtr)
+{
+    const uint8* frame = (const uint8*)CallerPtr;
+
+    if (NvM_BlockUsesCrc(blockDesc) == TRUE)
+    {
+        uint8 crcSize = NvM_GetCrcSize(blockDesc->CrcType);
+
+        if (((uint32)blockDesc->NvBlockLength + (uint32)crcSize) <= (uint32)sizeof(NvM_CrcScratch))
+        {
+            frame = NvM_CrcScratch;
+        }
+    }
+
+    return frame;
+}
+
+/**
+ * @brief   Copy the CRC-verified payload from staging back to caller RAM
+ */
+STATIC void NvM_ReleaseReadFrame(const NvM_BlockDescriptorType* blockDesc, void* DestPtr)
+{
+    if (NvM_BlockUsesCrc(blockDesc) == TRUE)
+    {
+        uint8 crcSize = NvM_GetCrcSize(blockDesc->CrcType);
+
+        if (((uint32)blockDesc->NvBlockLength + (uint32)crcSize) <= (uint32)sizeof(NvM_CrcScratch))
+        {
+            (void)memcpy(DestPtr, NvM_CrcScratch, (size_t)blockDesc->NvBlockLength);
+        }
+    }
+}
+
+/**
  * @brief   Copy ROM default data to RAM
  */
 /** @req SWS_NvM_00113 */
@@ -587,6 +727,7 @@ STATIC void NvM_ReadRedundantBlock(NvM_JobQueueEntryType* JobPtr)
     Std_ReturnType memIfResult;
     uint16 blockNumber;
     uint16 readLength;
+    uint8* readDst;
 
     if (JobPtr != NULL_PTR)
     {
@@ -595,16 +736,18 @@ STATIC void NvM_ReadRedundantBlock(NvM_JobQueueEntryType* JobPtr)
         if (blockDesc != NULL_PTR)
         {
             blockNumber = blockDesc->BlockBaseNumber + JobPtr->CopyIndex;
-            readLength = blockDesc->NvBlockLength;
 
-            if (blockDesc->BlockUseCrc == TRUE)
+            /* CRC frames are staged internally so caller RAM is not overrun */
+            readDst = NvM_StageReadFrame(blockDesc, JobPtr->DataPtr, &readLength);
+
+            if (readDst != NULL_PTR)
             {
-                readLength += NvM_GetCrcSize(blockDesc->CrcType);
+                memIfResult = MemIf_Read(blockDesc->DeviceId, blockNumber, 0U, readDst, readLength);
             }
-
-            /* Call MemIf to read from NV memory */
-            memIfResult = MemIf_Read(blockDesc->DeviceId, blockNumber, 0U,
-                                     (uint8*)JobPtr->DataPtr, readLength);
+            else
+            {
+                memIfResult = E_NOT_OK;
+            }
 
             if (memIfResult == E_OK)
             {
@@ -642,6 +785,7 @@ STATIC void NvM_ProcessReadJob(NvM_JobQueueEntryType* JobPtr)
     Std_ReturnType memIfResult;
     uint16 blockNumber;
     uint16 readLength;
+    uint8* readDst;
 
     if (JobPtr != NULL_PTR)
     {
@@ -665,15 +809,17 @@ STATIC void NvM_ProcessReadJob(NvM_JobQueueEntryType* JobPtr)
                     blockNumber = blockDesc->BlockBaseNumber;
                 }
 
-                readLength = blockDesc->NvBlockLength;
-                if (blockDesc->BlockUseCrc == TRUE)
-                {
-                    readLength += NvM_GetCrcSize(blockDesc->CrcType);
-                }
+                /* CRC frames are staged internally so caller RAM is not overrun */
+                readDst = NvM_StageReadFrame(blockDesc, JobPtr->DataPtr, &readLength);
 
-                /* Call MemIf to read from NV memory */
-                memIfResult = MemIf_Read(blockDesc->DeviceId, blockNumber, 0U,
-                                         (uint8*)JobPtr->DataPtr, readLength);
+                if (readDst != NULL_PTR)
+                {
+                    memIfResult = MemIf_Read(blockDesc->DeviceId, blockNumber, 0U, readDst, readLength);
+                }
+                else
+                {
+                    memIfResult = E_NOT_OK;
+                }
 
                 if (memIfResult == E_OK)
                 {
@@ -707,8 +853,7 @@ STATIC void NvM_WriteRedundantBlock(NvM_JobQueueEntryType* JobPtr)
     const NvM_BlockDescriptorType* blockDesc;
     Std_ReturnType memIfResult;
     uint16 blockNumber;
-    uint8 crcSize;
-    uint32 calcCrc;
+    const uint8* writeFrame;
 
     if (JobPtr != NULL_PTR)
     {
@@ -718,37 +863,17 @@ STATIC void NvM_WriteRedundantBlock(NvM_JobQueueEntryType* JobPtr)
         {
             blockNumber = blockDesc->BlockBaseNumber + JobPtr->CopyIndex;
 
-            /* Append CRC if configured */
-            if ((blockDesc->BlockUseCrc == TRUE) && (blockDesc->CrcType != NVM_CRC_NONE))
+            /* Stage CRC frame internally; caller RAM holds only NvBlockLength bytes */
+            writeFrame = NvM_StageWriteFrame(blockDesc, JobPtr->DataPtr);
+
+            if (writeFrame != NULL_PTR)
             {
-                crcSize = NvM_GetCrcSize(blockDesc->CrcType);
-                calcCrc = NvM_CalculateCrc(JobPtr->DataPtr, blockDesc->NvBlockLength, blockDesc->CrcType);
-
-                if (crcSize == 1U)
-                {
-                    ((uint8*)JobPtr->DataPtr)[blockDesc->NvBlockLength] = (uint8)calcCrc;
-                }
-                else if (crcSize == 2U)
-                {
-                    ((uint8*)JobPtr->DataPtr)[blockDesc->NvBlockLength] = (uint8)(calcCrc >> 8U);
-                    ((uint8*)JobPtr->DataPtr)[blockDesc->NvBlockLength + 1U] = (uint8)calcCrc;
-                }
-                else if (crcSize == 4U)
-                {
-                    ((uint8*)JobPtr->DataPtr)[blockDesc->NvBlockLength] = (uint8)(calcCrc >> 24U);
-                    ((uint8*)JobPtr->DataPtr)[blockDesc->NvBlockLength + 1U] = (uint8)(calcCrc >> 16U);
-                    ((uint8*)JobPtr->DataPtr)[blockDesc->NvBlockLength + 2U] = (uint8)(calcCrc >> 8U);
-                    ((uint8*)JobPtr->DataPtr)[blockDesc->NvBlockLength + 3U] = (uint8)calcCrc;
-                }
-                else
-                {
-                    /* No action needed */
-                }
+                memIfResult = MemIf_Write(blockDesc->DeviceId, blockNumber, (uint8*)writeFrame);
             }
-
-            /* Call MemIf to write to NV memory */
-            memIfResult = MemIf_Write(blockDesc->DeviceId, blockNumber,
-                                      (uint8*)JobPtr->DataPtr);
+            else
+            {
+                memIfResult = E_NOT_OK;
+            }
 
             if (memIfResult == E_OK)
             {
@@ -784,8 +909,8 @@ STATIC void NvM_ProcessWriteJob(NvM_JobQueueEntryType* JobPtr)
     const NvM_BlockDescriptorType* blockDesc;
     Std_ReturnType memIfResult;
     uint16 blockNumber;
-    uint8 crcSize;
-    uint32 calcCrc;
+    uint8 dataIndex;
+    const uint8* writeFrame;
 
     if (JobPtr != NULL_PTR)
     {
@@ -809,37 +934,17 @@ STATIC void NvM_ProcessWriteJob(NvM_JobQueueEntryType* JobPtr)
                     blockNumber = blockDesc->BlockBaseNumber;
                 }
 
-                /* Append CRC if configured */
-                if ((blockDesc->BlockUseCrc == TRUE) && (blockDesc->CrcType != NVM_CRC_NONE))
+                /* Stage CRC frame internally; caller RAM holds only NvBlockLength bytes */
+                writeFrame = NvM_StageWriteFrame(blockDesc, JobPtr->DataPtr);
+
+                if (writeFrame != NULL_PTR)
                 {
-                    crcSize = NvM_GetCrcSize(blockDesc->CrcType);
-                    calcCrc = NvM_CalculateCrc(JobPtr->DataPtr, blockDesc->NvBlockLength, blockDesc->CrcType);
-
-                    if (crcSize == 1U)
-                    {
-                        ((uint8*)JobPtr->DataPtr)[blockDesc->NvBlockLength] = (uint8)calcCrc;
-                    }
-                    else if (crcSize == 2U)
-                    {
-                        ((uint8*)JobPtr->DataPtr)[blockDesc->NvBlockLength] = (uint8)(calcCrc >> 8U);
-                        ((uint8*)JobPtr->DataPtr)[blockDesc->NvBlockLength + 1U] = (uint8)calcCrc;
-                    }
-                    else if (crcSize == 4U)
-                    {
-                        ((uint8*)JobPtr->DataPtr)[blockDesc->NvBlockLength] = (uint8)(calcCrc >> 24U);
-                        ((uint8*)JobPtr->DataPtr)[blockDesc->NvBlockLength + 1U] = (uint8)(calcCrc >> 16U);
-                        ((uint8*)JobPtr->DataPtr)[blockDesc->NvBlockLength + 2U] = (uint8)(calcCrc >> 8U);
-                        ((uint8*)JobPtr->DataPtr)[blockDesc->NvBlockLength + 3U] = (uint8)calcCrc;
-                    }
-                    else
-                    {
-                        /* No action needed */
-                    }
+                    memIfResult = MemIf_Write(blockDesc->DeviceId, blockNumber, (uint8*)writeFrame);
                 }
-
-                /* Call MemIf to write to NV memory */
-                memIfResult = MemIf_Write(blockDesc->DeviceId, blockNumber,
-                                          (uint8*)JobPtr->DataPtr);
+                else
+                {
+                    memIfResult = E_NOT_OK;
+                }
 
                 if (memIfResult == E_OK)
                 {
@@ -1949,8 +2054,13 @@ void NvM_MainFunction(void)
                                 uint32 calcCrc;
                                 boolean crcMatch = FALSE;
                                 uint8 idx;
+                                const uint8* readFrame;
 
-                                calcCrc = NvM_CalculateCrc(NvM_InternalState.CurrentJob->DataPtr,
+                                /* CRC frame may be staged internally, not in caller RAM */
+                                readFrame = NvM_GetReadFrame(blockDesc,
+                                                             NvM_InternalState.CurrentJob->DataPtr);
+
+                                calcCrc = NvM_CalculateCrc(readFrame,
                                                            blockDesc->NvBlockLength,
                                                            blockDesc->CrcType);
 
@@ -1958,7 +2068,7 @@ void NvM_MainFunction(void)
                                 for (idx = 0U; idx < crcSize; idx++)
                                 {
                                     storedCrc = (storedCrc << 8U) |
-                                                ((const uint8*)NvM_InternalState.CurrentJob->DataPtr)[blockDesc->NvBlockLength + idx];
+                                                readFrame[blockDesc->NvBlockLength + idx];
                                 }
 
                                 if (crcSize == 1U)
@@ -2113,6 +2223,13 @@ void NvM_MainFunction(void)
 
                     if (jobComplete == TRUE)
                     {
+                        /* CRC payload was staged internally; publish it to caller RAM */
+                        if ((NvM_InternalState.CurrentJob->JobType == NVM_JOB_TYPE_READ) &&
+                            (NvM_InternalState.CurrentJob->Result == NVM_REQ_OK))
+                        {
+                            NvM_ReleaseReadFrame(blockDesc, NvM_InternalState.CurrentJob->DataPtr);
+                        }
+
                         NvM_UpdateBatchOperationStatus(NvM_InternalState.CurrentJob->JobType);
 
                         NvM_InternalState.CurrentJob->JobState = NVM_JOB_STATE_IDLE;
