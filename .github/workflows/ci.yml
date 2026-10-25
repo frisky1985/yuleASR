@@ -306,14 +306,13 @@ jobs:
             --filter "src/.*" \
             --exclude "tests/.*" \
             --exclude "third_party/.*" \
-            --branches \
             --exclude-unreachable-branches \
             --html --html-details \
             --output coverage-reports/index.html \
             build-coverage
 
       - name: Generate gcovr JSON Coverage Report
-        # 量产门禁：P0-5 硬化 (2026-10-07)。加 --branches 输出分支数据，
+        # 量产门禁：P0-5 硬化 (2026-10-07)。gcovr 8 起分支数据默认采集，
         # 供 Coverage Gate Check 分支门禁消费 (此前无分支数据时门禁被跳过)。
         run: |
           mkdir -p coverage-reports
@@ -321,7 +320,6 @@ jobs:
             --filter "src/.*" \
             --exclude "tests/.*" \
             --exclude "third_party/.*" \
-            --branches \
             --json \
             --output coverage-reports/coverage.json \
             build-coverage
@@ -329,12 +327,11 @@ jobs:
       - name: Print Coverage Summary
         run: |
           echo "=== 行级/分支覆盖率汇总 ==="
-          # 量产门禁：P0-5 硬化 (2026-10-07)。加 --branches 输出分支覆盖率。
+          # 量产门禁：P0-5 硬化 (2026-10-07)。gcovr 8 起分支覆盖率默认采集。
           gcovr --root . \
             --filter "src/.*" \
             --exclude "tests/.*" \
             --exclude "third_party/.*" \
-            --branches \
             build-coverage | tee coverage-reports/coverage_summary.txt
 
       - name: Upload Coverage Report
@@ -347,7 +344,7 @@ jobs:
       # ==============================================
       # Coverage Gate Check (硬门禁 — 2026-08-07 批D恢复)
       #
-      # 量产门禁：P0-5 硬化 (2026-10-07)。gcovr 已加 --branches，分支门禁
+      # 量产门禁：P0-5 硬化 (2026-10-07)。gcovr 8 默认采集分支数据，分支门禁
       # 正式生效；阈值随 ci-config.yaml 提升 (branch 20% → 25%)。
       #
       # 阈值来源: .yuleosh/ci-config.yaml coverage.c_fail_under
@@ -444,14 +441,14 @@ jobs:
               sys.exit(1)
 
           # 分支门禁: 只有本轮确实采集到分支数据时才判定。
-          # P0-5 (2026-10-07): gcovr 已加 --branches，正常应输出分支信息；
+          # P0-5 (2026-10-07): gcovr 8 默认采集分支数据，正常应输出分支信息；
           # total_branch_found 为 0 属于异常（如编译器未插桩分支），保留跳过
           # 作为兜底，避免拿 0.0% 去比 threshold_branch 得到虚假失败
           # （CI 日志中即表现为 Branches: 0/0 (0.0%)）。
           # 注意: 本段 Python 位于双引号包裹的 shell 字符串内，正文不可出现
           # 未转义的双引号，否则会提前终止该字符串。
           if total_branch_found == 0:
-              print(f'⚠️  SKIP: 未采集到分支数据 (gcovr 已加 --branches 仍为空，'
+              print(f'⚠️  SKIP: 未采集到分支数据 (gcovr 仍无分支数据，'
                     f'需检查编译器分支插桩)，跳过分支门禁 (配置阈值 {branch_thr}%)')
               print(f'✅ PASSED: Line {line_rate:.1f}% >= {fail_under}% （分支门禁已跳过）')
           else:
@@ -491,8 +488,12 @@ jobs:
           cmake --build build --target coverage
 
       - name: Upload Coverage
-        # 量产门禁：P0-5 硬化 (2026-10-07)。codecov 上传失败必须阻断 CI。
+        # 量产门禁：P0-5 硬化 (2026-10-07)。配置了 CODECOV_TOKEN 时上传失败必须阻断 CI；
+        # 未配置 token 时跳过（codecov 已不接受 tokenless 上传）。
+        if: ${{ env.CODECOV_TOKEN != '' }}
         uses: codecov/codecov-action@v7
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         with:
           files: build/coverage.info
           fail_ci_if_error: true
