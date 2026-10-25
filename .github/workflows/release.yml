@@ -134,10 +134,12 @@ jobs:
           # --- Archive 1: Full source tree (excluding .git, build, node_modules) ---
           echo "📦 Creating source archive..."
           tar czf "release/yuleASR-${VERSION}-source.tar.gz" \
-            --exclude='.git' \
-            --exclude='build' \
-            --exclude='node_modules' \
-            --exclude='__pycache__' \
+            --exclude='./.git' \
+            --exclude='./build' \
+            --exclude='./node_modules' \
+            --exclude='./__pycache__' \
+            --exclude='./release' \
+            --exclude='./release_staging' \
             -C . .
 
           # --- Archive 2: Build binaries (if any) ---
