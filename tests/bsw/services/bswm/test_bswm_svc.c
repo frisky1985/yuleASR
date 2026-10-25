@@ -95,6 +95,9 @@ void setUp(void) {
 }
 
 void tearDown(void) {
+    /* Rebind BswM to the static default config before test-local config
+     * objects go out of scope, so no later DeInit walks dangling fixtures. */
+    BswM_Init(NULL_PTR);
 }
 
 /** @req SWS_BswM_00001 */
