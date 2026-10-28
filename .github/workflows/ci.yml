@@ -356,10 +356,10 @@ jobs:
           import json, sys, re
 
           # 从 ci-config.yaml 读取阈值 (c_fail_under / threshold_branch)
-          # 量产门禁：P0-5 (2026-10-07)。分支阈值基线 20% → 25%，
-          # 此处默认值与 ci-config.yaml 保持同步（yaml 为权威来源）。
-          fail_under = 40
-          branch_thr = 25
+          # 量产门禁：P1-3 (2026-10-08) 行 60% / 分支 50%，此处默认值与
+          # ci-config.yaml 保持同步（yaml 为权威来源，漂移由 config-drift 门禁拦截）。
+          fail_under = 60
+          branch_thr = 50
           try:
               with open('.yuleosh/ci-config.yaml') as f:
                   txt = f.read()
