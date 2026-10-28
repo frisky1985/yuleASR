@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 """Exact replica of CI review.py include-path discovery (yuleASR)."""
 import os
+import sys
 from pathlib import Path
 
-PROJECT = Path("/Users/stefan/.openclaw/workspace/yuleASR")
+# Repo root derived from this file's location (.yuleosh/tools/ -> repo root).
+# YULEASR_ROOT allows CI to point at another checkout; no machine-specific paths.
+PROJECT = Path(os.environ.get("YULEASR_ROOT", Path(__file__).resolve().parents[2]))
 SKIP_PREFIXES = (
     ".git", "build", "website", "node_modules", "__pycache__",
     ".docusaurus", "backups", ".yuleosh", ".osh", ".claude",
@@ -67,5 +70,7 @@ def detect_includes():
 
 
 if __name__ == "__main__":
+    if not (PROJECT / "src").is_dir():
+        sys.exit(f"FATAL[2]: repo root not found or missing src/: {PROJECT}")
     for i in detect_includes():
         print(i)

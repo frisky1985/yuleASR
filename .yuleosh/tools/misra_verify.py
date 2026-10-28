@@ -8,12 +8,17 @@ files and prints required violations grouped by rule.
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 from collections import Counter
 from pathlib import Path
 
-PROJECT = Path("/Users/stefan/.openclaw/workspace/yuleASR")
+sys.path.insert(0, str(Path(__file__).parent))
+from ci_includes import detect_includes  # noqa: E402
+
+# Repo root derived from this file's location (.yuleosh/tools/ -> repo root).
+PROJECT = Path(os.environ.get("YULEASR_ROOT", Path(__file__).resolve().parents[2]))
 
 
 def run_cppcheck(files, rule_filter=None):
@@ -31,20 +36,21 @@ def run_cppcheck(files, rule_filter=None):
     if inc.exists():
         cmd.append("--include=" + str(inc))
         cmd.append("--max-configs=1")
-    # include paths
-    for d in ["include", "src", "src/bsw", "src/bsw/mcal", "src/platform",
-              "third_party", "tests/mocks"]:
-        p = PROJECT / d
-        if p.exists():
-            cmd.append("-I" + str(p))
+    # same include discovery as the full scan, so counts are comparable
+    for d in detect_includes():
+        cmd.append("-I" + d)
     for f in files:
         cmd.append(str(f))
     try:
-        r = subprocess.run(cmd, capture_output=True, text=True, cwd=str(PROJECT), timeout=300)
+        r = subprocess.run(cmd, capture_output=True, text=True, cwd=str(PROJECT),
+                           timeout=300, env=dict(os.environ, PYTHONWARNINGS="ignore"))
     except subprocess.TimeoutExpired:
         print("TIMEOUT")
         return {}
     out = (r.stderr or "") + "\n" + (r.stdout or "")
+    if "Bailing out from analysis" in out or "internalError" in out:
+        print("FATAL[4]: cppcheck addon failed — result is not valid evidence", file=sys.stderr)
+        sys.exit(4)
     # parse misra rules
     results = Counter()
     lines_detail = {}
@@ -62,6 +68,12 @@ def run_cppcheck(files, rule_filter=None):
 
 
 if __name__ == "__main__":
+    if not (PROJECT / "src").is_dir():
+        print(f"FATAL[2]: repo root not found or missing src/: {PROJECT}", file=sys.stderr)
+        sys.exit(2)
+    if shutil.which("cppcheck") is None:
+        print("FATAL[3]: cppcheck not installed in this environment", file=sys.stderr)
+        sys.exit(3)
     args = sys.argv[1:]
     files = []
     rule_filter = None
@@ -86,6 +98,15 @@ if __name__ == "__main__":
         if rule_filter and rule_filter in rule:
             for d in detail[rule][:20]:
                 print(f"    {d}")
-    # save json
-    with open(PROJECT / ".yuleosh" / "reports" / "verify-result.json", "w") as f:
-        json.dump({"total": total, "by_rule": dict(results)}, f, indent=2)
+    # save json — evidence must carry commit provenance and never crash on missing dir
+    try:
+        git_sha = subprocess.check_output(
+            ["git", "rev-parse", "HEAD"], cwd=str(PROJECT), text=True,
+            stderr=subprocess.DEVNULL).strip()
+    except Exception:
+        git_sha = "unknown"
+    reports = PROJECT / ".yuleosh" / "reports"
+    reports.mkdir(parents=True, exist_ok=True)
+    with open(reports / "verify-result.json", "w") as f:
+        json.dump({"total": total, "by_rule": dict(results),
+                   "scanned_files": len(files), "git_sha": git_sha}, f, indent=2)
