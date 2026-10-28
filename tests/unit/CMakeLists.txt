@@ -209,3 +209,60 @@ endfunction()
 add_os_unit_test(OsTask_UnitTest test_os_task.c)
 add_os_unit_test(OsEvent_UnitTest test_os_event.c)
 add_os_unit_test(OsAlarm_UnitTest test_os_alarm.c)
+
+# ── Coverage uplift: domains that previously had no registered tests ──
+# Fee (ECUAL) — Flash EEPROM emulation
+add_subdirectory(fee)
+# Safety — saferam / RAM ECC primitives
+add_subdirectory(safety)
+# DDS middleware — transport / RTPS / security / logging
+add_subdirectory(dds)
+# Network/COM protocols — Xcp / E2E / ISO-TP / DoIP / CAN-LIN NM / J1939
+add_subdirectory(netcom)
+# Adaptive AUTOSAR — ara::com / state management / execution
+add_subdirectory(adaptive)
+
+# J1939Tp / J1939Nm / LinM (LIN) unit tests — coverage uplift
+add_subdirectory(j1939lin)
+
+# ── Crypto (MCAL) 单元测试 (2026-10-26: 注册 mcal/test_crypto.c, 首次纳入构建) ──
+# 链接真实 Crypto.c + 真实 blake2b/blake2s (third_party/crypto/blake2/src)。
+# HSM / MbedTLS 后端符号由 tests/unit/crypto_stubs/crypto_backend_stubs.c 提供:
+#   Hsm_Init 返回 E_NOT_OK -> Crypto_HsmAvailable=FALSE -> 覆盖软件回退路径;
+#   MbedTLS 桩返回 E_OK 并回写确定性伪数据; Det_ReportError 提供计数实现。
+add_executable(Crypto_UnitTest
+    ${CMAKE_CURRENT_SOURCE_DIR}/mcal/test_crypto.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/crypto_stubs/crypto_backend_stubs.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/mcal/crypto/src/Crypto.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../third_party/crypto/blake2/src/blake2b.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../third_party/crypto/blake2/src/blake2s.c
+)
+# 头文件铁律顺序: 模块目录 / rte/include 必须先于 include/autosar (BEFORE 强制),
+# 规避全局 include_directories 中旧版头漂移 (同 NvM_Redundant_UnitTest 的做法)
+target_include_directories(Crypto_UnitTest
+    BEFORE PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/mcal/crypto/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../src/middleware/rte/include
+)
+target_include_directories(Crypto_UnitTest
+    PRIVATE
+        ${TEST_FRAMEWORK_INCLUDE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/mcal/crypto/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/services/det/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../src/common/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../src/middleware/rte/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../include/autosar
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../third_party/crypto/blake2/include
+        ${CMAKE_CURRENT_SOURCE_DIR}
+)
+# framework/unity.h 的 UnityRunTest/UnityBegin 实现在 unity.c (bundled Unity 库)
+target_link_libraries(Crypto_UnitTest PRIVATE ${TEST_FRAMEWORK_LIB})
+target_compile_options(Crypto_UnitTest PRIVATE
+    -Wall -Wextra -g -O0 -Wno-unused-parameter -Wno-unused-function
+)
+set_target_properties(Crypto_UnitTest PROPERTIES
+    C_STANDARD 99
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tests
+)
+add_test(NAME Crypto_UnitTest COMMAND Crypto_UnitTest)
+message(STATUS "  Unit test: Crypto_UnitTest (MCAL Crypto driver, 29 cases)")

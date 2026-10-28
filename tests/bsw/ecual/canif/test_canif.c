@@ -18,6 +18,8 @@ static uint8 mock_CanWriteLastData[8];
 static uint8 mock_CanWriteLastDlc = 0U;
 static uint8 mock_PduRTxConfCalls = 0;
 static uint8 mock_PduRRxIndCalls = 0;
+static Can_ReturnType mock_CanSetCtrlModeReturn = CAN_OK;
+static Std_ReturnType mock_CanCheckWakeupReturn = E_OK;
 
 /* CanTrcv stub: CanTrcv.h is intentionally not included, the mode type is
  * mirrored with the same constants/values as CanTrcv_TrcvModeType. */
@@ -37,7 +39,7 @@ Std_ReturnType Det_ReportError(uint16 ModuleId, uint8 InstanceId, uint8 ApiId, u
     mock_DetCalls++; return E_OK;
 }
 Can_ReturnType Can_SetControllerMode(uint8 Controller, Can_ControllerStateType Transition) {
-    (void)Controller;(void)Transition; return CAN_OK;
+    (void)Controller;(void)Transition; return mock_CanSetCtrlModeReturn;
 }
 Can_ReturnType Can_Write(Can_HwHandleType Hth, const Can_PduType* PduInfo) {
     uint8 i;
@@ -55,7 +57,7 @@ Can_ReturnType Can_Write(Can_HwHandleType Hth, const Can_PduType* PduInfo) {
     return mock_CanWriteReturn;
 }
 Std_ReturnType Can_CheckWakeup(uint8 Controller) {
-    (void)Controller; return E_OK;
+    (void)Controller; return mock_CanCheckWakeupReturn;
 }
 Std_ReturnType CanTrcv_SetOpMode(uint8 Transceiver, CanTrcv_TrcvModeType OpMode) {
     mock_CanTrcvCalls++;
@@ -195,6 +197,8 @@ void setUp(void) {
     mock_CanSM_CtrlModeCalls = 0U;
     mock_CanSM_CtrlModeLastCtrl = 0xFFU;
     mock_CanSM_CtrlModeLastMode = CANIF_CS_STOPPED;
+    mock_CanSetCtrlModeReturn = CAN_OK;
+    mock_CanCheckWakeupReturn = E_OK;
 }
 void tearDown(void) {}
 
@@ -1581,6 +1585,125 @@ void test_CanIf_ControllerModeIndication_InvalidController_ShouldNotNotifyCanSM(
     TEST_ASSERT_EQUAL(0, mock_CanSM_CtrlModeCalls);
 }
 
+/* ── Coverage gaps: SetControllerMode Can driver error paths ── */
+
+void test_CanIf_SetControllerMode_Start_CanDriverFails_ShouldKeepPrevious(void) {
+    CanIf_Init(&testConfig);
+    /* Default is STOPPED; driver rejects STARTED → mode stays STOPPED */
+    mock_CanSetCtrlModeReturn = CAN_NOT_OK;
+    CanIf_ControllerModeType mode = CANIF_CS_STARTED;
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_SetControllerMode(0U, CANIF_CS_STARTED));
+    TEST_ASSERT_EQUAL(E_OK, CanIf_GetControllerMode(0U, &mode));
+    TEST_ASSERT_EQUAL(CANIF_CS_STOPPED, mode);
+}
+
+void test_CanIf_SetControllerMode_Stop_CanDriverFails_ShouldKeepPrevious(void) {
+    CanIf_Init(&testConfig);
+    /* First successfully start */
+    mock_CanSetCtrlModeReturn = CAN_OK;
+    (void)CanIf_SetControllerMode(0U, CANIF_CS_STARTED);
+    mock_CanSetCtrlModeReturn = CAN_NOT_OK;
+    CanIf_ControllerModeType mode = CANIF_CS_STOPPED;
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_SetControllerMode(0U, CANIF_CS_STOPPED));
+    TEST_ASSERT_EQUAL(E_OK, CanIf_GetControllerMode(0U, &mode));
+    TEST_ASSERT_EQUAL(CANIF_CS_STARTED, mode); /* unchanged */
+}
+
+void test_CanIf_SetControllerMode_Sleep_CanDriverFails_ShouldKeepPrevious(void) {
+    CanIf_Init(&testConfig);
+    mock_CanSetCtrlModeReturn = CAN_NOT_OK;
+    CanIf_ControllerModeType mode = CANIF_CS_STARTED;
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_SetControllerMode(0U, CANIF_CS_SLEEP));
+    TEST_ASSERT_EQUAL(E_OK, CanIf_GetControllerMode(0U, &mode));
+    TEST_ASSERT_EQUAL(CANIF_CS_STOPPED, mode);
+}
+
+/* ── Coverage gap: CheckWakeup all controllers fail ── */
+
+void test_CanIf_CheckWakeup_AllControllersFail_ShouldReturnNotOk(void) {
+    CanIf_Init(&testConfig);
+    mock_CanCheckWakeupReturn = E_NOT_OK;
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_CheckWakeup(0U));
+}
+
+/* ── Coverage gaps: CacheTxData else branch + TxQueueEnqueue NULL data ── */
+
+void test_CanIf_Transmit_ZeroLength_ShouldInvalidateTriggerCache(void) {
+    PduInfoType pdu;
+    uint8 data[8] = {0x11U};
+    pdu.SduDataPtr = data; pdu.SduLength = 0U; pdu.MetaDataPtr = NULL_PTR;
+
+    CanIf_Init(&testConfig);
+    (void)CanIf_SetControllerMode(0U, CANIF_CS_STARTED);
+    (void)CanIf_SetPduMode(0U, CANIF_ONLINE);
+
+    TEST_ASSERT_EQUAL(E_OK, CanIf_Transmit(0U, &pdu));
+    /* TriggerTransmit must fail because cache is invalidated (cacheLen == 0
+     * leads to the else branch in CanIf_CacheTxData). */
+    PduInfoType trig;
+    uint8 buf[8] = {0U};
+    trig.SduDataPtr = buf; trig.SduLength = 8U; trig.MetaDataPtr = NULL_PTR;
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_TriggerTransmit(0U, &trig));
+}
+
+void test_CanIf_Transmit_CanBusyNullData_ShouldFailQueueing(void) {
+    PduInfoType pdu;
+    pdu.SduDataPtr = NULL_PTR; pdu.SduLength = 8U; pdu.MetaDataPtr = NULL_PTR;
+
+    CanIf_Init(&testConfig);
+    (void)CanIf_SetControllerMode(0U, CANIF_CS_STARTED);
+    (void)CanIf_SetPduMode(0U, CANIF_ONLINE);
+
+    mock_CanWriteReturn = CAN_BUSY;
+    /* CanIf_TxQueueEnqueue: (SduDataPtr==NULL && SduLength>0) → E_NOT_OK */
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_Transmit(0U, &pdu));
+}
+
+/* ── Coverage gap: GetTxConfirmationState BeforeInit ── */
+
+void test_CanIf_GetTxConfirmationState_BeforeInit_ShouldFail(void) {
+    /* setUp 调了 DeInit → DriverInitialized == FALSE */
+    CanIf_TxConfirmationStateType st = CanIf_GetTxConfirmationState(0U);
+    TEST_ASSERT_EQUAL(CANIF_TXCONF_NONE, st);
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
+}
+
+/* ── Coverage gap: ClearTrcvWufFlag Invalid transceiver ── */
+
+void test_CanIf_ClearTrcvWufFlag_InvalidTrcv_ShouldReportDet(void) {
+    CanIf_Init(&testConfig);
+    mock_DetCalls = 0;
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_ClearTrcvWufFlag(CANIF_NUM_TRANSCEIVERS));
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
+}
+
+/* ── Coverage gap: TxQueueMainFunction drain on CAN_BUSY (break path) ── */
+
+void test_CanIf_TxQueueMainFunction_Busy_DoesNotDrain(void) {
+    PduInfoType pdu;
+    uint8 d0[8] = {0x11U};
+    pdu.SduDataPtr = d0; pdu.SduLength = 8U; pdu.MetaDataPtr = NULL_PTR;
+
+    startOnlineTx();
+
+    mock_CanWriteReturn = CAN_BUSY;
+    TEST_ASSERT_EQUAL(E_OK, CanIf_Transmit(0U, &pdu)); /* queued */
+    TEST_ASSERT_EQUAL(1, mock_CanWriteCalls);
+
+    /* MainFunction but CAN_BUSY → break, queue stays full */
+    CanIf_TxQueueMainFunction();
+    TEST_ASSERT_EQUAL(2, mock_CanWriteCalls); /* one retry, still BUSY → break */
+
+    /* Final drain */
+    mock_CanWriteReturn = CAN_OK;
+    CanIf_TxQueueMainFunction();
+    TEST_ASSERT_EQUAL(3, mock_CanWriteCalls); /* successful retry */
+
+    /* Queue drained: further MainFunction should not call Can_Write */
+    CanIf_TxQueueMainFunction();
+    TEST_ASSERT_EQUAL(3, mock_CanWriteCalls);
+}
+
 int main(void)
 {
     UNITY_BEGIN();
@@ -1596,6 +1719,7 @@ int main(void)
     RUN_TEST(test_CanIf_ClearTrcvWufFlag_BeforeInit_ShouldFail);
     RUN_TEST(test_CanIf_SetPnWakeupFilter_BeforeInit_ShouldFail);
     RUN_TEST(test_CanIf_TxQueueMainFunction_BeforeInit_ShouldReportDet);
+    RUN_TEST(test_CanIf_GetTxConfirmationState_BeforeInit_ShouldFail);
     RUN_TEST(test_CanIf_Init_ValidConfig_ShouldSucceed);
     RUN_TEST(test_CanIf_Init_DoubleInit_ShouldReportDet);
     RUN_TEST(test_CanIf_Transmit_NullPdu_ShouldFail);
@@ -1732,6 +1856,16 @@ int main(void)
         RUN_TEST(test_CanIf_TrcvModeIndication_InvalidTrcv_ShouldNotNotifyCanSM);
         RUN_TEST(test_CanIf_ControllerModeIndication_BeforeInit_ShouldReturnSilently);
         RUN_TEST(test_CanIf_ControllerModeIndication_InvalidController_ShouldNotNotifyCanSM);
+
+        /* ── NEW: coverage expansion for uncovered branches ── */
+        RUN_TEST(test_CanIf_SetControllerMode_Start_CanDriverFails_ShouldKeepPrevious);
+        RUN_TEST(test_CanIf_SetControllerMode_Stop_CanDriverFails_ShouldKeepPrevious);
+        RUN_TEST(test_CanIf_SetControllerMode_Sleep_CanDriverFails_ShouldKeepPrevious);
+        RUN_TEST(test_CanIf_CheckWakeup_AllControllersFail_ShouldReturnNotOk);
+        RUN_TEST(test_CanIf_Transmit_ZeroLength_ShouldInvalidateTriggerCache);
+        RUN_TEST(test_CanIf_Transmit_CanBusyNullData_ShouldFailQueueing);
+        RUN_TEST(test_CanIf_ClearTrcvWufFlag_InvalidTrcv_ShouldReportDet);
+        RUN_TEST(test_CanIf_TxQueueMainFunction_Busy_DoesNotDrain);
 
     return UnityEnd();
 }

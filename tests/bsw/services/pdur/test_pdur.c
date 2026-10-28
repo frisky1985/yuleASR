@@ -54,6 +54,7 @@ static const PduR_ConfigType emptyConfig =
 extern uint32 mock_CanIf_Transmit_Count;
 extern PduIdType mock_CanIf_Transmit_LastPduId;
 extern PduLengthType mock_CanIf_Transmit_LastSduLength;
+extern Std_ReturnType mock_CanIf_Transmit_RetVal;
 extern uint32 mock_CanIf_CancelTransmit_Count;
 extern PduIdType mock_CanIf_CancelTransmit_LastPduId;
 extern uint32 mock_Com_RxIndication_Count;
@@ -64,8 +65,17 @@ extern Std_ReturnType mock_Com_TxConfirmation_LastResult;
 extern uint32 mock_Com_TriggerTransmit_Count;
 extern PduIdType mock_Com_TriggerTransmit_LastPduId;
 extern uint32 mock_Dcm_RxIndication_Count;
+extern PduIdType mock_Dcm_RxIndication_LastPduId;
 extern uint32 mock_Dcm_TxConfirmation_Count;
+extern PduIdType mock_Dcm_TxConfirmation_LastPduId;
+extern Std_ReturnType mock_Dcm_TxConfirmation_LastResult;
 extern uint32 mock_Dcm_TriggerTransmit_Count;
+extern PduIdType mock_Dcm_TriggerTransmit_LastPduId;
+extern Std_ReturnType mock_Dcm_TriggerTransmit_RetVal;
+
+/* Real production config (7 paths) — provided by PduR_Lcfg.c compiled
+   into service_pdur, which pdur_test links. */
+extern const PduR_ConfigType PduR_Config;
 
 static void mock_reset(void) {
     mock_DetCalls = 0;
@@ -74,6 +84,7 @@ static void mock_reset(void) {
     mock_CanIf_Transmit_Count = 0U;
     mock_CanIf_Transmit_LastPduId = 0;
     mock_CanIf_Transmit_LastSduLength = 0;
+    mock_CanIf_Transmit_RetVal = E_OK;
     mock_CanIf_CancelTransmit_Count = 0U;
     mock_CanIf_CancelTransmit_LastPduId = 0;
     mock_Com_RxIndication_Count = 0U;
@@ -84,8 +95,13 @@ static void mock_reset(void) {
     mock_Com_TriggerTransmit_Count = 0U;
     mock_Com_TriggerTransmit_LastPduId = 0;
     mock_Dcm_RxIndication_Count = 0U;
+    mock_Dcm_RxIndication_LastPduId = 0;
     mock_Dcm_TxConfirmation_Count = 0U;
+    mock_Dcm_TxConfirmation_LastPduId = 0;
+    mock_Dcm_TxConfirmation_LastResult = E_NOT_OK;
     mock_Dcm_TriggerTransmit_Count = 0U;
+    mock_Dcm_TriggerTransmit_LastPduId = 0;
+    mock_Dcm_TriggerTransmit_RetVal = E_OK;
 }
 
 /* PduR_DeInit() on an uninitialized module only raises a DET that is
@@ -281,6 +297,175 @@ void test_PduR_Init_DoubleInit_ShouldStayInitialized(void) {
     TEST_ASSERT_EQUAL(0, mock_DetCalls);
 }
 
+/* ====================================================================
+ * Extended coverage tests — use real PduR_Config to exercise DCM paths,
+ * DET error branches, TxConfirmation fallbacks and ChangeParameter.
+ * ==================================================================*/
+
+/** Transmit: DCM source path (Path 5) reaches CanIf. */
+void test_PduR_Transmit_DcmSource_ShouldRouteToCanIf(void) {
+    PduR_Init(&PduR_Config);
+    PduInfoType pdu; uint8 data[8] = {0u}; make_pdu8(&pdu, data);
+    Std_ReturnType ret = PduR_Transmit(PDUR_DCM_TX_DIAG_RESPONSE, &pdu);
+    TEST_ASSERT_EQUAL(E_OK, ret);
+    TEST_ASSERT_EQUAL(1U, mock_CanIf_Transmit_Count);
+    TEST_ASSERT_EQUAL(5, mock_CanIf_Transmit_LastPduId); /* Path 5 Dest[0].DestPduId */
+}
+
+/** Transmit: CanIf returns E_NOT_OK -> PduR_Transmit propagates E_NOT_OK
+ *  (hits RoutePdu L184-185 error path). */
+void test_PduR_Transmit_CanIfReturnsNotOk_ShouldPropagate(void) {
+    PduR_Init(&PduR_Config);
+    mock_CanIf_Transmit_RetVal = E_NOT_OK;
+    PduInfoType pdu; uint8 data[8] = {0u}; make_pdu8(&pdu, data);
+    Std_ReturnType ret = PduR_Transmit(PDUR_COM_TX_ENGINE_STATUS, &pdu);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL(1U, mock_CanIf_Transmit_Count);
+}
+
+/** Transmit: route disabled after init -> E_NOT_OK. */
+void test_PduR_Transmit_DisabledRoute_ShouldFail(void) {
+    PduR_Init(&PduR_Config);
+    PduR_DisableRouting(0); /* disables PathStates[0] (Path 0: COM EngineStatus) */
+    PduInfoType pdu; uint8 data[8] = {0u}; make_pdu8(&pdu, data);
+    Std_ReturnType ret = PduR_Transmit(PDUR_COM_TX_ENGINE_STATUS, &pdu);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL(0U, mock_CanIf_Transmit_Count);
+}
+
+/** RxIndication (DCM module): Path 6 CanIf->DCM should route to Dcm_RxIndication. */
+void test_PduR_RxIndication_CanIfToDcm_ShouldCallDcm(void) {
+    PduR_Init(&PduR_Config);
+    PduInfoType pdu; uint8 data[8] = {0x55u}; make_pdu8(&pdu, data);
+    PduR_RxIndication(PDUR_DCM_RX_DIAG_REQUEST, &pdu);
+    TEST_ASSERT_EQUAL(1U, mock_Dcm_RxIndication_Count);
+    TEST_ASSERT_EQUAL(PDUR_DCM_RX_DIAG_REQUEST, mock_Dcm_RxIndication_LastPduId);
+    TEST_ASSERT_EQUAL(0, mock_DetCalls);
+}
+
+/** RxIndication: UNINIT state -> DET error. */
+void test_PduR_RxIndication_Uninit_ShouldReportDet(void) {
+    PduInfoType pdu; uint8 data[8] = {0u}; make_pdu8(&pdu, data);
+    PduR_RxIndication(0U, &pdu);
+    TEST_ASSERT_EQUAL(PDUR_E_UNINIT, mock_DetLastErrorId);
+    TEST_ASSERT_EQUAL(PDUR_SID_RXINDICATION, mock_DetLastApiId);
+}
+
+/** RxIndication: NULL PduInfo -> DET PARAM_POINTER. */
+void test_PduR_RxIndication_NullPduInfo_ShouldReportDet(void) {
+    PduR_Init(&PduR_Config);
+    PduR_RxIndication(0U, NULL_PTR);
+    TEST_ASSERT_EQUAL(PDUR_E_PARAM_POINTER, mock_DetLastErrorId);
+    TEST_ASSERT_EQUAL(PDUR_SID_RXINDICATION, mock_DetLastApiId);
+}
+
+/** RxIndication: routing path not found -> DET. */
+void test_PduR_RxIndication_NoPath_ShouldReportDet(void) {
+    PduR_Init(&PduR_Config);
+    PduInfoType pdu; uint8 data[8] = {0u}; make_pdu8(&pdu, data);
+    PduR_RxIndication(99U, &pdu);
+    TEST_ASSERT_EQUAL(TEST_PDUR_E_ROUTING_PATH_NOT_FOUND, mock_DetLastErrorId);
+    TEST_ASSERT_EQUAL(PDUR_SID_RXINDICATION, mock_DetLastApiId);
+}
+
+/** TxConfirmation: UNINIT state -> DET error. */
+void test_PduR_TxConfirmation_Uninit_ShouldReportDet(void) {
+    PduR_TxConfirmation(0U, E_OK);
+    TEST_ASSERT_EQUAL(PDUR_E_UNINIT, mock_DetLastErrorId);
+    TEST_ASSERT_EQUAL(PDUR_SID_TXCONFIRMATION, mock_DetLastApiId);
+}
+
+/** TxConfirmation: CanIf->DCM path forwards to DCM (L579-580). */
+void test_PduR_TxConfirmation_CanIfToDcm_ShouldForwardToDcm(void) {
+    PduR_Init(&PduR_Config);
+    PduR_TxConfirmation(PDUR_DCM_RX_DIAG_REQUEST, E_NOT_OK);
+    TEST_ASSERT_EQUAL(1U, mock_Dcm_TxConfirmation_Count);
+    TEST_ASSERT_EQUAL(PDUR_DCM_RX_DIAG_REQUEST, mock_Dcm_TxConfirmation_LastPduId);
+    TEST_ASSERT_EQUAL(E_NOT_OK, mock_Dcm_TxConfirmation_LastResult);
+    TEST_ASSERT_EQUAL(0, mock_DetCalls);
+}
+
+/** TxConfirmation: fallback via COM source path (Path 0 has CanIf dest,
+ *  so when we search CanIf source first and fail, we fall back to COM
+ *  source and forward to Com_TxConfirmation). */
+void test_PduR_TxConfirmation_FallbackComPath_ShouldForwardToCom(void) {
+    PduR_Init(&PduR_Config);
+    /* Path 0 src=COM id=0 dest=CanIf, so fallback COM match succeeds. */
+    PduR_TxConfirmation(0U, E_OK);
+    TEST_ASSERT_EQUAL(1U, mock_Com_TxConfirmation_Count);
+    TEST_ASSERT_EQUAL(0, mock_Com_TxConfirmation_LastPduId);
+    TEST_ASSERT_EQUAL(E_OK, mock_Com_TxConfirmation_LastResult);
+}
+
+/** TxConfirmation: fallback via DCM source path. */
+void test_PduR_TxConfirmation_FallbackDcmPath_ShouldForwardToDcm(void) {
+    PduR_Init(&PduR_Config);
+    /* Path 5 src=DCM id=5 dest=CanIf. */
+    PduR_TxConfirmation(5U, E_OK);
+    TEST_ASSERT_EQUAL(1U, mock_Dcm_TxConfirmation_Count);
+    TEST_ASSERT_EQUAL(5, mock_Dcm_TxConfirmation_LastPduId);
+    TEST_ASSERT_EQUAL(E_OK, mock_Dcm_TxConfirmation_LastResult);
+}
+
+/** TriggerTransmit: UNINIT -> DET UNINIT. */
+void test_PduR_TriggerTransmit_Uninit_ShouldReportDet(void) {
+    PduInfoType pdu; uint8 data[8] = {0u}; make_pdu8(&pdu, data);
+    Std_ReturnType ret = PduR_TriggerTransmit(0U, &pdu);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL(PDUR_E_UNINIT, mock_DetLastErrorId);
+    TEST_ASSERT_EQUAL(PDUR_SID_TRIGGERTRANSMIT, mock_DetLastApiId);
+}
+
+/** TriggerTransmit: NULL PduInfo -> DET PARAM_POINTER. */
+void test_PduR_TriggerTransmit_NullPduInfo_ShouldReportDet(void) {
+    PduR_Init(&PduR_Config);
+    Std_ReturnType ret = PduR_TriggerTransmit(0U, NULL_PTR);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL(PDUR_E_PARAM_POINTER, mock_DetLastErrorId);
+    TEST_ASSERT_EQUAL(PDUR_SID_TRIGGERTRANSMIT, mock_DetLastApiId);
+}
+
+/** TriggerTransmit: CanIf->DCM path forwards to Dcm_TriggerTransmit (L661-662). */
+void test_PduR_TriggerTransmit_CanIfToDcm_ShouldCallDcm(void) {
+    PduR_Init(&PduR_Config);
+    mock_Dcm_TriggerTransmit_RetVal = E_OK;
+    PduInfoType pdu; uint8 data[8] = {0u}; make_pdu8(&pdu, data);
+    Std_ReturnType ret = PduR_TriggerTransmit(PDUR_DCM_RX_DIAG_REQUEST, &pdu);
+    TEST_ASSERT_EQUAL(E_OK, ret);
+    TEST_ASSERT_EQUAL(1U, mock_Dcm_TriggerTransmit_Count);
+    TEST_ASSERT_EQUAL(PDUR_DCM_RX_DIAG_REQUEST, mock_Dcm_TriggerTransmit_LastPduId);
+}
+
+/** CancelTransmitRequest: UNINIT -> DET UNINIT. */
+void test_PduR_CancelTransmitRequest_Uninit_ShouldReportDet(void) {
+    Std_ReturnType ret = PduR_CancelTransmitRequest(0U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL(PDUR_E_UNINIT, mock_DetLastErrorId);
+    TEST_ASSERT_EQUAL(PDUR_SID_CANCELTRANSMITREQUEST, mock_DetLastApiId);
+}
+
+/** CancelTransmitRequest: DCM source path has no handling — returns E_NOT_OK
+ *  (CancelTransmitRequest only searches COM source paths, per product code). */
+void test_PduR_CancelTransmitRequest_DcmSource_ShouldReturnNotOk(void) {
+    PduR_Init(&PduR_Config);
+    Std_ReturnType ret = PduR_CancelTransmitRequest(PDUR_DCM_TX_DIAG_RESPONSE);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL(0U, mock_CanIf_CancelTransmit_Count);
+}
+
+/** ChangeParameterRequest: always returns E_NOT_OK. */
+void test_PduR_ChangeParameterRequest_ShouldAlwaysReturnNotOk(void) {
+    Std_ReturnType ret = PduR_ChangeParameterRequest(0U, (TPParameterType)0, 100U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL(0, mock_DetCalls);
+}
+
+/** MainFunction: uninitialized state — no crash, no action. */
+void test_PduR_MainFunction_Uninit_ShouldDoNothing(void) {
+    PduR_MainFunction();
+    TEST_ASSERT_EQUAL(0U, mock_CanIf_Transmit_Count);
+}
+
 int main(void) {
     UNITY_BEGIN();
     RUN_TEST(test_PduR_Init_NullPtr_ShouldReportDet);
@@ -298,5 +483,26 @@ int main(void) {
     RUN_TEST(test_PduR_GetVersionInfo_ValidPtr_ShouldSucceed);
     RUN_TEST(test_PduR_GetVersionInfo_NullPtr_ShouldReportDet);
     RUN_TEST(test_PduR_Init_DoubleInit_ShouldStayInitialized);
+
+    /* Extended coverage cases */
+    RUN_TEST(test_PduR_Transmit_DcmSource_ShouldRouteToCanIf);
+    RUN_TEST(test_PduR_Transmit_CanIfReturnsNotOk_ShouldPropagate);
+    RUN_TEST(test_PduR_Transmit_DisabledRoute_ShouldFail);
+    RUN_TEST(test_PduR_RxIndication_CanIfToDcm_ShouldCallDcm);
+    RUN_TEST(test_PduR_RxIndication_Uninit_ShouldReportDet);
+    RUN_TEST(test_PduR_RxIndication_NullPduInfo_ShouldReportDet);
+    RUN_TEST(test_PduR_RxIndication_NoPath_ShouldReportDet);
+    RUN_TEST(test_PduR_TxConfirmation_Uninit_ShouldReportDet);
+    RUN_TEST(test_PduR_TxConfirmation_CanIfToDcm_ShouldForwardToDcm);
+    RUN_TEST(test_PduR_TxConfirmation_FallbackComPath_ShouldForwardToCom);
+    RUN_TEST(test_PduR_TxConfirmation_FallbackDcmPath_ShouldForwardToDcm);
+    RUN_TEST(test_PduR_TriggerTransmit_Uninit_ShouldReportDet);
+    RUN_TEST(test_PduR_TriggerTransmit_NullPduInfo_ShouldReportDet);
+    RUN_TEST(test_PduR_TriggerTransmit_CanIfToDcm_ShouldCallDcm);
+    RUN_TEST(test_PduR_CancelTransmitRequest_Uninit_ShouldReportDet);
+    RUN_TEST(test_PduR_CancelTransmitRequest_DcmSource_ShouldReturnNotOk);
+    RUN_TEST(test_PduR_ChangeParameterRequest_ShouldAlwaysReturnNotOk);
+    RUN_TEST(test_PduR_MainFunction_Uninit_ShouldDoNothing);
+
     return UnityEnd();
 }

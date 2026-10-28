@@ -18,6 +18,24 @@
 #include "unity.h"
 #include "FrIf.h"
 
+/* ---------- Test-hack accessors (defined in frif_test_hacks.c) ---------- */
+extern void FrIf_TestHack_SetControllerMode(uint8 ctrlIdx, FrIf_ControllerModeType mode);
+extern FrIf_ControllerModeType FrIf_TestHack_GetControllerMode(uint8 ctrlIdx);
+extern void FrIf_TestHack_SetInitialized(boolean init);
+extern boolean FrIf_TestHack_GetInitialized(void);
+
+/* ---------- Lower-layer stubs: PduR + Det ---------- */
+
+/* PduR stubs referenced by FrIf (none actually called in current FrIf.c,
+ * but the real PduR.h header declares them — we provide inline definitions
+ * so no link dependency is needed). */
+void PduR_FrIfTxConfirmation(PduIdType TxPduId, Std_ReturnType result) {
+    (void)TxPduId; (void)result;
+}
+void PduR_FrIfRxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr) {
+    (void)RxPduId; (void)PduInfoPtr;
+}
+
 /* Mock Det_ReportError (inline in this file — mock_det.c is NOT linked) */
 static uint8 mock_DetLastApiId = 0xFFU;
 static uint8 mock_DetLastErrorId = 0xFFU;
@@ -68,6 +86,37 @@ static FrIf_ConfigType testConfig = {
     /* NumControllers */   1U,
     /* Lpdus */            &testLpdu,
     /* NumLpdus */         1U,
+    /* DevErrorDetect */   TRUE,
+    /* VersionInfoApi */   TRUE,
+    /* ClstStartupActive */    TRUE,
+    /* ClstWakeupActive */     TRUE,
+    /* FrIfGetWupRxStatusSupport */    TRUE,
+    /* FrIfGetSyncFrameListSupport */  TRUE,
+    /* FrIfGetClockCorrectionSupport */ TRUE
+};
+
+/* Second LPDU config: CtrlIdx out of range (>= FRIF_NUM_CONTROLLERS=1) */
+/* Drives the FrIf_Transmit ctrlIdx-range guard (line 271). */
+static FrIf_LpduConfigType testLpduInvalidCtrl = {
+    /* LpduIdx */          1U,
+    /* CtrlIdx */          1U,  /* out of range: FRIF_NUM_CONTROLLERS == 1 */
+    /* SlotId */           2U,
+    /* Cycle */            0U,
+    /* CycleRepetition */  1U,
+    /* CycleOffset */      0U,
+    /* Channel */          0U,
+    /* PayloadLength */    8U,
+    /* DynamicSegment */   FALSE
+};
+
+/* Array containing both LPDUs */
+static FrIf_LpduConfigType testLpdusBoth[2];  /* populated lazily */
+
+static FrIf_ConfigType testConfigBothLpdus = {
+    /* Controllers */      &testCtrl,
+    /* NumControllers */   1U,
+    /* Lpdus */            testLpdusBoth,
+    /* NumLpdus */         2U,
     /* DevErrorDetect */   TRUE,
     /* VersionInfoApi */   TRUE,
     /* ClstStartupActive */    TRUE,
@@ -753,4 +802,101 @@ void test_FrIf_SetRelativeTimer_AllTimers_ShouldSucceed(void) {
     ret = FrIf_SetRelativeTimer(0U, 3U, 400U);
     TEST_ASSERT_EQUAL_INT(E_OK, ret);
     TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
+}
+
+/* ---------------------------------------------------------------- */
+/* Tests added to reach previously uncovered branches                */
+/* ---------------------------------------------------------------- */
+
+/** Transmit success path: configure, set controller to NORMAL_ACTIVE via hack, transmit */
+void test_FrIf_Transmit_ControllerActive_ShouldReturnOk(void) {
+    uint8 sdu[8] = { 0x11U, 0x22U, 0x33U, 0x44U, 0x55U, 0x66U, 0x77U, 0x88U };
+    PduInfoType info = { sdu, 8U };
+    Std_ReturnType ret;
+
+    /* Drive controller into NORMAL_ACTIVE via test hack */
+    FrIf_TestHack_SetControllerMode(0U, FRIF_MODE_NORMAL_ACTIVE);
+    TEST_ASSERT_EQUAL_UINT8((uint8)FRIF_MODE_NORMAL_ACTIVE,
+                            (uint8)FrIf_TestHack_GetControllerMode(0U));
+
+    ret = FrIf_Transmit(0U, &info);
+    TEST_ASSERT_EQUAL_INT(E_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
+}
+
+/** Transmit: LPDU configured but its CtrlIdx is out of range (edge-case in FrIf.c) */
+/* Not reachable without reconfiguring LPDU table — skip; covered as E_NOT_OK above. */
+
+/** MainFunction: drive controller into STARTUP mode and call MainFunction */
+void test_FrIf_MainFunction_StartupMode_Hack(void) {
+    FrIf_TestHack_SetControllerMode(0U, FRIF_MODE_STARTUP);
+    FrIf_MainFunction();
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
+    /* mode unchanged */
+    TEST_ASSERT_EQUAL_UINT8((uint8)FRIF_MODE_STARTUP,
+                            (uint8)FrIf_TestHack_GetControllerMode(0U));
+}
+
+/** MainFunction: controller in NORMAL_ACTIVE via hack */
+void test_FrIf_MainFunction_NormalActiveMode_Hack(void) {
+    FrIf_TestHack_SetControllerMode(0U, FRIF_MODE_NORMAL_ACTIVE);
+    FrIf_MainFunction();
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
+}
+
+/** MainFunction: controller in NORMAL_PASSIVE via hack */
+void test_FrIf_MainFunction_NormalPassiveMode_Hack(void) {
+    FrIf_TestHack_SetControllerMode(0U, FRIF_MODE_NORMAL_PASSIVE);
+    FrIf_MainFunction();
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
+}
+
+/** MainFunction: controller in COLDSTART via hack */
+void test_FrIf_MainFunction_ColdstartMode_Hack(void) {
+    FrIf_TestHack_SetControllerMode(0U, FRIF_MODE_COLDSTART);
+    FrIf_MainFunction();
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
+}
+
+/** Initialize + re-init pattern: after hack-setting Initialized=FALSE, Init must succeed again */
+void test_FrIf_Init_ReinitAfterHackReset_ShouldWork(void) {
+    FrIf_TestHack_SetInitialized(FALSE);
+    FrIf_Init(&testConfig);
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
+    TEST_ASSERT_TRUE(FrIf_TestHack_GetInitialized());
+}
+
+/** ControllerInit success path with valid index after fresh init */
+void test_FrIf_ControllerInit_ValidCall_ShouldSetReadyMode(void) {
+    FrIf_TestHack_SetInitialized(FALSE);
+    FrIf_Init(&testConfig);
+    mock_Det_Reset();
+
+    Std_ReturnType ret = FrIf_ControllerInit(0U);
+    TEST_ASSERT_EQUAL_INT(E_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8((uint8)FRIF_MODE_READY,
+                            (uint8)FrIf_TestHack_GetControllerMode(0U));
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
+}
+
+/** FrIf_Transmit with LPDU whose CtrlIdx is out of range — the last uncovered branch (line 271) */
+void test_FrIf_Transmit_CtrlIdxOutOfRange_ShouldReturnNotOk(void) {
+    uint8 sdu[8] = { 0U };
+    PduInfoType info = { sdu, 8U };
+    Std_ReturnType ret;
+
+    /* Build combined LPDU array */
+    testLpdusBoth[0] = testLpdu;            /* LpduIdx=0, CtrlIdx=0 (valid) */
+    testLpdusBoth[1] = testLpduInvalidCtrl; /* LpduIdx=1, CtrlIdx=1 (out of range) */
+
+    FrIf_TestHack_SetInitialized(FALSE);
+    FrIf_Init(&testConfigBothLpdus);
+    mock_Det_Reset();
+
+    /* Ensure controller is active so we'd otherwise reach the CtrlIdx check */
+    FrIf_TestHack_SetControllerMode(0U, FRIF_MODE_NORMAL_ACTIVE);
+
+    ret = FrIf_Transmit(1U, &info);
+    TEST_ASSERT_EQUAL_INT(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount); /* no DET, just E_NOT_OK */
 }

@@ -29,6 +29,11 @@ enable_testing()
 # Unit tests
 add_subdirectory(unit)
 
+# E2E Protection + ISO-TP core 单元测试 (autosar/e2e + diagnostics/isotp)
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/unit/e2eiso)
+    add_subdirectory(unit/e2eiso)
+endif()
+
 # Substantiated service-layer unit tests (real production source + mocks)
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/bsw/services/ecum)
     add_subdirectory(bsw/services/ecum)
@@ -61,6 +66,9 @@ if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/bsw/services/comm)
 endif()
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/bsw/services/csm)
     add_subdirectory(bsw/services/csm)
+endif()
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/bsw/services/cryif)
+    add_subdirectory(bsw/services/cryif)
 endif()
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/bsw/services/dcm)
     add_subdirectory(bsw/services/dcm)
@@ -143,6 +151,9 @@ endif()
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/bsw/services/wdgm)
     add_subdirectory(bsw/services/wdgm)
 endif()
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/bsw/services/soad)
+    add_subdirectory(bsw/services/soad)
+endif()
 
 # ── T-021 Batch 3: substantiated ecual-layer tests (anchors replaced by workers) ──
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/bsw/ecual/canif)
@@ -157,6 +168,9 @@ endif()
 # @ANCHOR3:doip
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/bsw/ecual/eth)
     add_subdirectory(bsw/ecual/eth)
+endif()
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/bsw/ecual/ethif)
+    add_subdirectory(bsw/ecual/ethif)
 endif()
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/bsw/ecual/ethsm)
     add_subdirectory(bsw/ecual/ethsm)
@@ -305,3 +319,53 @@ if(NOT CMAKE_CROSSCOMPILING)
 endif()
 
 message(STATUS "Tests configured")
+
+# -----------------------------------------------------------------------------
+# DDS middleware batch-1 unit tests (cdr / rtps / pubsub / core+runtime)
+# Appended by dds1 agent; self-guarded so it is inert if the dir is absent.
+# -----------------------------------------------------------------------------
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/unit/dds1)
+    add_subdirectory(unit/dds1)
+endif()
+
+# -----------------------------------------------------------------------------
+# DDS-Security submodule unit tests (crypto / auth / access / security_manager)
+# Appended by ddssec agent; self-guarded so it is inert if the dir is absent.
+# Links the 4 real security sources + Crypto_MbedTLS_Mem + third_party mbedcrypto.
+# -----------------------------------------------------------------------------
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/unit/ddssec)
+    add_subdirectory(unit/ddssec)
+endif()
+
+# -----------------------------------------------------------------------------
+# microdds UDP 传输层单元测试 (真实 POSIX 回环 socket 收发往返)
+# Appended by ddsudp agent; self-guarded so it is inert if the dir is absent.
+# Compiles src/middleware/microdds/src/transport/udp.c directly into the test
+# binary; NULL_PTR is injected via compile definition (udp.c include chain has
+# no definition for it).
+# -----------------------------------------------------------------------------
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/unit/ddsudp)
+    add_subdirectory(unit/ddsudp)
+endif()
+
+# -----------------------------------------------------------------------------
+# microdds core/QoS/buffer_pool 单元测试 (自带 standalone unity 测试包装接入)
+# Appended by ddscore agent; self-guarded so it is inert if the dir is absent.
+# Compiles microdds 自带 tests/unity 测试 + 真实产品源 (core 6 文件 +
+# qos_policy + buffer_pool + cdr); 驱动宏缺失与 NULL_PTR 由 -include 垫片
+# 补齐, 不改产品代码。
+# -----------------------------------------------------------------------------
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/unit/ddscore)
+    add_subdirectory(unit/ddscore)
+endif()
+
+# -----------------------------------------------------------------------------
+# DDS 以太网/TSN/SoAd 传输层单元测试 (eth_transport / eth_discovery / tsn / soad)
+# Appended by ddstrans agent; self-guarded so it is inert if the dir is absent.
+# Links the 4 real transport sources; tcpip_types.h/soad.h resolve to real
+# headers via include-dir redirection, eth_manager.h/tsn_stack.h use minimal
+# stubs; tcpip_*/SoAd_* functions are stubbed in the test files.
+# -----------------------------------------------------------------------------
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/unit/ddstrans)
+    add_subdirectory(unit/ddstrans)
+endif()

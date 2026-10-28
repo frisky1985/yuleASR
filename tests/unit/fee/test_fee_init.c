@@ -32,7 +32,9 @@ void test_Fee_DeInit_AfterInit(void) {
     extern const Fee_ConfigType Fee_Config;
     Fee_Init(&Fee_Config);
     Fee_DeInit();
-    TEST_ASSERT_EQUAL(FEE_UNINIT, Fee_GetStatus());
+    /* Uninitialized module reports DET FEE_E_UNINIT and returns FEE_IDLE
+     * (see Fee_GetStatus) — there is no separate FEE_UNINIT status value. */
+    TEST_ASSERT_EQUAL(FEE_IDLE, Fee_GetStatus());
 }
 
 int main(void) {

@@ -552,6 +552,24 @@ if(EXISTS ${MCAL_TEST_SRC_DIR}/ramtst/test_ramtst.c)
 endif()
 
 #----------------------------------------------------------------------
+# LinMaster stack test (core/Hal/Schedule/Diagnostic/Tp, host-safe HAL)
+#----------------------------------------------------------------------
+if(EXISTS ${MCAL_TEST_SRC_DIR}/lin/test_linmaster.c)
+    add_bsw_mcal_test(
+        NAME        mcal_linmaster_test
+        TEST_FILE   ${MCAL_TEST_SRC_DIR}/lin/test_linmaster.c
+        MCAL_SRCS
+            ${SRC_MCAL}/lin/src/LinMaster.c
+            ${SRC_MCAL}/lin/src/LinMaster_Diagnostic.c
+            ${SRC_MCAL}/lin/src/LinMaster_Schedule.c
+            ${SRC_MCAL}/lin/src/LinMaster_Tp.c
+            ${SRC_MCAL}/lin/src/LinMaster_Hal.c
+        DEFINES
+            DISABLE_MCAL_INTERMODULE_ASR_CHECK=1
+    )
+endif()
+
+#----------------------------------------------------------------------
 # UART test
 #----------------------------------------------------------------------
 if(EXISTS ${MCAL_TEST_SRC_DIR}/uart/test_uart.c)

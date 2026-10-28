@@ -118,6 +118,7 @@ const Dem_ConfigType Dem_Config = {
 
 #define MATRIX_DID_READABLE              (0xF190U)  /* default session, unlocked */
 #define MATRIX_DID_WRITABLE              (0xF191U)  /* default session, unlocked */
+#define MATRIX_DID_WRITE_FAILS           (0xF192U)  /* WriteDataFnc returns E_NOT_OK */
 #define MATRIX_DID_NO_READ_FNC           (0x1234U)
 #define MATRIX_DID_NO_WRITE_FNC          (0x1235U)
 #define MATRIX_DID_EXTENDED_ONLY         (0x0202U)  /* extended session required */
@@ -126,7 +127,9 @@ const Dem_ConfigType Dem_Config = {
 
 #define MATRIX_RID_START_OK              (0xEF00U)
 #define MATRIX_RID_START_FAILS           (0x0200U)
-#define MATRIX_RID_EXTENDED_ONLY         (0xEF10U)
+#define MATRIX_RID_EXTENDED_ONLY         (0xEF10U)  /* now has callbacks to exercise session-match path */
+#define MATRIX_RID_STOP_FAILS            (0xEF11U)  /* StopFnc returns E_NOT_OK */
+#define MATRIX_RID_RESULT_FAILS          (0xEF12U)  /* RequestResultFnc returns E_NOT_OK */
 #define MATRIX_RID_SECURED               (0xEF20U)
 #define MATRIX_RID_UNKNOWN               (0x4242U)
 
@@ -179,10 +182,35 @@ static Std_ReturnType matrix_Rid_Start_Fails(const uint8* RequestData, uint16 Re
     (void)RequestData; (void)RequestDataLength; (void)ResponseData; (void)ResponseDataLength;
     return E_NOT_OK;
 }
+static Std_ReturnType matrix_Write_Fails(const uint8* Data, uint16 DataLength)
+{
+    (void)Data; (void)DataLength;
+    return E_NOT_OK;
+}
+static Std_ReturnType matrix_Rid_Start_Ext(const uint8* RequestData, uint16 RequestDataLength,
+                                           uint8* ResponseData, uint16* ResponseDataLength)
+{
+    (void)RequestData; (void)RequestDataLength;
+    if (ResponseData != NULL_PTR) { ResponseData[0] = 0x77U; }
+    if (ResponseDataLength != NULL_PTR) { *ResponseDataLength = 1U; }
+    return E_OK;
+}
+static Std_ReturnType matrix_Rid_Stop_Fails(const uint8* RequestData, uint16 RequestDataLength,
+                                            uint8* ResponseData, uint16* ResponseDataLength)
+{
+    (void)RequestData; (void)RequestDataLength; (void)ResponseData; (void)ResponseDataLength;
+    return E_NOT_OK;
+}
+static Std_ReturnType matrix_Rid_Result_Fails(uint8* ResponseData, uint16* ResponseDataLength)
+{
+    (void)ResponseData; (void)ResponseDataLength;
+    return E_NOT_OK;
+}
 
 static const Dcm_DIDConfigType matrix_DIDs[] = {
     { MATRIX_DID_READABLE,      4U,  DCM_DEFAULT_SESSION, DCM_SEC_LEV_LOCKED, matrix_Read_F190,     NULL_PTR },
     { MATRIX_DID_WRITABLE,      4U,  DCM_DEFAULT_SESSION, DCM_SEC_LEV_LOCKED, NULL_PTR,             matrix_Write_F191 },
+    { MATRIX_DID_WRITE_FAILS,   2U,  DCM_DEFAULT_SESSION, DCM_SEC_LEV_LOCKED, NULL_PTR,             matrix_Write_Fails },
     { MATRIX_DID_NO_READ_FNC,   2U,  DCM_DEFAULT_SESSION, DCM_SEC_LEV_LOCKED, NULL_PTR,             NULL_PTR },
     { MATRIX_DID_NO_WRITE_FNC,  2U,  DCM_DEFAULT_SESSION, DCM_SEC_LEV_LOCKED, NULL_PTR,             NULL_PTR },
     { MATRIX_DID_EXTENDED_ONLY, 2U,  DCM_EXTENDED_DIAGNOSTIC_SESSION, DCM_SEC_LEV_LOCKED, NULL_PTR, NULL_PTR },
@@ -191,7 +219,9 @@ static const Dcm_DIDConfigType matrix_DIDs[] = {
 static const Dcm_RIDConfigType matrix_RIDs[] = {
     { MATRIX_RID_START_OK,      DCM_DEFAULT_SESSION, DCM_SEC_LEV_LOCKED, matrix_Rid_Start,       matrix_Rid_Stop, matrix_Rid_Result },
     { MATRIX_RID_START_FAILS,   DCM_DEFAULT_SESSION, DCM_SEC_LEV_LOCKED, matrix_Rid_Start_Fails, NULL_PTR,        NULL_PTR },
-    { MATRIX_RID_EXTENDED_ONLY, DCM_EXTENDED_DIAGNOSTIC_SESSION, DCM_SEC_LEV_LOCKED, NULL_PTR, NULL_PTR, NULL_PTR },
+    { MATRIX_RID_EXTENDED_ONLY, DCM_EXTENDED_DIAGNOSTIC_SESSION, DCM_SEC_LEV_LOCKED, matrix_Rid_Start_Ext, NULL_PTR, NULL_PTR },
+    { MATRIX_RID_STOP_FAILS,    DCM_DEFAULT_SESSION, DCM_SEC_LEV_LOCKED, matrix_Rid_Start,       matrix_Rid_Stop_Fails, matrix_Rid_Result },
+    { MATRIX_RID_RESULT_FAILS,  DCM_DEFAULT_SESSION, DCM_SEC_LEV_LOCKED, matrix_Rid_Start,       matrix_Rid_Stop, matrix_Rid_Result_Fails },
     { MATRIX_RID_SECURED,       DCM_DEFAULT_SESSION, 1U /* level 1 */,   NULL_PTR,               NULL_PTR,        NULL_PTR }
 };
 static Dcm_ConfigType matrix_Config;
@@ -336,6 +366,23 @@ void test_Uds11_SoftReset_PositiveResponse(void)
     TEST_ASSERT_EQUAL_HEX8(0x03U, stub_PduR_lastPdu[1]);
 }
 
+void test_Uds11_EnableRapidPowerShutdown_PositiveResponse(void)
+{
+    uint8 req[2] = { DCM_UDS_SID_ECU_RESET, 0x04U };
+    dcm_send(req, 2U);
+    TEST_ASSERT_EQUAL_UINT32(1U, stub_PduR_Transmit_calls);
+    TEST_ASSERT_EQUAL_HEX8(DCM_UDS_SID_ECU_RESET, stub_PduR_lastPdu[0]);
+    TEST_ASSERT_EQUAL_HEX8(0x04U, stub_PduR_lastPdu[1]);
+    TEST_ASSERT_EQUAL_UINT32(2U, stub_PduR_lastLength);
+}
+
+void test_Uds11_DisableRapidPowerShutdown_PositiveResponse(void)
+{
+    uint8 req[2] = { DCM_UDS_SID_ECU_RESET, 0x05U };
+    dcm_send(req, 2U);
+    TEST_ASSERT_EQUAL_HEX8(0x05U, stub_PduR_lastPdu[1]);
+}
+
 void test_Uds11_InvalidResetType_NrcSubFunctionNotSupported(void)
 {
     uint8 req[2] = { DCM_UDS_SID_ECU_RESET, 0x42U };
@@ -430,6 +477,27 @@ void test_Uds19_ReportSnapshotRecord_FallbackResponse(void)
     TEST_ASSERT_EQUAL_HEX8(DEM_DTC_STATUS_AVAILABILITY_MASK, stub_PduR_lastPdu[2]);
     TEST_ASSERT_EQUAL_HEX8(0x00U, stub_PduR_lastPdu[3]);
     TEST_ASSERT_EQUAL_UINT32(6U, stub_PduR_lastLength); /* SID+sub+avail+3 zeros */
+}
+
+void test_Uds19_ReportSupportedDTC_ReturnsAllConfigured(void)
+{
+    /* sub 0x0A reports every configured DTC — regardless of status */
+    uint8 req[2] = { DCM_UDS_SID_READ_DTC_INFORMATION, 0x0AU };
+    dcm_send(req, 2U);
+    TEST_ASSERT_EQUAL_UINT32(1U, stub_PduR_Transmit_calls);
+    TEST_ASSERT_EQUAL_HEX8(DCM_UDS_SID_READ_DTC_INFORMATION, stub_PduR_lastPdu[0]);
+    TEST_ASSERT_EQUAL_HEX8(0x0AU, stub_PduR_lastPdu[1]);
+    TEST_ASSERT_EQUAL_HEX8(DEM_DTC_STATUS_AVAILABILITY_MASK, stub_PduR_lastPdu[2]);
+    /* Should contain MATRIX_DTC_A (0x123456) and MATRIX_DTC_B (0x456789) */
+    TEST_ASSERT_EQUAL_HEX8(0x12U, stub_PduR_lastPdu[3]);
+    TEST_ASSERT_EQUAL_HEX8(0x34U, stub_PduR_lastPdu[4]);
+    TEST_ASSERT_EQUAL_HEX8(0x56U, stub_PduR_lastPdu[5]);
+    TEST_ASSERT_EQUAL_HEX8(MATRIX_DTC_STATUS_A, stub_PduR_lastPdu[6]);
+    TEST_ASSERT_EQUAL_HEX8(0x45U, stub_PduR_lastPdu[7]);
+    TEST_ASSERT_EQUAL_HEX8(0x67U, stub_PduR_lastPdu[8]);
+    TEST_ASSERT_EQUAL_HEX8(0x89U, stub_PduR_lastPdu[9]);
+    TEST_ASSERT_EQUAL_HEX8(0x00U, stub_PduR_lastPdu[10]); /* status B = 0 */
+    TEST_ASSERT_EQUAL_UINT32(11U, stub_PduR_lastLength);
 }
 
 void test_Uds19_EmptyRequest_NrcIncorrectMessageLength(void)
@@ -528,6 +596,14 @@ void test_Uds2E_UnknownDid_NrcRequestOutOfRange(void)
     uint8 req[4] = { DCM_UDS_SID_WRITE_DATA_BY_IDENTIFIER, 0xDEU, 0xADU, 0x00U };
     dcm_send(req, 4U);
     expect_negative(DCM_UDS_SID_WRITE_DATA_BY_IDENTIFIER, DCM_E_REQUEST_OUT_OF_RANGE);
+}
+
+void test_Uds2E_WriteFncFails_NrcConditionsNotCorrect(void)
+{
+    /* DID 0xF192 has a WriteDataFnc that returns E_NOT_OK */
+    uint8 req[4] = { DCM_UDS_SID_WRITE_DATA_BY_IDENTIFIER, 0xF1U, 0x92U, 0x00U };
+    dcm_send(req, 4U);
+    expect_negative(DCM_UDS_SID_WRITE_DATA_BY_IDENTIFIER, DCM_E_CONDITIONS_NOT_CORRECT);
 }
 
 void test_Uds2E_EmptyRequest_NrcIncorrectMessageLength(void)
@@ -698,6 +774,53 @@ void test_Uds31_SecuredRid_LockedLevel_NrcSecurityAccessDenied(void)
     expect_negative(DCM_UDS_SID_ROUTINE_CONTROL, DCM_E_SECURITY_ACCESS_DENIED);
 }
 
+void test_Uds31_ExtendedSessionRid_InDefaultSession_NrcServiceNotSupported(void)
+{
+    /* MATRIX_RID_EXTENDED_ONLY (0xEF10) requires extended session */
+    uint8 req[4] = { DCM_UDS_SID_ROUTINE_CONTROL, 0x01U, 0xEFU, 0x10U };
+    dcm_send(req, 4U);
+    expect_negative(DCM_UDS_SID_ROUTINE_CONTROL, DCM_E_SERVICE_NOT_SUPPORTED);
+}
+
+void test_Uds31_ExtendedSessionRid_InExtendedSession_StartSucceeds(void)
+{
+    /* First switch to extended session */
+    uint8 reqSes[2] = { DCM_UDS_SID_DIAGNOSTIC_SESSION_CONTROL, DCM_EXTENDED_DIAGNOSTIC_SESSION };
+    uint8 req[4];
+    dcm_send(reqSes, 2U);
+    TEST_ASSERT_EQUAL_HEX8(DCM_EXTENDED_DIAGNOSTIC_SESSION, stub_PduR_lastPdu[1]);
+
+    /* Now start the extended-session-only RID (0xEF10) */
+    req[0] = DCM_UDS_SID_ROUTINE_CONTROL;
+    req[1] = 0x01U;
+    req[2] = (uint8)(MATRIX_RID_EXTENDED_ONLY >> 8);
+    req[3] = (uint8)(MATRIX_RID_EXTENDED_ONLY & 0xFFU);
+    dcm_send(req, 4U);
+    TEST_ASSERT_EQUAL_UINT32(2U, stub_PduR_Transmit_calls);
+    TEST_ASSERT_EQUAL_HEX8(DCM_UDS_SID_ROUTINE_CONTROL, stub_PduR_lastPdu[0]);
+    TEST_ASSERT_EQUAL_HEX8(0x77U, stub_PduR_lastPdu[4]); /* StartFnc response */
+    TEST_ASSERT_EQUAL_UINT32(5U, stub_PduR_lastLength);
+
+    /* Reset back to default for subsequent tests */
+    Dcm_ResetToDefaultSession();
+}
+
+void test_Uds31_StopFncFails_NrcConditionsNotCorrect(void)
+{
+    /* RID 0xEF11 has StopFnc that returns E_NOT_OK */
+    uint8 req[4] = { DCM_UDS_SID_ROUTINE_CONTROL, 0x02U, 0xEFU, 0x11U };
+    dcm_send(req, 4U);
+    expect_negative(DCM_UDS_SID_ROUTINE_CONTROL, DCM_E_CONDITIONS_NOT_CORRECT);
+}
+
+void test_Uds31_ResultFncFails_NrcConditionsNotCorrect(void)
+{
+    /* RID 0xEF12 has RequestResultFnc that returns E_NOT_OK */
+    uint8 req[4] = { DCM_UDS_SID_ROUTINE_CONTROL, 0x03U, 0xEFU, 0x12U };
+    dcm_send(req, 4U);
+    expect_negative(DCM_UDS_SID_ROUTINE_CONTROL, DCM_E_CONDITIONS_NOT_CORRECT);
+}
+
 void test_Uds31_EmptyRequest_NrcIncorrectMessageLength(void)
 {
     uint8 req[1] = { DCM_UDS_SID_ROUTINE_CONTROL };
@@ -863,6 +986,8 @@ int main(void)
     RUN_TEST(test_Uds11_HardReset_PositiveResponse);
     RUN_TEST(test_Uds11_KeyOffOnReset_PositiveResponse);
     RUN_TEST(test_Uds11_SoftReset_PositiveResponse);
+    RUN_TEST(test_Uds11_EnableRapidPowerShutdown_PositiveResponse);
+    RUN_TEST(test_Uds11_DisableRapidPowerShutdown_PositiveResponse);
     RUN_TEST(test_Uds11_InvalidResetType_NrcSubFunctionNotSupported);
     RUN_TEST(test_Uds11_EmptyRequest_NrcIncorrectMessageLength);
     /* 0x14 */
@@ -873,6 +998,7 @@ int main(void)
     RUN_TEST(test_Uds19_ReportDTCByStatusMask_ReturnsMatchingDtc);
     RUN_TEST(test_Uds19_ReportDTCByStatusMask_StatusChange_IsReflected);
     RUN_TEST(test_Uds19_ReportSnapshotRecord_FallbackResponse);
+    RUN_TEST(test_Uds19_ReportSupportedDTC_ReturnsAllConfigured);
     RUN_TEST(test_Uds19_EmptyRequest_NrcIncorrectMessageLength);
     /* 0x22 */
     RUN_TEST(test_Uds22_ReadKnownDid_ReturnsData);
@@ -885,6 +1011,7 @@ int main(void)
     /* 0x2E */
     RUN_TEST(test_Uds2E_WriteKnownDid_PositiveResponseEchoesDid);
     RUN_TEST(test_Uds2E_WriteFncMissing_NrcRequestOutOfRange);
+    RUN_TEST(test_Uds2E_WriteFncFails_NrcConditionsNotCorrect);
     RUN_TEST(test_Uds2E_UnknownDid_NrcRequestOutOfRange);
     RUN_TEST(test_Uds2E_EmptyRequest_NrcIncorrectMessageLength);
     /* 0x23 / 0x2F */
@@ -904,6 +1031,10 @@ int main(void)
     RUN_TEST(test_Uds31_UnknownRid_NrcRequestOutOfRange);
     RUN_TEST(test_Uds31_InvalidSubFunction_NrcSubFunctionNotSupported);
     RUN_TEST(test_Uds31_StartFncFails_NrcConditionsNotCorrect);
+    RUN_TEST(test_Uds31_ExtendedSessionRid_InDefaultSession_NrcServiceNotSupported);
+    RUN_TEST(test_Uds31_ExtendedSessionRid_InExtendedSession_StartSucceeds);
+    RUN_TEST(test_Uds31_StopFncFails_NrcConditionsNotCorrect);
+    RUN_TEST(test_Uds31_ResultFncFails_NrcConditionsNotCorrect);
     RUN_TEST(test_Uds31_SecuredRid_LockedLevel_NrcSecurityAccessDenied);
     RUN_TEST(test_Uds31_EmptyRequest_NrcIncorrectMessageLength);
     /* 0x34/0x36/0x37 */
