@@ -61,7 +61,8 @@ def test_misra_json_report():
 
 def test_fail_threshold_validation():
     """
-    Verify fail_threshold is tight (100) and that real violations exceed it.
+    Verify the hard gate config (WP3): the old absolute fail_threshold is gone and
+    the ratchet gate block is present and well-formed.
     """
     config_path = BASE_PATHS["ci_config"]
     assert os.path.isfile(config_path), f"Missing: {config_path}"
@@ -69,20 +70,27 @@ def test_fail_threshold_validation():
     with open(config_path, "r") as f:
         config_text = f.read()
 
-    m = re.search(r"fail_threshold:\s*(\d+)", config_text)
-    assert m, "fail_threshold not found in ci-config.yaml"
-    threshold = int(m.group(1))
-    print(f"  fail_threshold in config: {threshold}")
+    # 旧口径 "允许 37000 条违规" 已废除 — 回归会立刻被发现（仅检查生效配置，忽略注释）
+    active_text = "\n".join(
+        line for line in config_text.splitlines() if not line.strip().startswith("#")
+    )
+    assert not re.search(r"\bfail_threshold:", active_text), \
+        "fail_threshold is obsolete; use misra.gate (ratchet) instead"
 
-    # Load MISRA violations
-    with open(BASE_PATHS["misra_json"], "r") as f:
-        report = json.load(f)
-    total_violations = report.get("total_violations", 0)
+    import yaml
+    config = yaml.safe_load(config_text)
+    gate = config.get("misra", {}).get("gate", {})
+    assert gate, "ci-config.yaml missing misra.gate block"
 
-    # The threshold should be present and report should have violations
-    assert threshold > 0, "fail_threshold should be > 0"
-    assert total_violations > 0, "total_violations should be > 0"
-    print(f"  ✅ fail_threshold={threshold}, total_violations={total_violations}")
+    for key in ("max_required", "min_files_scanned", "require_provenance"):
+        assert key in gate, f"misra.gate missing '{key}'"
+
+    assert int(gate["min_files_scanned"]) > 0, "min_files_scanned must be > 0"
+    assert gate["require_provenance"] is True, "require_provenance must be true"
+    assert int(gate["max_required"]) >= 0, "max_required must be >= 0"
+
+    print(f"  ✅ gate max_required={gate['max_required']}, "
+          f"max_total={gate.get('max_total')}, min_files={gate['min_files_scanned']}")
 
 
 def test_ci_layer1_misra_check():

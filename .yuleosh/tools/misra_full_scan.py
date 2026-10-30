@@ -129,13 +129,126 @@ def run(rules_filter=None, out=None):
     return res
 
 
+def _deviation_covers(pattern: str, path: str) -> bool:
+    """Match a deviation glob against a repo-relative path.
+
+    Handles the three forms used in ci-config.yaml: `**/src/**`, `*/src/...`, `src/...`.
+    """
+    import fnmatch
+    cands = {pattern}
+    if pattern.startswith("**/"):
+        cands.add(pattern[3:])
+    if pattern.startswith("*/"):
+        cands.add(pattern[2:])
+    return any(fnmatch.fnmatch(path, c) for c in cands)
+
+
+def _load_gate_config():
+    """Read the gate thresholds + approved deviations (misra.deviations + safety profile)."""
+    import yaml
+    cfg_path = PROJECT / ".yuleosh" / "ci-config.yaml"
+    if not cfg_path.is_file():
+        print("FATAL[5]: ci-config.yaml missing — gate cannot be evaluated", file=sys.stderr)
+        sys.exit(5)
+    cfg = yaml.safe_load(cfg_path.read_text()) or {}
+    misra = cfg.get("misra", {}) or {}
+    gate = misra.get("gate", {}) or {}
+    devs = []
+    for d in misra.get("deviations", []) or []:
+        if d.get("status") == "approved":
+            devs.append((d.get("rule", ""), d.get("file", "")))
+    safety = (misra.get("profiles", {}) or {}).get("safety", {}) or {}
+    for d in safety.get("deviations", []) or []:
+        if d.get("status") == "approved":
+            for scope in str(d.get("scope", "")).split(";"):
+                if scope.strip():
+                    devs.append((d.get("rule", ""), scope.strip()))
+    return gate, devs
+
+
+def gate_check(res):
+    """Block on invalid or stale evidence first, then on real violation counts.
+
+    Exit 5 = gate failure. Never returns silently: empty input must never look like a pass.
+    """
+    gate, devs = _load_gate_config()
+    prov = res["provenance"]
+    fails = []
+
+    min_files = int(gate.get("min_files_scanned", 1))
+    if prov["scanned_files"] < min_files:
+        fails.append(f"scanned_files={prov['scanned_files']} < min={min_files} (scan did not run)")
+    if gate.get("require_provenance", True):
+        try:
+            head = subprocess.check_output(["git", "rev-parse", "HEAD"],
+                                           cwd=str(PROJECT), text=True).strip()
+        except Exception:
+            head = "unknown"
+        if prov["git_sha"] != head:
+            fails.append(f"evidence commit {prov['git_sha'][:8]} != HEAD {head[:8]} (stale evidence)")
+        if prov["tool"]["cppcheck"] == "unknown":
+            fails.append("missing cppcheck version in provenance")
+    if res["total"] == 0:
+        fails.append("0 violations reported — empty data is not a pass")
+
+    required, deviated = Counter(), Counter()
+    for rule, items in res["detail"].items():
+        for fname, _line, _col in items:
+            if any(r == rule and (not p or _deviation_covers(p, fname)) for r, p in devs):
+                deviated[rule] += 1
+            else:
+                required[rule] += 1
+    req_total = sum(required.values())
+
+    max_req = int(gate.get("max_required", 0))
+    if req_total > max_req:
+        fails.append(f"required violations {req_total} > gate max_required {max_req}")
+    max_total = int(gate.get("max_total", 0))
+    if max_total and res["total"] > max_total:
+        fails.append(f"total violations {res['total']} > ratchet baseline {max_total}")
+
+    result = {
+        "passed": not fails,
+        "required": req_total,
+        "deviated": sum(deviated.values()),
+        "total": res["total"],
+        "scanned_files": prov["scanned_files"],
+        "git_sha": prov["git_sha"],
+        "gates": {"max_required": max_req, "max_total": max_total, "min_files_scanned": min_files},
+        "failures": fails,
+        "top_required": required.most_common(10),
+    }
+    out = PROJECT / ".yuleosh" / "reports" / "misra-gate.json"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(result, indent=1))
+    for f in fails:
+        print("GATE-FAIL: " + f, file=sys.stderr)
+    print(f"GATE-{'PASS' if not fails else 'FAIL'}: required={req_total} "
+          f"deviated={result['deviated']} total={res['total']} files={prov['scanned_files']}")
+    if fails:
+        sys.exit(5)
+    return result
+
+
 if __name__ == "__main__":
     args = sys.argv[1:]
     rules = None
     out = None
+    gate_report = None
+    do_gate = False
     for a in args:
         if a.startswith("--rules="):
             rules = a.split("=", 1)[1].split(",")
         elif a.startswith("--out="):
             out = a.split("=", 1)[1]
-    run(rules, out)
+        elif a.startswith("--gate-report="):
+            gate_report = a.split("=", 1)[1]
+        elif a == "--gate":
+            do_gate = True
+    if gate_report:
+        # Validate an archived report instead of the live run — catches stale evidence.
+        gate_check(json.loads(Path(gate_report).read_text()))
+    else:
+        res = run(rules, out)
+        if do_gate:
+            gate_check(res)

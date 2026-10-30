@@ -22,6 +22,9 @@ env:
   MISRA_REPORT_DIR: reports/misra
   MISRA_STANDARD: c11
   MISRA_ADDON: misra  # yuleOSH MISRA addon v2 (C:2023 capable)
+  # Python >=3.13 raises DeprecationWarning inside cppcheck's misra.py, which makes
+  # cppcheck bail out with internalError and silently report zero violations.
+  PYTHONWARNINGS: ignore
 
 jobs:
   # ============================================================================
@@ -151,9 +154,9 @@ jobs:
 
           report_file = "${{ env.MISRA_REPORT_DIR }}/cppcheck-misra-c2023-report.xml"
           
-          if not os.path.exists(report_file):
-              print("No cppcheck MISRA report found")
-              sys.exit(0)
+          if not os.path.exists(report_file) or os.path.getsize(report_file) == 0:
+              print("FAIL: cppcheck produced no report — scan did not run (check tool/addon)")
+              sys.exit(1)
           
           try:
               tree = ET.parse(report_file)
@@ -258,11 +261,9 @@ jobs:
               f.write(f"advisory={len(advisory_violations)}\n")
           
           # Exit with error if required violations found (production mode)
-          # Note: In Phase 1 migration, fail_on_required is false until baseline is cleared
           if len(required_violations) > 0:
-              print("\n❗ Required MISRA C:2023 violations found (documented deviation or fix needed)")
-              # Exit 0 during migration phase to not block CI; switch to exit(1) when baseline cleared
-              sys.exit(0)
+              print("\n❗ Required MISRA C:2023 violations found (fix or document deviation)")
+              sys.exit(1)
           else:
               print("\n✅ No required MISRA C:2023 violations found!")
               sys.exit(0)
@@ -371,16 +372,19 @@ jobs:
             chmod +x .yuleosh/yuleosh
           fi
 
-      - name: Run yuleOSH MISRA Check
+      - name: Run yuleOSH MISRA Check (authoritative hard gate)
         run: |
+          set -o pipefail
           mkdir -p ${{ env.MISRA_REPORT_DIR }}
-          
-          # yuleOSH CI misra check reads from .yuleosh/ci-config.yaml
-          # and .yuleosh/misra-addon-config.json
-          yuleosh ci check misra \
-            --profile safety \
-            --output ${{ env.MISRA_REPORT_DIR }}/yuleosh-misra-report.json \
-            2>&1 | tee ${{ env.MISRA_REPORT_DIR }}/yuleosh-misra-check.log || true
+
+          # Single source of truth: .yuleosh/tools/misra_full_scan.py --gate
+          #   - validates evidence (file count / git commit / tool version)
+          #   - applies approved deviations and ratchet baseline from ci-config.yaml
+          #   - exits 5 on any gate failure (no `|| true` — a failed gate must fail the job)
+          python3 .yuleosh/tools/misra_full_scan.py \
+            --gate \
+            --out=${{ env.MISRA_REPORT_DIR }}/misra-scan.json \
+            2>&1 | tee ${{ env.MISRA_REPORT_DIR }}/yuleosh-misra-check.log
 
       - name: Upload yuleOSH Report
         uses: actions/upload-artifact@v7
@@ -430,8 +434,8 @@ jobs:
           
           - **From:** MISRA C:2012 → **To:** MISRA C:2023
           - **Migration Date:** __MIGRATION_DATE__
-          - **Baseline Violations (C:2023):** 3266 total (369 required, 1020 advisory)
-          - **Baseline Scan:** 2026-07-22 (commit fc0d857)
+          - **Baseline (2026-10-30, 405 files):** 1547 total / 58 required after approved deviations
+          - **Gate:** `misra_full_scan.py --gate` (evidence validity + ratchet baseline)
           
           ## Quick Links
           

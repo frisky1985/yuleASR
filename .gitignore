@@ -153,6 +153,8 @@ src/bsw/boot/test/test_boot_integration
 # Large MISRA raw artifacts (full scan output, regenerated per CI run)
 .yuleosh/reports/misra-report.json
 .yuleosh/reports/misra-raw-output.txt
+.yuleosh/reports/misra-scan.json
+.yuleosh/reports/misra-gate.json
 .yuleosh/reports/misra-report.xlsx
 
 # Oversized MISRA artifacts (>200KB remote blob limit, kept locally)
