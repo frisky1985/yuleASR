@@ -38,7 +38,7 @@ REQ_TO_SOURCE = {
     "CANNM":         ["src/bsw/ecual/canNm/src/CanNm.c", "src/bsw/ecual/canNm/include/CanNm.h"],
     "CANIF":         ["src/bsw/ecual/canif/src/CanIf.c", "src/bsw/ecual/canif/include/CanIf.h"],
     "CANTP":         ["src/bsw/ecual/cantp/src/CanTp.c", "src/bsw/ecual/cantp/include/CanTp.h"],
-    "DLT":           ["src/bsw/ecual/dlt/src/Dlt.c", "src/bsw/ecual/dlt/include/Dlt.h"],
+    "DLT":           ["src/bsw/services/dlt/src/Dlt.c", "src/bsw/services/dlt/include/Dlt.h"],
     "FEE":           ["src/bsw/ecual/fee/src/Fee.c", "src/bsw/ecual/fee/include/Fee.h"],
     # Services / BSW modules
     "CANSM":         ["src/bsw/services/cansm/src/CanSm.c", "src/bsw/services/cansm/include/CanSm.h"],
@@ -64,7 +64,7 @@ REQ_TO_SOURCE = {
     "SVC":           ["src/bsw/os/src/Os.c", "src/bsw/os/include/Os.h",
                        "src/bsw/services/wdgm/src/WdgM.c"],
     # Architecture / cross-cutting
-    "MISRA":         ["misra-rules.yaml"],
+    "MISRA":         [],  # cross-cutting quality attribute — no single implementation file
     "NFR":           ["src/"],
     "LIN":           ["src/bsw/services/lntm/src/LinTp.c", "src/bsw/services/lntm/include/LinTp.h"],
     "BSWM":          ["src/bsw/services/bswm/src/BswM.c", "src/bsw/services/bswm/include/BswM.h"],

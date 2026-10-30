@@ -81,10 +81,18 @@
         "req_id": "ECUAL-SHALL-002",
         "statement": "看门狗管理器 SHALL 在超时前刷新",
         "section": "3.2 ECUAL 模块",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/ecual/canNm/src/CanNm.c",
+          "src/bsw/ecual/wdgif/src/WdgIf.c",
+          "src/bsw/ecual/canif/src/CanIf.c",
+          "src/bsw/ecual/cantp/src/CanTp.c",
+          "src/bsw/ecual/fee/src/Fee.c",
+          "src/bsw/ecual/iohwab/src/IoHwAb.c",
+          "src/bsw/ecual/ea/src/Ea.c"
+        ],
         "test_reports": [],
         "reviews": [],
-        "has_code": false,
+        "has_code": true,
         "has_test": true,
         "has_review": false,
         "step_handlers": [],
@@ -152,10 +160,16 @@
         "req_id": "NFR-SHALL-001",
         "statement": "代码 MISRA C:2023 合规",
         "section": "4. 非功能需求",
-        "code_files": [],
+        "code_files": [
+          "src/application/communication_manager/src/Swc_CommunicationManager.c",
+          "src/application/diagnostic_manager/src/Swc_DiagnosticManager.c",
+          "src/application/engine_control/src/Swc_EngineControl.c",
+          "src/application/io_control/src/Swc_IOControl.c",
+          "src/application/mode_manager/src/Swc_ModeManager.c"
+        ],
         "test_reports": [],
         "reviews": [],
-        "has_code": false,
+        "has_code": true,
         "has_test": true,
         "has_review": false,
         "step_handlers": [],
@@ -168,10 +182,16 @@
         "req_id": "NFR-SHALL-002",
         "statement": "单元测试行覆盖率",
         "section": "4. 非功能需求",
-        "code_files": [],
+        "code_files": [
+          "src/application/communication_manager/src/Swc_CommunicationManager.c",
+          "src/application/diagnostic_manager/src/Swc_DiagnosticManager.c",
+          "src/application/engine_control/src/Swc_EngineControl.c",
+          "src/application/io_control/src/Swc_IOControl.c",
+          "src/application/mode_manager/src/Swc_ModeManager.c"
+        ],
         "test_reports": [],
         "reviews": [],
-        "has_code": false,
+        "has_code": true,
         "has_test": true,
         "has_review": false,
         "step_handlers": [],
@@ -184,10 +204,16 @@
         "req_id": "NFR-SHALL-003",
         "statement": "条件覆盖率",
         "section": "4. 非功能需求",
-        "code_files": [],
+        "code_files": [
+          "src/application/communication_manager/src/Swc_CommunicationManager.c",
+          "src/application/diagnostic_manager/src/Swc_DiagnosticManager.c",
+          "src/application/engine_control/src/Swc_EngineControl.c",
+          "src/application/io_control/src/Swc_IOControl.c",
+          "src/application/mode_manager/src/Swc_ModeManager.c"
+        ],
         "test_reports": [],
         "reviews": [],
-        "has_code": false,
+        "has_code": true,
         "has_test": true,
         "has_review": false,
         "step_handlers": [],
@@ -200,10 +226,16 @@
         "req_id": "NFR-SHALL-004",
         "statement": "静态分析 (cppcheck)",
         "section": "4. 非功能需求",
-        "code_files": [],
+        "code_files": [
+          "src/application/communication_manager/src/Swc_CommunicationManager.c",
+          "src/application/diagnostic_manager/src/Swc_DiagnosticManager.c",
+          "src/application/engine_control/src/Swc_EngineControl.c",
+          "src/application/io_control/src/Swc_IOControl.c",
+          "src/application/mode_manager/src/Swc_ModeManager.c"
+        ],
         "test_reports": [],
         "reviews": [],
-        "has_code": false,
+        "has_code": true,
         "has_test": true,
         "has_review": false,
         "step_handlers": [],
@@ -219,7 +251,7 @@
         "code_files": [],
         "test_reports": [],
         "reviews": [],
-        "has_code": true,
+        "has_code": false,
         "has_test": true,
         "has_review": false,
         "step_handlers": [],
@@ -232,7 +264,10 @@
         "req_id": "DCM-SHALL-001",
         "statement": "The system SHALL support UDS service IDs 0x10, 0x11, 0x14, 0x19, 0x22, 0x2E, 0x31, 0x34, 0x36, 0x37 as specified in ISO 14229-1.",
         "section": "DCM (Diagnostic Communication Manager)",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/services/dcm/src/Dcm.c",
+          "src/bsw/services/dcm/include/Dcm.h"
+        ],
         "test_reports": [],
         "reviews": [],
         "has_code": true,
@@ -248,10 +283,13 @@
         "req_id": "DCM-SHALL-002",
         "statement": "The system SHALL support a maximum of 4 concurrent diagnostic sessions.",
         "section": "DCM (Diagnostic Communication Manager)",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/services/dcm/src/Dcm.c",
+          "src/bsw/services/dcm/include/Dcm.h"
+        ],
         "test_reports": [],
         "reviews": [],
-        "has_code": false,
+        "has_code": true,
         "has_test": true,
         "has_review": false,
         "step_handlers": [],
@@ -264,10 +302,13 @@
         "req_id": "DCM-SHALL-003",
         "statement": "The system SHALL enforce P2 timeout of 50ms for diagnostic responses.",
         "section": "DCM (Diagnostic Communication Manager)",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/services/dcm/src/Dcm.c",
+          "src/bsw/services/dcm/include/Dcm.h"
+        ],
         "test_reports": [],
         "reviews": [],
-        "has_code": false,
+        "has_code": true,
         "has_test": true,
         "has_review": false,
         "step_handlers": [],
@@ -280,10 +321,13 @@
         "req_id": "DCM-SHALL-004",
         "statement": "The system SHALL enforce P2\\* timeout of 500ms for diagnostic responses.",
         "section": "DCM (Diagnostic Communication Manager)",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/services/dcm/src/Dcm.c",
+          "src/bsw/services/dcm/include/Dcm.h"
+        ],
         "test_reports": [],
         "reviews": [],
-        "has_code": false,
+        "has_code": true,
         "has_test": true,
         "has_review": false,
         "step_handlers": [],
@@ -296,10 +340,13 @@
         "req_id": "DEM-SHALL-001",
         "statement": "The system SHALL support storage of up to 256 diagnostic trouble codes (DTCs).",
         "section": "DEM (Diagnostic Event Manager)",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/services/dem/src/Dem.c",
+          "src/bsw/services/dem/include/Dem.h"
+        ],
         "test_reports": [],
         "reviews": [],
-        "has_code": false,
+        "has_code": true,
         "has_test": true,
         "has_review": false,
         "step_handlers": [],
@@ -313,7 +360,8 @@
         "statement": "The system SHALL support 3 event priority levels: Low, Medium, High.",
         "section": "DEM (Diagnostic Event Manager)",
         "code_files": [
-          "src/micro-dds/tests/integration/test_integration.py"
+          "src/bsw/services/dem/src/Dem.c",
+          "src/bsw/services/dem/include/Dem.h"
         ],
         "test_reports": [],
         "reviews": [],
@@ -330,10 +378,13 @@
         "req_id": "DEM-SHALL-003",
         "statement": "The system SHALL store diagnostic events with primary and secondary (freeze frame) data.",
         "section": "DEM (Diagnostic Event Manager)",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/services/dem/src/Dem.c",
+          "src/bsw/services/dem/include/Dem.h"
+        ],
         "test_reports": [],
         "reviews": [],
-        "has_code": false,
+        "has_code": true,
         "has_test": true,
         "has_review": false,
         "step_handlers": [],
@@ -347,7 +398,8 @@
         "statement": "The system SHALL provide a configurable aging counter with default 40 cycles.",
         "section": "DEM (Diagnostic Event Manager)",
         "code_files": [
-          "src/micro-dds/tests/integration/test_integration.py"
+          "src/bsw/services/dem/src/Dem.c",
+          "src/bsw/services/dem/include/Dem.h"
         ],
         "test_reports": [],
         "reviews": [],
@@ -365,7 +417,8 @@
         "statement": "The system SHALL support a configurable signal count with default of 1024 signals.",
         "section": "COM",
         "code_files": [
-          "src/micro-dds/tests/integration/test_integration.py"
+          "src/bsw/services/com/src/Com.c",
+          "src/bsw/services/com/include/Com.h"
         ],
         "test_reports": [],
         "reviews": [],
@@ -437,7 +490,8 @@
         "statement": "The system SHALL maintain a static routing table generated at build time.",
         "section": "PduR",
         "code_files": [
-          "src/micro-dds/tests/integration/test_integration.py"
+          "src/bsw/services/pdur/src/PduR.c",
+          "src/bsw/services/pdur/include/PduR.h"
         ],
         "test_reports": [],
         "reviews": [],
@@ -454,10 +508,13 @@
         "req_id": "PDUR-SHALL-002",
         "statement": "The system SHALL support a maximum of 512 routing paths.",
         "section": "PduR",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/services/pdur/src/PduR.c",
+          "src/bsw/services/pdur/include/PduR.h"
+        ],
         "test_reports": [],
         "reviews": [],
-        "has_code": false,
+        "has_code": true,
         "has_test": true,
         "has_review": false,
         "step_handlers": [],
@@ -488,7 +545,10 @@
         "req_id": "NVM-SHALL-001",
         "statement": "The system SHALL support native, redundant, and dataset NVM block management.",
         "section": "NvM",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/services/nvm/src/NvM.c",
+          "src/bsw/services/nvm/include/NvM.h"
+        ],
         "test_reports": [],
         "reviews": [],
         "has_code": true,
@@ -576,10 +636,13 @@
         "req_id": "ECUM-SHALL-001",
         "statement": "The system SHALL support startup phases STARTUP_ONE and STARTUP_TWO.",
         "section": "EcuM",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/services/ecum/src/EcuM.c",
+          "src/bsw/services/ecum/include/EcuM.h"
+        ],
         "test_reports": [],
         "reviews": [],
-        "has_code": false,
+        "has_code": true,
         "has_test": true,
         "has_review": false,
         "step_handlers": [],
@@ -592,10 +655,13 @@
         "req_id": "ECUM-SHALL-002",
         "statement": "The system SHALL support shutdown targets OFF, RESET, and SLEEP.",
         "section": "EcuM",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/services/ecum/src/EcuM.c",
+          "src/bsw/services/ecum/include/EcuM.h"
+        ],
         "test_reports": [],
         "reviews": [],
-        "has_code": false,
+        "has_code": true,
         "has_test": true,
         "has_review": false,
         "step_handlers": [],
@@ -608,7 +674,10 @@
         "req_id": "ECUM-SHALL-003",
         "statement": "The system SHALL support wakeup sources including CAN, LIN, Ethernet, Pin, and Timer.",
         "section": "EcuM",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/services/ecum/src/EcuM.c",
+          "src/bsw/services/ecum/include/EcuM.h"
+        ],
         "test_reports": [],
         "reviews": [],
         "has_code": true,
@@ -624,10 +693,13 @@
         "req_id": "OSSC4-SHALL-001",
         "statement": "The system SHALL provide fixed cyclic schedule tables.",
         "section": "OS (AUTOSAR SC4)",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/os/src/Os.c",
+          "src/bsw/os/include/Os.h"
+        ],
         "test_reports": [],
         "reviews": [],
-        "has_code": false,
+        "has_code": true,
         "has_test": true,
         "has_review": false,
         "step_handlers": [],
@@ -640,10 +712,13 @@
         "req_id": "OSSC4-SHALL-002",
         "statement": "The system SHALL support BCC2 and ECC2 task conformance classes.",
         "section": "OS (AUTOSAR SC4)",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/os/src/Os.c",
+          "src/bsw/os/include/Os.h"
+        ],
         "test_reports": [],
         "reviews": [],
-        "has_code": false,
+        "has_code": true,
         "has_test": true,
         "has_review": false,
         "step_handlers": [],
@@ -656,10 +731,13 @@
         "req_id": "OSSC4-SHALL-003",
         "statement": "The system SHALL support a maximum of 64 tasks.",
         "section": "OS (AUTOSAR SC4)",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/os/src/Os.c",
+          "src/bsw/os/include/Os.h"
+        ],
         "test_reports": [],
         "reviews": [],
-        "has_code": false,
+        "has_code": true,
         "has_test": true,
         "has_review": false,
         "step_handlers": [],
@@ -672,10 +750,13 @@
         "req_id": "OSSC4-SHALL-004",
         "statement": "The system SHALL support a maximum of 32 alarms.",
         "section": "OS (AUTOSAR SC4)",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/os/src/Os.c",
+          "src/bsw/os/include/Os.h"
+        ],
         "test_reports": [],
         "reviews": [],
-        "has_code": false,
+        "has_code": true,
         "has_test": true,
         "has_review": false,
         "step_handlers": [],
@@ -688,7 +769,10 @@
         "req_id": "OSSC4-SHALL-005",
         "statement": "The system SHALL implement the priority ceiling protocol for resource management.",
         "section": "OS (AUTOSAR SC4)",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/os/src/Os.c",
+          "src/bsw/os/include/Os.h"
+        ],
         "test_reports": [],
         "reviews": [],
         "has_code": true,
@@ -704,7 +788,10 @@
         "req_id": "CANIF-SHALL-001",
         "statement": "The system SHALL support a maximum of 2 CAN controllers (CAN0, CAN1).",
         "section": "CanIf (CAN Interface)",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/ecual/canif/src/CanIf.c",
+          "src/bsw/ecual/canif/include/CanIf.h"
+        ],
         "test_reports": [],
         "reviews": [],
         "has_code": true,
@@ -720,7 +807,10 @@
         "req_id": "CANIF-SHALL-002",
         "statement": "The system SHALL support up to 512 PDU IDs.",
         "section": "CanIf (CAN Interface)",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/ecual/canif/src/CanIf.c",
+          "src/bsw/ecual/canif/include/CanIf.h"
+        ],
         "test_reports": [],
         "reviews": [],
         "has_code": true,
@@ -736,7 +826,10 @@
         "req_id": "CANIF-SHALL-003",
         "statement": "The system SHALL support transmit and receive PDU modes.",
         "section": "CanIf (CAN Interface)",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/ecual/canif/src/CanIf.c",
+          "src/bsw/ecual/canif/include/CanIf.h"
+        ],
         "test_reports": [],
         "reviews": [],
         "has_code": true,
@@ -752,10 +845,13 @@
         "req_id": "CANIF-SHALL-004",
         "statement": "The system SHALL support sleep and wakeup functionality.",
         "section": "CanIf (CAN Interface)",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/ecual/canif/src/CanIf.c",
+          "src/bsw/ecual/canif/include/CanIf.h"
+        ],
         "test_reports": [],
         "reviews": [],
-        "has_code": false,
+        "has_code": true,
         "has_test": true,
         "has_review": false,
         "step_handlers": [],
@@ -768,7 +864,10 @@
         "req_id": "CANTP-SHALL-001",
         "statement": "The system SHALL implement the ISO 15765-2 CAN transport protocol.",
         "section": "CanTp (CAN Transport Protocol)",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/ecual/cantp/src/CanTp.c",
+          "src/bsw/ecual/cantp/include/CanTp.h"
+        ],
         "test_reports": [],
         "reviews": [],
         "has_code": true,
@@ -784,7 +883,10 @@
         "req_id": "CANTP-SHALL-002",
         "statement": "The system SHALL support message segmentation up to 4095 bytes per message.",
         "section": "CanTp (CAN Transport Protocol)",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/ecual/cantp/src/CanTp.c",
+          "src/bsw/ecual/cantp/include/CanTp.h"
+        ],
         "test_reports": [],
         "reviews": [],
         "has_code": true,
@@ -800,10 +902,13 @@
         "req_id": "CANTP-SHALL-003",
         "statement": "The system SHALL support Continuous and Wait flow control modes.",
         "section": "CanTp (CAN Transport Protocol)",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/ecual/cantp/src/CanTp.c",
+          "src/bsw/ecual/cantp/include/CanTp.h"
+        ],
         "test_reports": [],
         "reviews": [],
-        "has_code": false,
+        "has_code": true,
         "has_test": true,
         "has_review": false,
         "step_handlers": [],
@@ -816,10 +921,13 @@
         "req_id": "CANTP-SHALL-004",
         "statement": "The system SHALL support Physical and Functional addressing.",
         "section": "CanTp (CAN Transport Protocol)",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/ecual/cantp/src/CanTp.c",
+          "src/bsw/ecual/cantp/include/CanTp.h"
+        ],
         "test_reports": [],
         "reviews": [],
-        "has_code": false,
+        "has_code": true,
         "has_test": true,
         "has_review": false,
         "step_handlers": [],
@@ -832,7 +940,10 @@
         "req_id": "CANNM-SHALL-001",
         "statement": "The system SHALL implement AUTOSAR CAN Network Management protocol.",
         "section": "CanNm (CAN Network Management)",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/ecual/canNm/src/CanNm.c",
+          "src/bsw/ecual/canNm/include/CanNm.h"
+        ],
         "test_reports": [],
         "reviews": [],
         "has_code": true,
@@ -902,10 +1013,13 @@
         "req_id": "CANNM-SHALL-005",
         "statement": "The system SHALL support bus synchronization.",
         "section": "CanNm (CAN Network Management)",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/ecual/canNm/src/CanNm.c",
+          "src/bsw/ecual/canNm/include/CanNm.h"
+        ],
         "test_reports": [],
         "reviews": [],
-        "has_code": false,
+        "has_code": true,
         "has_test": true,
         "has_review": false,
         "step_handlers": [],
@@ -918,10 +1032,13 @@
         "req_id": "SOAD-SHALL-001",
         "statement": "The system SHALL support a maximum of 32 sockets.",
         "section": "SoAd (Socket Adaptor)",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/services/soad/src/SoAd.c",
+          "src/bsw/services/soad/include/SoAd.h"
+        ],
         "test_reports": [],
         "reviews": [],
-        "has_code": false,
+        "has_code": true,
         "has_test": true,
         "has_review": false,
         "step_handlers": [],
@@ -952,10 +1069,13 @@
         "req_id": "SOAD-SHALL-003",
         "statement": "The system SHALL support Server and Client connection types.",
         "section": "SoAd (Socket Adaptor)",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/services/soad/src/SoAd.c",
+          "src/bsw/services/soad/include/SoAd.h"
+        ],
         "test_reports": [],
         "reviews": [],
-        "has_code": false,
+        "has_code": true,
         "has_test": true,
         "has_review": false,
         "step_handlers": [],
@@ -1040,10 +1160,13 @@
         "req_id": "DLT-SHALL-001",
         "statement": "The system SHALL support log levels including Fatal, Error, Warn, Info, Debug, and Verbose.",
         "section": "DLT",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/services/dlt/src/Dlt.c",
+          "src/bsw/services/dlt/include/Dlt.h"
+        ],
         "test_reports": [],
         "reviews": [],
-        "has_code": false,
+        "has_code": true,
         "has_test": true,
         "has_review": false,
         "step_handlers": [],
@@ -1056,7 +1179,10 @@
         "req_id": "DLT-SHALL-002",
         "statement": "The system SHALL support TCP and Serial transport for DLT messages.",
         "section": "DLT",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/services/dlt/src/Dlt.c",
+          "src/bsw/services/dlt/include/Dlt.h"
+        ],
         "test_reports": [],
         "reviews": [],
         "has_code": true,
@@ -1072,10 +1198,13 @@
         "req_id": "DLT-SHALL-003",
         "statement": "The system SHALL support Application ID filtering.",
         "section": "DLT",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/services/dlt/src/Dlt.c",
+          "src/bsw/services/dlt/include/Dlt.h"
+        ],
         "test_reports": [],
         "reviews": [],
-        "has_code": false,
+        "has_code": true,
         "has_test": true,
         "has_review": false,
         "step_handlers": [],
@@ -1088,7 +1217,10 @@
         "req_id": "XCP-SHALL-001",
         "statement": "The system SHALL support CAN and Ethernet transport layers for XCP.",
         "section": "XCP",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/services/xcp/src/Xcp.c",
+          "src/bsw/services/xcp/include/Xcp.h"
+        ],
         "test_reports": [],
         "reviews": [],
         "has_code": true,
@@ -1104,7 +1236,10 @@
         "req_id": "XCP-SHALL-002",
         "statement": "The system SHALL implement XCP protocol version 1.5.",
         "section": "XCP",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/services/xcp/src/Xcp.c",
+          "src/bsw/services/xcp/include/Xcp.h"
+        ],
         "test_reports": [],
         "reviews": [],
         "has_code": true,
@@ -1120,7 +1255,10 @@
         "req_id": "XCP-SHALL-003",
         "statement": "The system SHALL support XCP slave functionality.",
         "section": "XCP",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/services/xcp/src/Xcp.c",
+          "src/bsw/services/xcp/include/Xcp.h"
+        ],
         "test_reports": [],
         "reviews": [],
         "has_code": true,
@@ -1136,10 +1274,13 @@
         "req_id": "XCP-SHALL-004",
         "statement": "The system SHALL support calibration page switching.",
         "section": "XCP",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/services/xcp/src/Xcp.c",
+          "src/bsw/services/xcp/include/Xcp.h"
+        ],
         "test_reports": [],
         "reviews": [],
-        "has_code": false,
+        "has_code": true,
         "has_test": true,
         "has_review": false,
         "step_handlers": [],
@@ -1152,10 +1293,13 @@
         "req_id": "XCP-SHALL-005",
         "statement": "The system SHALL support up to 8 DAQ lists.",
         "section": "XCP",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/services/xcp/src/Xcp.c",
+          "src/bsw/services/xcp/include/Xcp.h"
+        ],
         "test_reports": [],
         "reviews": [],
-        "has_code": false,
+        "has_code": true,
         "has_test": true,
         "has_review": false,
         "step_handlers": [],
@@ -1168,7 +1312,10 @@
         "req_id": "ADC-SHALL-001",
         "statement": "The system SHALL support 10-bit and 12-bit configurable ADC resolution.",
         "section": "ADC Driver",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/mcal/adc/src/Adc.c",
+          "src/bsw/mcal/adc/include/Adc.h"
+        ],
         "test_reports": [],
         "reviews": [],
         "has_code": true,
@@ -1184,10 +1331,13 @@
         "req_id": "ADC-SHALL-002",
         "statement": "The system SHALL support Single, Continuous, and Scan conversion modes.",
         "section": "ADC Driver",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/mcal/adc/src/Adc.c",
+          "src/bsw/mcal/adc/include/Adc.h"
+        ],
         "test_reports": [],
         "reviews": [],
-        "has_code": false,
+        "has_code": true,
         "has_test": true,
         "has_review": false,
         "step_handlers": [],
@@ -1200,7 +1350,10 @@
         "req_id": "ADC-SHALL-003",
         "statement": "The system SHALL support up to 16 channels per ADC instance.",
         "section": "ADC Driver",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/mcal/adc/src/Adc.c",
+          "src/bsw/mcal/adc/include/Adc.h"
+        ],
         "test_reports": [],
         "reviews": [],
         "has_code": true,
@@ -1217,7 +1370,8 @@
         "statement": "The system SHALL support left and right result alignment.",
         "section": "ADC Driver",
         "code_files": [
-          "src/micro-dds/tests/integration/test_integration.py"
+          "src/bsw/mcal/adc/src/Adc.c",
+          "src/bsw/mcal/adc/include/Adc.h"
         ],
         "test_reports": [],
         "reviews": [],
@@ -1234,7 +1388,10 @@
         "req_id": "ADC-SHALL-005",
         "statement": "The system SHALL support interrupt-based and polling notification modes.",
         "section": "ADC Driver",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/mcal/adc/src/Adc.c",
+          "src/bsw/mcal/adc/include/Adc.h"
+        ],
         "test_reports": [],
         "reviews": [],
         "has_code": true,
@@ -1250,7 +1407,10 @@
         "req_id": "CANDRV-SHALL-001",
         "statement": "The system SHALL support Classical CAN (2.0B) and CAN FD protocols.",
         "section": "CAN Driver",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/mcal/can/src/Can.c",
+          "src/bsw/mcal/can/include/Can.h"
+        ],
         "test_reports": [],
         "reviews": [],
         "has_code": true,
@@ -1266,7 +1426,10 @@
         "req_id": "CANDRV-SHALL-002",
         "statement": "The system SHALL support bit rates from 125kbps to 1Mbps for CAN and up to 8Mbps for CAN FD.",
         "section": "CAN Driver",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/mcal/can/src/Can.c",
+          "src/bsw/mcal/can/include/Can.h"
+        ],
         "test_reports": [],
         "reviews": [],
         "has_code": true,
@@ -1282,7 +1445,10 @@
         "req_id": "CANDRV-SHALL-003",
         "statement": "The system SHALL provide 64 mailboxes for CAN message buffering.",
         "section": "CAN Driver",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/mcal/can/src/Can.c",
+          "src/bsw/mcal/can/include/Can.h"
+        ],
         "test_reports": [],
         "reviews": [],
         "has_code": true,
@@ -1298,7 +1464,10 @@
         "req_id": "CANDRV-SHALL-004",
         "statement": "The system SHALL support FIFO mode for CAN message reception.",
         "section": "CAN Driver",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/mcal/can/src/Can.c",
+          "src/bsw/mcal/can/include/Can.h"
+        ],
         "test_reports": [],
         "reviews": [],
         "has_code": true,
@@ -1355,7 +1524,7 @@
         ],
         "test_reports": [],
         "reviews": [],
-        "has_code": false,
+        "has_code": true,
         "has_test": true,
         "has_review": false,
         "step_handlers": [],
@@ -1369,7 +1538,8 @@
         "statement": "The system SHALL support SHA-256 hashing.",
         "section": "Crypto Driver",
         "code_files": [
-          "src/micro-dds/tests/integration/test_integration.py"
+          "src/bsw/mcal/crypto/src/Crypto.c",
+          "src/bsw/mcal/crypto/include/Crypto.h"
         ],
         "test_reports": [],
         "reviews": [],
@@ -1386,10 +1556,13 @@
         "req_id": "CRYPTO-SHALL-003",
         "statement": "The system SHALL support ECC P-256 elliptic curve cryptography.",
         "section": "Crypto Driver",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/mcal/crypto/src/Crypto.c",
+          "src/bsw/mcal/crypto/include/Crypto.h"
+        ],
         "test_reports": [],
         "reviews": [],
-        "has_code": false,
+        "has_code": true,
         "has_test": true,
         "has_review": false,
         "step_handlers": [],
@@ -1420,7 +1593,10 @@
         "req_id": "CRYPTO-SHALL-005",
         "statement": "The system SHALL store cryptographic keys in HSM secure NVM.",
         "section": "Crypto Driver",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/mcal/crypto/src/Crypto.c",
+          "src/bsw/mcal/crypto/include/Crypto.h"
+        ],
         "test_reports": [],
         "reviews": [],
         "has_code": true,
@@ -1441,7 +1617,7 @@
         ],
         "test_reports": [],
         "reviews": [],
-        "has_code": false,
+        "has_code": true,
         "has_test": true,
         "has_review": false,
         "step_handlers": [],
@@ -1459,7 +1635,7 @@
         ],
         "test_reports": [],
         "reviews": [],
-        "has_code": false,
+        "has_code": true,
         "has_test": true,
         "has_review": false,
         "step_handlers": [],
@@ -1477,7 +1653,7 @@
         ],
         "test_reports": [],
         "reviews": [],
-        "has_code": false,
+        "has_code": true,
         "has_test": true,
         "has_review": false,
         "step_handlers": [],
@@ -1509,7 +1685,8 @@
         "statement": "The system SHALL support HIGH and LEVEL output levels.",
         "section": "DIO Driver",
         "code_files": [
-          "src/micro-dds/tests/integration/test_integration.py"
+          "src/bsw/mcal/dio/src/Dio.c",
+          "src/bsw/mcal/dio/include/Dio.h"
         ],
         "test_reports": [],
         "reviews": [],
@@ -1526,7 +1703,10 @@
         "req_id": "DIODRV-SHALL-004",
         "statement": "The system SHALL support edge-triggered interrupt on rising, falling, and both edges.",
         "section": "DIO Driver",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/mcal/dio/src/Dio.c",
+          "src/bsw/mcal/dio/include/Dio.h"
+        ],
         "test_reports": [],
         "reviews": [],
         "has_code": true,
@@ -1542,10 +1722,13 @@
         "req_id": "PORTDRV-SHALL-001",
         "statement": "The system SHALL support pin mux configuration for approximately 100 pins.",
         "section": "PORT Driver",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/mcal/port/src/Port.c",
+          "src/bsw/mcal/port/include/Port.h"
+        ],
         "test_reports": [],
         "reviews": [],
-        "has_code": false,
+        "has_code": true,
         "has_test": true,
         "has_review": false,
         "step_handlers": [],
@@ -1558,10 +1741,13 @@
         "req_id": "PORTDRV-SHALL-002",
         "statement": "The system SHALL support ALT0 through ALT7 mux modes.",
         "section": "PORT Driver",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/mcal/port/src/Port.c",
+          "src/bsw/mcal/port/include/Port.h"
+        ],
         "test_reports": [],
         "reviews": [],
-        "has_code": false,
+        "has_code": true,
         "has_test": true,
         "has_review": false,
         "step_handlers": [],
@@ -1574,7 +1760,10 @@
         "req_id": "PORTDRV-SHALL-003",
         "statement": "The system SHALL support configurable pad properties including pull-up, pull-down, slew rate, and drive strength.",
         "section": "PORT Driver",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/mcal/port/src/Port.c",
+          "src/bsw/mcal/port/include/Port.h"
+        ],
         "test_reports": [],
         "reviews": [],
         "has_code": true,
@@ -1590,10 +1779,13 @@
         "req_id": "GPTDRV-SHALL-001",
         "statement": "The system SHALL provide 8 hardware timer channels.",
         "section": "GPT Driver",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/mcal/gpt/src/Gpt.c",
+          "src/bsw/mcal/gpt/include/Gpt.h"
+        ],
         "test_reports": [],
         "reviews": [],
-        "has_code": false,
+        "has_code": true,
         "has_test": true,
         "has_review": false,
         "step_handlers": [],
@@ -1606,10 +1798,13 @@
         "req_id": "GPTDRV-SHALL-002",
         "statement": "The system SHALL provide 32-bit timer resolution.",
         "section": "GPT Driver",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/mcal/gpt/src/Gpt.c",
+          "src/bsw/mcal/gpt/include/Gpt.h"
+        ],
         "test_reports": [],
         "reviews": [],
-        "has_code": false,
+        "has_code": true,
         "has_test": true,
         "has_review": false,
         "step_handlers": [],
@@ -1622,10 +1817,13 @@
         "req_id": "GPTDRV-SHALL-003",
         "statement": "The system SHALL support prescaler values from 1 to 65536.",
         "section": "GPT Driver",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/mcal/gpt/src/Gpt.c",
+          "src/bsw/mcal/gpt/include/Gpt.h"
+        ],
         "test_reports": [],
         "reviews": [],
-        "has_code": false,
+        "has_code": true,
         "has_test": true,
         "has_review": false,
         "step_handlers": [],
@@ -1638,7 +1836,10 @@
         "req_id": "GPTDRV-SHALL-004",
         "statement": "The system SHALL support one-shot and continuous timer modes.",
         "section": "GPT Driver",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/mcal/gpt/src/Gpt.c",
+          "src/bsw/mcal/gpt/include/Gpt.h"
+        ],
         "test_reports": [],
         "reviews": [],
         "has_code": true,
@@ -1655,7 +1856,8 @@
         "statement": "The system SHALL support up to 8 input capture channels.",
         "section": "ICU Driver",
         "code_files": [
-          "src/micro-dds/tests/integration/test_integration.py"
+          "src/bsw/mcal/icu/src/Icu.c",
+          "src/bsw/mcal/icu/include/Icu.h"
         ],
         "test_reports": [],
         "reviews": [],
@@ -1672,10 +1874,13 @@
         "req_id": "ICURV-SHALL-002",
         "statement": "The system SHALL support signal period, duty cycle, and pulse width measurement.",
         "section": "ICU Driver",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/mcal/icu/src/Icu.c",
+          "src/bsw/mcal/icu/include/Icu.h"
+        ],
         "test_reports": [],
         "reviews": [],
-        "has_code": false,
+        "has_code": true,
         "has_test": true,
         "has_review": false,
         "step_handlers": [],
@@ -1688,7 +1893,10 @@
         "req_id": "ICURV-SHALL-003",
         "statement": "The system SHALL support rising, falling, and both edge detection.",
         "section": "ICU Driver",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/mcal/icu/src/Icu.c",
+          "src/bsw/mcal/icu/include/Icu.h"
+        ],
         "test_reports": [],
         "reviews": [],
         "has_code": true,
@@ -1704,10 +1912,13 @@
         "req_id": "MCUDRV-SHALL-001",
         "statement": "The system SHALL support clock sources SOSC, SIRC, FIRC, PLL, and SPLL.",
         "section": "MCU Driver",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/mcal/mcu/src/Mcu.c",
+          "src/bsw/mcal/mcu/include/Mcu.h"
+        ],
         "test_reports": [],
         "reviews": [],
-        "has_code": false,
+        "has_code": true,
         "has_test": true,
         "has_review": false,
         "step_handlers": [],
@@ -1720,7 +1931,10 @@
         "req_id": "MCUDRV-SHALL-002",
         "statement": "The system SHALL support 4 RAM section banks.",
         "section": "MCU Driver",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/mcal/mcu/src/Mcu.c",
+          "src/bsw/mcal/mcu/include/Mcu.h"
+        ],
         "test_reports": [],
         "reviews": [],
         "has_code": true,
@@ -1737,7 +1951,8 @@
         "statement": "The system SHALL support RUN, SLEEP, STOP, and STANDBY power modes.",
         "section": "MCU Driver",
         "code_files": [
-          "src/micro-dds/tests/integration/test_integration.py"
+          "src/bsw/mcal/mcu/src/Mcu.c",
+          "src/bsw/mcal/mcu/include/Mcu.h"
         ],
         "test_reports": [],
         "reviews": [],
@@ -1754,7 +1969,10 @@
         "req_id": "MCUDRV-SHALL-004",
         "statement": "The system SHALL support POR, WDG, SW, and External reset sources.",
         "section": "MCU Driver",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/mcal/mcu/src/Mcu.c",
+          "src/bsw/mcal/mcu/include/Mcu.h"
+        ],
         "test_reports": [],
         "reviews": [],
         "has_code": true,
@@ -1770,10 +1988,13 @@
         "req_id": "WDGDRV-SHALL-001",
         "statement": "The system SHALL provide configurable watchdog timeout from milliseconds to seconds.",
         "section": "WDG Driver",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/mcal/wdg/src/Wdg.c",
+          "src/bsw/mcal/wdg/include/Wdg.h"
+        ],
         "test_reports": [],
         "reviews": [],
-        "has_code": false,
+        "has_code": true,
         "has_test": true,
         "has_review": false,
         "step_handlers": [],
@@ -1786,7 +2007,10 @@
         "req_id": "WDGDRV-SHALL-002",
         "statement": "The system SHALL support window mode watchdog operation.",
         "section": "WDG Driver",
-        "code_files": [],
+        "code_files": [
+          "src/bsw/mcal/wdg/src/Wdg.c",
+          "src/bsw/mcal/wdg/include/Wdg.h"
+        ],
         "test_reports": [],
         "reviews": [],
         "has_code": true,
@@ -1803,7 +2027,8 @@
         "statement": "The system SHALL support test mode for diagnostic testing.",
         "section": "WDG Driver",
         "code_files": [
-          "src/micro-dds/tests/integration/test_integration.py"
+          "src/bsw/mcal/wdg/src/Wdg.c",
+          "src/bsw/mcal/wdg/include/Wdg.h"
         ],
         "test_reports": [],
         "reviews": [],
@@ -1861,7 +2086,7 @@
         ],
         "test_reports": [],
         "reviews": [],
-        "has_code": false,
+        "has_code": true,
         "has_test": true,
         "has_review": false,
         "step_handlers": [],
@@ -2160,8 +2385,8 @@
     ],
     "summary": {
       "total": 127,
-      "with_code": 90,
-      "without_code": 37,
+      "with_code": 126,
+      "without_code": 1,
       "with_test": 127,
       "without_test": 0,
       "with_review": 0,

@@ -78,6 +78,13 @@ jobs:
           fi
           bash config/tools/check_config_drift.sh
 
+      - name: Traceability evidence gate
+        # WP4: 需求→实现映射必须指向真实 C 源码, 禁止 Python 脚本/测试文件
+        # 充当实现; has_code/has_test 标志必须与数据一致; 单文件承接 >20 条需求拦截。
+        run: |
+          python3 tools/check_traceability_gate.py \
+              .yuleosh/evidence-bundle/traceability/traceability-report.json
+
   # ============================================================
   # Build — ARM 交叉编译 + 静态分析 + 架构检查
   # ============================================================
