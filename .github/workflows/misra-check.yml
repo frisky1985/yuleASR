@@ -434,7 +434,7 @@ jobs:
           
           - **From:** MISRA C:2012 → **To:** MISRA C:2023
           - **Migration Date:** __MIGRATION_DATE__
-          - **Baseline (2026-10-30, 405 files):** 1547 total / 58 required after approved deviations
+          - **Baseline (2026-10-30, 405 files):** 1547 total / 489 required after wildcard deviations downgraded to pending
           - **Gate:** `misra_full_scan.py --gate` (evidence validity + ratchet baseline)
           
           ## Quick Links

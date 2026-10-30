@@ -81,10 +81,11 @@ misra:
   # 语义: 先验证证据有效(文件数/commit/工具版本), 再按 ratchet 基线判违规。
   # 任何一项不满足 → gate 退出码 5 (拦截), 空数据不得视为通过。
   gate:
-    max_required: 58           # required 违规上限 (deviated 后计数), ratchet 只降不升
+    max_required: 489          # required 违规上限 (deviated 后计数), ratchet 只降不升
     max_total: 1547            # 总违规 ratchet 基线 (2026-10-30 实测 405 文件), 只降不升
     min_files_scanned: 300     # 低于此值判定"扫描未真正执行"
     require_provenance: true   # 报告必须含 git_sha + 工具版本且与 HEAD 一致
+    wildcard_deviations: "pending"  # `**/src/**` 类通配偏差不参与豁免, 需逐条复核并写明条数
   violations_per_kloc: 200.0       # 仅作度量展示, 不再作为门禁输入
   cppcheck_std: "c11"
   rule_texts_path: ".yuleosh/misra_c2023_texts.txt"    # P1.5-B: C:2023 rule texts

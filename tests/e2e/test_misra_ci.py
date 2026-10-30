@@ -88,6 +88,8 @@ def test_fail_threshold_validation():
     assert int(gate["min_files_scanned"]) > 0, "min_files_scanned must be > 0"
     assert gate["require_provenance"] is True, "require_provenance must be true"
     assert int(gate["max_required"]) >= 0, "max_required must be >= 0"
+    assert gate.get("wildcard_deviations") == "pending", \
+        "catch-all deviations (e.g. **/src/**) must not exempt violations"
 
     print(f"  ✅ gate max_required={gate['max_required']}, "
           f"max_total={gate.get('max_total')}, min_files={gate['min_files_scanned']}")

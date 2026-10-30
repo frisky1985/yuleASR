@@ -144,7 +144,13 @@ def _deviation_covers(pattern: str, path: str) -> bool:
 
 
 def _load_gate_config():
-    """Read the gate thresholds + approved deviations (misra.deviations + safety profile)."""
+    """Read the gate thresholds + effective deviations.
+
+    Wildcard ("catch-all") deviations such as `**/src/**` are downgraded to
+    `pending`: they exempt nothing until re-reviewed. Only file/module-scoped
+    deviations with a concrete count participate in the exemption.
+    Returns (gate, active_devs, pending_devs).
+    """
     import yaml
     cfg_path = PROJECT / ".yuleosh" / "ci-config.yaml"
     if not cfg_path.is_file():
@@ -153,17 +159,40 @@ def _load_gate_config():
     cfg = yaml.safe_load(cfg_path.read_text()) or {}
     misra = cfg.get("misra", {}) or {}
     gate = misra.get("gate", {}) or {}
-    devs = []
+    raw = []
     for d in misra.get("deviations", []) or []:
         if d.get("status") == "approved":
-            devs.append((d.get("rule", ""), d.get("file", "")))
+            raw.append((d.get("rule", ""), d.get("file", "")))
     safety = (misra.get("profiles", {}) or {}).get("safety", {}) or {}
     for d in safety.get("deviations", []) or []:
         if d.get("status") == "approved":
             for scope in str(d.get("scope", "")).split(";"):
                 if scope.strip():
-                    devs.append((d.get("rule", ""), scope.strip()))
-    return gate, devs
+                    raw.append((d.get("rule", ""), scope.strip()))
+
+    active, pending = [], []
+    mode = str(gate.get("wildcard_deviations", "pending")).lower()
+    for rule, pattern in raw:
+        if _is_catch_all(pattern) and mode == "pending":
+            pending.append((rule, pattern))
+        else:
+            active.append((rule, pattern))
+    return gate, active, pending
+
+
+# Synthetic paths used to decide whether a pattern exempts everything.
+_CATCH_ALL_SAMPLES = (
+    "src/bsw/services/com/src/Com.c",
+    "src/dds/core/dds_core.c",
+    "src/zzz/qqq/aaa.c",
+)
+
+
+def _is_catch_all(pattern: str) -> bool:
+    """True when the glob would exempt arbitrary files under the whole source tree."""
+    if not pattern:
+        return True
+    return all(_deviation_covers(pattern, p) for p in _CATCH_ALL_SAMPLES)
 
 
 def gate_check(res):
@@ -171,7 +200,7 @@ def gate_check(res):
 
     Exit 5 = gate failure. Never returns silently: empty input must never look like a pass.
     """
-    gate, devs = _load_gate_config()
+    gate, devs, pending = _load_gate_config()
     prov = res["provenance"]
     fails = []
 
@@ -194,7 +223,7 @@ def gate_check(res):
     required, deviated = Counter(), Counter()
     for rule, items in res["detail"].items():
         for fname, _line, _col in items:
-            if any(r == rule and (not p or _deviation_covers(p, fname)) for r, p in devs):
+            if any(r == rule and _deviation_covers(p, fname) for r, p in devs):
                 deviated[rule] += 1
             else:
                 required[rule] += 1
@@ -217,6 +246,7 @@ def gate_check(res):
         "gates": {"max_required": max_req, "max_total": max_total, "min_files_scanned": min_files},
         "failures": fails,
         "top_required": required.most_common(10),
+        "pending_wildcard_deviations": sorted({f"{r} @ {p}" for r, p in pending}),
     }
     out = PROJECT / ".yuleosh" / "reports" / "misra-gate.json"
     out.parent.mkdir(parents=True, exist_ok=True)
