@@ -434,7 +434,7 @@ jobs:
           
           - **From:** MISRA C:2012 → **To:** MISRA C:2023
           - **Migration Date:** __MIGRATION_DATE__
-          - **Baseline (2026-10-31, 405 files):** 1547 total / 58 required; 431 NULL false positives bound by DP-AUTOSAR-026 (occurrences=1454)
+          - **Baseline (2026-10-31, 405 files):** 1547 total / 58 required; NULL false positives bound by DP-AUTOSAR-026 = 431 net residual (occurrences=431)
           - **Gate:** `misra_full_scan.py --gate` (evidence validity + ratchet baseline)
           
           ## Quick Links

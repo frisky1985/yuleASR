@@ -174,32 +174,50 @@ def _load_gate_config():
     return gate, raw
 
 
-def _classify_deviations(gate, raw, rule_total):
+def _classify_deviations(gate, raw, detail):
     """Split deviations into active / pending / drifted.
 
-    - file- or module-scoped  -> active (exempts)
-    - catch-all without count -> pending (exempts nothing)
-    - catch-all WITH `occurrences: N` -> active only when N equals the observed
-      count for that rule; otherwise it is drifted and fails the gate. This binds
-      a broad waiver to a verified number, so any change forces re-review.
+    - file- or module-scoped        -> active
+    - catch-all without `occurrences` -> pending (exempts nothing)
+    - catch-all WITH `occurrences: N`  -> active only when N equals that waiver's
+      **net residual**: the number of violations it is the *sole* waiver for.
+      A violation covered by two waivers belongs to neither, so overlapping
+      waivers cannot hide violations behind each other. Any drift fails the gate.
+
+    Returns (active, pending, drift, sole) where sole maps deviation id -> residual.
     """
-    active, pending, drift = [], [], []
+    active, pending = [], []
     mode = str(gate.get("wildcard_deviations", "pending")).lower()
     for d in raw:
-        if not _is_catch_all(d["pattern"]) or mode != "pending":
-            active.append(d)
-            continue
-        declared = d.get("occurrences")
-        if declared is None:
+        if _is_catch_all(d["pattern"]) and mode == "pending" and d.get("occurrences") is None:
             pending.append(d)
-            continue
-        observed = rule_total.get(d["rule"], 0)
-        if int(declared) == observed:
-            active.append(d)
         else:
-            drift.append(f"{d['id']}: {d['rule']} declares occurrences={declared}, "
-                         f"observed={observed}")
-    return active, pending, drift
+            active.append(d)
+
+    # Coverage index over all active waivers: which waiver ids cover each violation.
+    # Built per rule so unrelated rules never collide.
+    by_rule_devs = {}
+    for d in active:
+        by_rule_devs.setdefault(d["rule"], []).append(d)
+
+    sole, drift = Counter(), []
+    for rule, devs in by_rule_devs.items():
+        bound = [d for d in devs if d.get("occurrences") is not None]
+        if not bound:
+            continue
+        counts = Counter()
+        for fname, _line, _col in detail.get(rule, []):
+            cover = {d["id"] for d in devs if _deviation_covers(d["pattern"], fname)}
+            if len(cover) == 1:
+                counts[next(iter(cover))] += 1
+        for d in bound:
+            sole[d["id"]] = counts[d["id"]]
+            declared = int(d["occurrences"])
+            if declared != counts[d["id"]]:
+                drift.append(f"{d['id']}: {rule} declares occurrences={declared}, "
+                             f"net residual={counts[d['id']]} "
+                             f"(total for rule={len(detail.get(rule, []))})")
+    return active, pending, drift, sole
 
 
 # Synthetic paths used to decide whether a pattern exempts everything.
@@ -242,8 +260,7 @@ def gate_check(res):
     if res["total"] == 0:
         fails.append("0 violations reported — empty data is not a pass")
 
-    rule_total = Counter(res["by_rule"])
-    devs, pending, drift = _classify_deviations(gate, raw, rule_total)
+    devs, pending, drift, sole = _classify_deviations(gate, raw, res["detail"])
     fails.extend("deviation drift — " + d for d in drift)
 
     required, deviated = Counter(), Counter()
@@ -274,7 +291,8 @@ def gate_check(res):
         "top_required": required.most_common(10),
         "pending_wildcard_deviations": sorted({f"{d['id']}: {d['rule']} @ {d['pattern']}"
                                                for d in pending}),
-        "count_bound_deviations": sorted({f"{d['id']}: {d['rule']}={d['occurrences']}"
+        "count_bound_deviations": sorted({f"{d['id']}: {d['rule']}="
+                                          f"{d['occurrences']} (net residual {sole.get(d['id'], 0)})"
                                           for d in devs if d.get("occurrences") is not None}),
         "deviation_drift": drift,
     }

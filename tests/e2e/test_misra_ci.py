@@ -112,21 +112,24 @@ def test_count_bound_deviation_mechanism():
     gate = {"wildcard_deviations": "pending"}
     raw = [
         {"id": "DP-NONE", "rule": "misra-c2023-11.9", "pattern": "**/src/**", "occurrences": None},
-        {"id": "DP-BOUND", "rule": "misra-c2023-11.9", "pattern": "src/**", "occurrences": 1454},
-        {"id": "DP-SCOPED", "rule": "misra-c2023-2.5", "pattern": "*/src/dds/pubsub/**",
+        {"id": "DP-BOUND", "rule": "misra-c2023-11.9", "pattern": "src/**", "occurrences": 3},
+        {"id": "DP-SCOPED", "rule": "misra-c2023-11.9", "pattern": "*/src/x/**",
          "occurrences": None},
     ]
+    # 3 条仅被 DP-BOUND 覆盖 + 2 条同时被 DP-BOUND/DP-SCOPED 覆盖 -> 净残值 3
+    detail = {"misra-c2023-11.9": [("src/y/a.c", 1, 1)] * 3 + [("src/x/b.c", 1, 1)] * 2}
 
-    active, pending, drift = m._classify_deviations(gate, raw, {"misra-c2023-11.9": 1454})
+    active, pending, drift, sole = m._classify_deviations(gate, raw, detail)
     assert [d["id"] for d in pending] == ["DP-NONE"], "unbound wide waiver must stay pending"
     assert {d["id"] for d in active} == {"DP-BOUND", "DP-SCOPED"}, "bound/scoped waivers active"
-    assert not drift
+    assert not drift and sole["DP-BOUND"] == 3, f"net residual must be 3, got {sole}"
 
-    # 计数漂移 (代码新增/减少 NULL 命中) 必须导致 gate 失败, 而不是静默继续豁免
-    _, _, drift = m._classify_deviations(gate, raw, {"misra-c2023-11.9": 1455})
-    assert drift and "DP-BOUND" in drift[0], f"expected drift, got {drift}"
+    # 重叠覆盖不得虚增残值: 声明 5 (规则总量) 必须被视为漂移
+    raw[1]["occurrences"] = 5
+    _, _, drift, _ = m._classify_deviations(gate, raw, detail)
+    assert drift and "net residual=3" in drift[0], f"expected residual drift, got {drift}"
 
-    print("  ✅ count-bound waiver mechanism verified (pending / active / drift)")
+    print("  ✅ net-residual waiver mechanism verified (overlap-aware)")
 
 
 def test_ci_layer1_misra_check():
