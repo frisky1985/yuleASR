@@ -81,7 +81,7 @@ misra:
   # 语义: 先验证证据有效(文件数/commit/工具版本), 再按 ratchet 基线判违规。
   # 任何一项不满足 → gate 退出码 5 (拦截), 空数据不得视为通过。
   gate:
-    max_required: 489          # required 违规上限 (deviated 后计数), ratchet 只降不升
+    max_required: 58           # required 违规上限 (deviated 后计数), ratchet 只降不升
     max_total: 1547            # 总违规 ratchet 基线 (2026-10-30 实测 405 文件), 只降不升
     min_files_scanned: 300     # 低于此值判定"扫描未真正执行"
     require_provenance: true   # 报告必须含 git_sha + 工具版本且与 HEAD 一致
@@ -870,6 +870,9 @@ misra:
         - id: "DP-AUTOSAR-026"
           rule: "misra-c2023-11.9"
           scope: "src/**"
+          # 计数绑定偏差: 广域豁免必须写明已核实的命中条数; 实测数字变化 → gate 直接失败,
+          # 强制重新复核 (见 misra_full_scan.py 的 _classify_deviations)。
+          occurrences: 1454
           reason: "Toolchain defines NULL as 0; cppcheck flags ptr=NULL/ptr==NULL. NULL is the only permitted null pointer constant per MISRA C:2023 Rule 11.9. cppcheck false positive due to C compiler NULL definition."
           expiry: "2027-07-21"
           approved_by: "Safety Manager"

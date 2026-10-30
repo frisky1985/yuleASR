@@ -1,21 +1,22 @@
 """
 MISRA CI Validation Test (P0-2)
 
-Verifies that the MISRA report contains valid violation data and that
-the CI pipeline's fail_threshold check would trigger correctly.
+Verifies that MISRA evidence is trustworthy and that the hard gate actually blocks.
 
 Tests:
   1. MISRA raw output exists and has violation entries
   2. misra-report.json has total_violations matching raw output
-  3. fail_threshold validation (currently 100, violated by 9980 violations)
-  4. CI layer reports reference correct MISRA numbers
-  5. Audit copy consistency
-  6. MISRA rule ID breakdown from raw output
+  3. gate config: obsolete fail_threshold removed, ratchet block valid
+  4. count-bound waiver mechanism (pending / active / drift)
+  5. CI layer reports reference correct MISRA numbers
+  6. Audit copy consistency
+  7. MISRA rule ID breakdown from raw output
 """
 
 import json
 import os
 import re
+import sys
 import pytest
 
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -93,6 +94,39 @@ def test_fail_threshold_validation():
 
     print(f"  ✅ gate max_required={gate['max_required']}, "
           f"max_total={gate.get('max_total')}, min_files={gate['min_files_scanned']}")
+
+
+def test_count_bound_deviation_mechanism():
+    """Wide-scope waivers only exempt when bound to a verified hit count.
+
+    Behavioural test of the gate logic (single source of truth: misra_full_scan.py):
+      - catch-all without `occurrences`      -> pending (exempts nothing)
+      - catch-all with matching count        -> active
+      - catch-all with a stale count         -> drift (gate failure)
+      - file/module-scoped                   -> always active
+    """
+    repo = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    sys.path.insert(0, os.path.join(repo, ".yuleosh", "tools"))
+    import misra_full_scan as m
+
+    gate = {"wildcard_deviations": "pending"}
+    raw = [
+        {"id": "DP-NONE", "rule": "misra-c2023-11.9", "pattern": "**/src/**", "occurrences": None},
+        {"id": "DP-BOUND", "rule": "misra-c2023-11.9", "pattern": "src/**", "occurrences": 1454},
+        {"id": "DP-SCOPED", "rule": "misra-c2023-2.5", "pattern": "*/src/dds/pubsub/**",
+         "occurrences": None},
+    ]
+
+    active, pending, drift = m._classify_deviations(gate, raw, {"misra-c2023-11.9": 1454})
+    assert [d["id"] for d in pending] == ["DP-NONE"], "unbound wide waiver must stay pending"
+    assert {d["id"] for d in active} == {"DP-BOUND", "DP-SCOPED"}, "bound/scoped waivers active"
+    assert not drift
+
+    # 计数漂移 (代码新增/减少 NULL 命中) 必须导致 gate 失败, 而不是静默继续豁免
+    _, _, drift = m._classify_deviations(gate, raw, {"misra-c2023-11.9": 1455})
+    assert drift and "DP-BOUND" in drift[0], f"expected drift, got {drift}"
+
+    print("  ✅ count-bound waiver mechanism verified (pending / active / drift)")
 
 
 def test_ci_layer1_misra_check():

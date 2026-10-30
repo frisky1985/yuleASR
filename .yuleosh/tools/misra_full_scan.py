@@ -144,12 +144,10 @@ def _deviation_covers(pattern: str, path: str) -> bool:
 
 
 def _load_gate_config():
-    """Read the gate thresholds + effective deviations.
+    """Read the gate thresholds + approved deviation entries (unclassified).
 
-    Wildcard ("catch-all") deviations such as `**/src/**` are downgraded to
-    `pending`: they exempt nothing until re-reviewed. Only file/module-scoped
-    deviations with a concrete count participate in the exemption.
-    Returns (gate, active_devs, pending_devs).
+    Returns (gate, raw_devs); raw_devs is a list of dicts with id/rule/pattern/occurrences.
+    Classification against observed counts happens in _classify_deviations().
     """
     import yaml
     cfg_path = PROJECT / ".yuleosh" / "ci-config.yaml"
@@ -162,22 +160,46 @@ def _load_gate_config():
     raw = []
     for d in misra.get("deviations", []) or []:
         if d.get("status") == "approved":
-            raw.append((d.get("rule", ""), d.get("file", "")))
+            raw.append({"id": d.get("id", f"{d.get('rule')} @ {d.get('file')}"),
+                        "rule": d.get("rule", ""), "pattern": d.get("file", ""),
+                        "occurrences": d.get("occurrences")})
     safety = (misra.get("profiles", {}) or {}).get("safety", {}) or {}
     for d in safety.get("deviations", []) or []:
         if d.get("status") == "approved":
             for scope in str(d.get("scope", "")).split(";"):
                 if scope.strip():
-                    raw.append((d.get("rule", ""), scope.strip()))
+                    raw.append({"id": d.get("id", f"{d.get('rule')} @ {scope.strip()}"),
+                                "rule": d.get("rule", ""), "pattern": scope.strip(),
+                                "occurrences": d.get("occurrences")})
+    return gate, raw
 
-    active, pending = [], []
+
+def _classify_deviations(gate, raw, rule_total):
+    """Split deviations into active / pending / drifted.
+
+    - file- or module-scoped  -> active (exempts)
+    - catch-all without count -> pending (exempts nothing)
+    - catch-all WITH `occurrences: N` -> active only when N equals the observed
+      count for that rule; otherwise it is drifted and fails the gate. This binds
+      a broad waiver to a verified number, so any change forces re-review.
+    """
+    active, pending, drift = [], [], []
     mode = str(gate.get("wildcard_deviations", "pending")).lower()
-    for rule, pattern in raw:
-        if _is_catch_all(pattern) and mode == "pending":
-            pending.append((rule, pattern))
+    for d in raw:
+        if not _is_catch_all(d["pattern"]) or mode != "pending":
+            active.append(d)
+            continue
+        declared = d.get("occurrences")
+        if declared is None:
+            pending.append(d)
+            continue
+        observed = rule_total.get(d["rule"], 0)
+        if int(declared) == observed:
+            active.append(d)
         else:
-            active.append((rule, pattern))
-    return gate, active, pending
+            drift.append(f"{d['id']}: {d['rule']} declares occurrences={declared}, "
+                         f"observed={observed}")
+    return active, pending, drift
 
 
 # Synthetic paths used to decide whether a pattern exempts everything.
@@ -200,7 +222,7 @@ def gate_check(res):
 
     Exit 5 = gate failure. Never returns silently: empty input must never look like a pass.
     """
-    gate, devs, pending = _load_gate_config()
+    gate, raw = _load_gate_config()
     prov = res["provenance"]
     fails = []
 
@@ -220,10 +242,14 @@ def gate_check(res):
     if res["total"] == 0:
         fails.append("0 violations reported — empty data is not a pass")
 
+    rule_total = Counter(res["by_rule"])
+    devs, pending, drift = _classify_deviations(gate, raw, rule_total)
+    fails.extend("deviation drift — " + d for d in drift)
+
     required, deviated = Counter(), Counter()
     for rule, items in res["detail"].items():
         for fname, _line, _col in items:
-            if any(r == rule and _deviation_covers(p, fname) for r, p in devs):
+            if any(d["rule"] == rule and _deviation_covers(d["pattern"], fname) for d in devs):
                 deviated[rule] += 1
             else:
                 required[rule] += 1
@@ -246,7 +272,11 @@ def gate_check(res):
         "gates": {"max_required": max_req, "max_total": max_total, "min_files_scanned": min_files},
         "failures": fails,
         "top_required": required.most_common(10),
-        "pending_wildcard_deviations": sorted({f"{r} @ {p}" for r, p in pending}),
+        "pending_wildcard_deviations": sorted({f"{d['id']}: {d['rule']} @ {d['pattern']}"
+                                               for d in pending}),
+        "count_bound_deviations": sorted({f"{d['id']}: {d['rule']}={d['occurrences']}"
+                                          for d in devs if d.get("occurrences") is not None}),
+        "deviation_drift": drift,
     }
     out = PROJECT / ".yuleosh" / "reports" / "misra-gate.json"
     out.parent.mkdir(parents=True, exist_ok=True)
