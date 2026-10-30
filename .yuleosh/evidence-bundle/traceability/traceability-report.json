@@ -11,7 +11,15 @@
           "src/bsw/mcal/can/src/Can.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -30,7 +38,15 @@
           "src/bsw/mcal/port/src/Port.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -48,7 +64,15 @@
           "src/bsw/mcal/adc/src/Adc.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -67,7 +91,15 @@
           "src/bsw/ecual/linif/src/LinIf.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -91,7 +123,15 @@
           "src/bsw/ecual/ea/src/Ea.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -109,7 +149,15 @@
           "src/bsw/os/src/Os.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -128,7 +176,15 @@
           "src/bsw/services/com/src/Com.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -146,7 +202,15 @@
           "src/bsw/services/dem/src/Dem.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -168,7 +232,15 @@
           "src/application/mode_manager/src/Swc_ModeManager.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -190,7 +262,15 @@
           "src/application/mode_manager/src/Swc_ModeManager.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -212,7 +292,15 @@
           "src/application/mode_manager/src/Swc_ModeManager.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -234,7 +322,15 @@
           "src/application/mode_manager/src/Swc_ModeManager.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -250,7 +346,15 @@
         "section": "7. MISRA 合规策略",
         "code_files": [],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": false,
         "has_test": true,
         "has_review": false,
@@ -269,7 +373,15 @@
           "src/bsw/services/dcm/include/Dcm.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -288,7 +400,15 @@
           "src/bsw/services/dcm/include/Dcm.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -307,7 +427,15 @@
           "src/bsw/services/dcm/include/Dcm.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -326,7 +454,15 @@
           "src/bsw/services/dcm/include/Dcm.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -345,7 +481,15 @@
           "src/bsw/services/dem/include/Dem.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -364,7 +508,15 @@
           "src/bsw/services/dem/include/Dem.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -383,7 +535,15 @@
           "src/bsw/services/dem/include/Dem.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -402,7 +562,15 @@
           "src/bsw/services/dem/include/Dem.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -421,7 +589,15 @@
           "src/bsw/services/com/include/Com.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -439,7 +615,15 @@
           "src/bsw/services/com/src/Com.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -457,7 +641,15 @@
           "src/bsw/services/com/src/Com.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -475,7 +667,15 @@
           "src/bsw/services/com/src/Com.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -494,7 +694,15 @@
           "src/bsw/services/pdur/include/PduR.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -513,7 +721,15 @@
           "src/bsw/services/pdur/include/PduR.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -531,7 +747,15 @@
           "src/bsw/services/pdur/src/PduR.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -550,7 +774,15 @@
           "src/bsw/services/nvm/include/NvM.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -568,7 +800,15 @@
           "src/bsw/services/crc/src/Crc.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -586,7 +826,15 @@
           "src/bsw/services/nvm/src/NvM.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -604,7 +852,15 @@
           "src/bsw/services/nvm/src/NvM.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -622,7 +878,15 @@
           "src/bsw/services/nvm/src/NvM.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -641,7 +905,15 @@
           "src/bsw/services/ecum/include/EcuM.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -660,7 +932,15 @@
           "src/bsw/services/ecum/include/EcuM.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -679,7 +959,15 @@
           "src/bsw/services/ecum/include/EcuM.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -698,7 +986,15 @@
           "src/bsw/os/include/Os.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -717,7 +1013,15 @@
           "src/bsw/os/include/Os.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -736,7 +1040,15 @@
           "src/bsw/os/include/Os.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -755,7 +1067,15 @@
           "src/bsw/os/include/Os.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -774,7 +1094,15 @@
           "src/bsw/os/include/Os.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -793,7 +1121,15 @@
           "src/bsw/ecual/canif/include/CanIf.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -812,7 +1148,15 @@
           "src/bsw/ecual/canif/include/CanIf.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -831,7 +1175,15 @@
           "src/bsw/ecual/canif/include/CanIf.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -850,7 +1202,15 @@
           "src/bsw/ecual/canif/include/CanIf.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -869,7 +1229,15 @@
           "src/bsw/ecual/cantp/include/CanTp.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -888,7 +1256,15 @@
           "src/bsw/ecual/cantp/include/CanTp.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -907,7 +1283,15 @@
           "src/bsw/ecual/cantp/include/CanTp.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -926,7 +1310,15 @@
           "src/bsw/ecual/cantp/include/CanTp.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -945,7 +1337,15 @@
           "src/bsw/ecual/canNm/include/CanNm.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -963,7 +1363,15 @@
           "src/bsw/services/com/src/Com.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -981,7 +1389,15 @@
           "src/bsw/services/com/src/Com.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -999,7 +1415,15 @@
           "src/bsw/services/com/src/Com.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1018,7 +1442,15 @@
           "src/bsw/ecual/canNm/include/CanNm.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1037,7 +1469,15 @@
           "src/bsw/services/soad/include/SoAd.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1055,7 +1495,15 @@
           "src/bsw/services/pdur/src/PduR.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1074,7 +1522,15 @@
           "src/bsw/services/soad/include/SoAd.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1092,7 +1548,15 @@
           "src/bsw/services/crc/src/Crc.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1110,7 +1574,15 @@
           "src/bsw/services/nvm/src/NvM.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1128,7 +1600,15 @@
           "src/bsw/services/nvm/src/NvM.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1146,7 +1626,15 @@
           "src/bsw/services/nvm/src/NvM.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1165,7 +1653,15 @@
           "src/bsw/services/dlt/include/Dlt.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1184,7 +1680,15 @@
           "src/bsw/services/dlt/include/Dlt.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1203,7 +1707,15 @@
           "src/bsw/services/dlt/include/Dlt.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1222,7 +1734,15 @@
           "src/bsw/services/xcp/include/Xcp.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1241,7 +1761,15 @@
           "src/bsw/services/xcp/include/Xcp.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1260,7 +1788,15 @@
           "src/bsw/services/xcp/include/Xcp.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1279,7 +1815,15 @@
           "src/bsw/services/xcp/include/Xcp.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1298,7 +1842,15 @@
           "src/bsw/services/xcp/include/Xcp.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1317,7 +1869,15 @@
           "src/bsw/mcal/adc/include/Adc.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1336,7 +1896,15 @@
           "src/bsw/mcal/adc/include/Adc.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1355,7 +1923,15 @@
           "src/bsw/mcal/adc/include/Adc.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1374,7 +1950,15 @@
           "src/bsw/mcal/adc/include/Adc.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1393,7 +1977,15 @@
           "src/bsw/mcal/adc/include/Adc.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1412,7 +2004,15 @@
           "src/bsw/mcal/can/include/Can.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1431,7 +2031,15 @@
           "src/bsw/mcal/can/include/Can.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1450,7 +2058,15 @@
           "src/bsw/mcal/can/include/Can.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1469,7 +2085,15 @@
           "src/bsw/mcal/can/include/Can.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1487,7 +2111,15 @@
           "src/bsw/services/com/src/Com.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1505,7 +2137,15 @@
           "src/bsw/services/com/src/Com.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1523,7 +2163,15 @@
           "src/bsw/services/com/src/Com.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1542,7 +2190,15 @@
           "src/bsw/mcal/crypto/include/Crypto.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1561,7 +2217,15 @@
           "src/bsw/mcal/crypto/include/Crypto.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1579,7 +2243,15 @@
           "src/bsw/services/pdur/src/PduR.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1598,7 +2270,15 @@
           "src/bsw/mcal/crypto/include/Crypto.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1616,7 +2296,15 @@
           "src/bsw/services/crc/src/Crc.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1634,7 +2322,15 @@
           "src/bsw/services/nvm/src/NvM.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1652,7 +2348,15 @@
           "src/bsw/services/nvm/src/NvM.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1670,7 +2374,15 @@
           "src/bsw/services/nvm/src/NvM.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1689,7 +2401,15 @@
           "src/bsw/mcal/dio/include/Dio.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1708,7 +2428,15 @@
           "src/bsw/mcal/dio/include/Dio.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1727,7 +2455,15 @@
           "src/bsw/mcal/port/include/Port.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1746,7 +2482,15 @@
           "src/bsw/mcal/port/include/Port.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1765,7 +2509,15 @@
           "src/bsw/mcal/port/include/Port.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1784,7 +2536,15 @@
           "src/bsw/mcal/gpt/include/Gpt.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1803,7 +2563,15 @@
           "src/bsw/mcal/gpt/include/Gpt.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1822,7 +2590,15 @@
           "src/bsw/mcal/gpt/include/Gpt.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1841,7 +2617,15 @@
           "src/bsw/mcal/gpt/include/Gpt.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1860,7 +2644,15 @@
           "src/bsw/mcal/icu/include/Icu.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1879,7 +2671,15 @@
           "src/bsw/mcal/icu/include/Icu.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1898,7 +2698,15 @@
           "src/bsw/mcal/icu/include/Icu.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1917,7 +2725,15 @@
           "src/bsw/mcal/mcu/include/Mcu.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1936,7 +2752,15 @@
           "src/bsw/mcal/mcu/include/Mcu.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1955,7 +2779,15 @@
           "src/bsw/mcal/mcu/include/Mcu.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1974,7 +2806,15 @@
           "src/bsw/mcal/mcu/include/Mcu.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -1993,7 +2833,15 @@
           "src/bsw/mcal/wdg/include/Wdg.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -2012,7 +2860,15 @@
           "src/bsw/mcal/wdg/include/Wdg.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -2031,7 +2887,15 @@
           "src/bsw/mcal/wdg/include/Wdg.h"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -2049,7 +2913,15 @@
           "src/bsw/services/dcm/src/Dcm.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -2067,7 +2939,15 @@
           "src/bsw/services/dcm/src/Dcm.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -2085,7 +2965,15 @@
           "src/bsw/services/dem/src/Dem.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -2103,7 +2991,15 @@
           "src/bsw/services/det/src/Det.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -2121,7 +3017,15 @@
           "src/bsw/services/doip/src/DoIP.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -2139,7 +3043,15 @@
           "src/bsw/services/com/src/Com.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -2157,7 +3069,15 @@
           "src/bsw/services/pdur/src/PduR.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -2175,7 +3095,15 @@
           "src/bsw/services/cansm/src/CanSm.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -2193,7 +3121,15 @@
           "src/bsw/mcal/lin/src/Lin.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -2211,7 +3147,15 @@
           "src/bsw/services/nvm/src/NvM.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -2229,7 +3173,15 @@
           "src/bsw/services/fee/src/Fee.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -2247,7 +3199,15 @@
           "src/bsw/services/memif/src/MemIf.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -2265,7 +3225,15 @@
           "src/bsw/services/ecum/src/EcuM.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -2283,7 +3251,15 @@
           "src/bsw/services/bswm/src/BswM.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -2301,7 +3277,15 @@
           "src/bsw/services/wdgm/src/WdgM.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -2319,7 +3303,15 @@
           "src/bsw/os/src/Os.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -2337,7 +3329,15 @@
           "src/bsw/services/e2e/src/E2E.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -2355,7 +3355,15 @@
           "src/bsw/services/csm/src/Csm.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,
@@ -2373,7 +3381,15 @@
           "src/bsw/services/keym/src/KeyM.c"
         ],
         "test_reports": [],
-        "reviews": [],
+        "reviews": [
+          {
+            "status": "pending",
+            "reviewer": null,
+            "date": null,
+            "findings": [],
+            "decision": null
+          }
+        ],
         "has_code": true,
         "has_test": true,
         "has_review": false,

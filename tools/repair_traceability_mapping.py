@@ -21,6 +21,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "tools"))
 import generate_traceability_mapping as gtm  # noqa: E402
+import check_traceability_gate as tg  # noqa: E402
 
 REPORT = ROOT / ".yuleosh" / "evidence-bundle" / "traceability" / "traceability-report.json"
 
@@ -35,6 +36,7 @@ def main():
 
     fixed_code = 0
     fixed_flag = 0
+    fixed_reviews = 0
     for r in reqs:
         rid = r.get("req_id") or r.get("id")
         prefix = rid.split("-")[0] if "-" in rid else rid
@@ -55,19 +57,37 @@ def main():
             r["has_test"] = has_tests
             fixed_flag += 1
 
+        # Reviews: ensure every requirement carries at least one review record
+        # so the gap is visible & trackable. Empty reviews → pending placeholder.
+        # has_review is derived from approved reviews only (no fabrication).
+        reviews = r.get("reviews")
+        if not isinstance(reviews, list):
+            reviews = []
+            r["reviews"] = reviews
+        if not reviews:
+            reviews.append(tg.pending_review_record())
+            fixed_reviews += 1
+        # recompute has_review honestly from approved reviews
+        reviewed = tg.has_approved_review(r)
+        if bool(r.get("has_review")) != reviewed:
+            r["has_review"] = reviewed
+            fixed_flag += 1
+
     # refresh summary counts from actual data
     summ = report["lrm"].get("summary", {})
     summ["with_code"] = sum(1 for r in reqs if r.get("has_code"))
     summ["without_code"] = sum(1 for r in reqs if not r.get("has_code"))
     summ["with_test"] = sum(1 for r in reqs if r.get("has_test"))
     summ["without_test"] = sum(1 for r in reqs if not r.get("has_test"))
-    summ["with_review"] = sum(1 for r in reqs if r.get("has_review") or r.get("reviews"))
+    summ["with_review"] = sum(1 for r in reqs if tg.has_approved_review(r))
+    summ["without_review"] = sum(1 for r in reqs if not tg.has_approved_review(r))
     report["lrm"]["summary"] = summ
 
     REPORT.write_text(json.dumps(report, indent=2, ensure_ascii=False))
     print(f"✅ Repaired {REPORT.relative_to(ROOT)}")
     print(f"   code_files fixed: {fixed_code}")
-    print(f"   has_test flags fixed: {fixed_flag}")
+    print(f"   has_* flags fixed: {fixed_flag}")
+    print(f"   pending reviews initialized: {fixed_reviews}")
     print(f"   with_code={summ['with_code']}/{len(reqs)}  "
           f"with_test={summ['with_test']}/{len(reqs)}  "
           f"with_review={summ['with_review']}/{len(reqs)}")
