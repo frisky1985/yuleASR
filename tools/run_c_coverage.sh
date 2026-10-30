@@ -105,187 +105,66 @@ do_batch_build() {
     fi
 }
 
-# ── Generate lcov report + JSON ──
+# ── Generate gcovr report + trusted JSON ──
 generate_reports() {
     echo ""
-    echo "=== Generating Coverage Reports ==="
-    
+    echo "=== Generating Coverage Reports (gcovr) ==="
+
     cd "$PROJECT_DIR"
-    
-    # Find the coverage info file
-    FINAL_INFO=""
-    for candidate in coverage_src.info coverage_filtered.info coverage.info; do
-        if [ -f "$PROJECT_DIR/$candidate" ]; then
-            FINAL_INFO="$PROJECT_DIR/$candidate"
-            break
-        fi
-        if [ -f "$BUILD_DIR/$candidate" ]; then
-            FINAL_INFO="$BUILD_DIR/$candidate"
-            break
-        fi
-    done
-    
-    # If no existing info file, run lcov capture manually
-    if [ -z "$FINAL_INFO" ]; then
-        echo "  -> No existing .info file — running lcov capture..."
-        # Find directories with .gcda files
-        GCDA_DIRS=$(find "$PROJECT_DIR" -name "*.gcda" -exec dirname {} \; | sort -u 2>/dev/null || true)
-        if [ -n "$GCDA_DIRS" ]; then
-            lcov --capture --directory "$PROJECT_DIR" --output-file "$PROJECT_DIR/coverage_raw.info" \
-                 --rc lcov_branch_coverage=1 2>/dev/null || true
-            if [ -f "$PROJECT_DIR/coverage_raw.info" ]; then
-                lcov --remove "$PROJECT_DIR/coverage_raw.info" \
-                     '/usr/*' '*/third_party/*' '*/tests/*' '*/build*' \
-                     --output-file "$PROJECT_DIR/coverage_filtered.info" 2>/dev/null || true
-                lcov --extract "$PROJECT_DIR/coverage_filtered.info" "$PROJECT_DIR/src/*" \
-                     --output-file "$PROJECT_DIR/coverage_src.info" 2>/dev/null || true
-                FINAL_INFO="$PROJECT_DIR/coverage_src.info"
-                if [ ! -f "$FINAL_INFO" ]; then
-                    FINAL_INFO="$PROJECT_DIR/coverage_filtered.info"
-                fi
-            fi
-        else
-            echo "  ⚠️  No .gcda files found — coverage data may be empty"
-        fi
-    fi
-    
-    if [ -z "$FINAL_INFO" ] || [ ! -f "$FINAL_INFO" ]; then
-        echo "  ❌ No coverage data generated"
+    mkdir -p "$BUILD_DIR/coverage"
+
+    if ! command -v gcovr &>/dev/null; then
+        echo "  ❌ gcovr not installed — install with: pip install gcovr"
         return 1
     fi
-    
-    echo "  -> Using: $FINAL_INFO"
-    
-    # Generate HTML report
-    mkdir -p "$PROJECT_DIR/coverage_report"
-    if command -v genhtml &>/dev/null; then
-        genhtml "$FINAL_INFO" \
-            --output-directory "$PROJECT_DIR/coverage_report" \
-            --title "yuleASR C Coverage" \
-            --legend \
-            --rc lcov_branch_coverage=1 \
-            2>&1 | tail -5
-        echo "  -> HTML report: coverage_report/index.html"
-    else
-        echo "  ⚠️  genhtml not available (macOS) — skipping HTML report"
-        echo "     Install: brew install lcov"
+
+    # Capture coverage from the build dir, filter to src/, exclude tests/third_party/build.
+    # --gcov-ignore-errors all tolerates cross-compiled .gcda without native gcov data.
+    gcovr --root "$PROJECT_DIR" \
+          --object-directory "$BUILD_DIR" \
+          --filter "src/.*" \
+          --exclude "tests/.*" --exclude "third_party/.*" --exclude "build-cov/.*" \
+          --gcov-ignore-parse-errors \
+          --gcov-ignore-errors all \
+          --json \
+          --output "$BUILD_DIR/coverage/coverage.json" \
+          2>&1 | tail -5
+
+    GCOVR_JSON="$BUILD_DIR/coverage/coverage.json"
+    if [ ! -f "$GCOVR_JSON" ]; then
+        echo "  ❌ gcovr did not produce a JSON report"
+        return 1
     fi
-    
-    # Print summary
+
+    # HTML report (optional)
+    if command -v genhtml &>/dev/null || true; then
+        gcovr --root "$PROJECT_DIR" \
+              --object-directory "$BUILD_DIR" \
+              --filter "src/.*" --exclude "tests/.*" --exclude "third_party/.*" \
+              --gcov-ignore-parse-errors --gcov-ignore-errors all \
+              --html --html-details \
+              --output "$PROJECT_DIR/coverage_report/index.html" \
+              2>/dev/null && echo "  -> HTML report: coverage_report/index.html" || true
+    fi
+
+    # ── WP2: produce the trusted, reproducible JSON (relative paths + provenance) ──
+    mkdir -p "$PROJECT_DIR/.yuleosh/reports"
+    python3 "$PROJECT_DIR/tools/generate_c_coverage_json.py" \
+            "$GCOVR_JSON" \
+            "$PROJECT_DIR/.yuleosh/reports/c-coverage.json" \
+            --root "$PROJECT_DIR"
+
     echo ""
     echo "=== Coverage Summary ==="
-    if command -v lcov &>/dev/null; then
-        lcov --summary "$FINAL_INFO" 2>&1 || true
-    fi
-    
-    # Generate CI JSON report
-    echo ""
-    echo "=== Generating CI JSON Report ==="
-    mkdir -p "$PROJECT_DIR/.yuleosh/reports"
-    LIBC_COV="$PROJECT_DIR/tools/generate_c_coverage_json.py"
-    if [ -f "$LIBC_COV" ]; then
-        python3 "$LIBC_COV" "$FINAL_INFO" "$PROJECT_DIR/.yuleosh/reports/c-coverage.json"
-    else
-        echo "  ⚠️  generate_c_coverage_json.py not found — generating inline..."
-        python3 -c "
-import json, re, os
-
-info_file = '$FINAL_INFO'
-output_file = '$PROJECT_DIR/.yuleosh/reports/c-coverage.json'
-
-files = []
-totals = {'lines': {'found': 0, 'hit': 0}, 'functions': {'found': 0, 'hit': 0}, 'branches': {'found': 0, 'hit': 0}}
-current = None
-
-with open(info_file) as f:
-    for line in f:
-        line = line.strip()
-        m_sf = re.match(r'^SF:(.+)\$', line)
-        if m_sf:
-            if current:
-                files.append(current)
-            current = {
-                'file': m_sf.group(1),
-                'lines': {'found': 0, 'hit': 0},
-                'functions': {'found': 0, 'hit': 0},
-                'branches': {'found': 0, 'hit': 0}
-            }
-            continue
-        if current is None:
-            continue
-        m_da = re.match(r'^DA:(\d+),(\d+)\$', line)
-        if m_da:
-            count = int(m_da.group(2))
-            current['lines']['found'] += 1
-            if count > 0:
-                current['lines']['hit'] += 1
-            continue
-        m_fnf = re.match(r'^FNF:(\d+)\$', line)
-        if m_fnf:
-            current['functions']['found'] = int(m_fnf.group(1))
-            continue
-        m_fnh = re.match(r'^FNH:(\d+)\$', line)
-        if m_fnh:
-            current['functions']['hit'] = int(m_fnh.group(1))
-            continue
-        m_brf = re.match(r'^BRF:(\d+)\$', line)
-        if m_brf:
-            current['branches']['found'] = int(m_brf.group(1))
-            continue
-        m_brh = re.match(r'^BRH:(\d+)\$', line)
-        if m_brh:
-            current['branches']['hit'] = int(m_brh.group(1))
-            continue
-        if line == 'end_of_record' and current:
-            for k in ['lines', 'functions', 'branches']:
-                totals[k]['found'] += current[k]['found']
-                totals[k]['hit'] += current[k]['hit']
-            files.append(current)
-            current = None
-
-total_lines_found = totals['lines']['found']
-total_lines_hit = totals['lines']['hit']
-line_rate = round(total_lines_hit / total_lines_found * 100, 2) if total_lines_found > 0 else 0.0
-
-total_br_found = totals['branches']['found']
-total_br_hit = totals['branches']['hit']
-branch_rate = round(total_br_hit / total_br_found * 100, 2) if total_br_found > 0 else 0.0
-
-report = {
-    'success': True,
-    'line_rate': line_rate,
-    'branch_rate': branch_rate,
-    'total_files': len(files),
-    'totals': {
-        'lines': {'found': total_lines_found, 'hit': total_lines_hit},
-        'functions': {'found': totals['functions']['found'], 'hit': totals['functions']['hit']},
-        'branches': {'found': total_br_found, 'hit': total_br_hit}
-    },
-    'files': [
-        {
-            'file': f['file'],
-            'line_rate': round(f['lines']['hit'] / max(f['lines']['found'], 1) * 100, 2),
-            'branch_rate': round(f['branches']['hit'] / max(f['branches']['found'], 1) * 100, 2),
-            'lines': f['lines'],
-            'functions': f['functions']
-        }
-        for f in files
-    ]
-}
-
-with open(output_file, 'w') as f:
-    json.dump(report, f, indent=2)
-
-# Print summary
-print(f'    Report: {output_file}')
-print(f'    Line rate: {line_rate}%')
-print(f'    Branch rate: {branch_rate}%')
-print(f'    Files: {len(files)}')
-print(f'    Lines: {total_lines_hit}/{total_lines_found}')
-print(f'    Functions: {totals[\"functions\"][\"hit\"]}/{totals[\"functions\"][\"found\"]}')
-print(f'    Branches: {totals[\"branches\"][\"hit\"]}/{totals[\"branches\"][\"found\"]}')
-" 2>&1
-    fi
+    python3 -c "
+import json
+d = json.load(open('$PROJECT_DIR/.yuleosh/reports/c-coverage.json'))
+p = d.get('provenance', {})
+print(f\"  Line rate:   {d['line_rate']}%  ({d['totals']['lines']['hit']}/{d['totals']['lines']['found']})\")
+print(f\"  Branch rate: {d['branch_rate']}%\")
+print(f\"  Files:       {d['total_files']}\")
+print(f\"  git_sha:     {p.get('git_sha','?')[:8]}  dirty={p.get('git_dirty')}\")
+"
 }
 
 # ── Save coverage baseline ──
@@ -366,23 +245,23 @@ if files:
 # Main
 # ════════════════════════════════════════════════════
 
-MODE="${1:-batch}"
+MODE="${1:-cmake}"
 
 case "$MODE" in
     cmake)
         clean_gcda
-        do_cmake_build || do_batch_build
+        do_cmake_build
         generate_reports
         ;;
     batch)
         clean_gcda
-        do_batch_build
+        do_batch_build || { echo "batch mode unavailable, falling back to cmake"; do_cmake_build; }
         generate_reports
         ;;
     baseline)
         # Generate fresh coverage then save baseline
         clean_gcda
-        do_batch_build
+        do_cmake_build
         generate_reports
         save_baseline
         ;;
