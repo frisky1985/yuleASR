@@ -35,7 +35,15 @@ import sys
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OSH_EVIDENCE = os.path.join(BASE_DIR, ".osh", "evidence")
-TRACE_REPORT = os.path.join(BASE_DIR, ".yuleosh", "reports", "traceability-report.json")
+
+# The authoritative traceability report travels with the repo in the
+# evidence-bundle. .yuleosh/reports/ holds a local fresh copy (gitignored).
+# Prefer the committed evidence-bundle so the generator works on any machine
+# without re-running the traceability pipeline; fall back to local if present.
+_EVIDENCE_TRACE = os.path.join(BASE_DIR, ".yuleosh", "evidence-bundle", "traceability", "traceability-report.json")
+_LOCAL_TRACE = os.path.join(BASE_DIR, ".yuleosh", "reports", "traceability-report.json")
+TRACE_REPORT = _EVIDENCE_TRACE if os.path.isfile(_EVIDENCE_TRACE) else _LOCAL_TRACE
+
 MISRA_REPORT = os.path.join(BASE_DIR, ".yuleosh", "reports", "misra-report.json")
 C_COVERAGE_REPORT = os.path.join(BASE_DIR, ".yuleosh", "reports", "c-coverage.json")
 

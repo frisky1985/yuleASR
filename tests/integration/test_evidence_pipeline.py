@@ -18,7 +18,14 @@ import subprocess
 import tempfile
 
 BASE_DIR = os.path.normpath(os.path.join(os.path.dirname(__file__), "..", ".."))
-TRACE_REPORT = os.path.join(BASE_DIR, ".yuleosh", "reports", "traceability-report.json")
+
+# Authoritative traceability report is committed in the evidence-bundle;
+# .yuleosh/reports/ holds a local fresh copy (gitignored). Prefer the
+# committed copy so the test is reproducible on any machine.
+_EVIDENCE_TRACE = os.path.join(BASE_DIR, ".yuleosh", "evidence-bundle", "traceability", "traceability-report.json")
+_LOCAL_TRACE = os.path.join(BASE_DIR, ".yuleosh", "reports", "traceability-report.json")
+TRACE_REPORT = _EVIDENCE_TRACE if os.path.isfile(_EVIDENCE_TRACE) else _LOCAL_TRACE
+
 EVIDENCE_DIR = os.path.join(BASE_DIR, ".osh", "evidence")
 GENERATE_SCRIPT = os.path.join(BASE_DIR, "tools", "generate_evidence.py")
 

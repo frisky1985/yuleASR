@@ -20,9 +20,32 @@ import sys
 import pytest
 
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+# The committed, authoritative MISRA evidence lives in the evidence-bundle
+# (travels with the repo). .yuleosh/reports/ holds local fresh-scan output
+# (gitignored). Prefer the evidence-bundle so tests are reproducible on any
+# machine without re-running the scan; fall back to local if present.
+_EVIDENCE_MISRA = os.path.join(PROJECT_DIR, ".yuleosh", "evidence-bundle", "misra-reports")
+_LOCAL_REPORTS = os.path.join(PROJECT_DIR, ".yuleosh", "reports")
+
+
+def _resolve(*candidates):
+    """Return the first existing path among candidates."""
+    for c in candidates:
+        if os.path.isfile(c):
+            return c
+    return candidates[0]  # fall back to first (tests will report it missing)
+
+
 BASE_PATHS = {
-    "misra_json": os.path.join(PROJECT_DIR, ".yuleosh", "reports", "misra-report.json"),
-    "misra_raw": os.path.join(PROJECT_DIR, ".yuleosh", "reports", "misra-raw-output.txt"),
+    "misra_json": _resolve(
+        os.path.join(_EVIDENCE_MISRA, "misra-report.json"),
+        os.path.join(_LOCAL_REPORTS, "misra-report.json"),
+    ),
+    "misra_raw": _resolve(
+        os.path.join(_EVIDENCE_MISRA, "misra-raw-output.txt"),
+        os.path.join(_LOCAL_REPORTS, "misra-raw-output.txt"),
+    ),
     "ci_config": os.path.join(PROJECT_DIR, ".yuleosh", "ci-config.yaml"),
     "layer1": os.path.join(PROJECT_DIR, ".yuleosh", "reports", "layer1-report.json"),
     "layer2": os.path.join(PROJECT_DIR, ".yuleosh", "reports", "layer2-report.json"),

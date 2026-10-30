@@ -19,10 +19,17 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 
+# Authoritative traceability report is committed in the evidence-bundle;
+# .yuleosh/reports/ holds a local fresh copy (gitignored). Prefer the
+# committed copy so the generator works on any machine.
+_EVIDENCE_TRACE = ROOT / ".yuleosh" / "evidence-bundle" / "traceability" / "traceability-report.json"
+_LOCAL_TRACE = ROOT / ".yuleosh" / "reports" / "traceability-report.json"
+TRACE_REPORT = _EVIDENCE_TRACE if _EVIDENCE_TRACE.is_file() else _LOCAL_TRACE
+
 
 def load_req_test_map() -> list[dict]:
     """构建 [{req_id, statement, tests: [{file, funcs}]}]。"""
-    report = json.load(open(ROOT / ".yuleosh/reports/traceability-report.json"))
+    report = json.load(open(TRACE_REPORT))
     reqs = report["lrm"]["requirements"]
 
     # 测试文件 → 函数列表 (从测试文件 @req 注释)
@@ -40,14 +47,26 @@ def load_req_test_map() -> list[dict]:
         rid = r.get("req_id") or r.get("id") or ""
         tests = []
         seen = set()
-        for tr in (r.get("test_reports") or []):
-            f = tr.get("file", "")
-            if f in seen:
+        # Use the same fallback chain as generate_evidence.py:
+        # matched_tests (list of file paths) → test_reports (dicts) → has_test
+        matched = r.get("matched_tests") or []
+        for tr in matched:
+            f = tr.get("file") if isinstance(tr, dict) else str(tr)
+            if not f or f in seen:
                 continue
             seen.add(f)
             funcs = test_funcs.get(f, [])
-            # 过滤仅含该文件的需求相关函数 (有 @req 的函数)
             tests.append({"file": f, "funcs": funcs[:8], "count": len(funcs)})
+        if not tests:
+            for tr in (r.get("test_reports") or []):
+                f = tr.get("file", "") if isinstance(tr, dict) else str(tr)
+                if not f or f in seen:
+                    continue
+                seen.add(f)
+                funcs = test_funcs.get(f, [])
+                tests.append({"file": f, "funcs": funcs[:8], "count": len(funcs)})
+        if not tests and r.get("has_test"):
+            tests.append({"file": "(tested)", "funcs": [], "count": 0})
         out.append({
             "req_id": rid,
             "statement": r.get("statement", ""),
