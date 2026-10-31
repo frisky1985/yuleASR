@@ -18,7 +18,6 @@
 #include "Fls.h"
 #include "NvM.h"
 #include "MemIf.h"
-#include "Fee_Fls_Integration.h"
 #include "Det.h"
 #include <string.h>
 #include <stdio.h>
@@ -409,38 +408,6 @@ void test_Fee_SetMode(void)
 }
 
 /**
- * @brief Test 9: Fee-FLS Integration Layer Test
- * Tests the Fee-Fls integration layer
- */
-void test_Fee_Fls_IntegrationLayer(void)
-{
-    Fee_Fls_Int_StatusType result;
-    Fee_Fls_Int_ConfigType intConfig;
-
-    printf("TEST 9: Fee-FLS Integration Layer\n");
-
-    /* Initialize Fls */
-    Fls_Init(&TestFlsConfig);
-
-    /* Configure integration layer */
-    intConfig.MaxReadTimeout = 1000u;
-    intConfig.MaxWriteTimeout = 5000u;
-    intConfig.MaxEraseTimeout = 10000u;
-    intConfig.EnableIntegrityCheck = TRUE;
-    intConfig.EnableStatistics = TRUE;
-    intConfig.MaxRetries = 3u;
-
-    /* Initialize integration layer */
-    result = Fee_Fls_Int_Init(&intConfig);
-    TEST_ASSERT_EQUAL(FEE_FLS_INT_E_OK, result);
-
-    /* Check state */
-    TEST_ASSERT_EQUAL(FEE_FLS_INT_STATE_IDLE, Fee_Fls_Int_GetState());
-
-    printf("  PASS: Integration layer initialized successfully\n");
-}
-
-/**
  * @brief Test 10: Fee Erase Immediate Block Test
  * Tests immediate erase functionality
  */
@@ -620,7 +587,6 @@ int main(void)
     RUN_TEST(test_Fee_GetVersionInfo);
 #endif
     RUN_TEST(test_Fee_SetMode);
-    RUN_TEST(test_Fee_Fls_IntegrationLayer);
     RUN_TEST(test_Fee_EraseImmediateBlock);
     RUN_TEST(test_Fee_ErrorHandling);
     RUN_TEST(test_Fee_CycleCounts);

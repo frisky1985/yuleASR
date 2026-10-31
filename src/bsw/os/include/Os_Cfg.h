@@ -30,7 +30,7 @@
 #ifndef OS_RESOURCE_COUNT
 #define OS_RESOURCE_COUNT    (0U)
 #endif
-#define OS_CFG_NUM_ALARMS    (6U)
+#define OS_CFG_NUM_ALARMS    (8U)
 #define OS_CFG_NUM_RESOURCES    (4U)
 #define OS_CFG_MAIN_COUNTER_TICKS_PER_MS    (1U)
 #define OS_CFG_MAIN_COUNTER_MAX_ALLOWED    (4294967295U)
@@ -83,6 +83,8 @@
 #define OsAlarm_Dcm_MainFunction    (3U)
 #define OsAlarm_NvM_MainFunction    (4U)
 #define OsAlarm_Dem_MainFunction    (5U)
+#define OsAlarm_MemIf_MainFunction    (6U)
+#define OsAlarm_Fls_MainFunction    (7U)
 #define OsRes_NvMBlock    (1U)
 #define OsRes_ComBuffer    (2U)
 #define OsRes_Diagnostic    (3U)

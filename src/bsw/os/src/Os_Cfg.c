@@ -30,6 +30,8 @@
 #include "Dcm.h"
 #include "NvM.h"
 #include "Dem.h"
+#include "MemIf.h"
+#include "Fls.h"
 
 /*==================================================================================================
 *                                    TASK ENTRY POINT DECLARATIONS
@@ -52,6 +54,8 @@ STATIC void OsAlarm_CanIf_MainFunction_Callback(void);
 STATIC void OsAlarm_Dcm_MainFunction_Callback(void);
 STATIC void OsAlarm_NvM_MainFunction_Callback(void);
 STATIC void OsAlarm_Dem_MainFunction_Callback(void);
+STATIC void OsAlarm_MemIf_MainFunction_Callback(void);
+STATIC void OsAlarm_Fls_MainFunction_Callback(void);
 
 /*==================================================================================================
 *                                    TASK CONFIGURATION TABLE
@@ -225,6 +229,32 @@ STATIC Os_AlarmConfigType Os_AlarmConfigs[OS_CFG_NUM_ALARMS] =
         /* State             */ OS_ALARM_UNUSED,
         /* Callback          */ OsAlarm_Dem_MainFunction_Callback,
         /* FreeRTOS_Timer    */ NULL_PTR
+    },
+
+    /* Alarm 6: MemIf_MainFunction - 10ms
+     * Drives the memory abstraction stack (MemIf -> Fee) asynchronously.
+     * Never waits: each call only advances the Fee job state machine. */
+    {
+        /* AlarmID           */ OsAlarm_MemIf_MainFunction,
+        /* Increment         */ OS_ALARM_PERIOD_10MS,
+        /* Cycle             */ OS_ALARM_PERIOD_10MS,
+        /* ExpiryTick        */ 0U,
+        /* State             */ OS_ALARM_UNUSED,
+        /* Callback          */ OsAlarm_MemIf_MainFunction_Callback,
+        /* FreeRTOS_Timer    */ NULL_PTR
+    },
+
+    /* Alarm 7: Fls_MainFunction - 10ms
+     * Advances the flash driver job state machine (bounded work per call).
+     * Must be scheduled independently of Fee; otherwise Fee jobs hang. */
+    {
+        /* AlarmID           */ OsAlarm_Fls_MainFunction,
+        /* Increment         */ OS_ALARM_PERIOD_10MS,
+        /* Cycle             */ OS_ALARM_PERIOD_10MS,
+        /* ExpiryTick        */ 0U,
+        /* State             */ OS_ALARM_UNUSED,
+        /* Callback          */ OsAlarm_Fls_MainFunction_Callback,
+        /* FreeRTOS_Timer    */ NULL_PTR
     }
 };
 
@@ -348,6 +378,14 @@ void Os_Callback_Alarm(AlarmType AlarmID)
             Dem_MainFunction();
             break;
 
+        case OsAlarm_MemIf_MainFunction:
+            MemIf_MainFunction(MEMIF_DEVICE_INDEX_FEE);
+            break;
+
+        case OsAlarm_Fls_MainFunction:
+            Fls_MainFunction();
+            break;
+
         default:
             /* Unknown alarm ID - no action */
             break;
@@ -400,6 +438,22 @@ STATIC void OsAlarm_NvM_MainFunction_Callback(void)
 STATIC void OsAlarm_Dem_MainFunction_Callback(void)
 {
     Os_Callback_Alarm(OsAlarm_Dem_MainFunction);
+}
+
+/**
+ * @brief Alarm callback for MemIf_MainFunction (10ms)
+ */
+STATIC void OsAlarm_MemIf_MainFunction_Callback(void)
+{
+    Os_Callback_Alarm(OsAlarm_MemIf_MainFunction);
+}
+
+/**
+ * @brief Alarm callback for Fls_MainFunction (10ms)
+ */
+STATIC void OsAlarm_Fls_MainFunction_Callback(void)
+{
+    Os_Callback_Alarm(OsAlarm_Fls_MainFunction);
 }
 
 #define OS_STOP_SEC_CODE

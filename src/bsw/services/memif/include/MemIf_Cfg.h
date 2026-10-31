@@ -33,6 +33,33 @@
 #define MEMIF_TOTAL_NUM_DEVICES    (1U)
 #endif
 
+/* Device routing switches: these select which underlying drivers are
+ * dispatched by MemIf.  Without them every Fee/Ea branch in MemIf.c is
+ * compiled out by the preprocessor and the memory stack never advances. */
+#ifndef MEMIF_FEE_ENABLED
+#define MEMIF_FEE_ENABLED    STD_ON
+#endif
+#ifndef MEMIF_EA_ENABLED
+#define MEMIF_EA_ENABLED    STD_OFF
+#endif
+
+/* Underlying device type tags used by the default device configuration
+ * table in MemIf.c (MemIf.h documents 0 = FEE, 1 = EA). */
+#ifndef MEMIF_DEVICE_TYPE_FEE
+#define MEMIF_DEVICE_TYPE_FEE    (0U)
+#endif
+#ifndef MEMIF_DEVICE_TYPE_EA
+#define MEMIF_DEVICE_TYPE_EA    (1U)
+#endif
+
+/* Block counts of the underlying drivers (mirrors FEE_NUM_BLOCKS / Ea config). */
+#ifndef MEMIF_FEE_NUM_BLOCKS
+#define MEMIF_FEE_NUM_BLOCKS    (16U)
+#endif
+#ifndef MEMIF_EA_NUM_BLOCKS
+#define MEMIF_EA_NUM_BLOCKS    (0U)
+#endif
+
 /*==================================================================================================
 *                                    Processing Modes
 *================================================================================================*/

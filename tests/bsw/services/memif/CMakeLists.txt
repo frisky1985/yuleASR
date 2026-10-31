@@ -1,8 +1,7 @@
 # MemIf unit tests — substantiated against the production MemIf implementation.
-# Links the real service_memif library; the only external dependency
-# (Det_ReportError) is provided by the test file itself, so no mocks are linked.
-# MEMIF_FEE_ENABLED/MEMIF_EA_ENABLED are never defined by the SUT config, so no
-# Fee_*/Ea_* symbols are required at link time.
+# Links the real service_memif library.  The lower-layer driver symbols are
+# provided as recording stubs by the test file itself, so the unit test stays
+# isolated from Fee/Fls internals while still exercising MemIf's routing branches.
 
 cmake_minimum_required(VERSION 3.16)
 

@@ -323,6 +323,16 @@ extern MemIf_StatusType MemIf_GetStatus(uint8 DeviceIndex);
 extern MemIf_JobResultType MemIf_GetJobResult(uint8 DeviceIndex);
 
 /**
+ * @brief Periodic main function; advances the underlying driver job state
+ *        machine for the given device.  Must be scheduled cyclically (it is
+ *        wired to an OS alarm) and never blocks the calling task.
+ * @param DeviceIndex Index of the device
+ * @return None
+ * @req SWS_MemIf_00011
+ */
+extern void MemIf_MainFunction(uint8 DeviceIndex);
+
+/**
  * @brief Set the mode for a device
  * @param DeviceIndex Index of the device
  * @param Mode Mode to set (MEMIF_MODE_SLOW or MEMIF_MODE_FAST)

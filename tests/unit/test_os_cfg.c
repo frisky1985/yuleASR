@@ -23,6 +23,8 @@ static int g_com_tx_called = 0;
 static int g_dcm_called = 0;
 static int g_nvm_called = 0;
 static int g_dem_called = 0;
+static int g_memif_called = 0;
+static int g_fls_called = 0;
 
 /* ---- Stub MainFunctions ---- */
 void BswM_MainFunction(void) { g_bswm_called++; }
@@ -31,6 +33,8 @@ void Com_MainFunctionTx(void) { g_com_tx_called++; }
 void Dcm_MainFunction(void) { g_dcm_called++; }
 void NvM_MainFunction(void) { g_nvm_called++; }
 void Dem_MainFunction(void) { g_dem_called++; }
+void MemIf_MainFunction(uint8 DeviceIndex) { (void)DeviceIndex; g_memif_called++; }
+void Fls_MainFunction(void) { g_fls_called++; }
 
 /* ---- Stub task entry functions (infinite loop bodies) ---- */
 void OsTask_10ms_Entry(void) { while(1) {} }

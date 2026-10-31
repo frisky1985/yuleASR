@@ -135,6 +135,11 @@ target_include_directories(OsCfg_UnitTest
         ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/services/com/include
         ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/services/dcm/include
         ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/services/nvm/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/services/memif/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/ecual/fee/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/ecual/ea/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/mcal/fls/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../src/platform/s32k312/include
         ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/services/dem/include
         ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/ecual/canif/include
         ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/mcal/can/include

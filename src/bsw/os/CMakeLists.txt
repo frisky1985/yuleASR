@@ -45,6 +45,11 @@ target_include_directories(Os
         ${CMAKE_SOURCE_DIR}/src/bsw/services/com/include
         ${CMAKE_SOURCE_DIR}/src/bsw/services/dcm/include
         ${CMAKE_SOURCE_DIR}/src/bsw/services/nvm/include
+        ${CMAKE_SOURCE_DIR}/src/bsw/services/memif/include
+        ${CMAKE_SOURCE_DIR}/src/bsw/ecual/fee/include
+        ${CMAKE_SOURCE_DIR}/src/bsw/ecual/ea/include
+        ${CMAKE_SOURCE_DIR}/src/bsw/mcal/fls/include
+        ${CMAKE_SOURCE_DIR}/src/platform/s32k312/include
         ${CMAKE_SOURCE_DIR}/src/middleware/rte/include
 )
 

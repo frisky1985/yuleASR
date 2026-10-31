@@ -4,12 +4,10 @@
  * @version 2.0.0
  * @date 2026-08-25
  *
- * @note The SUT's own include/MemIf_Cfg.h wins over config/input (quoted
- *       include resolves same-directory first): MEMIF_TOTAL_NUM_DEVICES=1 and
- *       MEMIF_FEE_ENABLED/MEMIF_EA_ENABLED are NOT defined, so every lower
- *       driver call site (Fee and Ea APIs) in MemIf.c is compiled out.
- *       Observable behaviour: job requests with formally-valid arguments
- *       return E_NOT_OK without DET and without changing device state.
+ * @note The SUT's include/MemIf_Cfg.h configures MEMIF_TOTAL_NUM_DEVICES=1
+ *       with MEMIF_FEE_ENABLED=STD_ON, so MemIf routes Fee requests to the
+ *       lower layer.  The default device config leaves numBlocks at zero,
+ *       hence block 0 is still rejected with MEMIF_E_PARAM_BLOCK.
  */
 // @tests src/bsw/services/memif/src/MemIf.c  @tests src/bsw/services/memif/include/MemIf.h
 
@@ -54,6 +52,73 @@ Std_ReturnType Det_ReportError(uint16 ModuleId, uint8 InstanceId, uint8 ApiId, u
     return E_OK;
 }
 
+/* MemIf_Cfg.h defines self-referential function-like macros for the Fee API;
+ * undefine them so this test can provide real stub function definitions. */
+#undef Fee_Read
+#undef Fee_Write
+#undef Fee_Cancel
+#undef Fee_GetStatus
+#undef Fee_GetJobResult
+
+/* With MEMIF_FEE_ENABLED == STD_ON, MemIf routes every Fee request to the
+ * lower layer.  Provide recording no-op stubs here (rather than linking the
+ * real ecual_fee) so the unit test stays isolated and the stubs emulate an
+ * uninitialized Fee device: status MEMIF_UNINIT, job result MEMIF_JOB_FAILED.
+ * This keeps DET counters owned solely by MemIf. */
+static uint8 mock_FeeCallCount = 0U;
+
+static void mock_Fee_Reset(void) {
+    mock_FeeCallCount = 0U;
+}
+
+Std_ReturnType Fee_Read(Fee_BlockIdType BlockNumber, uint16 BlockOffset,
+                        uint8* DataBufferPtr, uint16 Length) {
+    (void)BlockNumber; (void)BlockOffset; (void)DataBufferPtr; (void)Length;
+    mock_FeeCallCount++;
+    return E_NOT_OK;
+}
+
+Std_ReturnType Fee_Write(Fee_BlockIdType BlockNumber, const uint8* DataBufferPtr) {
+    (void)BlockNumber; (void)DataBufferPtr;
+    mock_FeeCallCount++;
+    return E_NOT_OK;
+}
+
+void Fee_Cancel(void) {
+    mock_FeeCallCount++;
+}
+
+Fee_StatusType Fee_GetStatus(void) {
+    mock_FeeCallCount++;
+    return (Fee_StatusType)MEMIF_UNINIT;
+}
+
+Fee_JobResultType Fee_GetJobResult(void) {
+    mock_FeeCallCount++;
+    return (Fee_JobResultType)MEMIF_JOB_FAILED;
+}
+
+Std_ReturnType Fee_InvalidateBlock(Fee_BlockIdType BlockNumber) {
+    (void)BlockNumber;
+    mock_FeeCallCount++;
+    return E_NOT_OK;
+}
+
+Std_ReturnType Fee_EraseImmediateBlock(Fee_BlockIdType BlockNumber) {
+    (void)BlockNumber;
+    mock_FeeCallCount++;
+    return E_NOT_OK;
+}
+
+void Fee_MainFunction(void) {
+    mock_FeeCallCount++;
+}
+
+void Fee_SetMode(Fee_ModeType Mode) {
+    (void)Mode;
+    mock_FeeCallCount++;
+}
+
 /* exercise the library's real MemIf_GetVersionInfo() (the header maps the
  * name to a NULL-tolerant macro; the library function reports DET on NULL) */
 #undef MemIf_GetVersionInfo
@@ -67,6 +132,7 @@ void setUp(void) {
     MemIf_ModuleInitialized = FALSE;
     MemIf_ConfigPtr = NULL_PTR;
     mock_Det_Reset();
+    mock_Fee_Reset();
 }
 
 void tearDown(void) {

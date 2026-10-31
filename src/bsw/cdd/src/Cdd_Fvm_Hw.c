@@ -147,8 +147,14 @@ Std_ReturnType Cdd_Fvm_HwRead(uint32 srcAddr, uint8* data, uint32 length)
  *==================================================================================================*/
 #if (CDD_FVM_BACKEND == CDD_FVM_BACKEND_FLS)
 
-/** @brief Poll timeout for one synchronous Fls job in milliseconds */
-#define CDD_FVM_FLS_TIMEOUT_MS               (1000u)
+/** @brief Maximum number of Fls job-completion polls before timing out.
+ *
+ *  Fls_MainFunction is driven by its own 10 ms OS alarm (OsAlarm_Fls_MainFunction),
+ *  not by this wait loop.  The polling task therefore has to yield the CPU so that
+ *  the alarm task can advance the flash job; the caller must be a low-priority task.
+ *  The budget is expressed in polls of that alarm period (100 * 10 ms = 1 s).
+ */
+#define CDD_FVM_FLS_TIMEOUT_POLLS           (100u)
 
 /**
  * @brief Wait for an asynchronous Fls job to finish
@@ -156,20 +162,19 @@ Std_ReturnType Cdd_Fvm_HwRead(uint32 srcAddr, uint8* data, uint32 length)
  */
 STATIC Std_ReturnType Cdd_Fvm_HwFlsWait(void)
 {
-    uint32 elapsed;
+    uint32 poll;
     Std_ReturnType result = E_NOT_OK;
 
-    for (elapsed = 0u; elapsed < CDD_FVM_FLS_TIMEOUT_MS; elapsed++)
+    for (poll = 0u; poll < CDD_FVM_FLS_TIMEOUT_POLLS; poll++)
     {
         if (Fls_GetStatus() == FLS_IDLE)
         {
-            if (Fls_GetJobResult() == MEMIF_JOB_OK)
-            {
-                result = E_OK;
-            }
+            result = (Fls_GetJobResult() == MEMIF_JOB_OK) ? E_OK : E_NOT_OK;
             break;
         }
-        /* 1 ms tick granularity: Fls_MainFunction is scheduled by BSW scheduler */
+        /* Do not call Fls_MainFunction() here: it would steal ownership from
+         * the OS alarm task and race with it.  The Fls job progresses only
+         * through that alarm, so this task must be lower priority. */
     }
     return result;
 }
