@@ -82,7 +82,7 @@
 
 | 模块 | 状态 | 文件名 | 备注 |
 |------|------|--------|------|
-| Fee | ✅ 已实现 | Fee.c, Fee_Fls_Integration.c | Flash EEPROM仿真完整实现 |
+| Fee | ✅ 已实现 | Fee.c | Flash EEPROM仿真完整实现 |
 | Ea | ✅ 已实现 | Ea.c | EEPROM抽象完整实现 |
 | MemIf | ✅ 已实现 | MemIf.c | 存储接口完整实现 |
 

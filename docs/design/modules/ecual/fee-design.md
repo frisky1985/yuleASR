@@ -1,11 +1,11 @@
 # Fee Design Document
 
 > **Module ID**: 0x1C  
-> **AUTOSAR Layer**: MCAL  
+> **AUTOSAR Layer**: ECUAL  
 > **AUTOSAR Version**: Classic Platform 4.4.0  
 > **SWS Reference**: AUTOSAR_SWS_FlashEEPROMEmulation  
-> **Source Path**: `src/bsw/mcal/fee/`  
-> **Reference Document**: `docs/modules/FEE.md`  
+> **Source Path**: `src/bsw/ecual/fee/`  
+> **Reference Document**: `docs/modules/fee.md`  
 > **Doc Version**: 1.0  
 > **Status**: Draft
 
@@ -13,7 +13,7 @@
 
 ## 1. 模块概述
 
-Fee（Flash EEPROM Emulation）位于 MCAL 层，通过在 Flash 上模拟 EEPROM 的随机字节可写特性，为上层 NvM（NVRAM Manager）提供非易失性存储服务。Fee 将逻辑 Block 映射到 Flash 的虚拟页中，支持读写、擦除、比较、空白检查、磨损均衡、垃圾回收（Garbage Collection）以及擦除挂起/恢复等机制。
+Fee（Flash EEPROM Emulation）位于 ECUAL 层（依据 AUTOSAR_SWS_FlashEEPROMEmulation），通过在 Flash 上模拟 EEPROM 的随机字节可写特性，为上层 NvM（NVRAM Manager）提供非易失性存储服务。Fee 将逻辑 Block 映射到 Flash 的虚拟页中，支持读写、擦除、比较、空白检查、磨损均衡、垃圾回收（Garbage Collection）以及擦除挂起/恢复等机制。硬件访问全部经由 MCAL 的 Fls 驱动。
 
 主要上下游模块：
 - 上层：NvM（NVRAM Manager）
@@ -51,7 +51,7 @@ Fee（Flash EEPROM Emulation）位于 MCAL 层，通过在 Flash 上模拟 EEPRO
 │           Upper Layers              │
 │              NvM                    │
 ├─────────────────────────────────────┤
-│           Fee (MCAL)                │
+│           Fee (ECUAL)                │
 ├─────────────────────────────────────┤
 │              Fls                    │
 │        Flash Controller / Memory    │
@@ -69,15 +69,12 @@ Fee（Flash EEPROM Emulation）位于 MCAL 层，通过在 Flash 上模拟 EEPRO
 ### 3.3 文件结构
 
 ```
-src/bsw/mcal/fee/
+src/bsw/ecual/fee/
 ├── include/
 │   ├── Fee.h          # 公共 API、类型、错误码
-│   ├── Fee_Cfg.h      # 预编译配置宏
-│   ├── Fee_MemMap.h   # MemMap 分区
-│   └── SchM_Fee.h     # 独占区接口
+│   └── Fee_Cfg.h      # 预编译配置宏
 └── src/
-    ├── Fee.c          # 主实现
-    └── Fee_Lcfg.c     # 链接时配置
+    └── Fee.c          # 主实现（含块/扇区配置表）
 ```
 
 ---
@@ -233,7 +230,7 @@ src/bsw/mcal/fee/
 
 | 配置表 | 说明 |
 |--------|------|
-| `Fee_Lcfg.c` | `Fee_SectorType[]`、`Fee_BlockConfigType[]`、`Fee_PageConfigType[]`、`Fee_Config` |
+| `Fee.c` / `Fee_Cfg.h` | 块/扇区配置表（`Fee_Config`）与预编译配置宏 |
 
 ### 8.3 构建后配置
 
@@ -341,8 +338,8 @@ src/bsw/mcal/fee/
 ## 14. 参考资料
 
 1. AUTOSAR_SWS_FlashEEPROMEmulation.pdf
-2. `docs/modules/FEE.md`
-3. `src/bsw/mcal/fee/`
+2. `docs/modules/fee.md`
+3. `src/bsw/ecual/fee/`
 
 ## 需求追溯表
 

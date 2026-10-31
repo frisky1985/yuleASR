@@ -29,7 +29,7 @@ const sidebars = {
     },
     {
       type: 'category',
-      label: 'MCAL 驱动 (21)',
+      label: 'MCAL 驱动 (20)',
       collapsed: true,
       items: [
         'drivers/mcal/ADC',
@@ -38,7 +38,6 @@ const sidebars = {
         'drivers/mcal/dio',
         'drivers/mcal/eep',
         'drivers/mcal/ETH',
-        'drivers/mcal/fee',
         'drivers/mcal/flash',
         'drivers/mcal/fls',
         'drivers/mcal/gpt',
@@ -57,7 +56,7 @@ const sidebars = {
     },
     {
       type: 'category',
-      label: 'ECUAL 驱动 (29)',
+      label: 'ECUAL 驱动 (30)',
       collapsed: true,
       items: [
         'drivers/ecual/CanIf',
@@ -69,6 +68,7 @@ const sidebars = {
         'drivers/ecual/DLT',
         'drivers/ecual/doip',
         'drivers/ecual/ea',
+        'drivers/ecual/fee',
         'drivers/ecual/EthIf',
         'drivers/ecual/ethsm',
         'drivers/ecual/ethtrcv',

@@ -274,7 +274,7 @@ docs/
 | DIO | MCAL | [design/modules/mcal/dio-design.md](design/modules/mcal/dio-design.md) | 已完成 |
 | EEP | MCAL | [design/modules/mcal/eep-design.md](design/modules/mcal/eep-design.md) | 已完成 |
 | ETH | MCAL | [design/modules/mcal/eth-design.md](design/modules/mcal/eth-design.md) | 已完成 |
-| FEE | MCAL | [design/modules/mcal/fee-design.md](design/modules/mcal/fee-design.md) | 已完成 |
+| FEE | ECUAL | [design/modules/ecual/fee-design.md](design/modules/ecual/fee-design.md) | 已完成 |
 | FLASH | MCAL | [design/modules/mcal/flash-design.md](design/modules/mcal/flash-design.md) | 已完成 |
 | FLS | MCAL | [design/modules/mcal/fls-design.md](design/modules/mcal/fls-design.md) | 已完成 |
 | GPT | MCAL | [design/modules/mcal/gpt-design.md](design/modules/mcal/gpt-design.md) | 已完成 |

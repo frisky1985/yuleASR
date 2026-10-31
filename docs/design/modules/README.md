@@ -29,7 +29,6 @@ docs/design/modules/
 | DIO | MCAL | [mcal/dio-design.md](mcal/dio-design.md) | 已完成 |
 | EEP | MCAL | [mcal/eep-design.md](mcal/eep-design.md) | 已完成 |
 | ETH | MCAL | [mcal/eth-design.md](mcal/eth-design.md) | 已完成 |
-| FEE | MCAL | [mcal/fee-design.md](mcal/fee-design.md) | 已完成 |
 | FLASH | MCAL | [mcal/flash-design.md](mcal/flash-design.md) | 已完成 |
 | FLS | MCAL | [mcal/fls-design.md](mcal/fls-design.md) | 已完成 |
 | GPT | MCAL | [mcal/gpt-design.md](mcal/gpt-design.md) | 已完成 |
@@ -75,6 +74,7 @@ docs/design/modules/
 | EthIf | ECUAL | [ecual/ethif-design.md](ecual/ethif-design.md) | 已完成 |
 | Mem | Services | [services/mem-design.md](services/mem-design.md) | 已完成 |
 | EA | ECUAL | [ecual/ea-design.md](ecual/ea-design.md) | 已完成 |
+| FEE | ECUAL | [ecual/fee-design.md](ecual/fee-design.md) | 已完成 |
 | FrIf | ECUAL | [ecual/frif-design.md](ecual/frif-design.md) | 已完成 |
 | FrTp | ECUAL | [ecual/frtp-design.md](ecual/frtp-design.md) | 已完成 |
 | SomeIp | Services | [services/someip-design.md](services/someip-design.md) | 已完成 |

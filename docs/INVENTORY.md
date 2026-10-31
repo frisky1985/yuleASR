@@ -109,7 +109,7 @@
 | `modules/mcal/dio-design.md` | Dio 设计文档 | docs/design/modules/mcal/dio-design.md |
 | `modules/mcal/eep-design.md` | Eep 设计文档 | docs/design/modules/mcal/eep-design.md |
 | `modules/mcal/eth-design.md` | Eth 设计文档 | docs/design/modules/mcal/eth-design.md |
-| `modules/mcal/fee-design.md` | Fee 设计文档 | docs/design/modules/mcal/fee-design.md |
+| `modules/ecual/fee-design.md` | Fee 设计文档 | docs/design/modules/ecual/fee-design.md |
 | `modules/mcal/flash-design.md` | Flash 设计文档 | docs/design/modules/mcal/flash-design.md |
 | `modules/mcal/fls-design.md` | Fls 设计文档 | docs/design/modules/mcal/fls-design.md |
 | `modules/mcal/gpt-design.md` | Gpt 设计文档 | docs/design/modules/mcal/gpt-design.md |

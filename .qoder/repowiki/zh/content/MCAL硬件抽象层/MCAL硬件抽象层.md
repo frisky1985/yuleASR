@@ -1086,15 +1086,6 @@ Wdg_ConfigType --> WdgIf_ModeType : "初始模式"
 **章节来源**
 - [Eth.h](file://src/bsw/mcal/eth/include/Eth.h)
 
-### Fee Flash EEPROM仿真分析
-- 功能要点：Flash 模拟 EEPROM（扇区管理、磨损均衡、掉电恢复）。
-- 关键数据结构：Fee 块配置表、扇区状态机（Empty/Valid/Invalid）。
-- 接口规范：Fee_Init/Read/Write/Erase/EraseImmediate、JobEnd/JobError 回调。
-- 错误处理：扇区损坏、写入中断恢复、地址非法。
-
-**章节来源**
-- [Fee.h](file://src/bsw/mcal/fee/include/Fee.h)
-
 ### Fls Flash驱动分析
 - 功能要点：片内 Flash 底层驱动（扇区擦除/编程/读取）、写保护配置。
 - 接口规范：Fls_Init/Read/Write/Erase、JobEnd/JobError 回调、写保护寄存器配置。

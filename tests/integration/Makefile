@@ -51,7 +51,6 @@ BSW_SRCS = $(BSW_SRC)/general/det/src/Det.c \
            $(BSW_SRC)/mcal/fls/src/Fls.c \
            $(BSW_SRC)/mcal/wdg/src/Wdg.c \
            $(BSW_SRC)/ecual/fee/src/Fee.c \
-           $(BSW_SRC)/ecual/fee/src/Fee_Fls_Integration.c \
            $(BSW_SRC)/ecual/wdgif/src/WdgIf.c \
            $(BSW_SRC)/ecual/memif/src/MemIf.c \
            $(BSW_SRC)/ecual/iohwab/src/IoHwAb.c \
@@ -110,10 +109,6 @@ Wdg.o: $(BSW_SRC)/mcal/wdg/src/Wdg.c
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 Fee.o: $(BSW_SRC)/ecual/fee/src/Fee.c
-	@echo "Compiling $<..."
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
-
-Fee_Fls_Integration.o: $(BSW_SRC)/ecual/fee/src/Fee_Fls_Integration.c
 	@echo "Compiling $<..."
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 

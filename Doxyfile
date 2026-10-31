@@ -1035,7 +1035,7 @@ INPUT                  = include \
                          src/bsw/mcal/dio/include \
                          src/bsw/mcal/eep/include \
                          src/bsw/mcal/eth/include \
-                         src/bsw/mcal/fee/include \
+                         src/bsw/ecual/fee/include \
                          src/bsw/mcal/flash/include \
                          src/bsw/mcal/fls/include \
                          src/bsw/mcal/gpt/include \
