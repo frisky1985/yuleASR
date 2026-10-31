@@ -45,6 +45,7 @@ generated/
 # Reports (分析报告 - 大文件)
 reports/*.json
 reports/*.xml
+reports/baseline/
 coverage/
 *.gcov
 *.gcda

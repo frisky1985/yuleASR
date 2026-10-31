@@ -9,29 +9,29 @@ SRC = REPO / "config" / "templates"
 DST = REPO / "tools" / "yuleasr-configurator" / "templates"
 
 MCAL = {
-    "Mcu", "Port", "Dio", "Can", "Spi", "Adc", "Pwm", "gpt", "Wdg", "Icu", "Lin",
-    "Eep", "Flash", "Fls", "FlStSt", "I2c", "Uart", "Ocu", "RamSafety", "RamTst",
+    "adc", "can", "crypto", "dio", "eep", "eth", "flash", "fls", "gpt", "i2c",
+    "icu", "lin", "mcu", "ocu", "port", "pwm", "ramtst", "spi", "uart", "wdg",
 }
 
 ECUAL = {
-    "CanIf", "CanTp", "CanM", "CanSM", "canNm", "CanTrcv", "CanTSyn",
-    "LinIf", "LinM", "linNm", "linSM", "linTp", "LinTrcv", "LntM",
-    "EthIf", "ethSm", "EthSwt", "EthTrcv", "EthTSyn", "Eth",
-    "FrIf", "FrTp", "IoHwAb", "MemIf", "Fee", "Ea",
-    "Nm", "udpNm", "J1939Nm", "J1939Tp", "IpduM", "TcpIp",
+    "canif", "cannm", "cantp", "cantrcv", "ea", "ethif", "ethsm", "ethswt",
+    "ethtrcv", "fee", "frif", "frtp", "iohwab", "ipdum", "j1939tp", "linif",
+    "linnm", "linsm", "lintp", "lintrcv", "memif", "someipif", "someipsd",
+    "srp", "wdgif",
 }
 
 SERVICES = {
-    "Com", "comM", "PduR", "NvM", "Dcm", "Dem", "Det", "FiM", "E2E", "Crc",
-    "Sd", "SomeIp", "SomeIpIf", "SomeIpSd", "SomeIpTp", "SomeIpXf",
-    "SoAd", "doIP", "DoCan", "Dlt", "Xcp", "WdgIf",
-    "Csm", "CryIf", "Crypto", "KeyM", "Srp", "SecOC", "StbM",
-    "Mqtt", "LdCom", "Tm", "SwC", "SchM",
+    "bswm", "canm", "cansm", "cantsyn", "com", "comm", "crc", "cryif", "csm",
+    "dcm", "dem", "det", "dlt", "docan", "doip", "e2e", "ecuc", "ecum",
+    "ethtsyn", "fim", "flstst", "j1939nm", "keym", "ldcom", "linm", "lntm",
+    "mem", "mqtt", "nm", "nvm", "pdur", "ramsafety", "schm", "sd", "secoc",
+    "soad", "someip", "someiptp", "someipxf", "stbm", "swc", "tcpip", "tm",
+    "udpnm", "wdgm", "xcp",
 }
 
-OS = {"Os", "Os"}
+OS = {"os"}
 
-INTEGRATION = {"BswM", "BswM", "EcuM", "ecuC"}
+INTEGRATION = set()  # BswM/EcuM/EcuC 已归入 services; 保留空集合兼容 classify
 
 LAYER_MAP = {}
 for mod in MCAL:
@@ -53,7 +53,7 @@ def classify(template_name: str) -> str:
 
 def main():
     templates = sorted(SRC.glob("*.j2"))
-    stats = {"mcal": 0, "ecual": 0, "services": 0, "Os": 0, "integration": 0}
+    stats = {"mcal": 0, "ecual": 0, "services": 0, "os": 0, "integration": 0}
     unmapped = []
 
     for tpl in templates:
