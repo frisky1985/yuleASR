@@ -1,57 +1,57 @@
 {
   "manifest_version": "1.0",
-  "generated_at": "2026-10-30",
+  "generated_at": "2026-10-31",
   "project_dir": ".",
   "total_files": 8,
   "files": [
     {
       "path": "acceptance-matrix.md",
-      "sha256": "30bc5b668db921503b0b2e2b8d8f7502feb9127a120ff1dce389efa860606929",
+      "sha256": "482bd916b9110400d716896cf2df168b7b83617d4b36e9f0a0ac77479bd8fae4",
       "size_bytes": 21623,
-      "mtime": 1793384189.103055,
-      "mtime_iso": "2026-10-30T18:16:29"
+      "mtime": 1793409862.3250117,
+      "mtime_iso": "2026-10-31T01:24:22"
     },
     {
       "path": "code-coverage-report.md",
       "sha256": "21ff0ed5b6d28daa4ed5b23bc89359a3716ca00a29fde3cfaaf51b8589914bb2",
       "size_bytes": 117,
-      "mtime": 1793382714.919632,
-      "mtime_iso": "2026-10-30T17:51:54"
+      "mtime": 1793409592.4449894,
+      "mtime_iso": "2026-10-31T01:19:52"
     },
     {
       "path": "requirement-coverage.md",
-      "sha256": "9b8ea5a9b5f08ed013d717ae097c00842ee9146eef662bd7a4c97abc73d5484d",
+      "sha256": "691a22d761ef71f08621ddeeb2a45778b0d338b97bed6c591dd45d93feffe7d9",
       "size_bytes": 4486,
-      "mtime": 1793384189.103055,
-      "mtime_iso": "2026-10-30T18:16:29"
+      "mtime": 1793409862.3250117,
+      "mtime_iso": "2026-10-31T01:24:22"
     },
     {
       "path": "review-log-summary.md",
-      "sha256": "c2046f89db44dbd9b2fe872128c64fd523b111a0003c01657fe96d099afd9b91",
+      "sha256": "26575d680de11be752f8dcbe0ca06b31a528084ac3a63dc1b0c4eb280b8c54d0",
       "size_bytes": 112716,
-      "mtime": 1793384189.1110551,
-      "mtime_iso": "2026-10-30T18:16:29"
+      "mtime": 1793409862.3330119,
+      "mtime_iso": "2026-10-31T01:24:22"
     },
     {
       "path": "review-log.json",
       "sha256": "9a15f9d3abfd4ff28e38b17e33b39596d2ccb23eb25ee55b148ac30a9c4f0580",
       "size_bytes": 8087,
-      "mtime": 1793384189.1110551,
-      "mtime_iso": "2026-10-30T18:16:29"
+      "mtime": 1793409862.3330119,
+      "mtime_iso": "2026-10-31T01:24:22"
     },
     {
       "path": "traceability-matrix.json",
-      "sha256": "764d070737bffd179c63462c944a4b736e08fa68a93b2b18678a87733e8dc124",
+      "sha256": "6fb1b0833962c69b682645480735ab1b65cc7879e1ec7245b683d319d97c0a97",
       "size_bytes": 37609,
-      "mtime": 1793384189.099055,
-      "mtime_iso": "2026-10-30T18:16:29"
+      "mtime": 1793409862.3210115,
+      "mtime_iso": "2026-10-31T01:24:22"
     },
     {
       "path": "traceability-matrix.md",
-      "sha256": "fa9b2c38a5ddfa4cdf0be45eddc2507ab07fa7bc080df5053f50dbddf84bfd4c",
+      "sha256": "ecfee93ec32626d8e4068cf6eaa724d999c55d1f18a147899e852233499bf3ab",
       "size_bytes": 33756,
-      "mtime": 1793384189.099055,
-      "mtime_iso": "2026-10-30T18:16:29"
+      "mtime": 1793409862.3210115,
+      "mtime_iso": "2026-10-31T01:24:22"
     }
   ]
 }
