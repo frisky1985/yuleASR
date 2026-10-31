@@ -156,7 +156,7 @@
 | 116 | `CANSM-REQ-01` | Communication Services | SHALL manage CAN network state machine | ✅ approved | 自动化证据评审 | 2026-10-31 | approve | code_files verified on disk: src/bsw/se… |
 | 117 | `LIN-REQ-01` | Communication Services | SHALL support LIN master/slave communication | ✅ approved | 自动化证据评审 | 2026-10-31 | approve | code_files verified on disk: src/bsw/mc… |
 | 118 | `NVM-REQ-01` | Memory Services | SHALL support NV block read/write with redundancy | ✅ approved | 自动化证据评审 | 2026-10-31 | approve | code_files verified on disk: src/bsw/se… |
-| 119 | `FEE-REQ-01` | Memory Services | SHALL emulate EEPROM over flash with wear leveling | 🔄 changes_required | 自动化证据评审 | 2026-10-31 | request_changes | code file(s) missing on disk: src/bsw/s… |
+| 119 | `FEE-REQ-01` | Memory Services | SHALL emulate EEPROM over flash with wear leveling | ✅ approved | 自动化证据评审 | 2026-10-31 | approve | code_files verified on disk: src/bsw/ec… |
 | 120 | `MEMIF-REQ-01` | Memory Services | SHALL abstract NvM from Fee/EEP driver | ✅ approved | 自动化证据评审 | 2026-10-31 | approve | code_files verified on disk: src/bsw/se… |
 | 121 | `ECUM-REQ-01` | System Services | SHALL manage ECU startup/shutdown/wakeup sequences | ✅ approved | 自动化证据评审 | 2026-10-31 | approve | code_files verified on disk: src/bsw/se… |
 | 122 | `BSWM-REQ-01` | System Services | SHALL implement mode-based BSW scheduling | ✅ approved | 自动化证据评审 | 2026-10-31 | approve | code_files verified on disk: src/bsw/se… |
@@ -170,10 +170,8 @@
 
 - Total requirements: **127**
 
-- ✅ Approved: **126**
+- ✅ Approved: **127**
 
 - ⭕ Pending: **0**
 
-- ❌/🔄 Rejected / changes-required: **1**
-
-- Review progress: **126/127** (99.2%)
+- Review progress: **127/127** (100.0%)

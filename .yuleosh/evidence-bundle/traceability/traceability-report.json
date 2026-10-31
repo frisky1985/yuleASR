@@ -21,6 +21,16 @@
               "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/mcal/adc/src/Adc.c, src/bsw/mcal/can/src/Can.c",
+              "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -42,6 +52,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/mcal/adc/src/Adc.c, src/bsw/mcal/port/src/Port.c",
+              "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -80,6 +100,16 @@
               "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/mcal/adc/src/Adc.c",
+              "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -101,6 +131,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/ecual/canif/src/CanIf.c, src/bsw/ecual/linif/src/LinIf.c",
+              "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -145,6 +185,16 @@
               "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/ecual/canNm/src/CanNm.c, src/bsw/ecual/wdgif/src/WdgIf.c, src/bsw/ecual/canif/src/CanIf.c, src/bsw/ecual/cantp/src/CanTp.c, src/bsw/ecual/fee/src/Fee.c, src/bsw/ecual/iohwab/src/IoHwAb.c, ... (+1 more)",
+              "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -165,6 +215,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/os/src/Os.c",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -204,6 +264,16 @@
               "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/pdur/src/PduR.c, src/bsw/services/com/src/Com.c",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -224,6 +294,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/dem/src/Dem.c",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -266,6 +346,16 @@
               "matched_tests verified: test_misra_compliance.c (asserts=17, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/application/communication_manager/src/Swc_CommunicationManager.c, src/application/diagnostic_manager/src/Swc_DiagnosticManager.c, src/application/engine_control/src/Swc_EngineControl.c, src/application/io_control/src/Swc_IOControl.c, src/application/mode_manager/src/Swc_ModeManager.c",
+              "matched_tests verified: test_misra_compliance.c (asserts=17, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -290,6 +380,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/application/communication_manager/src/Swc_CommunicationManager.c, src/application/diagnostic_manager/src/Swc_DiagnosticManager.c, src/application/engine_control/src/Swc_EngineControl.c, src/application/io_control/src/Swc_IOControl.c, src/application/mode_manager/src/Swc_ModeManager.c",
+              "matched_tests verified: test_misra_compliance.c (asserts=17, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -332,6 +432,16 @@
               "matched_tests verified: test_misra_compliance.c (asserts=17, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/application/communication_manager/src/Swc_CommunicationManager.c, src/application/diagnostic_manager/src/Swc_DiagnosticManager.c, src/application/engine_control/src/Swc_EngineControl.c, src/application/io_control/src/Swc_IOControl.c, src/application/mode_manager/src/Swc_ModeManager.c",
+              "matched_tests verified: test_misra_compliance.c (asserts=17, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -356,6 +466,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/application/communication_manager/src/Swc_CommunicationManager.c, src/application/diagnostic_manager/src/Swc_DiagnosticManager.c, src/application/engine_control/src/Swc_EngineControl.c, src/application/io_control/src/Swc_IOControl.c, src/application/mode_manager/src/Swc_ModeManager.c",
+              "matched_tests verified: test_misra_compliance.c (asserts=17, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -391,6 +511,15 @@
               "matched_tests verified: test_misra_compliance.c (asserts=17, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "matched_tests verified: test_misra_compliance.c (asserts=17, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": false,
@@ -412,6 +541,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/dcm/src/Dcm.c, src/bsw/services/dcm/include/Dcm.h",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -451,6 +590,16 @@
               "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/dcm/src/Dcm.c, src/bsw/services/dcm/include/Dcm.h",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -472,6 +621,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/dcm/src/Dcm.c, src/bsw/services/dcm/include/Dcm.h",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -511,6 +670,16 @@
               "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/dcm/src/Dcm.c, src/bsw/services/dcm/include/Dcm.h",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -532,6 +701,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/dem/src/Dem.c, src/bsw/services/dem/include/Dem.h",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -571,6 +750,16 @@
               "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/dem/src/Dem.c, src/bsw/services/dem/include/Dem.h",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -592,6 +781,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/dem/src/Dem.c, src/bsw/services/dem/include/Dem.h",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -631,6 +830,16 @@
               "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/dem/src/Dem.c, src/bsw/services/dem/include/Dem.h",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -652,6 +861,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/com/src/Com.c, src/bsw/services/com/include/Com.h",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -690,6 +909,16 @@
               "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/com/src/Com.c",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -719,6 +948,16 @@
               "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/com/src/Com.c",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -739,6 +978,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/com/src/Com.c",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -778,6 +1027,16 @@
               "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/pdur/src/PduR.c, src/bsw/services/pdur/include/PduR.h",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -808,6 +1067,16 @@
               "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/pdur/src/PduR.c, src/bsw/services/pdur/include/PduR.h",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -828,6 +1097,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/pdur/src/PduR.c",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -867,6 +1146,16 @@
               "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/nvm/src/NvM.c, src/bsw/services/nvm/include/NvM.h",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -887,6 +1176,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/crc/src/Crc.c",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -925,6 +1224,16 @@
               "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/nvm/src/NvM.c",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -954,6 +1263,16 @@
               "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/nvm/src/NvM.c",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -974,6 +1293,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/nvm/src/NvM.c",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -1013,6 +1342,16 @@
               "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/ecum/src/EcuM.c, src/bsw/services/ecum/include/EcuM.h",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -1034,6 +1373,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/ecum/src/EcuM.c, src/bsw/services/ecum/include/EcuM.h",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -1073,6 +1422,16 @@
               "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/ecum/src/EcuM.c, src/bsw/services/ecum/include/EcuM.h",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -1094,6 +1453,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/os/src/Os.c, src/bsw/os/include/Os.h",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -1133,6 +1502,16 @@
               "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/os/src/Os.c, src/bsw/os/include/Os.h",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -1154,6 +1533,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/os/src/Os.c, src/bsw/os/include/Os.h",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -1193,6 +1582,16 @@
               "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/os/src/Os.c, src/bsw/os/include/Os.h",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -1214,6 +1613,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/os/src/Os.c, src/bsw/os/include/Os.h",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -1253,6 +1662,16 @@
               "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/ecual/canif/src/CanIf.c, src/bsw/ecual/canif/include/CanIf.h",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -1274,6 +1693,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/ecual/canif/src/CanIf.c, src/bsw/ecual/canif/include/CanIf.h",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -1313,6 +1742,16 @@
               "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/ecual/canif/src/CanIf.c, src/bsw/ecual/canif/include/CanIf.h",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -1334,6 +1773,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/ecual/canif/src/CanIf.c, src/bsw/ecual/canif/include/CanIf.h",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -1373,6 +1822,16 @@
               "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/ecual/cantp/src/CanTp.c, src/bsw/ecual/cantp/include/CanTp.h",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -1394,6 +1853,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/ecual/cantp/src/CanTp.c, src/bsw/ecual/cantp/include/CanTp.h",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -1433,6 +1902,16 @@
               "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/ecual/cantp/src/CanTp.c, src/bsw/ecual/cantp/include/CanTp.h",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -1454,6 +1933,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/ecual/cantp/src/CanTp.c, src/bsw/ecual/cantp/include/CanTp.h",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -1493,6 +1982,16 @@
               "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/ecual/canNm/src/CanNm.c, src/bsw/ecual/canNm/include/CanNm.h",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -1513,6 +2012,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/com/src/Com.c",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -1551,6 +2060,16 @@
               "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/com/src/Com.c",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -1571,6 +2090,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/com/src/Com.c",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -1610,6 +2139,16 @@
               "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/ecual/canNm/src/CanNm.c, src/bsw/ecual/canNm/include/CanNm.h",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -1640,6 +2179,16 @@
               "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/soad/src/SoAd.c, src/bsw/services/soad/include/SoAd.h",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -1660,6 +2209,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/pdur/src/PduR.c",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -1699,6 +2258,16 @@
               "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/soad/src/SoAd.c, src/bsw/services/soad/include/SoAd.h",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -1719,6 +2288,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/crc/src/Crc.c",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -1757,6 +2336,16 @@
               "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/nvm/src/NvM.c",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -1786,6 +2375,16 @@
               "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/nvm/src/NvM.c",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -1806,6 +2405,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/nvm/src/NvM.c",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -1845,6 +2454,16 @@
               "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/dlt/src/Dlt.c, src/bsw/services/dlt/include/Dlt.h",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -1866,6 +2485,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/dlt/src/Dlt.c, src/bsw/services/dlt/include/Dlt.h",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -1905,6 +2534,16 @@
               "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/dlt/src/Dlt.c, src/bsw/services/dlt/include/Dlt.h",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -1926,6 +2565,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/xcp/src/Xcp.c, src/bsw/services/xcp/include/Xcp.h",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -1965,6 +2614,16 @@
               "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/xcp/src/Xcp.c, src/bsw/services/xcp/include/Xcp.h",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -1986,6 +2645,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/xcp/src/Xcp.c, src/bsw/services/xcp/include/Xcp.h",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -2025,6 +2694,16 @@
               "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/xcp/src/Xcp.c, src/bsw/services/xcp/include/Xcp.h",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -2046,6 +2725,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/xcp/src/Xcp.c, src/bsw/services/xcp/include/Xcp.h",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -2085,6 +2774,16 @@
               "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/mcal/adc/src/Adc.c, src/bsw/mcal/adc/include/Adc.h",
+              "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -2106,6 +2805,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/mcal/adc/src/Adc.c, src/bsw/mcal/adc/include/Adc.h",
+              "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -2145,6 +2854,16 @@
               "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/mcal/adc/src/Adc.c, src/bsw/mcal/adc/include/Adc.h",
+              "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -2166,6 +2885,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/mcal/adc/src/Adc.c, src/bsw/mcal/adc/include/Adc.h",
+              "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -2205,6 +2934,16 @@
               "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/mcal/adc/src/Adc.c, src/bsw/mcal/adc/include/Adc.h",
+              "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -2226,6 +2965,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/mcal/can/src/Can.c, src/bsw/mcal/can/include/Can.h",
+              "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -2265,6 +3014,16 @@
               "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/mcal/can/src/Can.c, src/bsw/mcal/can/include/Can.h",
+              "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -2286,6 +3045,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/mcal/can/src/Can.c, src/bsw/mcal/can/include/Can.h",
+              "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -2325,6 +3094,16 @@
               "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/mcal/can/src/Can.c, src/bsw/mcal/can/include/Can.h",
+              "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -2345,6 +3124,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/com/src/Com.c",
+              "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -2383,6 +3172,16 @@
               "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/com/src/Com.c",
+              "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -2403,6 +3202,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/com/src/Com.c",
+              "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -2442,6 +3251,16 @@
               "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/mcal/crypto/src/Crypto.c, src/bsw/mcal/crypto/include/Crypto.h",
+              "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -2472,6 +3291,16 @@
               "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/mcal/crypto/src/Crypto.c, src/bsw/mcal/crypto/include/Crypto.h",
+              "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -2492,6 +3321,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/pdur/src/PduR.c",
+              "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -2531,6 +3370,16 @@
               "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/mcal/crypto/src/Crypto.c, src/bsw/mcal/crypto/include/Crypto.h",
+              "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -2551,6 +3400,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/crc/src/Crc.c",
+              "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -2589,6 +3448,16 @@
               "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/nvm/src/NvM.c",
+              "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -2618,6 +3487,16 @@
               "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/nvm/src/NvM.c",
+              "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -2638,6 +3517,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/nvm/src/NvM.c",
+              "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -2677,6 +3566,16 @@
               "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/mcal/dio/src/Dio.c, src/bsw/mcal/dio/include/Dio.h",
+              "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -2698,6 +3597,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/mcal/dio/src/Dio.c, src/bsw/mcal/dio/include/Dio.h",
+              "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -2737,6 +3646,16 @@
               "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/mcal/port/src/Port.c, src/bsw/mcal/port/include/Port.h",
+              "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -2758,6 +3677,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/mcal/port/src/Port.c, src/bsw/mcal/port/include/Port.h",
+              "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -2797,6 +3726,16 @@
               "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/mcal/port/src/Port.c, src/bsw/mcal/port/include/Port.h",
+              "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -2818,6 +3757,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/mcal/gpt/src/Gpt.c, src/bsw/mcal/gpt/include/Gpt.h",
+              "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -2857,6 +3806,16 @@
               "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/mcal/gpt/src/Gpt.c, src/bsw/mcal/gpt/include/Gpt.h",
+              "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -2878,6 +3837,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/mcal/gpt/src/Gpt.c, src/bsw/mcal/gpt/include/Gpt.h",
+              "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -2917,6 +3886,16 @@
               "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/mcal/gpt/src/Gpt.c, src/bsw/mcal/gpt/include/Gpt.h",
+              "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -2938,6 +3917,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/mcal/icu/src/Icu.c, src/bsw/mcal/icu/include/Icu.h",
+              "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -2977,6 +3966,16 @@
               "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/mcal/icu/src/Icu.c, src/bsw/mcal/icu/include/Icu.h",
+              "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -2998,6 +3997,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/mcal/icu/src/Icu.c, src/bsw/mcal/icu/include/Icu.h",
+              "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -3037,6 +4046,16 @@
               "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/mcal/mcu/src/Mcu.c, src/bsw/mcal/mcu/include/Mcu.h",
+              "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -3058,6 +4077,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/mcal/mcu/src/Mcu.c, src/bsw/mcal/mcu/include/Mcu.h",
+              "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -3097,6 +4126,16 @@
               "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/mcal/mcu/src/Mcu.c, src/bsw/mcal/mcu/include/Mcu.h",
+              "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -3118,6 +4157,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/mcal/mcu/src/Mcu.c, src/bsw/mcal/mcu/include/Mcu.h",
+              "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -3157,6 +4206,16 @@
               "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/mcal/wdg/src/Wdg.c, src/bsw/mcal/wdg/include/Wdg.h",
+              "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -3178,6 +4237,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/mcal/wdg/src/Wdg.c, src/bsw/mcal/wdg/include/Wdg.h",
+              "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -3217,6 +4286,16 @@
               "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/mcal/wdg/src/Wdg.c, src/bsw/mcal/wdg/include/Wdg.h",
+              "matched_tests verified: test_mcal_api_contracts.c (asserts=42, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -3237,6 +4316,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/dcm/src/Dcm.c",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -3275,6 +4364,16 @@
               "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/dcm/src/Dcm.c",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -3295,6 +4394,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/dem/src/Dem.c",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -3333,6 +4442,16 @@
               "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/det/src/Det.c",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -3353,6 +4472,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/doip/src/DoIP.c",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -3391,6 +4520,16 @@
               "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/com/src/Com.c",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -3411,6 +4550,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/pdur/src/PduR.c",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -3449,6 +4598,16 @@
               "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/cansm/src/CanSm.c",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -3469,6 +4628,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/mcal/lin/src/Lin.c",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -3507,6 +4676,16 @@
               "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/nvm/src/NvM.c",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -3523,7 +4702,7 @@
         "statement": "SHALL emulate EEPROM over flash with wear leveling",
         "section": "Memory Services",
         "code_files": [
-          "src/bsw/services/fee/src/Fee.c"
+          "src/bsw/ecual/fee/src/Fee.c"
         ],
         "test_reports": [],
         "reviews": [
@@ -3537,11 +4716,21 @@
               "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
             ],
             "decision": "request_changes"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/ecual/fee/src/Fee.c",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
         "has_test": true,
-        "has_review": false,
+        "has_review": true,
         "step_handlers": [],
         "matched_tests": [
           "tests/unit/test_services_api_contracts.c"
@@ -3557,6 +4746,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/memif/src/MemIf.c",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -3595,6 +4794,16 @@
               "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/ecum/src/EcuM.c",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -3615,6 +4824,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/bswm/src/BswM.c",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -3653,6 +4872,16 @@
               "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/wdgm/src/WdgM.c",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -3673,6 +4902,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/os/src/Os.c",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -3711,6 +4950,16 @@
               "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/e2e/src/E2E.c",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -3731,6 +4980,16 @@
         ],
         "test_reports": [],
         "reviews": [
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/csm/src/Csm.c",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
+          },
           {
             "status": "approved",
             "reviewer": "自动化证据评审",
@@ -3769,6 +5028,16 @@
               "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
             ],
             "decision": "approve"
+          },
+          {
+            "status": "approved",
+            "reviewer": "自动化证据评审",
+            "date": "2026-10-31",
+            "findings": [
+              "code_files verified on disk: src/bsw/services/keym/src/KeyM.c",
+              "matched_tests verified: test_services_api_contracts.c (asserts=96, TEST_PASS=0)"
+            ],
+            "decision": "approve"
           }
         ],
         "has_code": true,
@@ -3786,8 +5055,8 @@
       "without_code": 1,
       "with_test": 127,
       "without_test": 0,
-      "with_review": 126,
-      "without_review": 1,
+      "with_review": 127,
+      "without_review": 0,
       "coverage_pct": 100.0
     },
     "generated_at": "2026-07-19T20:55:52.728717"
