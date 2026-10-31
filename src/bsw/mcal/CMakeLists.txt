@@ -34,11 +34,11 @@ file(GLOB MCAL_SUBDIRS LIST_DIRECTORIES true ${CMAKE_CURRENT_SOURCE_DIR}/*)
 # to avoid duplicate symbol definitions at link time; the CMake target itself
 # is kept (fed with a generated comment-only stub) so target names, PUBLIC
 # include paths and existing link references stay valid.
-#   fee -> ecual/fee  (block-based API matching MemIf contract; mcal/fee was
-#                       address-based — wrong abstraction for AUTOSAR Fee)
-set(MCAL_SHIMMED_MODULES
-    fee
-)
+# Currently no modules are shimmed: Fee (the last one) was removed because
+# it belongs to the ECU Abstraction Layer (AUTOSAR SWS_Fee) and its canonical
+# implementation is src/bsw/ecual/fee/. The mcal/fee copy only held an
+# address-based implementation at the wrong abstraction level.
+set(MCAL_SHIMMED_MODULES "")
 
 file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/generated/shim-stubs")
 

@@ -14,7 +14,7 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/../mcal/dio/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../mcal/can/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../mcal/lin/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/../mcal/fee/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../ecual/fee/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../ecual/ethif/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../ecual/canif/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../ecual/linif/include

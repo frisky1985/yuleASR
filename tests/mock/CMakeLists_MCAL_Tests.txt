@@ -69,7 +69,7 @@ set(MCAL_TEST_INCLUDES
     ${SRC_MCAL}/wdg/include
     ${SRC_MCAL}/mcu/include
     ${SRC_MCAL}/eep/include
-    ${SRC_MCAL}/fee/include
+    ${CMAKE_SOURCE_DIR}/src/bsw/ecual/fee/include
     ${SRC_MCAL}/flash/include
     ${SRC_MCAL}/fls/include
     ${SRC_MCAL}/eth/include

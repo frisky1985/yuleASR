@@ -29,7 +29,6 @@ include_directories(
     ${SRC_DIR}/mcal/ocu/include
     ${SRC_DIR}/mcal/fls/include
     ${SRC_DIR}/ecual/fee/include
-    ${SRC_DIR}/mcal/fee/include
     ${SRC_DIR}/mcal/eep/include
     ${SRC_DIR}/mcal/flash/include
     ${SRC_DIR}/mcal/ramtst/include
