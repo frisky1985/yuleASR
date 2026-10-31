@@ -1,0 +1,160 @@
+{
+ "schema": 1,
+ "generated_at": "2026-10-31T17:04:51.109984+00:00",
+ "git_sha": "4377abab56b41bb4710d439129da10cf963c965f",
+ "sources": {
+  "coverage": {
+   "schema": 2,
+   "generated_at": "2026-10-31T17:04:49.637513+00:00",
+   "git_sha": "4377abab56b41bb4710d439129da10cf963c965f",
+   "git_dirty": true,
+   "root": "/workspace",
+   "tool": {
+    "gcovr": "gcovr 7.0",
+    "gcc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0"
+   }
+  },
+  "misra": {
+   "schema": 2,
+   "generated_at": "2026-10-31T16:59:20.118066+00:00",
+   "git_sha": "4377abab56b41bb4710d439129da10cf963c965f",
+   "git_dirty": true,
+   "root": "/workspace",
+   "scanned_files": 402,
+   "tool": {
+    "cppcheck": "Cppcheck 2.13.0"
+   }
+  }
+ },
+ "stale_evidence": {
+  "coverage": false,
+  "misra": false
+ },
+ "counts": {
+  "implementation_rows": 103,
+  "unique_modules_exact": 97,
+  "unique_modules_case_insensitive": 94,
+  "exact_duplicate_groups": 6,
+  "name_collision_groups": 3,
+  "ok": 0,
+  "no_template": 2,
+  "template_layer_mismatch": 9,
+  "no_test": 1,
+  "coverage_zero": 12,
+  "coverage_low": 22,
+  "coverage_missing": 12,
+  "misra_required_modules": 7,
+  "misra_not_scanned": 0,
+  "no_requirement": 65,
+  "no_human_review": 38
+ },
+ "exact_duplicates": {
+  "fim": [
+   {
+    "dir": "src/bsw/ecual/fim/",
+    "loc": 65
+   },
+   {
+    "dir": "src/bsw/services/fim/",
+    "loc": 546
+   }
+  ],
+  "ipdum": [
+   {
+    "dir": "src/bsw/ecual/ipdum/",
+    "loc": 732
+   },
+   {
+    "dir": "src/bsw/services/ipdum/",
+    "loc": 63
+   }
+  ],
+  "j1939tp": [
+   {
+    "dir": "src/bsw/ecual/j1939tp/",
+    "loc": 57
+   },
+   {
+    "dir": "src/bsw/services/j1939tp/",
+    "loc": 807
+   }
+  ],
+  "memif": [
+   {
+    "dir": "src/bsw/ecual/memif/",
+    "loc": 42
+   },
+   {
+    "dir": "src/bsw/services/memif/",
+    "loc": 1041
+   }
+  ],
+  "ramtst": [
+   {
+    "dir": "src/bsw/mcal/ramtst/",
+    "loc": 871
+   },
+   {
+    "dir": "src/bsw/services/ramtst/",
+    "loc": 45
+   }
+  ],
+  "xcp": [
+   {
+    "dir": "src/bsw/ecual/xcp/",
+    "loc": 65
+   },
+   {
+    "dir": "src/bsw/services/xcp/",
+    "loc": 2086
+   }
+  ]
+ },
+ "name_collisions": {
+  "doip": [
+   {
+    "module": "doIP",
+    "dir": "src/bsw/ecual/doIP/",
+    "loc": 1521
+   },
+   {
+    "module": "doip",
+    "dir": "src/bsw/services/doip/",
+    "loc": 358
+   }
+  ],
+  "ethsm": [
+   {
+    "module": "ethSm",
+    "dir": "src/bsw/ecual/ethSm/",
+    "loc": 1240
+   },
+   {
+    "module": "ethsm",
+    "dir": "src/bsw/services/ethsm/",
+    "loc": 65
+   }
+  ],
+  "linsm": [
+   {
+    "module": "linSM",
+    "dir": "src/bsw/ecual/linSM/",
+    "loc": 902
+   },
+   {
+    "module": "linsm",
+    "dir": "src/bsw/services/linsm/",
+    "loc": 53
+   }
+  ]
+ },
+ "layers": {
+  "mcal": 20,
+  "ecual": 28,
+  "services": 52,
+  "os": 1,
+  "cdd": 1,
+  "boot": 1
+ },
+ "output_csv": "/workspace/reports/baseline/module-matrix.csv"
+}

@@ -1,0 +1,17 @@
+{
+ "schema": 1,
+ "generated_at": "2026-10-31T17:05:02.426662+00:00",
+ "git_sha": "4377abab56b41bb4710d439129da10cf963c965f",
+ "git_branch": "master",
+ "git_dirty": true,
+ "git_dirty_files": 28,
+ "host": "all-in-one-74-ns58z",
+ "platform": "Linux-6.18.5-x86_64-with-glibc2.39",
+ "tools": {
+  "cmake": "cmake version 3.28.3",
+  "gcc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+  "gcovr": "gcovr 7.0",
+  "cppcheck": "Cppcheck 2.13.0",
+  "python": "Python 3.14.8"
+ }
+}

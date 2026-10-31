@@ -1,0 +1,118 @@
+{
+ "passed": true,
+ "required": 58,
+ "deviated": 1488,
+ "total": 1546,
+ "scanned_files": 402,
+ "git_sha": "4377abab56b41bb4710d439129da10cf963c965f",
+ "gates": {
+  "max_required": 58,
+  "max_total": 1547,
+  "min_files_scanned": 300
+ },
+ "failures": [],
+ "top_required": [
+  [
+   "misra-c2023-10.5",
+   17
+  ],
+  [
+   "misra-c2023-21.16",
+   11
+  ],
+  [
+   "misra-c2023-21.2",
+   9
+  ],
+  [
+   "misra-c2023-21.7",
+   4
+  ],
+  [
+   "misra-c2023-5.5",
+   3
+  ],
+  [
+   "misra-c2023-17.1",
+   3
+  ],
+  [
+   "misra-c2023-22.8",
+   2
+  ],
+  [
+   "misra-c2023-22.9",
+   2
+  ],
+  [
+   "misra-c2023-9.4",
+   2
+  ],
+  [
+   "misra-c2023-20.4",
+   1
+  ]
+ ],
+ "pending_wildcard_deviations": [
+  "DP-AUTOSAR-001: misra-c2023-15.5 @ src/**",
+  "DP-AUTOSAR-003: misra-c2023-2.5 @ src/**",
+  "DP-AUTOSAR-005: misra-c2023-14.4 @ src/**",
+  "DP-AUTOSAR-010: misra-c2023-20.9 @ src/**",
+  "DP-AUTOSAR-011: misra-c2023-7.2 @ src/**",
+  "DP-AUTOSAR-012: misra-c2023-5.8 @ src/**",
+  "DP-AUTOSAR-013: misra-c2023-15.7 @ src/**",
+  "DP-AUTOSAR-014: misra-c2023-2.7 @ src/**",
+  "DP-AUTOSAR-015: misra-c2023-15.6 @ src/**",
+  "DP-AUTOSAR-017: misra-c2023-8.8 @ src/**",
+  "DP-AUTOSAR-018: misra-c2023-5.7 @ src/**",
+  "DP-AUTOSAR-019: misra-c2023-10.8 @ src/**",
+  "DP-AUTOSAR-021: misra-c2023-8.9 @ src/**",
+  "misra-c2023-10.1 @ **/src/**: misra-c2023-10.1 @ **/src/**",
+  "misra-c2023-10.3 @ **/src/**: misra-c2023-10.3 @ **/src/**",
+  "misra-c2023-10.6 @ **/src/**: misra-c2023-10.6 @ **/src/**",
+  "misra-c2023-10.7 @ **/src/**: misra-c2023-10.7 @ **/src/**",
+  "misra-c2023-10.8 @ **/src/**: misra-c2023-10.8 @ **/src/**",
+  "misra-c2023-11.3 @ **/src/**: misra-c2023-11.3 @ **/src/**",
+  "misra-c2023-11.4 @ **/src/**: misra-c2023-11.4 @ **/src/**",
+  "misra-c2023-11.5 @ **/src/**: misra-c2023-11.5 @ **/src/**",
+  "misra-c2023-11.6 @ **/src/**: misra-c2023-11.6 @ **/src/**",
+  "misra-c2023-11.8 @ **/src/**: misra-c2023-11.8 @ **/src/**",
+  "misra-c2023-12.2 @ **/src/**: misra-c2023-12.2 @ **/src/**",
+  "misra-c2023-15.1 @ **/src/**: misra-c2023-15.1 @ **/src/**",
+  "misra-c2023-15.6 @ **/src/**: misra-c2023-15.6 @ **/src/**",
+  "misra-c2023-15.7 @ **/src/**: misra-c2023-15.7 @ **/src/**",
+  "misra-c2023-16.3 @ **/src/**: misra-c2023-16.3 @ **/src/**",
+  "misra-c2023-17.2 @ **/src/**: misra-c2023-17.2 @ **/src/**",
+  "misra-c2023-17.3 @ **/src/**: misra-c2023-17.3 @ **/src/**",
+  "misra-c2023-17.7 @ **/src/**: misra-c2023-17.7 @ **/src/**",
+  "misra-c2023-17.8 @ **/src/**: misra-c2023-17.8 @ **/src/**",
+  "misra-c2023-18.4 @ **/src/**: misra-c2023-18.4 @ **/src/**",
+  "misra-c2023-19.2 @ **/src/**: misra-c2023-19.2 @ **/src/**",
+  "misra-c2023-2.2 @ **/src/**: misra-c2023-2.2 @ **/src/**",
+  "misra-c2023-2.7 @ **/src/**: misra-c2023-2.7 @ **/src/**",
+  "misra-c2023-20.1 @ **/src/**: misra-c2023-20.1 @ **/src/**",
+  "misra-c2023-20.2 @ **/src/**: misra-c2023-20.2 @ **/src/**",
+  "misra-c2023-20.3 @ **/src/**: misra-c2023-20.3 @ **/src/**",
+  "misra-c2023-20.9 @ **/src/**: misra-c2023-20.9 @ **/src/**",
+  "misra-c2023-21.1 @ **/src/**: misra-c2023-21.1 @ **/src/**",
+  "misra-c2023-5.6 @ **/src/**: misra-c2023-5.6 @ **/src/**",
+  "misra-c2023-5.7 @ **/src/**: misra-c2023-5.7 @ **/src/**",
+  "misra-c2023-5.8 @ **/src/**: misra-c2023-5.8 @ **/src/**",
+  "misra-c2023-5.9 @ **/src/**: misra-c2023-5.9 @ **/src/**",
+  "misra-c2023-7.2 @ **/src/**: misra-c2023-7.2 @ **/src/**",
+  "misra-c2023-7.4 @ **/src/**: misra-c2023-7.4 @ **/src/**",
+  "misra-c2023-8.11 @ **/src/**: misra-c2023-8.11 @ **/src/**",
+  "misra-c2023-8.4 @ **/src/**: misra-c2023-8.4 @ **/src/**",
+  "misra-c2023-8.5 @ **/src/**: misra-c2023-8.5 @ **/src/**",
+  "misra-c2023-8.6 @ **/src/**: misra-c2023-8.6 @ **/src/**",
+  "misra-c2023-8.8 @ **/src/**: misra-c2023-8.8 @ **/src/**",
+  "misra-c2023-8.9 @ **/src/**: misra-c2023-8.9 @ **/src/**",
+  "misra-c2023-9.2 @ **/src/**: misra-c2023-9.2 @ **/src/**",
+  "misra-c2023-9.3 @ **/src/**: misra-c2023-9.3 @ **/src/**",
+  "misra-c2023-9.5 @ **/src/**: misra-c2023-9.5 @ **/src/**"
+ ],
+ "count_bound_deviations": [
+  "DP-AUTOSAR-026: misra-c2023-11.9=431 (net residual 431)"
+ ],
+ "deviation_drift": []
+}

@@ -10,28 +10,35 @@ DST = REPO / "tools" / "yuleasr-configurator" / "templates"
 
 MCAL = {
     "Mcu", "Port", "Dio", "Can", "Spi", "Adc", "Pwm", "gpt", "Wdg", "Icu", "Lin",
-    "Eep", "Flash", "Fls", "FlStSt", "I2c", "Uart", "Ocu", "RamSafety", "RamTst",
+    "Eep", "Flash", "Fls", "I2c", "Uart", "Ocu", "RamTst", "Crypto", "Eth",
 }
 
 ECUAL = {
-    "CanIf", "CanTp", "CanM", "CanSM", "canNm", "CanTrcv", "CanTSyn",
-    "LinIf", "LinM", "linNm", "linSM", "linTp", "LinTrcv", "LntM",
-    "EthIf", "ethSm", "EthSwt", "EthTrcv", "EthTSyn", "Eth",
+    "CanIf", "CanTp", "canNm", "CanTrcv",
+    "LinIf", "linNm", "linSM", "linTp", "LinTrcv",
+    "EthIf", "ethSm", "EthSwt", "EthTrcv",
     "FrIf", "FrTp", "IoHwAb", "MemIf", "Fee", "Ea",
-    "Nm", "udpNm", "J1939Nm", "J1939Tp", "IpduM", "TcpIp",
+    "J1939Tp", "IpduM", "SomeIpIf", "SomeIpSd", "Srp", "WdgIf",
 }
 
 SERVICES = {
     "Com", "comM", "PduR", "NvM", "Dcm", "Dem", "Det", "FiM", "E2E", "Crc",
-    "Sd", "SomeIp", "SomeIpIf", "SomeIpSd", "SomeIpTp", "SomeIpXf",
-    "SoAd", "doIP", "DoCan", "Dlt", "Xcp", "WdgIf",
-    "Csm", "CryIf", "Crypto", "KeyM", "Srp", "SecOC", "StbM",
+    "Sd", "SomeIp", "SomeIpTp", "SomeIpXf",
+    "SoAd", "doIP", "DoCan", "Dlt", "Xcp",
+    "Csm", "CryIf", "KeyM", "SecOC", "StbM",
     "Mqtt", "LdCom", "Tm", "SwC", "SchM",
+    # These modules are implemented under src/bsw/services in this repo.
+    # AUTOSAR-canonical re-layering is tracked in
+    # plans/production-readiness-plan.md (PR-1.2); moving an implementation
+    # requires moving its template and updating this map.
+    "CanM", "CanSM", "CanTSyn", "EthTSyn", "J1939Nm", "LinM", "LntM",
+    "Nm", "udpNm", "TcpIp", "FlStSt", "RamSafety",
+    "BswM", "EcuM", "ecuC",
 }
 
 OS = {"Os", "Os"}
 
-INTEGRATION = {"BswM", "BswM", "EcuM", "ecuC"}
+INTEGRATION = set()
 
 LAYER_MAP = {}
 for mod in MCAL:
