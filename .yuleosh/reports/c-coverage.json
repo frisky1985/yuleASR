@@ -1,20 +1,20 @@
 {
   "success": true,
-  "line_rate": 63.32,
-  "branch_rate": 50.9,
-  "total_files": 296,
+  "line_rate": 63.53,
+  "branch_rate": 51.03,
+  "total_files": 295,
   "totals": {
     "lines": {
-      "found": 67997,
-      "hit": 43056
+      "found": 67752,
+      "hit": 43042
     },
     "functions": {
-      "found": 5786,
+      "found": 5768,
       "hit": 3804
     },
     "branches": {
-      "found": 38545,
-      "hit": 19619
+      "found": 38375,
+      "hit": 19584
     }
   },
   "files": [
@@ -592,11 +592,11 @@
     },
     {
       "file": "src/bsw/ecual/canif/src/CanIf.c",
-      "line_rate": 98.4,
-      "branch_rate": 90.62,
+      "line_rate": 98.57,
+      "branch_rate": 95.21,
       "lines": {
-        "found": 564,
-        "hit": 555
+        "found": 560,
+        "hit": 552
       },
       "functions": {
         "found": 43,
@@ -744,19 +744,6 @@
       "functions": {
         "found": 52,
         "hit": 8
-      }
-    },
-    {
-      "file": "src/bsw/ecual/fee/src/Fee_Fls_Integration.c",
-      "line_rate": 0.0,
-      "branch_rate": 0.0,
-      "lines": {
-        "found": 246,
-        "hit": 0
-      },
-      "functions": {
-        "found": 17,
-        "hit": 0
       }
     },
     {
@@ -1022,7 +1009,7 @@
     {
       "file": "src/bsw/mcal/adc/src/Adc.c",
       "line_rate": 93.17,
-      "branch_rate": 82.27,
+      "branch_rate": 88.55,
       "lines": {
         "found": 249,
         "hit": 232
@@ -1035,7 +1022,7 @@
     {
       "file": "src/bsw/mcal/can/src/Can.c",
       "line_rate": 94.02,
-      "branch_rate": 83.65,
+      "branch_rate": 84.71,
       "lines": {
         "found": 301,
         "hit": 283
@@ -1269,7 +1256,7 @@
     {
       "file": "src/bsw/mcal/i2c/src/I2c.c",
       "line_rate": 66.82,
-      "branch_rate": 56.73,
+      "branch_rate": 56.91,
       "lines": {
         "found": 642,
         "hit": 429
@@ -1581,7 +1568,7 @@
     {
       "file": "src/bsw/mcal/spi/src/Spi.c",
       "line_rate": 97.06,
-      "branch_rate": 84.87,
+      "branch_rate": 85.59,
       "lines": {
         "found": 204,
         "hit": 198
@@ -1645,14 +1632,14 @@
     },
     {
       "file": "src/bsw/os/src/Os_Cfg.c",
-      "line_rate": 92.68,
-      "branch_rate": 100.0,
+      "line_rate": 71.7,
+      "branch_rate": 77.78,
       "lines": {
-        "found": 41,
+        "found": 53,
         "hit": 38
       },
       "functions": {
-        "found": 7,
+        "found": 9,
         "hit": 6
       }
     },
@@ -1736,11 +1723,11 @@
     },
     {
       "file": "src/bsw/services/com/src/Com.c",
-      "line_rate": 94.07,
-      "branch_rate": 82.39,
+      "line_rate": 94.21,
+      "branch_rate": 84.04,
       "lines": {
-        "found": 506,
-        "hit": 476
+        "found": 501,
+        "hit": 472
       },
       "functions": {
         "found": 40,
@@ -2165,11 +2152,11 @@
     },
     {
       "file": "src/bsw/services/memif/src/MemIf.c",
-      "line_rate": 78.79,
-      "branch_rate": 69.39,
+      "line_rate": 75.0,
+      "branch_rate": 61.86,
       "lines": {
-        "found": 132,
-        "hit": 104
+        "found": 152,
+        "hit": 114
       },
       "functions": {
         "found": 16,
@@ -2256,11 +2243,11 @@
     },
     {
       "file": "src/bsw/services/nvm/src/NvM.c",
-      "line_rate": 89.28,
-      "branch_rate": 75.77,
+      "line_rate": 89.14,
+      "branch_rate": 78.14,
       "lines": {
-        "found": 1035,
-        "hit": 924
+        "found": 1022,
+        "hit": 911
       },
       "functions": {
         "found": 54,
@@ -2731,20 +2718,20 @@
         "hit": 0
       },
       "functions": {
-        "found": 25,
+        "found": 24,
         "hit": 0
       }
     },
     {
       "file": "src/diagnostics/isotp/isotp_core.c",
-      "line_rate": 92.71,
-      "branch_rate": 67.35,
+      "line_rate": 94.43,
+      "branch_rate": 70.25,
       "lines": {
-        "found": 494,
+        "found": 485,
         "hit": 458
       },
       "functions": {
-        "found": 33,
+        "found": 32,
         "hit": 32
       }
     },
@@ -2757,7 +2744,7 @@
         "hit": 0
       },
       "functions": {
-        "found": 29,
+        "found": 28,
         "hit": 0
       }
     },
@@ -3790,11 +3777,11 @@
     },
     {
       "file": "src/safety/saferam/saferam_manager.c",
-      "line_rate": 89.82,
-      "branch_rate": 75.77,
+      "line_rate": 89.59,
+      "branch_rate": 75.38,
       "lines": {
         "found": 442,
-        "hit": 397
+        "hit": 396
       },
       "functions": {
         "found": 52,
@@ -3803,11 +3790,11 @@
     },
     {
       "file": "src/safety/saferam/stack_protection.c",
-      "line_rate": 90.04,
-      "branch_rate": 79.48,
+      "line_rate": 89.38,
+      "branch_rate": 77.99,
       "lines": {
         "found": 452,
-        "hit": 407
+        "hit": 404
       },
       "functions": {
         "found": 38,
@@ -3869,12 +3856,12 @@
   ],
   "provenance": {
     "schema": 2,
-    "generated_at": "2026-10-30T18:11:59.070772+00:00",
-    "git_sha": "84957463d01ba695addd6591ecd6eb560e171dfa",
+    "generated_at": "2026-10-31T15:43:22.221727+00:00",
+    "git_sha": "26ac7e6d520cb3a98c5222a58d95f5a516dcbea2",
     "git_dirty": true,
     "root": "/workspace",
     "tool": {
-      "gcovr": "gcovr 8.6",
+      "gcovr": "gcovr 7.0",
       "gcc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0"
     }
   }
