@@ -222,7 +222,9 @@ static void test_peak_hold_tracks_min_max_and_sample_first_drop_middle(void)
     TEST_ASSERT_EQUAL_INT(ETH_OK, tbf_process_sample(t, &hi, 4, tbf_get_current_time_us(), &output, NULL));
     TEST_ASSERT_FALSE(output);
     usleep(30000);
-    uint8_t out[64];
+    /* sample_buffer_size is 256; the SAMPLE_FIRST default path copies the
+     * full buffer, so the caller must reserve 256 bytes (see flush test). */
+    uint8_t out[256];
     uint32_t out_len = 0;
     TEST_ASSERT_EQUAL_INT(ETH_OK, tbf_get_compressed_sample(t, tbf_get_current_time_us(), out, &out_len));
     TEST_ASSERT_EQUAL_UINT32(4, out_len);

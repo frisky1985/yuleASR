@@ -300,13 +300,20 @@ void test_check_underflow_detected_for_far_base(void)
     boolean underflow = FALSE;
     uint8_t id;
     StackInfoType info;
+    uint32_t sp = StackProtection_GetCurrentSP();
+    /* Place the base well below the captured SP.  The SP captured here is
+     * higher than the SP read inside CheckUnderflow (deeper call stack →
+     * lower SP on a downward-growing stack), so the base must sit below
+     * the CheckUnderflow-time SP while staying within one stack size of
+     * it to satisfy the corrected underflow guard. */
+    uint32_t base = sp - 0x2000u;
+    uint32_t size = 0x10000u;
 
-    RegStack("LowBase", STACK_TYPE_TASK, S_LOW_BASE, S_LOW_SIZE,
-             FALSE, FALSE, 0, &id);
-
-    if (StackProtection_GetCurrentSP() <= S_LOW_BASE) {
+    if (sp <= base) {
         return; /* cannot force underflow on this host layout */
     }
+    RegStack("NearSP", STACK_TYPE_TASK, base, size, FALSE, FALSE, 0, &id);
+
     TEST_ASSERT_EQUAL(E_OK, StackProtection_CheckUnderflow(id, &underflow));
     TEST_ASSERT_EQUAL(TRUE, underflow);
     TEST_ASSERT_EQUAL(E_OK, StackProtection_GetInfo(id, &info));
@@ -411,11 +418,14 @@ void test_violation_callback(void)
     StackInfoType info;
     uint8_t id;
     StackViolationType got;
+    uint32_t sp = StackProtection_GetCurrentSP();
+    uint32_t base = sp - 0x2000u;
+    uint32_t size = 0x10000u;
 
-    RegStack("LowBase", STACK_TYPE_TASK, S_LOW_BASE, S_LOW_SIZE, FALSE, FALSE, 0, &id);
-    if (StackProtection_GetCurrentSP() <= S_LOW_BASE) {
+    if (sp <= base) {
         return; /* cannot force underflow on this host layout */
     }
+    RegStack("NearSP", STACK_TYPE_TASK, base, size, FALSE, FALSE, 0, &id);
 
     /* register a callback, then provoke an underflow violation */
     StackProtection_SetViolationCallback(NULL);

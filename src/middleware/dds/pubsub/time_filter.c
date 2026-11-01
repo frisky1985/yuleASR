@@ -183,7 +183,18 @@ static eth_status_t generate_compressed_sample(tbf_handle_t *tbf,
                                                void *output,
                                                uint32_t *output_size) {
     if (!tbf || !output || !output_size) { return ETH_INVALID_PARAM; }
-    
+
+    /* Kalman compression takes precedence over the policy-based copy.
+     * Running the policy switch first would memcpy the full 256-byte
+     * sample_buffer into the caller's (often smaller) buffer before the
+     * Kalman path had a chance to overwrite it — a stack-smashing bug. */
+    if (tbf->config.compression == TBF_COMPRESS_KALMAN) {
+        uint32_t filtered_value = (uint32_t)tbf->state.kalman_estimate;
+        memcpy(output, &filtered_value, sizeof(uint32_t));
+        *output_size = sizeof(uint32_t);
+        return ETH_OK;
+    }
+
     switch (tbf->config.policy) {
         case TBF_POLICY_AVERAGE:
             if (tbf->state.samples_in_window > 0U) {
@@ -208,14 +219,7 @@ static eth_status_t generate_compressed_sample(tbf_handle_t *tbf,
             memcpy(output, tbf->sample_buffer, tbf->sample_buffer_size);
             break;
     }
-    
-    // 卡尔曼滤波输出
-    if (tbf->config.compression == TBF_COMPRESS_KALMAN) {
-        uint32_t filtered_value = (uint32_t)tbf->state.kalman_estimate;
-        memcpy(output, &filtered_value, sizeof(uint32_t));
-        *output_size = sizeof(uint32_t);
-    }
-    
+
     return ETH_OK;
 }
 

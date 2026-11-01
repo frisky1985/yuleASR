@@ -1,0 +1,58 @@
+rule,file,line,column,reason
+misra-c2023-10.5,src/bsw/cdd/src/Cdd_Hsm_1.0.0.c,175,12,
+misra-c2023-10.5,src/bsw/cdd/src/Cdd_Lockstep_1.0.0.c,309,36,
+misra-c2023-10.5,src/bsw/cdd/src/Cdd_Lockstep_1.0.0.c,310,36,
+misra-c2023-10.5,src/bsw/cdd/src/Cdd_Lockstep_1.0.0.c,311,36,
+misra-c2023-10.5,src/bsw/services/bswm/src/BswM.c,96,35,
+misra-c2023-10.5,src/bsw/services/bswm/src/BswM.c,99,32,
+misra-c2023-10.5,src/bsw/services/bswm/src/BswM.c,104,22,
+misra-c2023-10.5,src/bsw/services/bswm/src/BswM.c,109,22,
+misra-c2023-10.5,src/bsw/services/bswm/src/BswM.c,114,22,
+misra-c2023-10.5,src/bsw/services/mqtt/src/Mqtt_CertMgr.c,802,13,
+misra-c2023-10.5,src/bsw/services/mqtt/src/Mqtt_CertMgr.c,804,20,
+misra-c2023-10.5,src/bsw/services/mqtt/src/Mqtt_CertMgr.c,806,20,
+misra-c2023-10.5,src/bsw/services/mqtt/src/Mqtt_CertMgr.c,808,20,
+misra-c2023-10.5,src/bsw/services/mqtt/src/Mqtt_CertMgr.c,810,20,
+misra-c2023-10.5,src/bsw/services/mqtt/src/Mqtt_CertMgr.c,812,20,
+misra-c2023-10.5,src/bsw/services/mqtt/src/Mqtt_CertMgr.c,814,20,
+misra-c2023-10.5,src/middleware/dds/pubsub/content_filtered_topic.c,443,34,
+misra-c2023-14.2,src/middleware/dds/security/dds_auth.c,91,5,misra-c2023-14.2 @ */src/dds/security/dds_auth.c
+misra-c2023-17.1,src/middleware/dds/security/dds_security_manager.c,621,5,misra-c2023-17.1 @ */src/common/log/dds_log.c
+misra-c2023-17.1,src/middleware/dds/security/dds_security_manager.c,622,13,misra-c2023-17.1 @ */src/common/log/dds_log.c
+misra-c2023-17.1,src/middleware/dds/security/dds_security_manager.c,625,11,misra-c2023-17.1 @ */src/common/log/dds_log.c
+misra-c2023-18.7,third_party/mbedtls/include/psa/crypto_struct.h,254,17,
+misra-c2023-20.4,third_party/mbedtls/include/mbedtls/build_info.h,101,0,
+misra-c2023-21.16,src/bsw/services/mqtt/src/Mqtt_CertMgr.c,802,24,
+misra-c2023-21.16,src/bsw/services/mqtt/src/Mqtt_CertMgr.c,804,31,
+misra-c2023-21.16,src/bsw/services/mqtt/src/Mqtt_CertMgr.c,806,31,
+misra-c2023-21.16,src/bsw/services/mqtt/src/Mqtt_CertMgr.c,808,31,
+misra-c2023-21.16,src/bsw/services/mqtt/src/Mqtt_CertMgr.c,810,31,
+misra-c2023-21.16,src/bsw/services/mqtt/src/Mqtt_CertMgr.c,812,31,
+misra-c2023-21.16,src/bsw/services/mqtt/src/Mqtt_CertMgr.c,814,31,
+misra-c2023-21.16,src/middleware/dds/security/dds_crypto.c,402,13,
+misra-c2023-21.16,src/middleware/dds/security/dds_crypto.c,403,13,
+misra-c2023-21.16,src/middleware/dds/security/dds_security_manager.c,47,12,
+misra-c2023-21.16,src/middleware/dds/transport/eth/dds_eth_discovery.c,1020,13,
+misra-c2023-21.2,tests/qemu_m33/include/stdlib.h,13,6,
+misra-c2023-21.2,tests/qemu_m33/include/stdlib.h,14,8,
+misra-c2023-21.2,tests/qemu_m33/include/stdlib.h,15,6,
+misra-c2023-21.2,tests/qemu_m33/include/string.h,9,8,
+misra-c2023-21.2,tests/qemu_m33/include/string.h,10,8,
+misra-c2023-21.2,tests/qemu_m33/include/string.h,11,8,
+misra-c2023-21.2,tests/qemu_m33/include/string.h,12,8,
+misra-c2023-21.2,tests/qemu_m33/include/string.h,13,8,
+misra-c2023-21.2,tests/qemu_m33/include/string.h,14,8,
+misra-c2023-21.7,src/middleware/dds/pubsub/content_filtered_topic.c,327,48,
+misra-c2023-21.7,src/middleware/dds/pubsub/content_filtered_topic.c,335,55,
+misra-c2023-21.7,src/middleware/dds/security/dds_access.c,267,73,
+misra-c2023-21.7,src/middleware/dds/security/dds_access.c,386,37,
+misra-c2023-21.9,src/middleware/dds/pubsub/ownership.c,91,9,
+misra-c2023-22.8,src/middleware/dds/security/dds_access.c,190,27,misra-c2023-22.8 @ */src/dds/security/dds_access.c
+misra-c2023-22.8,src/middleware/dds/security/dds_access.c,350,27,misra-c2023-22.8 @ */src/dds/security/dds_access.c
+misra-c2023-22.9,src/middleware/dds/security/dds_access.c,190,31,misra-c2023-22.9 @ */src/dds/security/dds_access.c
+misra-c2023-22.9,src/middleware/dds/security/dds_access.c,350,31,misra-c2023-22.9 @ */src/dds/security/dds_access.c
+misra-c2023-5.5,src/middleware/dds/transport/eth/dds_tcpip_compat.c,35,1,misra-c2023-5.5 @ */src/dds/transport/eth/dds_tcpip_compat.c
+misra-c2023-5.5,src/middleware/dds/transport/eth/dds_tcpip_compat.c,69,1,misra-c2023-5.5 @ */src/dds/transport/eth/dds_tcpip_compat.c
+misra-c2023-5.5,src/middleware/dds/transport/eth/dds_tcpip_compat.c,75,1,misra-c2023-5.5 @ */src/dds/transport/eth/dds_tcpip_compat.c
+misra-c2023-9.4,third_party/mbedtls/include/psa/crypto_struct.h,479,58,
+misra-c2023-9.4,third_party/mbedtls/include/psa/crypto_struct.h,517,60,

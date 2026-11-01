@@ -130,6 +130,10 @@ def main() -> int:
             for mod_dir in sorted(ldir.iterdir()):
                 if not mod_dir.is_dir() or mod_dir.name == "include":
                     continue
+                # Only directories with actual source (*.c) count as an implementation;
+                # shimmed/stub directories (src/*.c deleted) are not implementations.
+                if module_loc(mod_dir) == 0:
+                    continue
                 name_index[mod_dir.name.lower()].append(f"{layer}/{mod_dir.name}")
     # boot / cdd are special (no layer subdir under bsw/)
     for special in ("boot", "cdd"):
@@ -200,8 +204,13 @@ def build_row(layer: str, name: str, mod_dir: Path, templates: dict,
             if k.lower() == stem.lower():
                 tpl_layer = v
                 break
-    canonical = len(name_index.get(name.lower(), [])) == 1
-    dups = [d for d in name_index.get(name.lower(), []) if d != f"{layer}/{name}"]
+    if loc == 0:
+        # No source files -> not an implementation; never a duplicate.
+        canonical = True
+        dups = []
+    else:
+        canonical = len(name_index.get(name.lower(), [])) == 1
+        dups = [d for d in name_index.get(name.lower(), []) if d != f"{layer}/{name}"]
     # test files (module-specific dirs only)
     test_files = 0
     for tdir in (ROOT / "tests" / "bsw" / layer / name,

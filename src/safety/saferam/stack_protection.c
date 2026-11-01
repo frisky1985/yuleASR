@@ -570,8 +570,13 @@ Std_ReturnType StackProtection_CheckUnderflow(uint8_t stack_id, boolean *underfl
     
     current_sp = StackProtection_GetCurrentSP();
     
-    /* Underflow: SP above stack base (grew upward past limit) */
-    *underflow = (current_sp > stack->base_addr);
+    /* Underflow: SP grew above the stack base.  This is only meaningful
+     * when the SP actually belongs to this stack — i.e. it sits above the
+     * base but no farther than one full stack size.  On the host the real
+     * SP belongs to the test process, so a far-away SP must not be
+     * misreported as this stack's underflow. */
+    *underflow = (current_sp > stack->base_addr) &&
+                 ((current_sp - stack->base_addr) <= stack->size);
     
     if (*underflow) {
         StackViolationType violation;
