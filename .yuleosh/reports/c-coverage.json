@@ -1,19 +1,19 @@
 {
   "success": true,
-  "line_rate": 63.32,
-  "branch_rate": 50.9,
-  "total_files": 296,
+  "line_rate": 63.53,
+  "branch_rate": 50.98,
+  "total_files": 295,
   "totals": {
     "lines": {
-      "found": 67997,
-      "hit": 43056
+      "found": 67783,
+      "hit": 43062
     },
     "functions": {
-      "found": 5786,
+      "found": 5771,
       "hit": 3804
     },
     "branches": {
-      "found": 38545,
+      "found": 38483,
       "hit": 19619
     }
   },
@@ -744,19 +744,6 @@
       "functions": {
         "found": 52,
         "hit": 8
-      }
-    },
-    {
-      "file": "src/bsw/ecual/fee/src/Fee_Fls_Integration.c",
-      "line_rate": 0.0,
-      "branch_rate": 0.0,
-      "lines": {
-        "found": 246,
-        "hit": 0
-      },
-      "functions": {
-        "found": 17,
-        "hit": 0
       }
     },
     {
@@ -1645,14 +1632,14 @@
     },
     {
       "file": "src/bsw/os/src/Os_Cfg.c",
-      "line_rate": 92.68,
-      "branch_rate": 100.0,
+      "line_rate": 71.7,
+      "branch_rate": 77.78,
       "lines": {
-        "found": 41,
+        "found": 53,
         "hit": 38
       },
       "functions": {
-        "found": 7,
+        "found": 9,
         "hit": 6
       }
     },
@@ -2165,11 +2152,11 @@
     },
     {
       "file": "src/bsw/services/memif/src/MemIf.c",
-      "line_rate": 78.79,
-      "branch_rate": 69.39,
+      "line_rate": 75.0,
+      "branch_rate": 61.86,
       "lines": {
-        "found": 132,
-        "hit": 104
+        "found": 152,
+        "hit": 114
       },
       "functions": {
         "found": 16,
@@ -3790,11 +3777,11 @@
     },
     {
       "file": "src/safety/saferam/saferam_manager.c",
-      "line_rate": 89.82,
-      "branch_rate": 75.77,
+      "line_rate": 89.59,
+      "branch_rate": 75.38,
       "lines": {
         "found": 442,
-        "hit": 397
+        "hit": 396
       },
       "functions": {
         "found": 52,
@@ -3803,11 +3790,11 @@
     },
     {
       "file": "src/safety/saferam/stack_protection.c",
-      "line_rate": 90.04,
-      "branch_rate": 79.48,
+      "line_rate": 89.38,
+      "branch_rate": 77.99,
       "lines": {
         "found": 452,
-        "hit": 407
+        "hit": 404
       },
       "functions": {
         "found": 38,
@@ -3869,8 +3856,8 @@
   ],
   "provenance": {
     "schema": 2,
-    "generated_at": "2026-10-30T18:11:59.070772+00:00",
-    "git_sha": "84957463d01ba695addd6591ecd6eb560e171dfa",
+    "generated_at": "2026-11-01T00:30:51.215734+00:00",
+    "git_sha": "8ed88e388fb47d8c82db62005359d8d15a3f90cf",
     "git_dirty": true,
     "root": "/workspace",
     "tool": {

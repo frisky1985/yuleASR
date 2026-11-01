@@ -285,9 +285,8 @@ def check_coverage_gate(report_path=COVERAGE_JSON, thresholds=None):
         print(f"  ✅ Line rate {line_rate_pct:.1f}% >= threshold {thresholds['line']}%")
 
     if branch_rate_pct < thresholds["branch"]:
-        print(f"  ⚠️  Branch rate {branch_rate_pct:.1f}% < threshold {thresholds['branch']}%")
-        # Branch may be non-blocking for Phase 2
-        print(f"     (Non-blocking in Phase 2 — will become blocking in Phase 3)")
+        print(f"  ❌ Branch rate {branch_rate_pct:.1f}% < threshold {thresholds['branch']}%")
+        passed = False
     else:
         print(f"  ✅ Branch rate {branch_rate_pct:.1f}% >= threshold {thresholds['branch']}%")
 

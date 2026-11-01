@@ -26,11 +26,10 @@ jobs:
         # 背景: P0-5 提升分支覆盖率阈值 (20%→25%) 时发现，ci.yml 内嵌解析
         # 正则会先命中 ci-config.yaml 注释中的历史值 (20.0)，真实键值 25.0
         # 被遮蔽 —— 门禁实际仍按旧阈值判定（已修复为行首锚定正则）。
-        # 本步骤用 YAML 解析 (非正则) 校验三处一致：
-        #   1) ci-config.yaml YAML 解析值 (权威);
-        #   2) 门禁运行时正则提取值;
-        #   3) ci.yml 兜底默认值。
-        # 任一漂移立即阻断 CI，防止门禁阈值再次静默失效。
+        # 本步骤校验 YAML 解析值与行首锚定正则提取值一致，防止注释中的历史
+        # 阈值遮蔽真实键值导致门禁静默失效。
+        # 阈值单一真相源 = ci-config.yaml; check_coverage_gate.py 直接读取，
+        # ci.yml 不再内嵌兜底值 (PR-0.3 移除三方一致性检查中的 fallback 维度)。
         run: |
           python3 -c '
           import re, sys, yaml
@@ -39,30 +38,20 @@ jobs:
           cfg_fu = int(cfg["coverage"]["c_fail_under"])
           cfg_bt = float(cfg["coverage"]["threshold_branch"])
 
-          # 1) 门禁运行时提取路径 (与 ci.yml Coverage Gate Check 相同的行首锚定正则)
+          # 门禁运行时提取路径 (与 check_coverage_gate.py 相同的行首锚定正则)
           txt = open(".yuleosh/ci-config.yaml").read()
           m = re.search(r"^[ \t]*c_fail_under:\s*(\d+)", txt, re.MULTILINE)
           rx_fu = int(m.group(1)) if m else None
           m = re.search(r"^[ \t]*threshold_branch:\s*([\d.]+)", txt, re.MULTILINE)
           rx_bt = float(m.group(1)) if m else None
 
-          # 2) ci.yml 兜底默认值
-          wf = yaml.safe_load(open(".github/workflows/ci.yml"))
-          steps = wf["jobs"]["coverage"]["steps"]
-          gate = [s for s in steps if s.get("name") == "Coverage Gate Check"][0]
-          m = re.search(r"fail_under = (\d+)", gate["run"])
-          fb_fu = int(m.group(1)) if m else None
-          m = re.search(r"branch_thr = ([\d.]+)", gate["run"])
-          fb_bt = float(m.group(1)) if m else None
-
           print(f"ci-config.yaml (YAML-parsed): c_fail_under={cfg_fu}, threshold_branch={cfg_bt}")
           print(f"gate regex extraction       : c_fail_under={rx_fu}, threshold_branch={rx_bt}")
-          print(f"ci.yml fallback defaults    : fail_under={fb_fu}, branch_thr={fb_bt}")
 
-          if not (rx_fu == cfg_fu and rx_bt == cfg_bt and fb_fu == cfg_fu and fb_bt == cfg_bt):
-              print("FAILED: coverage gate thresholds drifted between ci.yml and ci-config.yaml")
+          if not (rx_fu == cfg_fu and rx_bt == cfg_bt):
+              print("FAILED: coverage gate thresholds drifted (regex extraction != YAML values)")
               sys.exit(1)
-          print("PASSED: gate thresholds consistent (regex extraction == YAML values == fallbacks)")
+          print("PASSED: gate thresholds consistent (regex extraction == YAML values)")
           '
 
       - name: Check BSW config regeneration drift
