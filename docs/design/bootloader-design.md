@@ -56,6 +56,19 @@ Application (yuleASR BSW + ASW)
 Runtime Monitoring (Crypto Watchdog + 安全监控)
 ```
 
+**Mermaid 架构图:**
+
+```mermaid
+flowchart TD
+    ROM["BootROM (HSM ROM, 芯片出厂固化)"] -->|"HSM 硬件验证 PBL 签名 (不可绕过)"| PBL["PBL Primary Bootloader<br/>~4KB, 不可更新"]
+    PBL -->|"Reset_Handler → 最小初始化 → 软件 ECDSA 验签"| SBL["SBL Secondary Bootloader<br/>~64KB, 可经 UDS 更新"]
+    SBL -->|"验签 App (A/B 槽选择) + 版本号 + 抗回滚计数器"| APP["Application<br/>yuleASR BSW + ASW"]
+    APP -->|"WdgM/Safety 周期 CRC 运行时完整性"| RTM["Runtime Monitoring<br/>Crypto Watchdog + 安全监控"]
+    ROM -.->|"验证失败: 锁定芯片"| LOCK[/芯片锁定/]
+    PBL -.->|"验证失败: 恢复模式"| REC[/恢复模式/]
+    SBL -.->|"验证失败: 回滚或恢复模式"| REC
+```
+
 **每级验证责任:**
 
 | 阶段 | 验证内容 | 验证方式 | 失败处理 |
@@ -87,6 +100,40 @@ Runtime Monitoring (Crypto Watchdog + 安全监控)
                               └──────────────────────────────┘
 ```
 
+**Mermaid 架构图:**
+
+```mermaid
+flowchart TD
+    subgraph INTEG["集成层"]
+        SBLM["sbl_main<br/>依赖注入: flash 驱动 / CSM-KeyM / App 镜像 / 跳转回调"]
+    end
+    subgraph OTA["bootloader OTA 服务层"]
+        ARB["bl_antrollback (NVM 计数器)"]
+        SB["bl_secure_boot (验签)"]
+        RB["bl_rollback (回滚)"]
+        PART["bl_partition (A/B 分区)"]
+        LOG["bl_upgrade_log (审计)"]
+        TIME["bl_time (时间源)"]
+    end
+    subgraph BSW["bsw/boot 启动静态库 (独立, 不依赖 OTA 层)"]
+        UPD["Boot_Update"]
+        LDR["Boot_Loader"]
+        IMG["Boot_Image"]
+        VER["Boot_Verify"]
+        FLS["Boot_Flash (HAL)"]
+        HSM["Boot_Hsm (HAL)"]
+    end
+    subgraph HAL["MCAL / Crypto Stack"]
+        MCAL["MCAL Flash / HSM HAL<br/>CSM / KeyM"]
+    end
+    SBLM --> OTA
+    SBLM --> BSW
+    UPD -->|"bl_rollback_storage_api_t 回调 (集成层注入)"| ARB
+    FLS --> MCAL
+    HSM --> MCAL
+    OTA --> MCAL
+```
+
 **分层解耦关键设计 (方案 C 依赖注入):**
 
 - `bsw/boot` 是独立静态库, **不编译期依赖** bootloader 层 (交叉构建时 bootloader 层整体排除)。
@@ -111,6 +158,18 @@ Runtime Monitoring (Crypto Watchdog + 安全监控)
 | App Slot B | `0x0010_0000` | 896 KB | 应用槽 B (OTA 目标槽) |
 | BIB | `0x001E_0000` | 64 KB | Boot Info Block (启动/升级状态) |
 | NVM / EEPROM 模拟 | `0x001F_0000` | 32 KB | 抗回滚计数器槽位 / 升级日志等 |
+
+**Mermaid 布局图:**
+
+```mermaid
+flowchart TD
+    PBL["PBL 4KB<br/>0x0000_0000"] --> RSV["预留 4KB<br/>0x0000_1000"]
+    RSV --> SBL["SBL 64KB<br/>0x0000_2000"]
+    SBL --> A["App Slot A 952KB<br/>0x0001_2000"]
+    A --> B["App Slot B 896KB (OTA 目标槽)<br/>0x0010_0000"]
+    B --> BIB["BIB (Boot Info Block) 64KB<br/>0x001E_0000"]
+    BIB --> NVM["NVM / EEPROM 模拟 32KB<br/>0x001F_0000<br/>抗回滚槽位 / 升级日志"]
+```
 
 ### 3.2 PBL 链接布局
 
@@ -229,6 +288,30 @@ typedef struct {
            否则保存 BIB 后进入恢复模式
 ```
 
+**Mermaid 流程图:**
+
+```mermaid
+flowchart TD
+    START([复位启动]) --> INIT["① 最小硬件初始化 Boot_Flash_Init"]
+    INIT --> LOADBIB{"② 加载 BIB<br/>magic + CRC 有效?"}
+    LOADBIB -->|"否 (首次启动/损坏)"| REBUILD["重建默认 BIB<br/>max_boot_attempts=5"]
+    LOADBIB -->|是| RESOLVE["③ Boot_Loader_ResolveBootTarget"]
+    REBUILD --> RESOLVE
+    RESOLVE -->|"status bit1 = 0"| T1["目标 = SBL"]
+    RESOLVE -->|"status bit1 = 1"| T2["目标 = App Slot B"]
+    T1 --> VERIFY
+    T2 --> VERIFY
+    VERIFY["④ 验签: 读 Header → 校验 magic/header_crc<br/>→ 4KB 页缓冲增量 SHA-256(payload)<br/>→ 读 Trailer → HSM 优先验签, 失败回落软件 ECDSA"]
+    VERIFY --> VOK{"验签通过?"}
+    VOK -->|是| MARK["⑤ BIB: boot_count=0, status=0x01 落盘"]
+    MARK --> JUMP["⑥ Boot_Loader_Jump<br/>关中断 → 停 SysTick → 取 SP/PC (offset 0/4)<br/>→ 设 MSP → 跳转 (noreturn)"]
+    VOK -->|否| FAIL["boot_count++ 并落盘"]
+    FAIL --> CHK{"boot_count ≥ 5?"}
+    CHK -->|是| PERM["status=0xFF 永久恢复"]
+    CHK -->|否| REC["Boot_Loader_EnterRecovery<br/>最小 UDS 监听循环 (仅 0x10 0x02)"]
+    PERM --> REC
+```
+
 ### 5.2 跳转实现 (Boot_Loader_Jump)
 
 1. 关中断 (`cpsid i`, 宿主构建为空操作)
@@ -251,6 +334,22 @@ typedef struct {
 | ③ 升级全部完成 | 落盘 IDLE | 终态, 无残留 |
 
 **回退策略:** OTA 只写非活动槽 (Prepare 防护性拒绝写活动槽), 故 DOWNLOADING 掉电后活动槽必然完好 → 启动决策按 marker 正常执行即自然回退到完好的活动槽, 旧固件照常运行。不强制回退 Slot A (marker=1 时活动槽是 B, 强制回退 A 反而指向正在被擦写的目标槽, 会击穿保护)。旧 BIB 无此字段读为 IDLE, 行为不变, 天然兼容。
+
+**Mermaid 状态机:**
+
+```mermaid
+stateDiagram-v2
+    [*] --> IDLE
+    IDLE --> DOWNLOADING: ① Prepare 落盘 (擦除前)
+    DOWNLOADING --> PENDING: ② Finalize 校验通过
+    PENDING --> IDLE: ③ 升级全部完成
+    DOWNLOADING --> IDLE: 掉电重启 → 按 marker 回退活动槽<br/>(活动槽未擦写, 旧固件照常运行)
+    note right of DOWNLOADING
+        擦除/写入中途掉电 → 重启识别
+        未完成升级; OTA 只写非活动槽,
+        故活动槽必然完好
+    end note
+```
 
 ---
 
@@ -298,6 +397,26 @@ Finalize:  version <= counter → 拒绝 (BOOT_E_VERSION, fail-closed)
 每次启动成功: NotifySuccessfulBoot(current_version)
            current == pending → count++; count >= N → commit: counter=pending, 清 pending
            current != pending → 不计数不清除 (A/B 回退兼容, 新版本留待下次确认)
+```
+
+**Mermaid 流程图:**
+
+```mermaid
+flowchart TD
+    FIN["Finalize(type, version)"] --> CMP{"version ≤ counter?"}
+    CMP -->|是| REJ["拒绝 BOOT_E_VERSION<br/>(防回滚攻击, fail-closed)"]
+    CMP -->|否| STAGE["Stage: pending=version<br/>boot_count=0 落盘 (计数器不动)"]
+    STAGE --> BOOT["每次启动成功<br/>NotifySuccessfulBoot(current_version)"]
+    BOOT --> EQ{"current == pending?"}
+    EQ -->|否| KEEP["不计数不清除<br/>(A/B 回退兼容, 留待下次确认)"]
+    EQ -->|是| INC["pending_boot_count++"]
+    INC --> HG{"健康门控开启?<br/>(RS-OTA-05)"}
+    HG -->|否| N{"count ≥ N (默认 3)?"}
+    HG -->|是| HC{"count ≥ N 且<br/>health_confirmed?"}
+    N -->|否| WAIT["保持 pending<br/>(确认窗口内允许回滚/同版本重装)"]
+    HC -->|否| WAIT
+    N -->|是| COMMIT["提交: counter = pending<br/>清除待确认状态"]
+    HC -->|是| COMMIT
 ```
 
 **健康门控 (RS-OTA-05 P1):** 门控开启时, 提交条件 = N 次成功启动 **且** ASW 业务健康确认 (`Boot_Update_ConfirmBusinessHealth`, 由 DCM 响应/传感器有效/无功能异常检查后调用); 未确认则 pending 保持, 本次启动计入 boot_attempt, 超限由 bl_rollback 自动回滚兜底 (不无限等待)。门控默认关闭 = 原 N 次制, 向后兼容。
@@ -348,6 +467,27 @@ Tester                      ECU (SBL)
   │─────────────────────────────────▶│  Boot_Loader_ConfirmBoot()
 ```
 
+**Mermaid 时序图:**
+
+```mermaid
+sequenceDiagram
+    participant T as Tester
+    participant E as ECU (SBL)
+    T->>E: 0x10 0x02 Programming Session
+    Note over E: 仅编程会话允许固件写入
+    T->>E: 0x27 Security Access
+    T->>E: 0x34 RequestDownload
+    Note over E: DFID=0x01→SBL / 0x02→App 非活动槽<br/>Boot_Update_Prepare()
+    T->>E: 0x36 TransferData × N
+    Note over E: Boot_Update_WriteBlock()<br/>逐块写入, 边写边增量哈希
+    T->>E: 0x37 RequestTransferExit
+    Note over E: Boot_Update_Finalize()<br/>写 Header + Trailer, 验证签名
+    T->>E: 0x31 RID=0xFF01 完整性检查
+    Note over E: Boot_Loader_ResolveBootTarget() — 关键验证点
+    T->>E: 0x11 0x01 ECUReset
+    Note over E: 重启 → PBL → SBL → 新槽<br/>Boot_Loader_ConfirmBoot()
+```
+
 **Dcm 调用点映射** (见 [boot-dcm-integration.md](file:///workspace/docs/design/boot-dcm-integration.md)):
 
 | UDS 服务 | Dcm 调用点 | Boot API |
@@ -375,6 +515,27 @@ Finalize(type, version):
   → 抗回滚: version ≤ counter 拒绝; 否则 Stage(pending=version)  [注入模式]
   → BIB 版本字段更新 → update_state=IDLE → 确认授权复位
 Abort: 清上下文 (状态机无残留)
+```
+
+**Mermaid 流程图:**
+
+```mermaid
+flowchart TD
+    REQ["Boot_Update_RequestUserConfirm"] --> WAIT{"用户决策<br/>(30s 超时自动取消)"}
+    WAIT -->|GRANTED| PREP["Prepare(slot, type)"]
+    WAIT -->|"DENIED / TIMEOUT"| REJ["拒绝写入 (门控拦截)"]
+    PREP --> GATE1{"确认门控 + 活动槽防护检查"}
+    GATE1 -->|失败| REJ
+    GATE1 -->|通过| BIB1["BIB: update_state=DOWNLOADING 落盘"]
+    BIB1 --> ERASE["扇区擦除 (对齐 + 重试×3)"]
+    ERASE --> WB["WriteBlock × N<br/>增量 SHA-256 + Flash 写入<br/>(重试×3 + 64B 分块读回校验)"]
+    WB --> FIN["Finalize(type, version)"]
+    FIN --> HDR["计算完整 payload 哈希<br/>构造/写入 Image Header"]
+    HDR --> BIB2["BIB: update_state=PENDING 落盘"]
+    BIB2 --> ARB{"version ≤ 抗回滚计数器?"}
+    ARB -->|是| REJ2["拒绝 BOOT_E_VERSION<br/>(防回滚攻击)"]
+    ARB -->|否| STAGE["Stage: 记录待确认版本<br/>(延后递增, 计数器不动)"]
+    STAGE --> DONE["BIB 版本字段更新 → update_state=IDLE<br/>确认授权复位, 状态机无残留"]
 ```
 
 ### 7.3 SBL 集成层启动链路 (sbl_main_boot)
@@ -406,12 +567,44 @@ Abort: 清上下文 (状态机无残留)
 - **执行:** 选择最近有效历史版本 → 分区切换 (更新 BIB 槽位 marker) → 验证 → 确认; 全程状态机 IDLE→CHECKING→PREPARING→EXECUTING→VERIFYING→COMPLETED/FAILED。
 - **DEM 集成:** 回滚事件经 `report_dtc` 回调上报 DTC。
 
+**Mermaid 状态机:**
+
+```mermaid
+stateDiagram-v2
+    [*] --> IDLE
+    IDLE --> CHECKING: 启动失败 / 验签失败 / 看门狗超时
+    CHECKING --> PREPARING: 连续失败超限 且 存在有效历史版本
+    CHECKING --> IDLE: 无需回滚
+    PREPARING --> EXECUTING: 选定最近有效版本<br/>+ BIB 槽位 marker 切换
+    EXECUTING --> VERIFYING: 重启验证旧版本
+    VERIFYING --> COMPLETED: 旧版本启动成功 (confirm)
+    VERIFYING --> FAILED: 验证失败
+    FAILED --> EXECUTING: 重试
+    FAILED --> [*]: 不可恢复 → 恢复模式
+    COMPLETED --> [*]
+```
+
 ### 8.2 A/B 分区管理 (bl_partition)
 
 - **分区表** (magic `'PART'`, CRC32 保护): 最多 4 个分区 (bootloader / app A/B / 标定 / 配置 / OTA 元数据), 记录地址/版本/哈希/签名/启动统计/OTA 进度。
 - **状态机:** INACTIVE → UPDATING → UPDATE_PENDING → ACTIVE; 异常 → UNBOOTABLE / ROLLBACK。
 - **切换:** `bl_partition_switch_active("app_b")` → 应用启动成功后 `bl_partition_commit_switch()` 确认; 支持切换/回滚事件回调。
 - **Flash 驱动抽象:** `bl_flash_driver_t` 函数表 (init/read/erase/program/verify/get_info/unlock/lock), 平台注入。
+
+**Mermaid 分区状态机:**
+
+```mermaid
+stateDiagram-v2
+    [*] --> INACTIVE
+    INACTIVE --> UPDATING: 选为 OTA 目标槽
+    UPDATING --> UPDATE_PENDING: Finalize 校验通过
+    UPDATE_PENDING --> ACTIVE: switch_active + 启动确认 (commit_switch)
+    ACTIVE --> INACTIVE: 新版本切换到对端槽
+    UPDATING --> UNBOOTABLE: 验证失败 (立即擦除目标槽)
+    UPDATE_PENDING --> ROLLBACK: 启动失败 / 健康未确认
+    ROLLBACK --> INACTIVE: 回滚到旧版本
+    UNBOOTABLE --> INACTIVE: 重新擦写
+```
 
 ---
 
