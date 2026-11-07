@@ -367,7 +367,7 @@ EcuM_PerformReset()                   Boot_Handshake 模块
   → EcuM_AL_Reset() ──复位──►
 ```
 
-**握手块布局** (32 字节, 固定 SRAM 地址 `0x2007_FFE0`, S32K312 SRAM_U 顶部保留区):
+**握手块布局** (32 字节, 固定 SRAM 地址 `0x2000_FFE0`, S32K312 Safe RAM 顶部保留区):
 
 | 字段 | 大小 | 说明 |
 |:-----|:-----|:-----|
@@ -377,6 +377,28 @@ EcuM_PerformReset()                   Boot_Handshake 模块
 | version | 4B | `0x00010000` (v1.0) |
 | reserved | 16B | 预留对齐 |
 
+**选位约束 (为何放在 0x2000FFE0):**
+
+```
+S32K312 512KB SRAM 布局:
+  0x20000000 ┌──────────────────────┐
+             │ ram_safe (64KB-32B)  │  ECC 保护, .safety/.ecc data+bss
+  0x2000FFE0 ├──────────────────────┤  ← 握手块 (32B, NOLOAD, 跨复位保持)
+  0x20010000 ├──────────────────────┤
+             │ ram_general (384KB)   │  .data/.bss/.os_bss/.heap
+  0x20070000 ├──────────────────────┤
+             │ ram_shared (64KB)     │  共享/DMA
+  0x20080000 └──────────────────────┘  ← STACK_TOP, 栈向下增长 (128KB)
+                                          栈区: 0x20060000 ~ 0x20080000
+```
+
+地址 `0x2000FFE0` 必须同时避开:
+1. **栈区** `0x20060000-0x20080000`（栈自顶向下增长，首条调用即触及顶部字节）；
+2. **BSS 清零范围**：S32K312 启动代码仅清零 `__bss_start`~`__bss_end`（ram_general 中的 `.bss`），握手块位于独立 `ram_handshake` 区 + `.boot_handshake (NOLOAD)` 段，不被清零；
+3. **PBL RAM** `0x20000000-0x20000FFF`（PBL 仅 4KB，握手块在 64KB 偏移处，不被 PBL 启动清零）。
+
+> **修正记录:** 初版选 `0x2007FFE0` (SRAM_U 顶部)，但该地址落在栈区内，会被 App 栈覆盖。已修正为 `0x2000FFE0`。
+
 **完整性:** `magic 正确 && version 正确 && target ^ target_inv == 0xFFFFFFFF`。轻量零依赖, App 侧 EcuM 无需引入 CRC 库。
 
 **Mermaid 时序图:**
@@ -385,7 +407,7 @@ EcuM_PerformReset()                   Boot_Handshake 模块
 sequenceDiagram
     participant App
     participant EcuM
-    participant RAM as 握手块<br/>(0x2007FFE0)
+    participant RAM as 握手块<br/>(0x2000FFE0)
     participant PBL
     participant SBL
     App->>EcuM: EcuM_SelectBootTarget(OEM_BOOTLOADER)

@@ -27,8 +27,13 @@ MEMORY
     flash_rsvd2   (rx): ORIGIN = 0x001F8000, LENGTH = 0x8000      /* 32KB - Reserved for NVM/EEPROM emulation */
 
     /* RAM - 512KB */
-    /* First 64KB: Safe RAM for critical data (ECC protected) */
-    ram_safe      (rwx): ORIGIN = 0x20000000, LENGTH = 0x10000    /* 64KB - Safe RAM (Lockstep, ECC) */
+    /* First 64KB: Safe RAM for critical data (ECC protected)
+     * 顶部 32B (0x2000FFE0-0x2000FFFF) 预留给 App<->Bootloader 握手块,
+     * 见 ram_handshake; 启动代码不清零该区域, 跨软复位保持。 */
+    ram_safe      (rwx): ORIGIN = 0x20000000, LENGTH = 0xFFE0     /* 64KB - 32B Safe RAM */
+
+    /* App<->Bootloader 握手块 (NOINIT, 跨复位保持) */
+    ram_handshake (rw):  ORIGIN = 0x2000FFE0, LENGTH = 0x20       /* 32B Boot HandShake */
     
     /* Next 384KB: General purpose RAM */
     ram_general   (rwx): ORIGIN = 0x20010000, LENGTH = 0x60000    /* 384KB - General RAM */
@@ -184,6 +189,19 @@ SECTIONS
         . = ALIGN(8);
         __safe_bss_end = ABSOLUTE(.);
     } > ram_safe
+
+    /* App<->Bootloader 握手块 — NOLOAD, 不加入任何清零表
+     * 启动代码 (__bss_start..__bss_end) 不清零此区域;
+     * App 在 EcuM_PerformReset 前写入, SBL 在 Boot_Loader_Main Phase 0 读取。 */
+    .boot_handshake (NOLOAD) :
+    {
+        . = ALIGN(4);
+        __boot_handshake_start = ABSOLUTE(.);
+        KEEP(*(.boot_handshake))
+        KEEP(*(.boot_handshake.*))
+        . = . + 0x20;   /* 强制保留 32 字节, 即使无输入段也占位 */
+        __boot_handshake_end = ABSOLUTE(.);
+    } > ram_handshake
 
     /* Initialized Data Section — LMA contiguous after .ram_safe_data LMA */
     .data : AT(__safe_data_load + SIZEOF(.ram_safe_data))

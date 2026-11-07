@@ -39,9 +39,13 @@ typedef uint32_t Boot_HandshakeType;
 #define BOOT_HANDSHAKE_MAGIC            0x48534842U   /* 'BHSH' = Boot HandShake */
 #define BOOT_HANDSHAKE_VERSION          0x00010000U   /* v1.0 */
 
-/** S32K312 SRAM_U 顶部保留 32 字节 (0x2007FFE0 - 0x2007FFFF) */
+/** S32K312 Safe RAM 顶部保留 32 字节 (0x2000FFE0 - 0x2000FFFF)
+ *  选位原则: 必须同时避开 ①栈区 (0x20060000-0x20080000, 向下增长)
+ *            ②所有 BSS 清零范围 (.bss 在 ram_general, __bss_start..__bss_end)
+ *            ③PBL ram_pbl (0x20000000-0x20000FFF, 仅 4KB)
+ *  0x2000FFE0 位于 ram_safe 顶部, 低于栈底且远超 PBL RAM, 满足全部约束。 */
 #ifndef BOOT_HANDSHAKE_ADDR
-#define BOOT_HANDSHAKE_ADDR             0x2007FFE0UL
+#define BOOT_HANDSHAKE_ADDR             0x2000FFE0UL
 #endif
 
 typedef struct {
