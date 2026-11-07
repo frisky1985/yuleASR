@@ -8,7 +8,7 @@
 
 
 #include <string.h>
-#include <stdio.h>
+#include "Debug.h"
 #include "dds_tsn_transport.h"
 
 /* ============================================================================
@@ -686,7 +686,7 @@ eth_status_t dds_tsn_stream_id_to_string(const dds_tsn_stream_id_t *stream_id,
         status = ETH_INVALID_PARAM;
     }
     else {
-        (void)snprintf(str, str_len,
+        (void)Debug_Snprintf(str, str_len,
                        "%02X%02X%02X%02X-%02X%02X%02X%02X",
                        stream_id->id[0], stream_id->id[1],
                        stream_id->id[2], stream_id->id[3],

@@ -112,8 +112,8 @@
 #define CRYIF_CFG_IS_VALID_SEC_LEVEL(level)     \
 (((level) >= CRYIF_SEC_LEVEL_NONE) && ((level) <= CRYIF_SEC_LEVEL_7))
 #if (CRYIF_DEBUG_ENABLED == STD_ON)
-    #include <stdio.h>
-    #define CRYIF_DBG_PRINT(fmt, ...)           printf("[CRYIF] " fmt "\n", ##__VA_ARGS__)
+    #include "Debug.h"
+    #define CRYIF_DBG_PRINT(fmt, ...)           Debug_Printf("[CRYIF] " fmt "\n", ##__VA_ARGS__)
 #else
     #define CRYIF_DBG_PRINT(fmt, ...)           ((void)0)
 #endif

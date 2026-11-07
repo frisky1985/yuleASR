@@ -8,7 +8,7 @@
 
 
 #include <string.h>
-#include <stdio.h>
+#include "Debug.h"
 #include "dds_eth_transport.h"
 #include "dds_tcpip_compat.h"
 #include "../../../ethernet/eth_manager.h"

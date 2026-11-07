@@ -15,7 +15,7 @@
 
 #include "ecc_checker.h"
 #include <string.h>
-#include <stdio.h>
+#include "Debug.h"
 
 /******************************************************************************
  * Local Constants
@@ -546,17 +546,17 @@ const char* EccChecker_GetPositionString(uint8_t position, EccEncodeModeType mod
 
     if (mode == ECC_MODE_32BIT) {
         if (position < 32U) {
-            snprintf(buffer, sizeof(buffer), "Data bit %u", (unsigned)position);
+            Debug_Snprintf(buffer, sizeof(buffer), "Data bit %u", (unsigned)position);
         } else if (position <= 38U) {
-            snprintf(buffer, sizeof(buffer), "ECC bit %u", (unsigned)(position - 32U));
+            Debug_Snprintf(buffer, sizeof(buffer), "ECC bit %u", (unsigned)(position - 32U));
         } else {
             return "Invalid position";
         }
     } else {
         if (position < 64U) {
-            snprintf(buffer, sizeof(buffer), "Data bit %u", (unsigned)position);
+            Debug_Snprintf(buffer, sizeof(buffer), "Data bit %u", (unsigned)position);
         } else if (position <= 71U) {
-            snprintf(buffer, sizeof(buffer), "ECC bit %u", (unsigned)(position - 64U));
+            Debug_Snprintf(buffer, sizeof(buffer), "ECC bit %u", (unsigned)(position - 64U));
         } else {
             return "Invalid position";
         }

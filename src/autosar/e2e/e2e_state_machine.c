@@ -11,7 +11,7 @@
 
 #include "e2e_state_machine.h"
 #include <string.h>
-#include <stdio.h>
+#include "Debug.h"
 
 /******************************************************************************
  * Private Definitions
@@ -403,7 +403,7 @@ bool E2E_SM_IsDataAvailable(E2E_SM_StateType state)
 const char* E2E_SM_GetVersion(void)
 {
     static char version[32];
-    (void)snprintf(version, sizeof(version), "%d.%d.%d",
+    (void)Debug_Snprintf(version, sizeof(version), "%d.%d.%d",
                      E2E_SM_MAJOR_VERSION, E2E_SM_MINOR_VERSION, E2E_SM_PATCH_VERSION);
     return version;
 }

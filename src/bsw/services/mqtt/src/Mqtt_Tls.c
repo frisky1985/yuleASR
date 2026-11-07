@@ -15,7 +15,7 @@
  *===========================================================================*/
 #include "Mqtt_Tls.h"
 #include <string.h>
-#include <stdio.h>
+#include "Debug.h"
 
 /* YuleTech mbedTLS 适配层 — 静态内存池 (批C 收尾) */
 #include "Crypto_MbedTLS_Mem.h"

@@ -45,7 +45,7 @@ Boot_Result Boot_Flash_Erase(uint32_t address, uint32_t size)
     uint32_t aligned_end = (end + sector_size - 1U) & ~(sector_size - 1U);
 
     for (uint32_t addr = aligned_addr; addr < aligned_end; addr += sector_size) {
-        Boot_Result retry;
+        Boot_Result retry = BOOT_E_FLASH_ERASE;
         for (uint32_t attempt = 0U; attempt < BOOT_MAX_RETRIES; attempt++) {
             if (Flash_EraseSector(addr) == E_OK) {
                 retry = BOOT_OK;

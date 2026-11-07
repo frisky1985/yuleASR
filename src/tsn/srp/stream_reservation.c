@@ -14,7 +14,7 @@
 #include "stream_reservation.h"
 #include <string.h>
 #include <stdlib.h>
-#include <stdio.h>
+#include "Debug.h"
 #include <time.h>
 
 /* ============================================================================
@@ -661,7 +661,7 @@ eth_status_t srp_stream_id_to_string(const srp_stream_id_t stream_id,
         return ETH_INVALID_PARAM;
     }
     
-    snprintf(buf, buf_size, "%02X%02X:%02X%02X:%02X%02X:%02X%02X",
+    Debug_Snprintf(buf, buf_size, "%02X%02X:%02X%02X:%02X%02X:%02X%02X",
              stream_id[0], stream_id[1], stream_id[2], stream_id[3],
              stream_id[4], stream_id[5], stream_id[6], stream_id[7]);
     
@@ -703,7 +703,7 @@ eth_status_t srp_print_reservation(const srp_stream_id_t stream_id) {
     
     int idx = find_stream_index(stream_id);
     if (idx < 0) {
-        printf("Stream not found\n");
+        Debug_Printf("Stream not found\n");
         return ETH_ERROR;
     }
     
@@ -711,14 +711,14 @@ eth_status_t srp_print_reservation(const srp_stream_id_t stream_id) {
     char id_str[24];
     srp_stream_id_to_string(stream_id, id_str, sizeof(id_str));
     
-    printf("=== Stream Reservation: %s ===\n", id_str);
-    printf("State: %d\n", stream->state);
-    printf("Talker Registered: %s\n", stream->talker_registered ? "Yes" : "No");
-    printf("Listener Count: %u\n", stream->listener_count);
-    printf("Reserved Bandwidth: %u bps\n", stream->reserved_bandwidth_bps);
-    printf("Accumulated Latency: %u us\n", stream->accumulated_latency_us);
-    printf("Safety Margin: %u%%\n", stream->safety_margin_percent);
-    printf("================================\n");
+    Debug_Printf("=== Stream Reservation: %s ===\n", id_str);
+    Debug_Printf("State: %d\n", stream->state);
+    Debug_Printf("Talker Registered: %s\n", stream->talker_registered ? "Yes" : "No");
+    Debug_Printf("Listener Count: %u\n", stream->listener_count);
+    Debug_Printf("Reserved Bandwidth: %u bps\n", stream->reserved_bandwidth_bps);
+    Debug_Printf("Accumulated Latency: %u us\n", stream->accumulated_latency_us);
+    Debug_Printf("Safety Margin: %u%%\n", stream->safety_margin_percent);
+    Debug_Printf("================================\n");
     
     return ETH_OK;
 }
@@ -730,13 +730,13 @@ eth_status_t srp_print_port_status(uint16_t port_id) {
     
     srp_port_state_t *port = get_port(port_id);
     
-    printf("=== SRP Port %d Status ===\n", port_id);
-    printf("Configured: %s\n", port->configured ? "Yes" : "No");
-    printf("Total Bandwidth: %u bps\n", port->bandwidth.total_bandwidth_bps);
-    printf("Available Bandwidth: %u bps\n", port->bandwidth.available_bandwidth_bps);
-    printf("Reserved Bandwidth: %u bps\n", port->bandwidth.reserved_bandwidth_bps);
-    printf("Active Streams: %u\n", g_srp_state.stream_count);
-    printf("===========================\n");
+    Debug_Printf("=== SRP Port %d Status ===\n", port_id);
+    Debug_Printf("Configured: %s\n", port->configured ? "Yes" : "No");
+    Debug_Printf("Total Bandwidth: %u bps\n", port->bandwidth.total_bandwidth_bps);
+    Debug_Printf("Available Bandwidth: %u bps\n", port->bandwidth.available_bandwidth_bps);
+    Debug_Printf("Reserved Bandwidth: %u bps\n", port->bandwidth.reserved_bandwidth_bps);
+    Debug_Printf("Active Streams: %u\n", g_srp_state.stream_count);
+    Debug_Printf("===========================\n");
     
     return ETH_OK;
 }

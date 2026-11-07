@@ -12,7 +12,7 @@
 #include "secoc_core.h"
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
+#include "Debug.h"
 
 /* ============================================================================
  * AES-CMAC常量和辅助函数

@@ -12,7 +12,7 @@
 #include "secoc_dds_integration.h"
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
+#include "Debug.h"
 
 /* 统计信息 */
 typedef struct {
@@ -402,13 +402,13 @@ void secoc_dcs_print_status(secoc_dds_context_t *ctx) {
         return;
     }
     
-    printf("=== SecOC-DDS Integration Status ===\n");
-    printf("DDS Crypto Available: %s\n", ctx->dds_available ? "Yes" : "No");
-    printf("Number of Mappings: %u\n", ctx->num_mappings);
-    printf("DDS Operations: %lu\n", (unsigned long)g_stats.dds_ops);
-    printf("Fallback Operations: %lu\n", (unsigned long)g_stats.fallback_ops);
-    printf("Key Sync Count: %lu\n", (unsigned long)g_stats.key_sync_count);
-    printf("Key Import Count: %lu\n", (unsigned long)g_stats.key_import_count);
-    printf("Key Export Count: %lu\n", (unsigned long)g_stats.key_export_count);
-    printf("====================================\n");
+    Debug_Printf("=== SecOC-DDS Integration Status ===\n");
+    Debug_Printf("DDS Crypto Available: %s\n", ctx->dds_available ? "Yes" : "No");
+    Debug_Printf("Number of Mappings: %u\n", ctx->num_mappings);
+    Debug_Printf("DDS Operations: %lu\n", (unsigned long)g_stats.dds_ops);
+    Debug_Printf("Fallback Operations: %lu\n", (unsigned long)g_stats.fallback_ops);
+    Debug_Printf("Key Sync Count: %lu\n", (unsigned long)g_stats.key_sync_count);
+    Debug_Printf("Key Import Count: %lu\n", (unsigned long)g_stats.key_import_count);
+    Debug_Printf("Key Export Count: %lu\n", (unsigned long)g_stats.key_export_count);
+    Debug_Printf("====================================\n");
 }

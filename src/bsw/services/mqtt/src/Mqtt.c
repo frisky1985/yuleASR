@@ -17,7 +17,7 @@
  *===========================================================================*/
 #include "Mqtt.h"
 #include <string.h>
-#include <stdio.h>
+#include "Debug.h"
 
 #if (MQTT_SUPPORT_TLS == STD_ON)
 #include "Mqtt_Tls.h"

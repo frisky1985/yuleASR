@@ -12,7 +12,7 @@
 
 #include "eth_mac_driver.h"
 #include <string.h>
-#include <stdio.h>
+#include "Debug.h"
 
 /* ============================================================================
  * 内部状态和定义

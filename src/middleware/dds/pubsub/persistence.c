@@ -11,7 +11,7 @@
 #include "../../common/log/dds_log.h"
 #include <string.h>
 #include <stdlib.h>
-#include <stdio.h>
+#include "Debug.h"
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
@@ -251,9 +251,9 @@ static eth_status_t open_storage_files(per_handle_t *per) {
     }
     
     // 构建文件路径
-    snprintf(per->data_file_path, sizeof(per->data_file_path),
+    Debug_Snprintf(per->data_file_path, sizeof(per->data_file_path),
              "%s/%s.data", per->config.storage_path, per->topic_name);
-    snprintf(per->index_file_path, sizeof(per->index_file_path),
+    Debug_Snprintf(per->index_file_path, sizeof(per->index_file_path),
              "%s/%s.idx", per->config.storage_path, per->topic_name);
     
     // 打开或创建数据文件
@@ -704,8 +704,8 @@ eth_status_t per_backup(per_handle_t *per, const char *backup_path) {
     
     // 构建备份文件路径
     char backup_data[512], backup_idx[512];
-    snprintf(backup_data, sizeof(backup_data), "%s/%s.data", backup_path, per->topic_name);
-    snprintf(backup_idx, sizeof(backup_idx), "%s/%s.idx", backup_path, per->topic_name);
+    Debug_Snprintf(backup_data, sizeof(backup_data), "%s/%s.data", backup_path, per->topic_name);
+    Debug_Snprintf(backup_idx, sizeof(backup_idx), "%s/%s.idx", backup_path, per->topic_name);
     
     // 执行备份(简化版本 - 复制文件)
     // 实际实现应使用更可靠的备份机制

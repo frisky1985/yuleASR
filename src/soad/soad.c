@@ -14,7 +14,7 @@
 #include "../tcpip/tcpip_socket.h"
 #include "../tcpip/tcpip_tcp.h"
 #include <string.h>
-#include <stdio.h>
+#include "Debug.h"
 #include "soad.h"
 
 /* ============================================================================

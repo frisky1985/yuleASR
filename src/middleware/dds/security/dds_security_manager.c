@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include "Debug.h"
 #include <stdarg.h>
 #include <time.h>
 
@@ -34,7 +35,7 @@ static void guid_to_string(const rtps_guid_t *guid, char *str, size_t str_size)
         return;
     }
     
-    snprintf(str, str_size, 
+    Debug_Snprintf(str, str_size, 
              "%02X%02X%02X%02X-%02X%02X%02X%02X-%02X%02X%02X%02X",
              guid->prefix[0], guid->prefix[1], guid->prefix[2], guid->prefix[3],
              guid->prefix[4], guid->prefix[5], guid->prefix[6], guid->prefix[7],
@@ -621,7 +622,7 @@ dds_security_status_t dds_security_trigger_event(dds_security_context_t *ctx,
     va_list args;
     va_start(args, format);
     char message[256];
-    vsnprintf(message, sizeof(message), format, args);
+    Debug_Vsnprintf(message, sizeof(message), format, args);
     va_end(args);
 
     /* Add to event history */
@@ -699,7 +700,7 @@ dds_security_status_t dds_security_log_audit(dds_security_context_t *ctx,
                 guid_to_string(participant_guid, guid_str, sizeof(guid_str));
             }
             
-            fprintf(fp, "[%llu] [%d] [%s] %s\n",
+            Debug_Fprintf(fp, "[%llu] [%d] [%s] %s\n",
                     (unsigned long long)log->timestamp,
                     severity,
                     guid_str,

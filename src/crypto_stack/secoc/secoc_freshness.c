@@ -12,7 +12,7 @@
 #include "secoc_freshness.h"
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
+#include "Debug.h"
 
 /* ============================================================================
  * 内部辅助函数

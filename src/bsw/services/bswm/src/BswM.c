@@ -75,8 +75,20 @@ static void BswM_ExecuteActionList(uint16 ActionListIndex);
 
 static boolean BswM_EvaluateExpression(uint16 ExpressionIndex, uint8 Depth)
 {
-    const BswM_ExpressionConfigType* expr;
-    boolean result = FALSE;
+    /* Iterative expression-tree evaluation (MISRA 17.2: no recursion).
+     * Uses an explicit work stack (index + phase + depth) and a value stack.
+     * Depth is bounded by BSWM_EXPR_MAX_DEPTH (16), so stack sizes are safe. */
+    typedef struct {
+        uint16 index;
+        uint8  phase; /* 0 = expand children, 1 = compute result */
+        uint8  depth;
+    } BswM_EvalFrame;
+
+    BswM_EvalFrame workStack[(BSWM_EXPR_MAX_DEPTH * 2U) + 2U];
+    boolean        valStack[(BSWM_EXPR_MAX_DEPTH * 2U) + 2U];
+    uint8          wsp = 0U;
+    uint8          vsp = 0U;
+    boolean        result = FALSE;
 
     if ((BswM_State.configPtr == NULL_PTR) || (Depth > BSWM_EXPR_MAX_DEPTH)) {
         return FALSE;
@@ -86,39 +98,106 @@ static boolean BswM_EvaluateExpression(uint16 ExpressionIndex, uint8 Depth)
         return FALSE;
     }
 
-    expr = &BswM_State.configPtr->Expressions[ExpressionIndex];
+    workStack[wsp].index = ExpressionIndex;
+    workStack[wsp].phase = 0U;
+    workStack[wsp].depth = Depth;
+    wsp++;
 
-    switch (expr->ExpressionType) {
-        case BSWM_EXPR_MODE_EQUALS:
-        case BSWM_EXPR_MODE_NOT_EQUALS:
-            if ((expr->PortIndex < BswM_State.configPtr->NumModeRequestPorts) &&
-                (BswM_State.configPtr->ModeRequestPorts != NULL_PTR)) {
-                boolean matches = (boolean)(BswM_State.portValue[expr->PortIndex] == expr->CompareValue);
-                result = (expr->ExpressionType == BSWM_EXPR_MODE_EQUALS)
-                             ? matches
-                             : (boolean)(matches == FALSE);
+    while (wsp > 0U) {
+        BswM_EvalFrame frame = workStack[--wsp];
+        const BswM_ExpressionConfigType* expr;
+
+        if ((frame.index >= BswM_State.configPtr->NumExpressions) ||
+            (BswM_State.configPtr->Expressions == NULL_PTR) ||
+            (frame.depth > BSWM_EXPR_MAX_DEPTH)) {
+            valStack[vsp] = FALSE;
+            vsp++;
+            continue;
+        }
+        expr = &BswM_State.configPtr->Expressions[frame.index];
+
+        if (frame.phase == 0U) {
+            /* Phase 0: re-push self as phase 1, then push children (right-first so left pops first) */
+            if (wsp < (uint8)(sizeof(workStack) / sizeof(workStack[0]))) {
+                workStack[wsp].index = frame.index;
+                workStack[wsp].phase = 1U;
+                workStack[wsp].depth = frame.depth;
+                wsp++;
             }
-            break;
+            switch (expr->ExpressionType) {
+                case BSWM_EXPR_LOGICAL_AND:
+                case BSWM_EXPR_LOGICAL_OR:
+                    workStack[wsp].index = expr->RightIndex;
+                    workStack[wsp].phase = 0U;
+                    workStack[wsp].depth = (uint8)(frame.depth + 1U);
+                    wsp++;
+                    workStack[wsp].index = expr->LeftIndex;
+                    workStack[wsp].phase = 0U;
+                    workStack[wsp].depth = (uint8)(frame.depth + 1U);
+                    wsp++;
+                    break;
+                case BSWM_EXPR_LOGICAL_NOT:
+                    workStack[wsp].index = expr->LeftIndex;
+                    workStack[wsp].phase = 0U;
+                    workStack[wsp].depth = (uint8)(frame.depth + 1U);
+                    wsp++;
+                    break;
+                default:
+                    break; /* leaf evaluated in phase 1 */
+            }
+        } else {
+            /* Phase 1: compute node value from children already on valStack */
+            boolean val;
+            switch (expr->ExpressionType) {
+                case BSWM_EXPR_MODE_EQUALS:
+                case BSWM_EXPR_MODE_NOT_EQUALS:
+                    if ((expr->PortIndex < BswM_State.configPtr->NumModeRequestPorts) &&
+                        (BswM_State.configPtr->ModeRequestPorts != NULL_PTR)) {
+                        boolean matches = (boolean)(BswM_State.portValue[expr->PortIndex] == expr->CompareValue);
+                        val = (expr->ExpressionType == BSWM_EXPR_MODE_EQUALS)
+                                  ? matches
+                                  : (boolean)(matches == FALSE);
+                    } else {
+                        val = FALSE;
+                    }
+                    valStack[vsp] = val;
+                    vsp++;
+                    break;
 
-        case BSWM_EXPR_LOGICAL_AND:
-            result = (boolean)((BswM_EvaluateExpression(expr->LeftIndex, (uint8)(Depth + 1U)) == TRUE) &&
-                               (BswM_EvaluateExpression(expr->RightIndex, (uint8)(Depth + 1U)) == TRUE));
-            break;
+                case BSWM_EXPR_LOGICAL_AND: {
+                    boolean right = valStack[--vsp];
+                    boolean left  = valStack[--vsp];
+                    valStack[vsp] = (boolean)(left && right);
+                    vsp++;
+                    break;
+                }
 
-        case BSWM_EXPR_LOGICAL_OR:
-            result = (boolean)((BswM_EvaluateExpression(expr->LeftIndex, (uint8)(Depth + 1U)) == TRUE) ||
-                               (BswM_EvaluateExpression(expr->RightIndex, (uint8)(Depth + 1U)) == TRUE));
-            break;
+                case BSWM_EXPR_LOGICAL_OR: {
+                    boolean right = valStack[--vsp];
+                    boolean left  = valStack[--vsp];
+                    valStack[vsp] = (boolean)(left || right);
+                    vsp++;
+                    break;
+                }
 
-        case BSWM_EXPR_LOGICAL_NOT:
-            result = (boolean)(BswM_EvaluateExpression(expr->LeftIndex, (uint8)(Depth + 1U)) == FALSE);
-            break;
+                case BSWM_EXPR_LOGICAL_NOT: {
+                    boolean child = valStack[--vsp];
+                    valStack[vsp] = (boolean)(child == FALSE);
+                    vsp++;
+                    break;
+                }
 
-        default:
-            result = FALSE;
-            break;
+                default:
+                    valStack[vsp] = FALSE;
+                    vsp++;
+                    break;
+            }
+        }
     }
 
+    if (vsp > 0U) {
+        result = valStack[vsp - 1U];
+    }
     return result;
 }
 
@@ -134,8 +213,19 @@ static boolean BswM_EvaluateExpression(uint16 ExpressionIndex, uint8 Depth)
  */
 static uint32 BswM_CollectRulePorts(uint16 ExpressionIndex, uint8 Depth)
 {
-    const BswM_ExpressionConfigType* expr;
-    uint32 mask = 0UL;
+    /* Iterative tree walk (MISRA 17.2: no recursion).
+     * Collects the OR of all leaf port-index bitmasks. */
+    typedef struct {
+        uint16 index;
+        uint8  phase; /* 0 = expand, 1 = combine */
+        uint8  depth;
+    } BswM_ColFrame;
+
+    BswM_ColFrame workStack[(BSWM_EXPR_MAX_DEPTH * 2U) + 2U];
+    uint32        maskStack[(BSWM_EXPR_MAX_DEPTH * 2U) + 2U];
+    uint8         wsp = 0U;
+    uint8         msp = 0U;
+    uint32        mask = 0UL;
 
     if ((BswM_State.configPtr == NULL_PTR) || (Depth > BSWM_EXPR_MAX_DEPTH)) {
         return 0UL;
@@ -145,33 +235,91 @@ static uint32 BswM_CollectRulePorts(uint16 ExpressionIndex, uint8 Depth)
         return 0UL;
     }
 
-    expr = &BswM_State.configPtr->Expressions[ExpressionIndex];
+    workStack[wsp].index = ExpressionIndex;
+    workStack[wsp].phase = 0U;
+    workStack[wsp].depth = Depth;
+    wsp++;
 
-    switch (expr->ExpressionType) {
-        case BSWM_EXPR_MODE_EQUALS:
-        case BSWM_EXPR_MODE_NOT_EQUALS:
-            if (expr->PortIndex < BSWM_MAX_MODE_REQUEST_PORTS) {
-                mask = (1UL << expr->PortIndex);
-            } else {
-                mask = 0xFFFFFFFFUL;
+    while (wsp > 0U) {
+        BswM_ColFrame frame = workStack[--wsp];
+        const BswM_ExpressionConfigType* expr;
+
+        if ((frame.index >= BswM_State.configPtr->NumExpressions) ||
+            (BswM_State.configPtr->Expressions == NULL_PTR) ||
+            (frame.depth > BSWM_EXPR_MAX_DEPTH)) {
+            maskStack[msp] = 0UL;
+            msp++;
+            continue;
+        }
+        expr = &BswM_State.configPtr->Expressions[frame.index];
+
+        if (frame.phase == 0U) {
+            workStack[wsp].index = frame.index;
+            workStack[wsp].phase = 1U;
+            workStack[wsp].depth = frame.depth;
+            wsp++;
+            switch (expr->ExpressionType) {
+                case BSWM_EXPR_LOGICAL_AND:
+                case BSWM_EXPR_LOGICAL_OR:
+                    workStack[wsp].index = expr->RightIndex;
+                    workStack[wsp].phase = 0U;
+                    workStack[wsp].depth = (uint8)(frame.depth + 1U);
+                    wsp++;
+                    workStack[wsp].index = expr->LeftIndex;
+                    workStack[wsp].phase = 0U;
+                    workStack[wsp].depth = (uint8)(frame.depth + 1U);
+                    wsp++;
+                    break;
+                case BSWM_EXPR_LOGICAL_NOT:
+                    workStack[wsp].index = expr->LeftIndex;
+                    workStack[wsp].phase = 0U;
+                    workStack[wsp].depth = (uint8)(frame.depth + 1U);
+                    wsp++;
+                    break;
+                default:
+                    break;
             }
-            break;
+        } else {
+            uint32 m;
+            switch (expr->ExpressionType) {
+                case BSWM_EXPR_MODE_EQUALS:
+                case BSWM_EXPR_MODE_NOT_EQUALS:
+                    if (expr->PortIndex < BSWM_MAX_MODE_REQUEST_PORTS) {
+                        m = (1UL << expr->PortIndex);
+                    } else {
+                        m = 0xFFFFFFFFUL;
+                    }
+                    maskStack[msp] = m;
+                    msp++;
+                    break;
 
-        case BSWM_EXPR_LOGICAL_AND:
-        case BSWM_EXPR_LOGICAL_OR:
-            mask = (BswM_CollectRulePorts(expr->LeftIndex, (uint8)(Depth + 1U)) |
-                    BswM_CollectRulePorts(expr->RightIndex, (uint8)(Depth + 1U)));
-            break;
+                case BSWM_EXPR_LOGICAL_AND:
+                case BSWM_EXPR_LOGICAL_OR: {
+                    uint32 right = maskStack[--msp];
+                    uint32 left  = maskStack[--msp];
+                    maskStack[msp] = (left | right);
+                    msp++;
+                    break;
+                }
 
-        case BSWM_EXPR_LOGICAL_NOT:
-            mask = BswM_CollectRulePorts(expr->LeftIndex, (uint8)(Depth + 1U));
-            break;
+                case BSWM_EXPR_LOGICAL_NOT: {
+                    uint32 child = maskStack[--msp];
+                    maskStack[msp] = child;
+                    msp++;
+                    break;
+                }
 
-        default:
-            mask = 0UL;
-            break;
+                default:
+                    maskStack[msp] = 0UL;
+                    msp++;
+                    break;
+            }
+        }
     }
 
+    if (msp > 0U) {
+        mask = maskStack[msp - 1U];
+    }
     return mask;
 }
 

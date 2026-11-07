@@ -13,6 +13,7 @@ set(COMMON_HEADERS
     autosar_types.h
     autosar_common.h
     autosar_errors.h
+    include/Debug.h
 )
 
 # Create common library
@@ -25,6 +26,7 @@ target_include_directories(eth_dds_common PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/types
     ${CMAKE_CURRENT_SOURCE_DIR}/utils
     ${CMAKE_CURRENT_SOURCE_DIR}/log
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
 target_link_libraries(eth_dds_common PUBLIC

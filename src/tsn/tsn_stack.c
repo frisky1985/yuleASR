@@ -13,7 +13,7 @@
 
 #include "tsn_stack.h"
 #include <string.h>
-#include <stdio.h>
+#include "Debug.h"
 #include <time.h>
 
 /* ============================================================================
@@ -50,7 +50,7 @@ static eth_status_t init_all_modules(const tsn_stack_config_t *config) {
     /* 初始化gPTP */
     status = gptp_init(&config->gptp_config);
     if (status != ETH_OK) {
-        printf("TSN: gPTP init failed\n");
+        Debug_Printf("TSN: gPTP init failed\n");
         return status;
     }
     
@@ -58,7 +58,7 @@ static eth_status_t init_all_modules(const tsn_stack_config_t *config) {
     if (config->tas_enabled) {
         status = tas_init();
         if (status != ETH_OK) {
-            printf("TSN: TAS init failed\n");
+            Debug_Printf("TSN: TAS init failed\n");
             return status;
         }
     }
@@ -67,7 +67,7 @@ static eth_status_t init_all_modules(const tsn_stack_config_t *config) {
     if (config->cbs_enabled) {
         status = cbs_init();
         if (status != ETH_OK) {
-            printf("TSN: CBS init failed\n");
+            Debug_Printf("TSN: CBS init failed\n");
             return status;
         }
     }
@@ -76,7 +76,7 @@ static eth_status_t init_all_modules(const tsn_stack_config_t *config) {
     if (config->fp_enabled) {
         status = fp_init();
         if (status != ETH_OK) {
-            printf("TSN: Frame Preemption init failed\n");
+            Debug_Printf("TSN: Frame Preemption init failed\n");
             return status;
         }
     }
@@ -85,7 +85,7 @@ static eth_status_t init_all_modules(const tsn_stack_config_t *config) {
     if (config->srp_enabled) {
         status = srp_init();
         if (status != ETH_OK) {
-            printf("TSN: Stream Reservation init failed\n");
+            Debug_Printf("TSN: Stream Reservation init failed\n");
             return status;
         }
     }
@@ -127,7 +127,7 @@ eth_status_t tsn_stack_init(const tsn_stack_config_t *config) {
     g_tsn_context.initialized = true;
     g_tsn_context.state = TSN_STATE_INIT;
     
-    printf("TSN Stack initialized successfully (version %s)\n", TSN_STACK_VERSION_STRING);
+    Debug_Printf("TSN Stack initialized successfully (version %s)\n", TSN_STACK_VERSION_STRING);
     
     return ETH_OK;
 }
@@ -142,7 +142,7 @@ void tsn_stack_deinit(void) {
     
     memset(&g_tsn_context, 0, sizeof(g_tsn_context));
     
-    printf("TSN Stack deinitialized\n");
+    Debug_Printf("TSN Stack deinitialized\n");
 }
 
 eth_status_t tsn_stack_start(void) {
@@ -158,7 +158,7 @@ eth_status_t tsn_stack_start(void) {
     g_tsn_context.state = TSN_STATE_RUNNING;
     g_tsn_context.last_cycle_time_ns = get_current_time_ns();
     
-    printf("TSN Stack started\n");
+    Debug_Printf("TSN Stack started\n");
     
     return ETH_OK;
 }
@@ -175,7 +175,7 @@ eth_status_t tsn_stack_stop(void) {
     
     g_tsn_context.state = TSN_STATE_STOPPED;
     
-    printf("TSN Stack stopped\n");
+    Debug_Printf("TSN Stack stopped\n");
     
     return ETH_OK;
 }
@@ -453,33 +453,33 @@ eth_status_t tsn_stack_run_safety_checks(void) {
 
 eth_status_t tsn_stack_print_status(void) {
     if (!g_tsn_context.initialized) {
-        printf("TSN Stack not initialized\n");
+        Debug_Printf("TSN Stack not initialized\n");
         return ETH_NOT_INIT;
     }
     
-    printf("\n========================================\n");
-    printf("       TSN Stack Status\n");
-    printf("========================================\n");
-    printf("Version: %s\n", TSN_STACK_VERSION_STRING);
-    printf("State: %d\n", g_tsn_context.state);
-    printf("\nActive Modules:\n");
-    printf("  gPTP: %s\n", (g_tsn_context.config.gptp_config.domain_count > 0U) ? "Yes" : "No");
-    printf("  TAS: %s\n", g_tsn_context.config.tas_enabled ? "Yes" : "No");
-    printf("  CBS: %s\n", g_tsn_context.config.cbs_enabled ? "Yes" : "No");
-    printf("  Frame Preemption: %s\n", g_tsn_context.config.fp_enabled ? "Yes" : "No");
-    printf("  Stream Reservation: %s\n", g_tsn_context.config.srp_enabled ? "Yes" : "No");
-    printf("  ASIL-D Safety: %s\n", g_tsn_context.config.asil_d_enabled ? "Yes" : "No");
+    Debug_Printf("\n========================================\n");
+    Debug_Printf("       TSN Stack Status\n");
+    Debug_Printf("========================================\n");
+    Debug_Printf("Version: %s\n", TSN_STACK_VERSION_STRING);
+    Debug_Printf("State: %d\n", g_tsn_context.state);
+    Debug_Printf("\nActive Modules:\n");
+    Debug_Printf("  gPTP: %s\n", (g_tsn_context.config.gptp_config.domain_count > 0U) ? "Yes" : "No");
+    Debug_Printf("  TAS: %s\n", g_tsn_context.config.tas_enabled ? "Yes" : "No");
+    Debug_Printf("  CBS: %s\n", g_tsn_context.config.cbs_enabled ? "Yes" : "No");
+    Debug_Printf("  Frame Preemption: %s\n", g_tsn_context.config.fp_enabled ? "Yes" : "No");
+    Debug_Printf("  Stream Reservation: %s\n", g_tsn_context.config.srp_enabled ? "Yes" : "No");
+    Debug_Printf("  ASIL-D Safety: %s\n", g_tsn_context.config.asil_d_enabled ? "Yes" : "No");
     
     tsn_stack_stats_t stats;
     tsn_stack_get_stats(&stats);
     
-    printf("\nStatistics:\n");
-    printf("  Synced Domains: %u/%u\n", stats.synced_domains, stats.total_domains);
-    printf("  TAS Cycles: %lu\n", (unsigned long)stats.tas_cycles_completed);
-    printf("  CBS Frames TX: %lu\n", (unsigned long)stats.cbs_frames_transmitted);
-    printf("  Preemptions: %lu\n", (unsigned long)stats.fp_preemptions_count);
-    printf("  Active Streams: %u\n", stats.srp_active_streams);
-    printf("========================================\n\n");
+    Debug_Printf("\nStatistics:\n");
+    Debug_Printf("  Synced Domains: %u/%u\n", stats.synced_domains, stats.total_domains);
+    Debug_Printf("  TAS Cycles: %lu\n", (unsigned long)stats.tas_cycles_completed);
+    Debug_Printf("  CBS Frames TX: %lu\n", (unsigned long)stats.cbs_frames_transmitted);
+    Debug_Printf("  Preemptions: %lu\n", (unsigned long)stats.fp_preemptions_count);
+    Debug_Printf("  Active Streams: %u\n", stats.srp_active_streams);
+    Debug_Printf("========================================\n\n");
     
     return ETH_OK;
 }

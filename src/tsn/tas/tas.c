@@ -14,7 +14,7 @@
 #include "tas.h"
 #include <string.h>
 #include <stdlib.h>
-#include <stdio.h>
+#include "Debug.h"
 #include <time.h>
 
 /* ============================================================================
@@ -708,28 +708,28 @@ eth_status_t tas_print_status(uint16_t port_id) {
     
     tas_port_runtime_t *port = &g_tas_state.ports[port_id];
     
-    printf("=== TAS Port %d Status ===\n", port_id);
-    printf("Configured: %s\n", port->configured ? "Yes" : "No");
-    printf("Running: %s\n", port->running ? "Yes" : "No");
-    printf("Gate Enabled: %s\n", port->config.gate_enabled ? "Yes" : "No");
-    printf("Current Gate States: 0x%02X\n", port->gate_status.gate_states);
-    printf("Current GCL Index: %u\n", port->current_gcl_index);
-    printf("GCL Entries: %u\n", port->config.gcl_config.entry_count);
-    printf("Cycle Time: %u us\n", port->config.gcl_config.cycle_time_us);
-    printf("Cycles Completed: %lu\n", (unsigned long)port->scheduler_stats.cycles_completed);
-    printf("GCL Transitions: %lu\n", (unsigned long)port->scheduler_stats.gcl_transitions);
-    printf("Schedule Errors: %u\n", port->scheduler_stats.schedule_errors);
+    Debug_Printf("=== TAS Port %d Status ===\n", port_id);
+    Debug_Printf("Configured: %s\n", port->configured ? "Yes" : "No");
+    Debug_Printf("Running: %s\n", port->running ? "Yes" : "No");
+    Debug_Printf("Gate Enabled: %s\n", port->config.gate_enabled ? "Yes" : "No");
+    Debug_Printf("Current Gate States: 0x%02X\n", port->gate_status.gate_states);
+    Debug_Printf("Current GCL Index: %u\n", port->current_gcl_index);
+    Debug_Printf("GCL Entries: %u\n", port->config.gcl_config.entry_count);
+    Debug_Printf("Cycle Time: %u us\n", port->config.gcl_config.cycle_time_us);
+    Debug_Printf("Cycles Completed: %lu\n", (unsigned long)port->scheduler_stats.cycles_completed);
+    Debug_Printf("GCL Transitions: %lu\n", (unsigned long)port->scheduler_stats.gcl_transitions);
+    Debug_Printf("Schedule Errors: %u\n", port->scheduler_stats.schedule_errors);
     
-    printf("Queue Stats:\n");
+    Debug_Printf("Queue Stats:\n");
     for (int i = 0; (unsigned int)((unsigned int)(i)) < TAS_MAX_QUEUES; i++) {
         if ((port->queue_stats[i].tx_frames > 0U) || (port->queue_stats[i].blocked_frames > 0U)) {
-            printf("  Q%d: TX=%lu, Blocked=%lu\n", i,
+            Debug_Printf("  Q%d: TX=%lu, Blocked=%lu\n", i,
                    (unsigned long)port->queue_stats[i].tx_frames,
                    (unsigned long)port->queue_stats[i].blocked_frames);
         }
     }
     
-    printf("========================\n");
+    Debug_Printf("========================\n");
     
     return ETH_OK;
 }

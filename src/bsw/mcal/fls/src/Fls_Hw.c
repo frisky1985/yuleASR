@@ -985,28 +985,36 @@ Std_ReturnType Fls_Hw_WriteBuffer(uint32 Address, const uint8* DataPtr, uint32 L
  */
 Std_ReturnType Fls_Hw_ReadWord(uint32 Address, uint32* DataPtr)
 {
-#if (FLS_DEV_ERROR_DETECT == STD_ON)
-    if (!Fls_Hw_Initialized) {
-        (void)Det_ReportError(FLS_HW_MODULE_ID, FLS_HW_INSTANCE_ID, FLS_HW_SID_READWORD,
-                              FLS_HW_E_UNINIT);
-        return E_NOT_OK;
-    }
-
+    /* NULL pointer guard is unconditional (safety, independent of DET) */
     if (DataPtr == NULL_PTR) {
+#if (FLS_DEV_ERROR_DETECT == STD_ON)
         (void)Det_ReportError(FLS_HW_MODULE_ID, FLS_HW_INSTANCE_ID, FLS_HW_SID_READWORD,
                               FLS_HW_E_PARAM_POINTER);
+#endif
         return E_NOT_OK;
     }
 
+    /* Address range + alignment guards are unconditional (safety) */
     if (!FLS_HW_IS_VALID_ADDRESS(Address)) {
+#if (FLS_DEV_ERROR_DETECT == STD_ON)
         (void)Det_ReportError(FLS_HW_MODULE_ID, FLS_HW_INSTANCE_ID, FLS_HW_SID_READWORD,
                               FLS_HW_E_PARAM_ADDRESS);
+#endif
         return E_NOT_OK;
     }
 
     if (!FLS_HW_IS_ALIGNED(Address, FLS_HW_WORD_SIZE)) {
+#if (FLS_DEV_ERROR_DETECT == STD_ON)
         (void)Det_ReportError(FLS_HW_MODULE_ID, FLS_HW_INSTANCE_ID, FLS_HW_SID_READWORD,
                               FLS_HW_E_PARAM_ADDRESS);
+#endif
+        return E_NOT_OK;
+    }
+
+#if (FLS_DEV_ERROR_DETECT == STD_ON)
+    if (!Fls_Hw_Initialized) {
+        (void)Det_ReportError(FLS_HW_MODULE_ID, FLS_HW_INSTANCE_ID, FLS_HW_SID_READWORD,
+                              FLS_HW_E_UNINIT);
         return E_NOT_OK;
     }
 #endif

@@ -14,7 +14,7 @@
 #include "frame_preemption.h"
 #include <string.h>
 #include <stdlib.h>
-#include <stdio.h>
+#include "Debug.h"
 #include <time.h>
 
 /* ============================================================================
@@ -764,20 +764,20 @@ eth_status_t fp_print_status(uint16_t port_id) {
     
     fp_port_runtime_t *port = &g_fp_state.ports[port_id];
     
-    printf("=== Frame Preemption Port %d Status ===\n", port_id);
-    printf("Configured: %s\n", port->configured ? "Yes" : "No");
-    printf("Preemption Enabled: %s\n", port->config.preemption_enabled ? "Yes" : "No");
-    printf("State: %d\n", port->state);
-    printf("Express Frames TX: %lu\n", (unsigned long)port->stats.express_frames_tx);
-    printf("Express Frames RX: %lu\n", (unsigned long)port->stats.express_frames_rx);
-    printf("Preemptable Frames TX: %lu\n", (unsigned long)port->stats.preemptable_frames_tx);
-    printf("Preemptable Frames RX: %lu\n", (unsigned long)port->stats.preemptable_frames_rx);
-    printf("Fragments TX: %lu\n", (unsigned long)port->stats.fragments_tx);
-    printf("Fragments RX: %lu\n", (unsigned long)port->stats.fragments_rx);
-    printf("Preemptions: %lu\n", (unsigned long)port->stats.preemptions_count);
-    printf("Reassembly Success: %lu\n", (unsigned long)port->stats.reassembly_success);
-    printf("Reassembly Failures: %lu\n", (unsigned long)port->stats.reassembly_failures);
-    printf("========================\n");
+    Debug_Printf("=== Frame Preemption Port %d Status ===\n", port_id);
+    Debug_Printf("Configured: %s\n", port->configured ? "Yes" : "No");
+    Debug_Printf("Preemption Enabled: %s\n", port->config.preemption_enabled ? "Yes" : "No");
+    Debug_Printf("State: %d\n", port->state);
+    Debug_Printf("Express Frames TX: %lu\n", (unsigned long)port->stats.express_frames_tx);
+    Debug_Printf("Express Frames RX: %lu\n", (unsigned long)port->stats.express_frames_rx);
+    Debug_Printf("Preemptable Frames TX: %lu\n", (unsigned long)port->stats.preemptable_frames_tx);
+    Debug_Printf("Preemptable Frames RX: %lu\n", (unsigned long)port->stats.preemptable_frames_rx);
+    Debug_Printf("Fragments TX: %lu\n", (unsigned long)port->stats.fragments_tx);
+    Debug_Printf("Fragments RX: %lu\n", (unsigned long)port->stats.fragments_rx);
+    Debug_Printf("Preemptions: %lu\n", (unsigned long)port->stats.preemptions_count);
+    Debug_Printf("Reassembly Success: %lu\n", (unsigned long)port->stats.reassembly_success);
+    Debug_Printf("Reassembly Failures: %lu\n", (unsigned long)port->stats.reassembly_failures);
+    Debug_Printf("========================\n");
     
     return ETH_OK;
 }

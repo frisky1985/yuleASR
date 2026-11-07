@@ -12,7 +12,7 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
+#include "Debug.h"
 #include "cryif_core.h"
 
 #define CRYIF_VERSION "4.4.0-AUTOSAR"

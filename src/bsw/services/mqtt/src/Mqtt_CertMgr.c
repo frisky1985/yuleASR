@@ -12,7 +12,7 @@
  *===========================================================================*/
 #include "Mqtt_CertMgr.h"
 #include <string.h>
-#include <stdio.h>
+#include "Debug.h"
 
 /* mbedTLS X.509解析 */
 #include "mbedtls/x509_crt.h"
@@ -135,8 +135,9 @@ Mqtt_ReturnType Mqtt_CertMgr_AddCert(const Mqtt_CertEntryType* entry)
     /* 检查是否已存在 */
     idx = CertMgr_FindCertIndex(entry->alias);
     if (idx >= 0) {
-        /* 更新已存在的证书 */
-        return Mqtt_CertMgr_UpdateCert(entry->alias, entry->data, entry->dataLen);
+        /* 更新已存在的证书：先移除旧条目再新增（内联，避免与 UpdateCert 互递归，MISRA 17.2） */
+        (void)Mqtt_CertMgr_RemoveCert(entry->alias);
+        /* fall through to add-new path below */
     }
     
     /* 查找空位置 */

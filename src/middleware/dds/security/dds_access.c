@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include "Debug.h"
 #include <ctype.h>
 
 /* 由 dds_security_manager.c 提供 (避免重复实现时间源) */
@@ -124,8 +125,8 @@ static char* xml_find_tag(const char *xml, const char *tag, uint32_t *content_le
 
     char open_tag[64];
     char close_tag[64];
-    snprintf(open_tag, sizeof(open_tag), "<%s", tag);
-    snprintf(close_tag, sizeof(close_tag), "</%s>", tag);
+    Debug_Snprintf(open_tag, sizeof(open_tag), "<%s", tag);
+    Debug_Snprintf(close_tag, sizeof(close_tag), "</%s>", tag);
 
     const char *start = strstr(xml, open_tag);
     if (!start) {
@@ -550,40 +551,40 @@ uint32_t dds_access_check_permissions_expiry(dds_access_context_t *ctx, uint64_t
 
 static bool match_pattern(const char *pattern, const char *str)
 {
-    if (!pattern || !str) {
+    /* Iterative wildcard matching ('*' = any sequence, '?' = single char).
+     * Uses a star-backtrack pointer to avoid recursion (MISRA 17.2). */
+    const char *p = pattern;
+    const char *s = str;
+    const char *star = NULL;
+    const char *match = str;
+
+    if ((p == NULL) || (s == NULL)) {
         return false;
     }
 
-    /* Simple wildcard matching */
-    while (*pattern && *str) {
-        if (*pattern == '*') {
-            /* Match any sequence */
-            pattern++;
-            if (!*pattern) { return true; }
-
-            while ((*str) != 0U) {
-                if (match_pattern(pattern, str)) {
-                    return true;
-                }
-                str++;
-            }
-            return false;
-        } else if (*pattern == '?') {
-            /* Match single character */
-            pattern++;
-            str++;
-        } else if (*pattern == *str) {
-            pattern++;
-            str++;
+    while (*s != '\0') {
+        if ((*p == '?') || (*p == *s)) {
+            p++;
+            s++;
+        } else if (*p == '*') {
+            star = p;
+            p++;
+            match = s;
+        } else if (star != NULL) {
+            p = star + 1;
+            match++;
+            s = match;
         } else {
             return false;
         }
     }
 
-    /* Handle trailing wildcards */
-    while (*pattern == '*') { pattern++; }
+    /* Consume trailing wildcards */
+    while (*p == '*') {
+        p++;
+    }
 
-    return ((*pattern == '\0') && (*str == '\0'));
+    return (*p == '\0');
 }
 
 bool dds_access_match_topic_pattern(const char *pattern, const char *topic_name)

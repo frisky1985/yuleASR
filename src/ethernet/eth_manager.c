@@ -12,7 +12,7 @@
 
 #include "eth_manager.h"
 #include <string.h>
-#include <stdio.h>
+#include "Debug.h"
 
 /* 导入PHY寄存器定义 - 通常在共享头文件中定义 */
 #ifndef PHY_REG_STATUS

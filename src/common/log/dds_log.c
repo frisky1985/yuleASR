@@ -7,6 +7,7 @@
 
 #include "dds_log.h"
 #include <stdio.h>
+#include "Debug.h"
 #include <stdlib.h>
 #include <string.h>
 #include <pthread.h>
@@ -365,7 +366,7 @@ static int open_new_log_file(void) {
     time_t now = time(NULL);
     struct tm* tm_info = localtime(&now);
     
-    snprintf(filename, sizeof(filename), "%s/%s.%04d%02d%02d_%02d%02d%02d_%03d.log",
+    Debug_Snprintf(filename, sizeof(filename), "%s/%s.%04d%02d%02d_%02d%02d%02d_%03u.log",
              g_log_state.config.log_dir,
              g_log_state.config.log_name,
              tm_info->tm_year + 1900,
@@ -374,7 +375,7 @@ static int open_new_log_file(void) {
              tm_info->tm_hour,
              tm_info->tm_min,
              tm_info->tm_sec,
-             g_log_state.file_index++);
+             (unsigned int)g_log_state.file_index++);
     
     g_log_state.log_fp = fopen(filename, "w");
     if (!g_log_state.log_fp) {
@@ -385,9 +386,9 @@ static int open_new_log_file(void) {
     g_log_state.current_file_size = 0;
     
     /* 写入文件头 */
-    fprintf(g_log_state.log_fp, "# DDS Log File v%d\n", DDS_LOG_VERSION);
-    fprintf(g_log_state.log_fp, "# ECU: %s\n", g_log_state.config.ecu_id);
-    fprintf(g_log_state.log_fp, "# Created: %04d-%02d-%02d %02d:%02d:%02d\n\n",
+    Debug_Fprintf(g_log_state.log_fp, "# DDS Log File v%d\n", DDS_LOG_VERSION);
+    Debug_Fprintf(g_log_state.log_fp, "# ECU: %s\n", g_log_state.config.ecu_id);
+    Debug_Fprintf(g_log_state.log_fp, "# Created: %04d-%02d-%02d %02d:%02d:%02d\n\n",
             tm_info->tm_year + 1900, tm_info->tm_mon + 1, tm_info->tm_mday,
             tm_info->tm_hour, tm_info->tm_min, tm_info->tm_sec);
     fflush(g_log_state.log_fp);
@@ -442,7 +443,7 @@ static void format_log_entry(const dds_log_entry_t* entry, char* buffer, size_t 
     
     /* 时间戳 */
     if (g_log_state.config.enable_timestamp) {
-        offset += snprintf(buffer + offset, size - (size_t)offset,
+        offset += Debug_Snprintf(buffer + offset, size - (size_t)offset,
             "%s[%s.%03ld]%s ",
             use_color ? COLOR_WHITE : "",
             time_str, entry->timestamp.tv_nsec / 1000000,
@@ -454,20 +455,20 @@ static void format_log_entry(const dds_log_entry_t* entry, char* buffer, size_t 
     const char* color = use_color ? log_level_to_color(entry->level) : "";
     const char* reset = use_color ? COLOR_RESET : "";
     
-    offset += snprintf(buffer + offset, size - (size_t)offset,
+    offset += Debug_Snprintf(buffer + offset, size - (size_t)offset,
         "%s[%s]%s<%s> ", color, level_str, reset, log_type_to_string(entry->type));
     
     /* ECU ID */
     if (strlen(entry->ecu_id) > 0U) {
-        offset += snprintf(buffer + offset, size - (size_t)offset, "[%s] ", entry->ecu_id);
+        offset += Debug_Snprintf(buffer + offset, size - (size_t)offset, "[%s] ", entry->ecu_id);
     }
     
     /* 模块和标签 */
     if (strlen(entry->module) > 0U) {
-        offset += snprintf(buffer + offset, size - (size_t)offset, "[%s]", entry->module);
+        offset += Debug_Snprintf(buffer + offset, size - (size_t)offset, "[%s]", entry->module);
     }
     if (strlen(entry->tag) > 0U) {
-        offset += snprintf(buffer + offset, size - (size_t)offset, "[%s]", entry->tag);
+        offset += Debug_Snprintf(buffer + offset, size - (size_t)offset, "[%s]", entry->tag);
     }
     
     /* 位置信息 */
@@ -476,21 +477,21 @@ static void format_log_entry(const dds_log_entry_t* entry, char* buffer, size_t 
         if (!filename) { filename = strrchr(entry->file, '\\'); }
         if (!filename) { filename = entry->file; }
         else filename++;
-        offset += snprintf(buffer + offset, size - (size_t)offset, " %s:%d", filename, entry->line);
+        offset += Debug_Snprintf(buffer + offset, size - (size_t)offset, " %s:%d", filename, entry->line);
     }
     
     /* 线程ID */
     if (g_log_state.config.enable_thread_id) {
-        offset += snprintf(buffer + offset, size - (size_t)offset, " [TID:%u]", entry->thread_id);
+        offset += Debug_Snprintf(buffer + offset, size - (size_t)offset, " [TID:%u]", entry->thread_id);
     }
     
     /* 序列号（审计日志） */
     if (entry->type == DDS_LOG_TYPE_AUDIT) {
-        offset += snprintf(buffer + offset, size - (size_t)offset, " [SEQ:%u]", entry->sequence_num);
+        offset += Debug_Snprintf(buffer + offset, size - (size_t)offset, " [SEQ:%u]", entry->sequence_num);
     }
     
     /* 消息内容 */
-    offset += snprintf(buffer + offset, size - (size_t)offset, " %s\n", entry->message);
+    offset += Debug_Snprintf(buffer + offset, size - (size_t)offset, " %s\n", entry->message);
 }
 
 static void output_log(const dds_log_entry_t* entry) {
@@ -596,10 +597,10 @@ int dds_log_init(const dds_log_config_t* config) {
     /* 创建日志目录 */
     if (g_log_state.config.enable_file) {
         if (ensure_directory(g_log_state.config.log_dir) != 0) {
-            fprintf(stderr, "Failed to create log directory: %s\n", g_log_state.config.log_dir);
+            Debug_Printf("Failed to create log directory: %s\n", g_log_state.config.log_dir);
         }
         if (open_new_log_file() != 0) {
-            fprintf(stderr, "Failed to open log file\n");
+            Debug_Printf("Failed to open log file\n");
         }
     }
     
@@ -612,7 +613,7 @@ int dds_log_init(const dds_log_config_t* config) {
     
     /* 设置ECU ID */
     if (strlen(g_log_state.config.ecu_id) == 0U) {
-        snprintf(g_log_state.config.ecu_id, DDS_LOG_ECUID_LEN, "ECU%04X", getpid() & 0xFFFF);
+        Debug_Snprintf(g_log_state.config.ecu_id, DDS_LOG_ECUID_LEN, "ECU%04X", getpid() & 0xFFFF);
     }
     
     g_log_state.magic = DDS_LOG_MAGIC;
@@ -780,7 +781,7 @@ void dds_log_vwrite(dds_log_level_t level, dds_log_type_t type,
     entry.sequence_num = __sync_fetch_and_add(&g_log_state.sequence_counter, 1);
     
     /* 格式化消息 */
-    vsnprintf(entry.message, DDS_LOG_MAX_MESSAGE_LEN - 1, fmt, args);
+    Debug_Vsnprintf(entry.message, DDS_LOG_MAX_MESSAGE_LEN - 1, fmt, args);
     
     /* 输出 */
     if (g_log_state.config.enable_async) {
@@ -833,7 +834,7 @@ void dds_log_audit(dds_audit_event_type_t event_type,
     va_list args;
     char message[DDS_LOG_MAX_MESSAGE_LEN];
     va_start(args, fmt);
-    vsnprintf(message, sizeof(message) - 1U, fmt, args);
+    Debug_Vsnprintf(message, sizeof(message) - 1U, fmt, args);
     va_end(args);
     
     /* 发送日志 */
@@ -1107,7 +1108,7 @@ int dds_log_get_file_list(char** files, uint32_t max_files, uint32_t* actual_cou
             /* 静态文件列表缓冲 (固定上限 DDS_LOG_MAX_FILES) */
             files[*actual_count] = s_file_list_pool[*actual_count];
             if ((files[*actual_count]) != 0U) {
-                snprintf(files[*actual_count], DDS_LOG_MAX_PATH_LEN, "%s/%s",
+                Debug_Snprintf(files[*actual_count], DDS_LOG_MAX_PATH_LEN, "%s/%s",
                          g_log_state.config.log_dir, entry->d_name);
                 (*actual_count)++;
             }

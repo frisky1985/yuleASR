@@ -735,18 +735,26 @@ STATIC void NvM_ReadRedundantBlock(NvM_JobQueueEntryType* JobPtr)
 
         if (blockDesc != NULL_PTR)
         {
+            /* Read the current copy only. If MemIf_Read fails immediately for copy 0,
+             * retry once with copy 1 (no recursion, MISRA 17.2). ROM fallback is used
+             * only when both copies fail immediately. */
             blockNumber = blockDesc->BlockBaseNumber + JobPtr->CopyIndex;
 
             /* CRC frames are staged internally so caller RAM is not overrun */
             readDst = NvM_StageReadFrame(blockDesc, JobPtr->DataPtr, &readLength);
+            memIfResult = (readDst != NULL_PTR)
+                              ? MemIf_Read(blockDesc->DeviceId, blockNumber, 0U, readDst, readLength)
+                              : E_NOT_OK;
 
-            if (readDst != NULL_PTR)
+            if ((memIfResult != E_OK) && (JobPtr->CopyIndex == 0U))
             {
-                memIfResult = MemIf_Read(blockDesc->DeviceId, blockNumber, 0U, readDst, readLength);
-            }
-            else
-            {
-                memIfResult = E_NOT_OK;
+                /* Immediate failure on copy 0: try copy 1 once */
+                JobPtr->CopyIndex = 1U;
+                blockNumber = blockDesc->BlockBaseNumber + JobPtr->CopyIndex;
+                readDst = NvM_StageReadFrame(blockDesc, JobPtr->DataPtr, &readLength);
+                memIfResult = (readDst != NULL_PTR)
+                                  ? MemIf_Read(blockDesc->DeviceId, blockNumber, 0U, readDst, readLength)
+                                  : E_NOT_OK;
             }
 
             if (memIfResult == E_OK)
@@ -756,20 +764,12 @@ STATIC void NvM_ReadRedundantBlock(NvM_JobQueueEntryType* JobPtr)
             }
             else
             {
-                /* Read failed immediately, try next copy or ROM fallback */
-                if (JobPtr->CopyIndex == 0U)
-                {
-                    JobPtr->CopyIndex = 1U;
-                    NvM_ReadRedundantBlock(JobPtr);
-                }
-                else
-                {
-                    NvM_CopyRomDataToRam(JobPtr->BlockId, JobPtr->DataPtr);
-                    JobPtr->Result = NVM_REQ_RESTORED_FROM_ROM;
-                    JobPtr->JobState = NVM_JOB_STATE_IDLE;
-                    NvM_InternalState.BlockStates[JobPtr->BlockId].LastResult = NVM_REQ_RESTORED_FROM_ROM;
-                    NvM_InternalState.BlockStates[JobPtr->BlockId].JobPending = 0U;
-                }
+                /* Both copies failed immediately: ROM fallback */
+                NvM_CopyRomDataToRam(JobPtr->BlockId, JobPtr->DataPtr);
+                JobPtr->Result = NVM_REQ_RESTORED_FROM_ROM;
+                JobPtr->JobState = NVM_JOB_STATE_IDLE;
+                NvM_InternalState.BlockStates[JobPtr->BlockId].LastResult = NVM_REQ_RESTORED_FROM_ROM;
+                NvM_InternalState.BlockStates[JobPtr->BlockId].JobPending = 0U;
             }
         }
     }
@@ -861,18 +861,24 @@ STATIC void NvM_WriteRedundantBlock(NvM_JobQueueEntryType* JobPtr)
 
         if (blockDesc != NULL_PTR)
         {
+            /* Write the current copy only. The second copy is started asynchronously
+             * by NvM_MainFunction after copy 0 completes. If MemIf_Write fails
+             * immediately for copy 0, retry once with copy 1 (no recursion, MISRA 17.2). */
             blockNumber = blockDesc->BlockBaseNumber + JobPtr->CopyIndex;
-
-            /* Stage CRC frame internally; caller RAM holds only NvBlockLength bytes */
             writeFrame = NvM_StageWriteFrame(blockDesc, JobPtr->DataPtr);
+            memIfResult = (writeFrame != NULL_PTR)
+                              ? MemIf_Write(blockDesc->DeviceId, blockNumber, (uint8*)writeFrame)
+                              : E_NOT_OK;
 
-            if (writeFrame != NULL_PTR)
+            if ((memIfResult != E_OK) && (JobPtr->CopyIndex == 0U))
             {
-                memIfResult = MemIf_Write(blockDesc->DeviceId, blockNumber, (uint8*)writeFrame);
-            }
-            else
-            {
-                memIfResult = E_NOT_OK;
+                /* Immediate failure on copy 0: try copy 1 once */
+                JobPtr->CopyIndex = 1U;
+                blockNumber = blockDesc->BlockBaseNumber + JobPtr->CopyIndex;
+                writeFrame = NvM_StageWriteFrame(blockDesc, JobPtr->DataPtr);
+                memIfResult = (writeFrame != NULL_PTR)
+                                  ? MemIf_Write(blockDesc->DeviceId, blockNumber, (uint8*)writeFrame)
+                                  : E_NOT_OK;
             }
 
             if (memIfResult == E_OK)
@@ -882,19 +888,10 @@ STATIC void NvM_WriteRedundantBlock(NvM_JobQueueEntryType* JobPtr)
             }
             else
             {
-                /* Write failed immediately */
-                if (JobPtr->CopyIndex == 0U)
-                {
-                    JobPtr->CopyIndex = 1U;
-                    NvM_WriteRedundantBlock(JobPtr);
-                }
-                else
-                {
-                    JobPtr->Result = NVM_REQ_NOT_OK;
-                    JobPtr->JobState = NVM_JOB_STATE_IDLE;
-                    NvM_InternalState.BlockStates[JobPtr->BlockId].LastResult = NVM_REQ_NOT_OK;
-                    NvM_InternalState.BlockStates[JobPtr->BlockId].JobPending = 0U;
-                }
+                JobPtr->Result = NVM_REQ_NOT_OK;
+                JobPtr->JobState = NVM_JOB_STATE_IDLE;
+                NvM_InternalState.BlockStates[JobPtr->BlockId].LastResult = NVM_REQ_NOT_OK;
+                NvM_InternalState.BlockStates[JobPtr->BlockId].JobPending = 0U;
             }
         }
     }

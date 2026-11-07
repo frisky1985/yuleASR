@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include "Debug.h"
 
 /* ============================================================================
  * AES Constants and Tables

@@ -16,7 +16,7 @@
 #include "../../dds/runtime/dds_runtime.h"
 #include <string.h>
 #include <stdlib.h>
-#include <stdio.h>
+#include "Debug.h"
 
 /******************************************************************************
  * Private Definitions
@@ -77,10 +77,10 @@ static void rte_GenerateTopicName(
     uint32_t maxLen)
 {
     if (dataElementName != NULL) {
-        (void)snprintf(topicName, maxLen, "/rte/%s/%s/%s",
+        (void)Debug_Snprintf(topicName, maxLen, "/rte/%s/%s/%s",
                          componentName, portName, dataElementName);
     } else {
-        (void)snprintf(topicName, maxLen, "/rte/%s/%s",
+        (void)Debug_Snprintf(topicName, maxLen, "/rte/%s/%s",
                          componentName, portName);
     }
 }
@@ -144,8 +144,8 @@ static Std_ReturnType rte_CreateCSPortDDS(
     char reqTopicName[RTE_MAX_TOPIC_NAME_LEN];
     char rspTopicName[RTE_MAX_TOPIC_NAME_LEN];
     
-    (void)snprintf(reqTopicName, sizeof(reqTopicName), "/rte/cs/%s/Request", portConfig->portName);
-    (void)snprintf(rspTopicName, sizeof(rspTopicName), "/rte/cs/%s/Response", portConfig->portName);
+    (void)Debug_Snprintf(reqTopicName, sizeof(reqTopicName), "/rte/cs/%s/Request", portConfig->portName);
+    (void)Debug_Snprintf(rspTopicName, sizeof(rspTopicName), "/rte/cs/%s/Response", portConfig->portName);
 
     /* 创建Request Topic */
     dds_TopicQosType topicQos;
@@ -817,7 +817,7 @@ Std_ReturnType rte_E2ECheck(
 const char* rte_GetVersion(void)
 {
     static char version[32];
-    (void)snprintf(version, sizeof(version), "%d.%d.%d",
+    (void)Debug_Snprintf(version, sizeof(version), "%d.%d.%d",
                      RTE_DDS_MAJOR_VERSION, RTE_DDS_MINOR_VERSION, RTE_DDS_PATCH_VERSION);
     return version;
 }

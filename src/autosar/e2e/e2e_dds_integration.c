@@ -11,7 +11,7 @@
 
 #include "e2e_dds_integration.h"
 #include <string.h>
-#include <stdio.h>
+#include "Debug.h"
 
 /******************************************************************************
  * Private Definitions
@@ -758,7 +758,7 @@ const char* E2E_DDS_ResultToString(E2E_DDS_ResultType result)
 const char* E2E_DDS_GetVersion(void)
 {
     static char version[32];
-    (void)snprintf(version, sizeof(version), "%d.%d.%d",
+    (void)Debug_Snprintf(version, sizeof(version), "%d.%d.%d",
                      E2E_DDS_MAJOR_VERSION, E2E_DDS_MINOR_VERSION, E2E_DDS_PATCH_VERSION);
     return version;
 }

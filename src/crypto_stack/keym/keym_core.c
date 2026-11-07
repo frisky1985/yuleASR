@@ -12,7 +12,7 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
+#include "Debug.h"
 #include "keym_core.h"
 #include <mbedtls/sha256.h>
 
@@ -1140,7 +1140,7 @@ keym_status_t keym_configure_secoc_key(keym_context_t *ctx, uint32_t secoc_pdu_i
     }
     
     /* Create slot name based on PDU ID */
-    snprintf(slot_name, sizeof(slot_name), "SecOC_PDU_%lu", (unsigned long)secoc_pdu_id);
+    Debug_Snprintf(slot_name, sizeof(slot_name), "SecOC_PDU_%lu", (unsigned long)secoc_pdu_id);
     
     /* Check if already exists */
     slot = keym_slot_find_by_name(ctx, slot_name);
@@ -1171,7 +1171,7 @@ uint8_t keym_get_secoc_key_slot(keym_context_t *ctx, uint32_t pdu_id)
         return KEYM_SLOT_ID_INVALID;
     }
     
-    snprintf(slot_name, sizeof(slot_name), "SecOC_PDU_%lu", (unsigned long)pdu_id);
+    Debug_Snprintf(slot_name, sizeof(slot_name), "SecOC_PDU_%lu", (unsigned long)pdu_id);
     return keym_slot_find_by_name(ctx, slot_name);
 }
 
@@ -1254,15 +1254,15 @@ void keym_debug_print_slot(keym_context_t *ctx, uint8_t slot_id)
     
     slot = &ctx->slots[slot_id];
     
-    printf("Key Slot %d:\n", slot_id);
-    printf("  Name: %s\n", slot->name);
-    printf("  Type: %s\n", keym_get_key_type_name_internal(slot->key_type));
-    printf("  State: %s\n", keym_get_key_state_name_internal(slot->state));
-    printf("  Version: %u\n", slot->key_version);
-    printf("  Key Length: %u\n", slot->key_len);
-    printf("  Persistent: %s\n", slot->is_persistent ? "Yes" : "No");
-    printf("  Exportable: %s\n", slot->is_exportable ? "Yes" : "No");
-    printf("  Usage: 0x%02X\n", slot->usage_flags);
+    Debug_Printf("Key Slot %d:\n", slot_id);
+    Debug_Printf("  Name: %s\n", slot->name);
+    Debug_Printf("  Type: %s\n", keym_get_key_type_name_internal(slot->key_type));
+    Debug_Printf("  State: %s\n", keym_get_key_state_name_internal(slot->state));
+    Debug_Printf("  Version: %u\n", slot->key_version);
+    Debug_Printf("  Key Length: %u\n", slot->key_len);
+    Debug_Printf("  Persistent: %s\n", slot->is_persistent ? "Yes" : "No");
+    Debug_Printf("  Exportable: %s\n", slot->is_exportable ? "Yes" : "No");
+    Debug_Printf("  Usage: 0x%02X\n", slot->usage_flags);
 }
 
 /* ============================================================================

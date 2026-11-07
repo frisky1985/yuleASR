@@ -16,7 +16,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
-#include <stdio.h>
+#include "Debug.h"
 
 /* ============================================================================
  * 常量和宏定义
@@ -850,7 +850,7 @@ const char* gptp_timestamp_to_string(const gptp_timestamp_t *ts, char *buf, size
         return NULL;
     }
     
-    snprintf(buf, buf_size, "%lu.%09lu", (unsigned long)ts->seconds, 
+    Debug_Snprintf(buf, buf_size, "%lu.%09lu", (unsigned long)ts->seconds, 
              (unsigned long)ts->nanoseconds);
     return buf;
 }

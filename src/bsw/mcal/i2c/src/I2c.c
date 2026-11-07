@@ -295,18 +295,16 @@ static Std_ReturnType I2c_WaitForTransferComplete(uint32 baseAddr, uint32 timeou
 static void I2c_SetFrequency(uint32 baseAddr, uint32 freq)
 {
     uint32 periphClk = I2C_PERIPHERAL_CLOCK_FREQ;
-    uint32 bestDivider ;
     uint32 minDiff = 0xFFFFFFFFU;
     uint8 bestIndex = 0U;
-    
+
     for (uint8 i = 0U; i < 64U; i++) {
         uint32 divider = I2c_FreqDividerTable[i];
         uint32 actualFreq = periphClk / divider;
         uint32 diff = (actualFreq > freq) ? (actualFreq - freq) : (freq - actualFreq);
-        
+
         if (diff < minDiff) {
             minDiff = diff;
-            bestDivider ;
             bestIndex = i;
         }
         

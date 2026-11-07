@@ -11,7 +11,7 @@
 
 #include "e2e_protection.h"
 #include <string.h>
-#include <stdio.h>
+#include "Debug.h"
 
 /******************************************************************************
  * Private Definitions
@@ -1206,7 +1206,7 @@ const char* E2E_GetProfileName(uint8_t profile)
 const char* E2E_GetVersion(void)
 {
     static char version[32];
-    (void)snprintf(version, sizeof(version), "%d.%d.%d",
+    (void)Debug_Snprintf(version, sizeof(version), "%d.%d.%d",
                      E2E_MAJOR_VERSION, E2E_MINOR_VERSION, E2E_PATCH_VERSION);
     return version;
 }

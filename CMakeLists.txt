@@ -169,7 +169,23 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/src/bsw/mcal/mcu/include
     ${CMAKE_CURRENT_SOURCE_DIR}/src/bsw/mcal/port/include
     ${CMAKE_CURRENT_SOURCE_DIR}/src/middleware/rte/include
+    # NOTE: src/common/include (Debug.h) is intentionally NOT here — it is
+    # propagated by the yule_debug library (link_libraries(yule_debug)).
+    # Adding it globally would resolve pubsub's relative include
+    # "#include "../../common/log/dds_log.h"" to the real dds_log.h before
+    # the dds1 test stub, breaking the DDS_LOG_MODULE_CORE shim.
 )
+
+# ── Debug abstraction (MISRA 20.9: single point of stdio.h usage) ───────────
+# All production code routes printf/snprintf/fprintf through Debug.h; only
+# src/common/log/Debug.c includes <stdio.h>. Linked globally so every target
+# resolves Debug_Printf/Debug_Snprintf/Debug_Fprintf.
+add_library(yule_debug STATIC src/common/log/Debug.c)
+target_include_directories(yule_debug PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/common/include>
+    $<INSTALL_INTERFACE:include>
+)
+link_libraries(yule_debug)
 
 # ── BSW configuration closed loop (JSON + Jinja2) ───────────────────────────
 # config/generated/*_Cfg.h are rendered from config/bsw_config.json by
@@ -332,6 +348,9 @@ endif()
 # BLAKE2 哈希库 (blake2b/blake2s) — Crypto.c 的 Crypto_Blake2b/Blake2s 依赖
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/third_party/crypto/blake2/CMakeLists.txt)
     add_subdirectory(third_party/crypto/blake2)
+    # yule_debug is globally linked (incl. blake2); add it to blake2's export set
+    # so install(EXPORT blake2-targets) can resolve the dependency.
+    install(TARGETS yule_debug EXPORT blake2-targets ARCHIVE DESTINATION lib)
 endif()
 
 # 独立算法库 (B3-2, XMEN Libraries/ 对齐): libs_crc + libs_aes

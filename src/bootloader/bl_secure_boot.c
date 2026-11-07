@@ -13,7 +13,7 @@
 
 #include <string.h>
 #include <stdlib.h>
-#include <stdio.h>
+#include "Debug.h"
 #include <stddef.h>
 /* Configurator 驱动：Boot_Cfg.h 由 yuleASR-Configurator 生成（OtaSecurity 容器）,
  * 必须先于 bl_secure_boot.h 引入, 使 BOOT_CERT_CHAIN_MAX_DEPTH / BOOT_SIGNATURE_SIZE /
@@ -1077,7 +1077,7 @@ const char* bl_secure_boot_version_to_string(
     uint8_t minor = (version >> 16) & 0xFFU;
     uint16_t patch = version & 0xFFFFU;
     
-    snprintf(buf, buf_size, "%u.%u.%u", major, minor, patch);
+    Debug_Snprintf(buf, buf_size, "%u.%u.%u", major, minor, patch);
     return buf;
 }
 

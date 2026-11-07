@@ -8,7 +8,7 @@
 
 
 #include <string.h>
-#include <stdio.h>
+#include "Debug.h"
 #include "dds_eth_discovery.h"
 
 /* ============================================================================

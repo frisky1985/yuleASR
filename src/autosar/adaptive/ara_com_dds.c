@@ -15,7 +15,7 @@
 #include "../../dds/core/dds_core.h"
 #include "../../dds/runtime/dds_runtime.h"
 #include <string.h>
-#include <stdio.h>
+#include "Debug.h"
 
 /******************************************************************************
  * Private Definitions
@@ -98,7 +98,7 @@ static void ara_com_ServiceIdToTopicName(
     char* topicName,
     uint32_t maxLen)
 {
-    (void)snprintf(topicName, maxLen, "/ara/com/S%d_I%d_E%d", 
+    (void)Debug_Snprintf(topicName, maxLen, "/ara/com/S%d_I%d_E%d", 
                      serviceId, instanceId, eventId);
 }
 
@@ -114,7 +114,7 @@ static void ara_com_MethodIdToTopicName(
     uint32_t maxLen)
 {
     const char* suffix = isRequest ? "_Req" : "_Rsp";
-    (void)snprintf(topicName, maxLen, "/ara/com/S%d_I%d_M%d%s",
+    (void)Debug_Snprintf(topicName, maxLen, "/ara/com/S%d_I%d_M%d%s",
                      serviceId, instanceId, methodId, suffix);
 }
 

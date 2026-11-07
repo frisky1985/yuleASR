@@ -19,7 +19,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <string.h>
-#include <stdio.h>
+#include "Debug.h"
 
 /* ============================================================================
  * 平台检测与抽象
@@ -364,7 +364,7 @@ static bool UDP_Address_to_string(uint32_t address, char* buffer, uint32_t buffe
     octets[2] = (uint8_t)((addr_host >> 8) & 0xFFU);
     octets[3] = (uint8_t)(addr_host & 0xFFU);
     
-    (void)snprintf(buffer, buffer_size, "%u.%u.%u.%u",
+    (void)Debug_Snprintf(buffer, buffer_size, "%u.%u.%u.%u",
                    octets[0], octets[1], octets[2], octets[3]);
     return true;
 }

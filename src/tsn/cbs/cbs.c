@@ -14,7 +14,7 @@
 #include "cbs.h"
 #include <string.h>
 #include <stdlib.h>
-#include <stdio.h>
+#include "Debug.h"
 #include <time.h>
 
 /* ============================================================================
@@ -683,23 +683,23 @@ eth_status_t cbs_print_status(uint16_t port_id) {
     
     cbs_port_runtime_t *port = get_port(port_id);
     
-    printf("=== CBS Port %d Status ===\n", port_id);
-    printf("Configured: %s\n", port->configured ? "Yes" : "No");
-    printf("Port Transmit Rate: %u bps\n", port->config.port_transmit_rate_bps);
-    printf("\nQueue States:\n");
+    Debug_Printf("=== CBS Port %d Status ===\n", port_id);
+    Debug_Printf("Configured: %s\n", port->configured ? "Yes" : "No");
+    Debug_Printf("Port Transmit Rate: %u bps\n", port->config.port_transmit_rate_bps);
+    Debug_Printf("\nQueue States:\n");
     
     for (int i = 0; (unsigned int)((unsigned int)(i)) < CBS_SR_CLASS_MAX; i++) {
         cbs_queue_state_t *queue = &port->queue_states[i];
-        printf("  Queue %d (SR Class %c):\n", i, (i == 0) ? 'A' : 'B');
-        printf("    Current Credit: %ld\n", (long)queue->current_credit);
-        printf("    Min/Max Credit: %ld / %ld\n", 
+        Debug_Printf("  Queue %d (SR Class %c):\n", i, (i == 0) ? 'A' : 'B');
+        Debug_Printf("    Current Credit: %ld\n", (long)queue->current_credit);
+        Debug_Printf("    Min/Max Credit: %ld / %ld\n", 
                (long)queue->min_credit_seen, (long)queue->max_credit_seen);
-        printf("    Frames TX: %lu\n", (unsigned long)queue->frames_transmitted);
-        printf("    Bytes TX: %lu\n", (unsigned long)queue->bytes_transmitted);
-        printf("    Credit Violations: %lu\n", (unsigned long)queue->credit_violations);
+        Debug_Printf("    Frames TX: %lu\n", (unsigned long)queue->frames_transmitted);
+        Debug_Printf("    Bytes TX: %lu\n", (unsigned long)queue->bytes_transmitted);
+        Debug_Printf("    Credit Violations: %lu\n", (unsigned long)queue->credit_violations);
     }
     
-    printf("========================\n");
+    Debug_Printf("========================\n");
     
     return ETH_OK;
 }

@@ -12,7 +12,7 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
+#include "Debug.h"
 #include "csm_core.h"
 #include "csm_jobs.h"
 #include <mbedtls/sha256.h>

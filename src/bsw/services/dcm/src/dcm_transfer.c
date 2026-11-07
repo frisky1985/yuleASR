@@ -584,10 +584,7 @@ Std_ReturnType Dcm_TransferProcessRequestDownload(
         uint8 paramIndex = 1U + addrLength + sizeLength;
 
         /* First byte is compression method, second is encryption method */
-        if (Length > paramIndex)
-        {
-            compressionMethod = Data[paramIndex];
-        }
+        compressionMethod = Data[paramIndex];
         if (Length > (paramIndex + 1U))
         {
             encryptionMethod = Data[paramIndex + 1U];
@@ -783,10 +780,7 @@ Std_ReturnType Dcm_TransferProcessRequestUpload(
         uint8 paramIndex = 1U + addrLength + sizeLength;
 
         /* First byte is compression method, second is encryption method */
-        if (Length > paramIndex)
-        {
-            compressionMethod = Data[paramIndex];
-        }
+        compressionMethod = Data[paramIndex];
         if (Length > (paramIndex + 1U))
         {
             encryptionMethod = Data[paramIndex + 1U];

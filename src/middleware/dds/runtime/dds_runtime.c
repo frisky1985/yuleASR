@@ -10,7 +10,7 @@
 #include "dds_runtime.h"
 #include <string.h>
 #include <stdlib.h>
-#include <stdio.h>
+#include "Debug.h"
 
 /* ============================================================================
  * 静态存储 (ISO 26262 / AUTOSAR R21-11 BSW 禁止动态内存)
