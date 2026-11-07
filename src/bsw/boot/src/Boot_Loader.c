@@ -7,6 +7,7 @@
 #include "Boot_Verify.h"
 #include "Boot_Update.h"
 #include "Boot_Hsm.h"
+#include "Boot_Handshake.h"
 #include <string.h>
 
 /* External symbols defined by the linker script */
@@ -33,6 +34,16 @@ static uint32_t    bib_checksum(const Boot_InfoBlock *bib);
 void Boot_Loader_Main(void)
 {
     Boot_Result ret;
+
+    /* Phase 0: App->Bootloader 握手检查 (一次性)
+     * App 在 EcuM_PerformReset 前写入 BOOT_HANDSHAKE_ADDR;
+     * 若请求 OEM/SYS Bootloader, 直接进入下载/恢复模式, 不启动 App。 */
+    Boot_HandshakeType hs_target = Boot_Handshake_GetTarget();
+    if ((hs_target == BOOT_HANDSHAKE_OEM_BOOTLOADER) ||
+        (hs_target == BOOT_HANDSHAKE_SYS_BOOTLOADER)) {
+        Boot_Handshake_Clear();
+        Boot_Loader_EnterRecovery();
+    }
 
     /* Phase 1: Init hardware minimally */
     (void)Boot_Flash_Init();

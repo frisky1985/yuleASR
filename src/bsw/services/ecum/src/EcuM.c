@@ -31,6 +31,7 @@
 #include "SchM.h"
 #include "Rte.h"
 #include "Cdd_Fvm.h"
+#include "Boot_Handshake.h"   /* App->Bootloader 跨复位握手布局 */
 
 #if (ECUM_NVM_ENABLED == STD_ON)
 #include "NvM.h"
@@ -835,6 +836,16 @@ static void EcuM_PerformShutdown(void)
  */
 static void EcuM_PerformReset(void)
 {
+    /* App->Bootloader 握手: 复位前将选定的 BootTarget 持久化到保留 SRAM,
+     * SBL 启动早期 (Boot_Loader_Main Phase 0) 读取并决定是否进入下载模式。
+     * 仅 OEM/SYS Bootloader 请求需要传递; APPLICATION 为默认行为可省略。 */
+    if ((EcuM_BootTarget == ECUM_BOOT_TARGET_OEM_BOOTLOADER) ||
+        (EcuM_BootTarget == ECUM_BOOT_TARGET_SYS_BOOTLOADER)) {
+        Boot_Handshake_WritePersist((Boot_HandshakeType)EcuM_BootTarget);
+    } else {
+        Boot_Handshake_ClearPersist();
+    }
+
     /* Reset callout */
     EcuM_AL_Reset(ECUM_DEFAULT_RESET_TYPE);
     

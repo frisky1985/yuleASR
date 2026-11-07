@@ -351,6 +351,69 @@ stateDiagram-v2
     end note
 ```
 
+### 5.5 App ↔ Bootloader 握手协议 (跨复位 BootTarget 传递)
+
+**问题背景:** `EcuM_SelectBootTarget(OEM_BOOTLOADER)` 原仅设置 App 内部 RAM 变量, 复位即丢失, SBL 无法感知"进入下载模式"请求。本节补齐双向握手。
+
+**实现层级:**
+
+```
+App 侧 (EcuM)                         SBL 侧 (bsw/boot)
+EcuM_SelectBootTarget()               Boot_Loader_Main() Phase 0
+  → EcuM_BootTarget (RAM)               → Boot_Handshake_GetTarget()
+                                        → OEM/SYS → Clear + EnterRecovery
+EcuM_PerformReset()                   Boot_Handshake 模块
+  → Boot_Handshake_WritePersist()      (共享布局头 Boot_Handshake.h)
+  → EcuM_AL_Reset() ──复位──►
+```
+
+**握手块布局** (32 字节, 固定 SRAM 地址 `0x2007_FFE0`, S32K312 SRAM_U 顶部保留区):
+
+| 字段 | 大小 | 说明 |
+|:-----|:-----|:-----|
+| magic | 4B | `0x48534842` ('BHSH') |
+| target | 4B | 0=OEM Bootloader / 1=SYS Bootloader / 2=Application |
+| target_inv | 4B | `~target`, 完整性校验 (无需 CRC) |
+| version | 4B | `0x00010000` (v1.0) |
+| reserved | 16B | 预留对齐 |
+
+**完整性:** `magic 正确 && version 正确 && target ^ target_inv == 0xFFFFFFFF`。轻量零依赖, App 侧 EcuM 无需引入 CRC 库。
+
+**Mermaid 时序图:**
+
+```mermaid
+sequenceDiagram
+    participant App
+    participant EcuM
+    participant RAM as 握手块<br/>(0x2007FFE0)
+    participant PBL
+    participant SBL
+    App->>EcuM: EcuM_SelectBootTarget(OEM_BOOTLOADER)
+    App->>EcuM: EcuM_GoDown / 0x11 0x01 ECUReset
+    EcuM->>RAM: Boot_Handshake_WritePersist(OEM)
+    EcuM->>PBL: EcuM_AL_Reset() 硬件复位
+    PBL->>PBL: 验签 SBL → 跳转
+    PBL->>SBL: 进入 Boot_Loader_Main
+    SBL->>RAM: Phase 0: Boot_Handshake_GetTarget()
+    RAM-->>SBL: OEM_BOOTLOADER
+    SBL->>RAM: Boot_Handshake_Clear() (一次性消费)
+    SBL->>SBL: Boot_Loader_EnterRecovery()<br/>UDS 下载循环 (0x34/0x36/0x37)
+```
+
+**关键设计点:**
+
+1. **跨层共享布局头** `include/autosar/Boot_Handshake.h` — 仅含数据结构与内联辅助 (`WritePersist/ReadPersist/ClearPersist`), App 与 SBL 各自包含, **App 不依赖 bsw/boot 静态库**。
+2. **一次性消费**: SBL 读取后立即 `Boot_Handshake_Clear()`, 避免残留导致后续上电误进入下载模式。
+3. **默认安全**: 握手块无效/非法 target → 返回 `APPLICATION`, 正常启动 App (fail-open for boot, 不阻断正常启动)。
+4. **存储介质可替换**: 当前为 SRAM 保留区 (跨软复位 `NVIC_SystemReset` 保持, 须链接脚本排除 `.bss` 清零)。如需掉电保持, 平台层可改写 `BOOT_HANDSHAKE_PTR()` 指向 S32K312 Sticky/Backup 寄存器。
+5. **Host 单测兼容**: 非 ARM 构建下 `BOOT_HANDSHAKE_PTR()` 映射到进程内静态变量, 单测 `test_boot_handshake.c` 覆盖 Set/Get/Clear/非法值/完整性校验。
+
+**代码落点:**
+- 共享头: [Boot_Handshake.h](file:///workspace/include/autosar/Boot_Handshake.h)
+- SBL 模块: [Boot_Handshake.c](file:///workspace/src/bsw/boot/src/Boot_Handshake.c) / [Boot_Handshake.h](file:///workspace/src/bsw/boot/include/Boot_Handshake.h)
+- SBL 消费点: [Boot_Loader.c#L34-L46](file:///workspace/src/bsw/boot/src/Boot_Loader.c#L34-L46) (Phase 0)
+- App 写入点: [EcuM.c#L837-L850](file:///workspace/src/bsw/services/ecum/src/EcuM.c#L837-L850) (`EcuM_PerformReset`)
+
 ---
 
 ## 6. 安全机制设计
@@ -615,6 +678,7 @@ stateDiagram-v2
 | 模块 | 关键 API | 说明 |
 |:-----|:---------|:-----|
 | Boot_Loader | `Boot_Loader_Main` / `Jump` / `EnterRecovery` / `ResolveBootTarget` / `ConfirmBoot` | 启动主流程/跳转/恢复 |
+| Boot_Handshake | `GetTarget` / `SetTarget` / `Clear` | App↔Bootloader 跨复位握手 (共享头 `Boot_Handshake.h`) |
 | Boot_Update | `Prepare` / `WriteBlock` / `Finalize` / `Abort` / `SwapSlots`; `RequestUserConfirm` / `ConfirmUserDecision` / `GetConfirmState` / `SetTimeSource`; `NotifyBootSuccess` / `GetRollbackCounter` / `SetRollbackConfirmBoots` / `SetHealthCheckMode` / `ConfirmBusinessHealth` / `SetAntiRollbackStorage` | UDS 更新 + 用户确认 + 抗回滚延后递增 |
 | Boot_Image | `ValidateHeader` / `VerifyHash` / `ReadTrailer` / `CalcHeaderCrc` | 映像头/尾处理 |
 | Boot_Verify | `VerifySignature` / `Hash` / `ConstantCmp`; `g_boot_pubkey_sbl/app` | 软件验签 (mbedtls) |
