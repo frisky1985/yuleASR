@@ -205,6 +205,120 @@ jobs:
           "
 
   # ============================================================
+  # Sanitizers — AddressSanitizer 内存越界门禁 (native)
+  #   独立构建目录 build-asan, 与 test/coverage 并行执行。
+  #   ASan: 堆/栈/全局数组越界、use-after-free、double-free
+  #   基线 (本轮修复后): 192/192 通过。
+  #
+  #   已知例外 — s0_smoke:
+  #     Rte_SwcPortApi.c 的端口连接表把全部 35 个端口的数据长度硬编码为
+  #     128 字节, 而 SWC 写入的结构体更小 (如 ENGINE_CONTROL_P), 导致
+  #     Rte_Write 越界读。属 RTE 端口配置的系统性缺陷, 需按 SWC 数据类型
+  #     修正 per-port 长度 (或引入 Sized 写接口), 不在 sanitiser 门禁范围
+  #     内临时排除; 修复前不得删除此例外。
+  #
+  #   UBSan 见独立 job (ubsan), 初始为 advisory: 已知 9 处既有 UB
+  #   (blake2s 越界 / RamTst 移位 / dds_auth 非对齐 / 空指针 memcpy 等),
+  #   修复完成后再转为阻断。
+  # ============================================================
+  sanitizers:
+    name: Sanitizers (ASan)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: ./.github/actions/setup-env
+        with:
+          apt-packages: build-essential cmake ninja-build libssl-dev libsqlite3-dev
+
+      - uses: ./.github/actions/cmake-build
+        with:
+          build-dir: build-asan
+          build-type: Debug
+          build-testing: 'ON'
+          generator: Ninja
+          extra-config: '-DYULE_ENABLE_ASAN=ON'
+
+      - name: Verify sanitizer instrumentation applied
+        # 防止"配置了 sanitizer 但二进制未插桩"造成的假绿。
+        run: |
+          set -euo pipefail
+          if ! grep -rq -- "-fsanitize=address" build-asan/build.ninja; then
+            echo "::error::-fsanitize=address not found in build.ninja"
+            exit 1
+          fi
+          BIN=$(find build-asan/bin -maxdepth 1 -type f -perm -u+x | head -1)
+          if [ -z "$BIN" ]; then
+            echo "::error::no test binary found in build-asan/bin"
+            exit 1
+          fi
+          COUNT=$(nm "$BIN" | grep -c "__asan" || true)
+          echo "ASan symbols in $(basename "$BIN"): $COUNT"
+          if [ "$COUNT" -eq 0 ]; then
+            echo "::error::binary is not ASan-instrumented"
+            exit 1
+          fi
+
+      - name: Run Unit Tests under AddressSanitizer
+        env:
+          ASAN_OPTIONS: detect_leaks=0:abort_on_error=1:strict_string_checks=1
+        run: |
+          # s0_smoke 例外见上方注释 (RTE 128 字节端口缺陷)
+          ctest --test-dir build-asan -E "^s0_smoke$" --output-on-failure --timeout 120 -j"$(nproc)" \
+            2>&1 | tee sanitizer-test.log
+
+      - name: Upload Sanitizer Logs
+        uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: sanitizer-results
+          path: sanitizer-test.log
+          retention-days: 14
+
+  # ============================================================
+  # UBSan — UndefinedBehaviorSanitizer (advisory)
+  #   已知 9 处既有 UB (2026-11 基线): blake2s 数组越界 / RamTst 移位 32 /
+  #   dds_auth 非对齐 uint32 写 / stack_protection 非对齐 canary /
+  #   fault_injection 故意非对齐 / Xcp 空指针 memcpy。
+  #   全部修复后把 continue-on-error 改为 false 转为阻断门禁。
+  # ============================================================
+  ubsan:
+    name: UBSan (advisory)
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: ./.github/actions/setup-env
+        with:
+          apt-packages: build-essential cmake ninja-build libssl-dev libsqlite3-dev
+
+      - uses: ./.github/actions/cmake-build
+        with:
+          build-dir: build-ubsan
+          build-type: Debug
+          build-testing: 'ON'
+          generator: Ninja
+          extra-config: '-DYULE_ENABLE_UBSAN=ON'
+
+      - name: Run Unit Tests under UBSan
+        env:
+          UBSAN_OPTIONS: print_stacktrace=1:halt_on_error=1
+        run: |
+          ctest --test-dir build-ubsan -E "^s0_smoke$" --output-on-failure --timeout 120 -j"$(nproc)" \
+            2>&1 | tee ubsan-test.log || true
+          echo "--- UBSan findings summary ---"
+          grep -E "runtime error:" ubsan-test.log | sort -u || echo "none"
+
+      - name: Upload UBSan Logs
+        uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: ubsan-results
+          path: ubsan-test.log
+          retention-days: 14
+
+  # ============================================================
   # Smoke — Linux native 运行验证 (s0_smoke_test)
   # ============================================================
   native-smoke:

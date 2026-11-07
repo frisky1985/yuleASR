@@ -1836,6 +1836,13 @@ static void Xcp_ProcessStandardCommand(uint8 ChannelId, const uint8* Data, uint8
             Xcp_CmdUpload(ChannelId, Data);
             break;
         case XCP_CMD_SHORT_UPLOAD:
+            /* CMD + length + addrExt + 4-byte address = 7 bytes minimum.
+             * Without this guard a truncated frame makes the handler read
+             * past the caller's buffer. */
+            if (Length < 7U) {
+                Xcp_SendError(ChannelId, XCP_ERR_CMD_SYNTAX, 0U);
+                break;
+            }
             Xcp_CmdShortUpload(ChannelId, Data);
             break;
         case XCP_CMD_DOWNLOAD:

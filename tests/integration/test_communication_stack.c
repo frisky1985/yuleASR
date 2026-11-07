@@ -277,7 +277,9 @@ void test_ComStack_Full_Rx_Path(void)
  */
 void test_ComStack_Multiple_Signals(void)
 {
-    uint8 signal1 = 0x11;
+    /* Com_SendSignal copies a full STACK_SIGNAL_SIZE (8 byte) signal, so the
+     * source must be an 8-byte buffer — a single uint8 would be over-read. */
+    uint8 signal1[8] = {0x11, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
     /* 用字节数组而非多字节整数, 避免宿主字节序 (x86 小端) 影响打包顺序断言 */
     uint8 signal2[8] = {0x22, 0x33, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
     uint8 signal3[8] = {0x44, 0x55, 0x66, 0x77, 0x00, 0x00, 0x00, 0x00};
@@ -285,7 +287,7 @@ void test_ComStack_Multiple_Signals(void)
     comm_stack_init();
 
     /* 发送多个信号 */
-    TEST_ASSERT_EQUAL(0u, Com_SendSignal(0, &signal1));
+    TEST_ASSERT_EQUAL(0u, Com_SendSignal(0, signal1));
     TEST_ASSERT_EQUAL(0u, Com_SendSignal(1, signal2));
     TEST_ASSERT_EQUAL(0u, Com_SendSignal(2, signal3));
 

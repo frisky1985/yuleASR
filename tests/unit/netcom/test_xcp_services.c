@@ -599,7 +599,7 @@ void test_Xcp_Daq_Allocate_Configure_StartStop(void)
     daq_start_stop(0x03U, 0U);
     /* START_STOP_SYNCH */
     {
-        uint8 synch[1] = { XCP_CMD_START_STOP_SYNCH };
+        uint8 synch[2] = { XCP_CMD_START_STOP_SYNCH, 0x00U };  /* mode byte follows the command */
         Xcp_CmdStartStopSynch(0U, synch);
     }
     /* Info commands */

@@ -48,7 +48,7 @@ Std_ReturnType NvM_ReadBlock(NvM_BlockIdType BlockId, void* NvM_DstPtr)
     /* Failure injection: BlockId 0 = primary of group 0, BlockId 1 = mirror of group 0 */
     if (BlockId == 0U && mock_read_fail_primary) { return E_NOT_OK; }
     if (BlockId == 1U && mock_read_fail_mirror) { return E_NOT_OK; }
-    (void)memcpy(NvM_DstPtr, mockStorage[BlockId], MOCK_BLOCK_SIZE);
+    (void)memcpy(NvM_DstPtr, mockStorage[BlockId], TEST_BLOCK_LEN);
     return E_OK;
 }
 
@@ -58,7 +58,7 @@ Std_ReturnType NvM_WriteBlock(NvM_BlockIdType BlockId, const void* NvM_SrcPtr)
     /* Failure injection: BlockId 0 = primary of group 0, BlockId 1 = mirror of group 0 */
     if (BlockId == 0U && mock_write_fail_primary) { return E_NOT_OK; }
     if (BlockId == 1U && mock_write_fail_mirror) { return E_NOT_OK; }
-    (void)memcpy(mockStorage[BlockId], NvM_SrcPtr, MOCK_BLOCK_SIZE);
+    (void)memcpy(mockStorage[BlockId], NvM_SrcPtr, TEST_BLOCK_LEN);
     mockValid[BlockId] = TRUE;
     return E_OK;
 }

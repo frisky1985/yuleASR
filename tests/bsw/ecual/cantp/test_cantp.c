@@ -511,7 +511,9 @@ void test_CanTp_FrameLengthBoundaries(void) {
     static const uint16 illegalFdLengths[] = {9U, 11U, 13U};
     static const uint16 legalFdLengths[] = {12U, 16U, 20U, 24U, 32U, 48U, 64U};
     uint8 frame[64];
-    uint8 sfData[8] = {0x03U, 0x11U, 0x22U, 0x33U, 0U, 0U, 0U, 0U};
+    /* The boundary test probes illegal lengths up to 9 bytes; the receive
+     * queue copies SduLength bytes from this buffer, so keep it large enough. */
+    uint8 sfData[64] = {0x03U, 0x11U, 0x22U, 0x33U, 0U, 0U, 0U, 0U};
     PduInfoType pdu;
     pdu.SduDataPtr = frame; pdu.SduLength = 0U; pdu.MetaDataPtr = NULL_PTR;
 

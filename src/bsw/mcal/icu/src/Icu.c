@@ -427,6 +427,14 @@ void Icu_DeInit(void)
     /* Deinitialize all channels */
     for (uint8 i = 0U; i < Icu_ConfigPtr->NumChannels; i++) {
         Icu_ChannelType channel = Icu_ConfigPtr->Channels[i].ChannelId;
+
+        /* Config may carry an out-of-range channel id (see
+         * test_Icu_Init_ChannelOutOfRange_ShouldSkip); skip it instead of
+         * indexing the per-channel state arrays out of bounds. */
+        if (channel >= ICU_NUM_CHANNELS) {
+            continue;
+        }
+
         uint32 emiosBase = Icu_GetEmiosBaseAddr(channel);
         uint8 chNum = Icu_GetEmiosChannelNum(channel);
         uint32 chAddr = Icu_GetChannelRegAddr(emiosBase, chNum);

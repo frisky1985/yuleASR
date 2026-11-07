@@ -832,6 +832,25 @@ static LinMaster_ScheduleEntryType test_SchEntry0 = {
     .EntryType = LINMASTER_ENTRY_UNCONDITIONAL,
     .Direction = LINMASTER_FRAME_DIR_TX, .ChecksumType = LINMASTER_CHECKSUM_CLASSIC
 };
+/* Two-entry sequence: LinMaster_Schedule_Init copies EntryCount entries, so
+ * the source must actually contain that many elements. */
+static LinMaster_ScheduleEntryType test_SchEntryPair[2] = {
+    { .Pid = 0xC1U, .DataLength = 1U, .DelayMs = 1U,
+      .EntryType = LINMASTER_ENTRY_UNCONDITIONAL,
+      .Direction = LINMASTER_FRAME_DIR_TX, .ChecksumType = LINMASTER_CHECKSUM_CLASSIC },
+    { .Pid = 0x42U, .DataLength = 2U, .DelayMs = 1U,
+      .EntryType = LINMASTER_ENTRY_UNCONDITIONAL,
+      .Direction = LINMASTER_FRAME_DIR_TX, .ChecksumType = LINMASTER_CHECKSUM_CLASSIC }
+};
+/* Second two-entry sequence used by the SwitchTable tests. */
+static LinMaster_ScheduleEntryType test_SchEntryPairB[2] = {
+    { .Pid = 0x42U, .DataLength = 2U, .DelayMs = 1U,
+      .EntryType = LINMASTER_ENTRY_UNCONDITIONAL,
+      .Direction = LINMASTER_FRAME_DIR_TX, .ChecksumType = LINMASTER_CHECKSUM_CLASSIC },
+    { .Pid = 0x03U, .DataLength = 3U, .DelayMs = 1U,
+      .EntryType = LINMASTER_ENTRY_UNCONDITIONAL,
+      .Direction = LINMASTER_FRAME_DIR_TX, .ChecksumType = LINMASTER_CHECKSUM_CLASSIC }
+};
 static LinMaster_ScheduleEntryType test_SchEntry1 = {
     .Pid = 0x42U, .DataLength = 2U, .DelayMs = 1U,
     .EntryType = LINMASTER_ENTRY_UNCONDITIONAL,
@@ -920,7 +939,7 @@ void test_Schedule_Init_TooManyEntries_ReturnsNotOk(void)
 
 void test_Schedule_StartStop_Lifecycle(void)
 {
-    test_Sch_FillTable(&test_SchTblStart, &test_SchEntry0, 2U);
+    test_Sch_FillTable(&test_SchTblStart, test_SchEntryPair, 2U);
     TEST_ASSERT_EQUAL_UINT32(E_OK, LinMaster_Schedule_Init(&test_SchTblStart));
     TEST_ASSERT_EQUAL_UINT32(LINMASTER_SCHEDULE_STATE_IDLE, LinMaster_Schedule_GetState());
     TEST_ASSERT_EQUAL_PTR(&test_SchTblStart, LinMaster_Schedule_GetCurrentTable());
@@ -1020,7 +1039,7 @@ void test_Schedule_Process_SingleEntryCyclic_StaysOnEntry(void)
 
 void test_Schedule_PauseResume_Lifecycle(void)
 {
-    test_Sch_FillTable(&test_SchTblStart, &test_SchEntry0, 2U);
+    test_Sch_FillTable(&test_SchTblStart, test_SchEntryPair, 2U);
     TEST_ASSERT_EQUAL_UINT32(E_OK, LinMaster_Schedule_Init(&test_SchTblStart));
     LinMaster_Schedule_RegisterEntryCallback(test_Sch_EntryCb);
     TEST_ASSERT_EQUAL_UINT32(E_OK, LinMaster_Schedule_Start());
@@ -1046,7 +1065,7 @@ void test_Schedule_PauseResume_Lifecycle(void)
 
 void test_Schedule_SetEntryIndex_Guards(void)
 {
-    test_Sch_FillTable(&test_SchTblStart, &test_SchEntry0, 2U);
+    test_Sch_FillTable(&test_SchTblStart, test_SchEntryPair, 2U);
     TEST_ASSERT_EQUAL_UINT32(E_OK, LinMaster_Schedule_Init(&test_SchTblStart));
 
     TEST_ASSERT_EQUAL_UINT32(E_NOT_OK, LinMaster_Schedule_SetEntryIndex(2U));   /* out of range */
@@ -1084,7 +1103,7 @@ void test_Schedule_AddEntry_GrowsRuntimeTable(void)
 void test_Schedule_SwitchTable_StopsOld_AutoStartsNew(void)
 {
     test_Sch_FillTable(&test_SchTblSwA, &test_SchEntry0, 1U);
-    test_Sch_FillTable(&test_SchTblSwB, &test_SchEntry1, 2U);
+    test_Sch_FillTable(&test_SchTblSwB, test_SchEntryPairB, 2U);
     TEST_ASSERT_EQUAL_UINT32(E_OK, LinMaster_Schedule_Init(&test_SchTblSwA));
     LinMaster_Schedule_RegisterEntryCallback(test_Sch_EntryCb);
     LinMaster_Schedule_RegisterTableSwitchCallback(test_Sch_SwitchCb);
@@ -1109,7 +1128,7 @@ void test_Schedule_SwitchTable_StopsOld_AutoStartsNew(void)
 void test_Schedule_SwitchTable_KeepIndex_ClampsOutOfRange(void)
 {
     test_Sch_FillTable(&test_SchTblSwA, &test_SchEntry0, 1U);
-    test_Sch_FillTable(&test_SchTblSwB, &test_SchEntry1, 2U);
+    test_Sch_FillTable(&test_SchTblSwB, test_SchEntryPairB, 2U);
     test_SchTblSwB.EntryIndex = 5U;
     TEST_ASSERT_EQUAL_UINT32(E_OK, LinMaster_Schedule_Init(&test_SchTblSwA));
     TEST_ASSERT_EQUAL_UINT32(E_OK, LinMaster_Schedule_SwitchTable(&test_SchTblSwB, FALSE));
@@ -1139,7 +1158,7 @@ void test_Schedule_Timing_ElapsedAndRemaining(void)
 
 void test_Schedule_SetDelay_SetCyclic_Reset_Guards(void)
 {
-    test_Sch_FillTable(&test_SchTblStart, &test_SchEntry0, 2U);
+    test_Sch_FillTable(&test_SchTblStart, test_SchEntryPair, 2U);
     TEST_ASSERT_EQUAL_UINT32(E_OK, LinMaster_Schedule_Init(&test_SchTblStart));
 
     TEST_ASSERT_EQUAL_UINT32(E_OK, LinMaster_Schedule_SetDelay(10U));
@@ -1159,7 +1178,7 @@ void test_Schedule_SetDelay_SetCyclic_Reset_Guards(void)
 
 void test_Schedule_DeInit_StopsAndResets(void)
 {
-    test_Sch_FillTable(&test_SchTblStart, &test_SchEntry0, 2U);
+    test_Sch_FillTable(&test_SchTblStart, test_SchEntryPair, 2U);
     TEST_ASSERT_EQUAL_UINT32(E_OK, LinMaster_Schedule_Init(&test_SchTblStart));
     TEST_ASSERT_EQUAL_UINT32(E_OK, LinMaster_Schedule_Start());
     TEST_ASSERT_TRUE(test_SchTblStart.IsRunning);

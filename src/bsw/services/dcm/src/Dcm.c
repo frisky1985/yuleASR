@@ -631,7 +631,7 @@ STATIC Std_ReturnType Dcm_ProcessReadDTCInformation(uint8 ProtocolId, const uint
                     uint8 i;
 
                     /* Count DTCs matching the status mask */
-                    for (i = 0U; i < DEM_NUM_DTCS; i++)
+                    for (i = 0U; i < Dem_Config.NumDtcs; i++)
                     {
                         Dem_DTCStatusType dtcStatus;
                         if (Dem_GetDTCStatus(Dem_Config.DtcParameters[i].Dtc,
@@ -671,7 +671,7 @@ STATIC Std_ReturnType Dcm_ProcessReadDTCInformation(uint8 ProtocolId, const uint
                     responseData[1] = DEM_DTC_STATUS_AVAILABILITY_MASK;
 
                     /* Return all DTCs matching the status mask */
-                    for (i = 0U; i < DEM_NUM_DTCS; i++)
+                    for (i = 0U; i < Dem_Config.NumDtcs; i++)
                     {
                         Dem_DTCStatusType dtcStatus;
                         if (Dem_GetDTCStatus(Dem_Config.DtcParameters[i].Dtc,
@@ -736,7 +736,7 @@ STATIC Std_ReturnType Dcm_ProcessReadDTCInformation(uint8 ProtocolId, const uint
                     responseData[1] = DEM_DTC_STATUS_AVAILABILITY_MASK;
 
                     /* Return all configured DTCs */
-                    for (i = 0U; i < DEM_NUM_DTCS; i++)
+                    for (i = 0U; i < Dem_Config.NumDtcs; i++)
                     {
                         Dem_DTCStatusType dtcStatus;
                         if (Dem_GetDTCStatus(Dem_Config.DtcParameters[i].Dtc,

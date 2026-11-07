@@ -134,8 +134,10 @@ static void test_init(void)
 /* transmit an 8-byte single frame on connection 0 */
 static void test_transmit_sf(void)
 {
-    PduInfoType pdu;
-    uint8 data[8] = { 0x11U, 0x22U, 0x33U, 0x44U, 0x55U, 0x66U, 0x77U, 0x88U };
+    static PduInfoType pdu;  /* FrTp keeps the PduInfo pointer until TxConfirmation */
+    /* FrTp keeps txPduInfo->SduDataPtr until TxConfirmation, so the payload
+     * must outlive this helper (a local would leave a dangling pointer). */
+    static uint8 data[8] = { 0x11U, 0x22U, 0x33U, 0x44U, 0x55U, 0x66U, 0x77U, 0x88U };
 
     pdu.SduDataPtr = data;
     pdu.SduLength = sizeof(data);
@@ -146,7 +148,7 @@ static void test_transmit_sf(void)
 /* transmit a 300-byte payload -> FF carries 252 bytes, 48 remain */
 static void test_transmit_ff300(void)
 {
-    PduInfoType pdu;
+    static PduInfoType pdu;  /* FrTp keeps the PduInfo pointer until completion */
     uint8 i;
 
     for (i = 0U; i < 255U; i++)

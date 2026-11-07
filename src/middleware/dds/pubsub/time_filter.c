@@ -357,7 +357,13 @@ eth_status_t tbf_process_sample(tbf_handle_t *tbf,
     } else {
         // 窗口已满，输出压缩样本并开启新窗口
         if (tbf->state.samples_in_window > 0U) {
-            generate_compressed_sample(tbf, tbf->sample_buffer, &size);
+            /* 用独立变量接收压缩后大小: generate_compressed_sample() 对
+             * SAMPLE_LAST 等策略会返回 sample_buffer_size(256), 若直接写回
+             * size 会让后续 process_window_sample() 按 256 字节读取调用方的
+             * 小样本缓冲区 (越界读). */
+            uint32_t compressed_size = size;
+            generate_compressed_sample(tbf, tbf->sample_buffer, &compressed_size);
+            (void)compressed_size;  /* API 无输出长度参数, 仅供内部使用 */
             if ((output_sample) != 0U) {
                 *output_sample = tbf->sample_buffer;
             }

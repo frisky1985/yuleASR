@@ -749,7 +749,7 @@ void Dem_IntProcessDebounceMainFunction(uint32 DeltaTimeMs)
     const Dem_EventParameterType* eventConfig;
 
     /* Process time-based debounce for all events */
-    for (i = 0U; i < DEM_NUM_EVENTS; i++)
+    for (i = 0U; i < Dem_InternalState.ConfigPtr->NumEvents; i++)
     {
         eventConfig = &Dem_InternalState.ConfigPtr->EventParameters[i];
         

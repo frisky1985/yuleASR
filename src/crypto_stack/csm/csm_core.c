@@ -93,10 +93,10 @@ static void csm_backend_hmac_sha256(const uint8_t *key, uint32_t key_len,
  * 同一 key_id 在 generate/verify/encrypt/decrypt 间一致, 会话内可往返。
  * 量产集成需接入密钥存储 (CryIf/NvM), 文档声明。
  */
-static void csm_backend_key_from_id(uint8_t key_id, uint8_t out[CSM_BACKEND_SHA256_DIGEST_LEN])
+static void csm_backend_key_from_id(uint8_t key_id, uint8_t *out, uint32_t out_len)
 {
     uint32_t i;
-    for (i = 0U; i < CSM_BACKEND_SHA256_DIGEST_LEN; i++) {
+    for (i = 0U; i < out_len; i++) {
         out[i] = (uint8_t)(0x5CU + (uint8_t)(key_id * 7U) + (uint8_t)(i * 13U));
     }
 }
@@ -848,7 +848,7 @@ static csm_status_t csm_execute_crypto_op(csm_context_t *ctx, csm_job_t *job)
             }
             {
                 uint8_t key[CSM_BACKEND_SHA256_DIGEST_LEN];
-                csm_backend_key_from_id(job->key_id, key);
+                csm_backend_key_from_id(job->key_id, key, sizeof(key));
                 csm_backend_hmac_sha256(key, sizeof(key),
                                         job->input, job->input_len, job->output);
             }
@@ -869,7 +869,7 @@ static csm_status_t csm_execute_crypto_op(csm_context_t *ctx, csm_job_t *job)
             {
                 uint8_t key[CSM_BACKEND_SHA256_DIGEST_LEN];
                 uint8_t computed[CSM_BACKEND_SHA256_DIGEST_LEN];
-                csm_backend_key_from_id(job->key_id, key);
+                csm_backend_key_from_id(job->key_id, key, sizeof(key));
                 csm_backend_hmac_sha256(key, sizeof(key),
                                         job->input, job->input_len, computed);
                 if (job->secondary_input_len != CSM_BACKEND_SHA256_DIGEST_LEN) {
@@ -898,7 +898,7 @@ static csm_status_t csm_execute_crypto_op(csm_context_t *ctx, csm_job_t *job)
                 uint32_t i;
                 uint8_t pad_len;
 
-                csm_backend_key_from_id(job->key_id, key);
+                csm_backend_key_from_id(job->key_id, key, sizeof(key));
                 mbedtls_aes_init(&aes);
 
                 if (job->job_type == CSM_JOB_ENCRYPT) {
