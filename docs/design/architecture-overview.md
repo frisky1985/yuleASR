@@ -95,3 +95,32 @@ RTE_SWC_PORT_CONNECTION(2U, 0x25U, 2U, (uint16)sizeof(Swc_DiagnosticResponseType
 - **WDGM**: 看门狗管理 (Watchdog Manager)
 - **SECOC**: 安全车载通信 (Secure Onboard Communication)
 - **E2E**: 端到端保护 (End-to-End Protection)
+
+## 代码质量与未定义行为防护
+
+CI 门禁集成 **AddressSanitizer (ASan)** 与 **UndefinedBehaviorSanitizer (UBSan)** 两个 native 构建 job，二者均为阻断型：出现内存越界或未定义行为即合并失败。构建选项由 [SanitizerFlags.cmake](file:///workspace/cmake/modules/SanitizerFlags.cmake) 提供（`YULE_ENABLE_ASAN` / `YULE_ENABLE_UBSAN`）。
+
+### UBSan 9 处既有 UB 修复（2026-11）
+
+| # | 位置 | UB 类型 | 修复 |
+|:--|:-----|:--------|:-----|
+| 1 | [blake2s.c](file:///workspace/third_party/crypto/blake2/src/blake2s.c#L191) | 参数块 XOR 循环上限 `sizeof(blake2s_param_t)`(42B) 越界访问 `h[8]`（`uint32[8]`） | 循环上限改为 `sizeof(S->h)`(32B)，匹配 BLAKE2s 32 字节参数块 |
+| 2 | [RamTst.c](file:///workspace/src/bsw/mcal/ramtst/src/RamTst.c#L462) | `1U << CurrentBit`，`CurrentBit` 可达 32，32 位移位为 UB | 将 `CurrentBit > 31` 的提前返回移到移位运算之前，保证移位量 ∈ [0,31] |
+| 3 | [Xcp.c](file:///workspace/src/bsw/services/xcp/src/Xcp.c#L1693) | `memcpy(dst, Data, len)` 中 `Data` 可能为 NULL | 增加 `Data != NULL_PTR && Length > 0U` 守卫 |
+| 4 | [stack_protection.c](file:///workspace/src/safety/saferam/stack_protection.c#L364) | 金丝雀 `uint64_t` 读写地址可能非 8 字节对齐 | 写/读均改用 `memcpy` |
+| 5 | [stack_protection.c](file:///workspace/src/safety/saferam/stack_protection.c#L925) | `FillStackPattern`/`FindHighWatermark` 对 `uint32_t*` 非对齐访问 | 改用 `memcpy` 逐字填充/比对水印 |
+| 6 | [dds_auth.c](file:///workspace/src/middleware/dds/security/dds_auth.c#L617) | 输出参数 `*sig_len = 32` 中 `sig_len` 可能非 4 字节对齐 | 改用 `memcpy(sig_len, &out_len, sizeof(uint32_t))` |
+| 7 | [fault_injection.c](file:///workspace/src/safety/saferam/fault_injection.c#L160) | 位翻转对 `volatile uint32_t*` 非对齐读写 | 改用 `volatile uint8_t*` 逐字节访问，保留 volatile 语义 |
+| 8 | [fault_injection.c](file:///workspace/src/safety/saferam/fault_injection.c#L482) | OOB 读写测试对任意地址 `uint32_t` 访问 | 同上，逐字节访问 |
+| 9 | [test_stack_protection.c](file:///workspace/tests/unit/safety/test_stack_protection.c#L672) | 测试故意破坏非对齐地址的金丝雀 | 两处 `*canary = ...` 改用 `memcpy` |
+
+### 通用修复原则
+
+- **非对齐访问**：禁止将任意整数地址强转为 `uint16_t*/uint32_t*/uint64_t*` 后直接解引用；统一用 `memcpy`（普通内存）或逐字节 `volatile uint8_t*` 访问（MMIO/故障注入）。
+- **移位**：移位量必须先经 `% 位宽` 或范围守卫，禁止 ≥ 操作数位宽。
+- **指针参数**：对外 API 入口对 `NULL` 指针做显式检查，不依赖调用方保证。
+- **数组下标**：循环上限用 `sizeof(数组)` 而非可能含 padding 的结构体大小。
+
+### 验证状态
+
+三套门禁均 **193/193 通过**：native（功能）、ASan（0 内存越界）、UBSan（0 runtime error）。
