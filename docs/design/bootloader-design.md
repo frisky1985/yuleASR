@@ -177,6 +177,7 @@ PBL 使用专用链接脚本 [Boot_Linker.ld](file:///workspace/src/bsw/boot/con
 
 - `flash_pbl` 1KB + `flash_vector` 256B (向量表) + `flash_pbl_ro` 2.75KB (代码/只读数据/`.boot_pubkey` 公钥段)
 - `ram_pbl` 4KB 安全 RAM, 1KB 栈
+- `ram_handshake` 32B @ `0x2000FFE0`: App↔Bootloader 握手块, 导出 `__boot_handshake_start`/`__boot_handshake_end`, ORIGIN 与 `s32k312.ld` 保持一致 (详见 §5.5 "链接脚本单点定义")
 - 公钥经 `KEEP(*(.boot_pubkey))` 固定在只读段, 随 PBL 一同被 BootROM 验签保护
 
 ---
@@ -398,6 +399,36 @@ S32K312 512KB SRAM 布局:
 3. **PBL RAM** `0x20000000-0x20000FFF`（PBL 仅 4KB，握手块在 64KB 偏移处，不被 PBL 启动清零）。
 
 > **修正记录:** 初版选 `0x2007FFE0` (SRAM_U 顶部)，但该地址落在栈区内，会被 App 栈覆盖。已修正为 `0x2000FFE0`。
+
+**链接脚本单点定义 (改造细节):**
+
+握手块地址经历"绝对地址硬编码 → 链接符号"两阶段改造，动机与机制如下。
+
+*改造前（双硬编码问题）:* C 头文件宏 `BOOT_HANDSHAKE_ADDR 0x2000FFE0` 与链接脚本 `ram_handshake ORIGIN = 0x2000FFE0` 是**两处独立硬编码**，无任何编译期/链接期关联校验；改一处漏一处时，C 代码会静默读写错误地址（不报错、不警告，运行时才发现握手失效或踩内存）。
+
+*改造后（链接符号方案）:* 地址只在链接脚本中出现一次，C 代码经链接器导出符号访问：
+
+```
+链接脚本 (单一事实源)                        C 代码 (Boot_Handshake.h)
+ram_handshake (rw): ORIGIN = 0x2000FFE0      extern const Boot_HandshakeBlock_t __boot_handshake_start;
+.boot_handshake (NOLOAD) : {                 #define BOOT_HANDSHAKE_PTR()  (&__boot_handshake_start)
+    __boot_handshake_start = ABSOLUTE(.);
+    . = . + 0x20;
+    __boot_handshake_end = ABSOLUTE(.);
+} > ram_handshake
+ASSERT(end - start == 0x20)   ← 链接期强校验
+```
+
+| 机制 | 说明 |
+|:-----|:-----|
+| 符号导出 | 两个链接脚本各自在 `.boot_handshake` 段导出 `__boot_handshake_start`/`__boot_handshake_end`;C 侧 `extern` 声明后取地址即物理地址（GNU ld 绝对符号惯例） |
+| 双脚本一致性契约 | App/SBL 用 `s32k312.ld`,PBL 用 `Boot_Linker.ld`,**两处 `ram_handshake` 的 ORIGIN 必须一致**——它们是各自独立链接的镜像，运行时共享同一物理 SRAM；契约靠注释 + 两侧 `ASSERT(区大小==0x20)` 保证 |
+| 链接期 fail-loud | 符号未定义 → 链接直接报错（优于硬编码方案的静默写错地址）;`ASSERT` 防止区域被意外改小 |
+| 平台自动判定 | `BOOT_HANDSHAKE_USE_LD_SYMBOL`: `__arm__/__thumb__` (Cortex-M) 自动 =1 走链接符号，其他（x86/aarch64 宿主）自动 =0 回退进程内静态变量；可 `-D` 显式覆盖 |
+| Host 单测 | 无真实复位/链接脚本，静态变量模拟，全部单测不受影响 |
+| 附带修复 | 旧代码 `__aarch64__` 宿主（如 Apple Silicon CI）会误走绝对地址写穿内存；新判定仅认 Cortex-M，aarch64 宿主安全回退 |
+
+*移植/调布局流程*（验证灵活性）: 换地址只改两个 `.ld` 的 `ram_handshake ORIGIN` → 重新链接各镜像 → 完成。C 代码零改动。如需掉电保持，将 `ram_handshake` 改指 Sticky/Backup 寄存器地址即可。
 
 **完整性:** `magic 正确 && version 正确 && target ^ target_inv == 0xFFFFFFFF`。轻量零依赖, App 侧 EcuM 无需引入 CRC 库。
 
@@ -813,6 +844,7 @@ stateDiagram-v2
 3. **恢复模式** — 当前骨架, 生产需实现 CAN/DoIP UDS 刷写循环。
 4. **mbedtls 增量哈希** — `MBEDTLS_USE` 编译开关切换增量/全量路径; 非 mbedtls 路径已修复为流式哈希 (防旧实现 256B 缓冲越界读)。
 5. **v1 抗回滚记录不兼容** — v1→v3 属预期格式变更, 升级后首次初始化从 0 开始 (见 `BL_ANTIROLLBACK_RECORD_VERSION`)。
+6. **握手冷启动判定需按芯片 RM 复核** — `Boot_Handshake_IsColdStart()` 沿用项目 `Cdd_Boot` 的简化 RGM 模型 (`DES==0 && FES==0` → POR); 对接真实 S32K312 时需按 RM 复核 RGM_DES/FES 位定义, 并确认 brown-out (BOR) 是否一并纳入冷启动条件 (BOR 同样可能使 SRAM 内容不可信)。另: App/SBL 用 `s32k312.ld` 与 PBL 用 `Boot_Linker.ld` 的 `ram_handshake ORIGIN` 一致性目前靠注释+ASSERT 约定, 如新增镜像须同步维护。
 
 ---
 
