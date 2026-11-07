@@ -1690,7 +1690,8 @@ void Xcp_StimProcessor(uint8 ChannelId, const uint8* Data, uint8 Length)
     /* Add STIM data to queue */
     queueHead = Xcp_StimQueueHead[0];  /* Simplified - should use actual DAQ list index */
 
-    if (((queueHead + 1U) % XCP_STIM_QUEUE_SIZE) != Xcp_StimQueueTail[0]) {
+    if ((Data != NULL_PTR) && (Length > 0U) &&
+        (((queueHead + 1U) % XCP_STIM_QUEUE_SIZE) != Xcp_StimQueueTail[0])) {
         memcpy(Xcp_StimQueue[0][queueHead], Data, Length);
         Xcp_StimQueueHead[0] = (queueHead + 1U) % XCP_STIM_QUEUE_SIZE;
     }

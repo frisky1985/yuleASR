@@ -188,9 +188,9 @@ Blake2_ReturnType blake2s_init_param(blake2s_state_t* S, const blake2s_param_t* 
         S->h[i] = blake2s_IV[i];
     }
 
-    /* XOR parameter block */
+    /* XOR parameter block (BLAKE2s param block is exactly 32 bytes = sizeof(h)) */
     p = (const uint8*)P;
-    for (i = 0U; i < sizeof(blake2s_param_t); i++) {
+    for (i = 0U; i < sizeof(S->h); i++) {
         S->h[i / 4U] ^= ((uint32)p[i]) << (8U * (i % 4U));
     }
 

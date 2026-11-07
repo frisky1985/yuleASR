@@ -149,22 +149,32 @@ Std_ReturnType FaultInjection_InjectBitFlip(
     uint8_t bit_position,
     FaultInjectionResultType *result)
 {
-    volatile uint32_t *ptr;
+    volatile uint8_t *ptr;
     uint32_t original_value;
     uint32_t mask;
+    uint32_t flipped_value;
+    uint8_t i;
     
     if (!g_initialized || result == NULL || addr == 0) {
         return E_NOT_OK;
     }
     
-    ptr = (volatile uint32_t *)addr;
-    original_value = *ptr;
+    /* Access byte-wise to avoid undefined behavior on unaligned addresses.
+     * Volatile semantics are preserved per-byte. */
+    ptr = (volatile uint8_t *)addr;
+    original_value = 0U;
+    for (i = 0U; i < sizeof(uint32_t); i++) {
+        original_value |= ((uint32_t)ptr[i]) << (8U * i);
+    }
     
     /* Calculate bit mask */
-    mask = (uint32_t)(1U << (bit_position % 32));
+    mask = (uint32_t)(1U << (bit_position % 32U));
     
-    /* Flip the bit */
-    *ptr = original_value ^ mask;
+    /* Flip the bit and write back byte-wise */
+    flipped_value = original_value ^ mask;
+    for (i = 0U; i < sizeof(uint32_t); i++) {
+        ptr[i] = (uint8_t)((flipped_value >> (8U * i)) & 0xFFU);
+    }
     
     /* Record result */
     result->success = TRUE;
@@ -470,11 +480,15 @@ Std_ReturnType FaultInjection_TestOobRead(int32_t offset, boolean *result)
     }
     
     /* Attempt read - this may fault depending on MPU/MMU configuration */
-    ptr = (volatile uint32_t *)test_addr;
-    
-    /* In test environment, we would expect a fault to be caught */
-    /* Here we simulate the test */
-    value = *ptr;
+    /* Byte-wise access to avoid UB on unaligned addresses */
+    {
+        uint8_t i;
+        volatile uint8_t *bptr = (volatile uint8_t *)test_addr;
+        value = 0U;
+        for (i = 0U; i < sizeof(uint32_t); i++) {
+            value |= ((uint32_t)bptr[i]) << (8U * i);
+        }
+    }
     (void)value;  /* Suppress unused warning */
     
     *result = fault_detected;
@@ -505,8 +519,14 @@ Std_ReturnType FaultInjection_TestOobWrite(
     }
     
     /* Attempt write - this may fault depending on MPU/MMU configuration */
-    ptr = (volatile uint32_t *)test_addr;
-    *ptr = value;
+    /* Byte-wise access to avoid UB on unaligned addresses */
+    {
+        uint8_t i;
+        volatile uint8_t *bptr = (volatile uint8_t *)test_addr;
+        for (i = 0U; i < sizeof(uint32_t); i++) {
+            bptr[i] = (uint8_t)((value >> (8U * i)) & 0xFFU);
+        }
+    }
     
     *result = fault_detected;
     

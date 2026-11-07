@@ -463,7 +463,7 @@ static void RamTst_ExecuteGALPAT(void)
 {
     /* Simplified - checks each bit position across all addresses */
     uint32 stepSize = RAMTST_STEP_SIZE;
-    uint32 dataMask = (1U << RamTst_State.CurrentBit);
+    uint32 dataMask;
     uint32 background = 0x00000000U;
     uint32 addr;
 
@@ -475,6 +475,9 @@ static void RamTst_ExecuteGALPAT(void)
         RamTst_State.Status = RAMTST_STATUS_COMPLETED;
         return;
     }
+
+    /* Shift is safe now: CurrentBit is in [0, 31] */
+    dataMask = (1U << RamTst_State.CurrentBit);
 
     if (RamTst_State.CurrentMarchStep == 0U) {
         /* Write 0 to entire region */

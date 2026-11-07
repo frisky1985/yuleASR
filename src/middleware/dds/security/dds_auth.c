@@ -614,7 +614,10 @@ dds_auth_status_t dds_auth_sign(dds_auth_context_t *ctx,
     memcpy(hash_input, data, hash_len - 32U);
     memcpy(hash_input + hash_len - 32U, private_key, 32);
 
-    *sig_len = 32;
+    {
+        uint32_t out_len = 32U;
+        memcpy(sig_len, &out_len, sizeof(uint32_t));
+    }
     dds_auth_sha256(hash_input, hash_len, signature);
 
     return DDS_AUTH_OK;

@@ -361,9 +361,10 @@ Std_ReturnType StackProtection_InitCanary(uint8_t stack_id)
         return E_NOT_OK;
     }
     
-    /* Write canary at stack end (lowest address) */
+    /* Write canary at stack end (lowest address). Use memcpy to avoid
+     * undefined behavior when canary_addr is not 8-byte aligned. */
     canary_ptr = (uint64_t *)stack->canary_addr;
-    *canary_ptr = stack->canary_value;
+    (void)memcpy((void *)canary_ptr, &stack->canary_value, sizeof(uint64_t));
     
     return E_OK;
 }
@@ -383,7 +384,11 @@ Std_ReturnType StackProtection_CheckCanary(uint8_t stack_id, boolean *valid)
     }
     
     canary_ptr = (uint64_t *)stack->canary_addr;
-    *valid = (*canary_ptr == stack->canary_value);
+    {
+        uint64_t read_canary;
+        (void)memcpy(&read_canary, (const void *)canary_ptr, sizeof(uint64_t));
+        *valid = (read_canary == stack->canary_value);
+    }
     
     if (!(*valid)) {
         /* Report violation */
@@ -920,27 +925,30 @@ uint32_t StackProtection_GetPSP(void)
 static void FillStackPattern(uint32_t addr, uint32_t size, uint32_t pattern)
 {
     uint32_t i;
-    uint32_t *ptr = (uint32_t *)addr;
+    uint8_t *ptr = (uint8_t *)addr;
+    uint8_t pat_bytes[sizeof(uint32_t)];
     uint32_t words = size / sizeof(uint32_t);
-    
-    for (i = 0; i < words; i++) {
-        ptr[i] = pattern;
+
+    (void)memcpy(pat_bytes, &pattern, sizeof(uint32_t));
+
+    for (i = 0U; i < words; i++) {
+        (void)memcpy(ptr + (i * sizeof(uint32_t)), pat_bytes, sizeof(uint32_t));
     }
 }
 
 static uint32_t FindHighWatermark(uint32_t start, uint32_t end)
 {
-    uint32_t *ptr = (uint32_t *)start;
     uint32_t addr = start;
-    
+
     while (addr < end) {
-        if (*ptr != STACK_WATERMARK_PATTERN) {
+        uint32_t word;
+        (void)memcpy(&word, (const void *)addr, sizeof(uint32_t));
+        if (word != STACK_WATERMARK_PATTERN) {
             break;
         }
         addr += sizeof(uint32_t);
-        ptr++;
     }
-    
+
     return addr;
 }
 

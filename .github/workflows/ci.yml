@@ -268,16 +268,14 @@ jobs:
           retention-days: 14
 
   # ============================================================
-  # UBSan — UndefinedBehaviorSanitizer (advisory)
-  #   已知 9 处既有 UB (2026-11 基线): blake2s 数组越界 / RamTst 移位 32 /
-  #   dds_auth 非对齐 uint32 写 / stack_protection 非对齐 canary /
-  #   fault_injection 故意非对齐 / Xcp 空指针 memcpy。
-  #   全部修复后把 continue-on-error 改为 false 转为阻断门禁。
+  # UBSan — UndefinedBehaviorSanitizer (blocking)
+  #   全部既有 UB 已修复 (2026-11): blake2s 参数块越界、RamTst 移位 32、
+  #   Xcp 空指针 memcpy、stack_protection/dds_auth/fault_injection 非对齐访问。
+  #   此 job 阻断提交, 出现新 UB 即失败。
   # ============================================================
   ubsan:
-    name: UBSan (advisory)
+    name: UBSan
     runs-on: ubuntu-latest
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v7
 
@@ -298,7 +296,7 @@ jobs:
           UBSAN_OPTIONS: print_stacktrace=1:halt_on_error=1
         run: |
           ctest --test-dir build-ubsan --output-on-failure --timeout 120 -j"$(nproc)" \
-            2>&1 | tee ubsan-test.log || true
+            2>&1 | tee ubsan-test.log
           echo "--- UBSan findings summary ---"
           grep -E "runtime error:" ubsan-test.log | sort -u || echo "none"
 

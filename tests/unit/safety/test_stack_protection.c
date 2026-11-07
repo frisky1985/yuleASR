@@ -669,9 +669,11 @@ void test_full_check_detects_canary_corruption(void)
     strncpy(cfg.name, "canarybad", 9);
     TEST_ASSERT_EQUAL(E_OK, StackProtection_RegisterStack(&cfg, &id));
 
-    /* Corrupt the canary (at end_addr = base - size + 1) */
+    /* Corrupt the canary (at end_addr = base - size + 1).
+     * Use memcpy to avoid UB on the intentionally unaligned address. */
     uint32_t *canary_ptr = (uint32_t *)(cfg.base_addr - cfg.size + 1u);
-    *canary_ptr = 0xDEADDEADu;
+    uint32_t corrupt = 0xDEADDEADu;
+    memcpy((void *)canary_ptr, &corrupt, sizeof(uint32_t));
 
     StackCheckResultType res;
     StackProtection_FullCheck(id, &res);
@@ -807,9 +809,10 @@ void test_isr_hook_triggers_isr_stack_check(void)
     strncpy(cfg.name, "isrtest", 7);
     TEST_ASSERT_EQUAL(E_OK, StackProtection_RegisterStack(&cfg, &isr_id));
 
-    /* Corrupt ISR canary */
+    /* Corrupt ISR canary (intentionally unaligned address) */
     uint32_t *canary = (uint32_t *)(cfg.base_addr - cfg.size + 1u);
-    *canary = 0xBADBADBADu;
+    uint32_t bad = 0xBADBADBADu;
+    memcpy((void *)canary, &bad, sizeof(uint32_t));
 
     /* ISR FullCheck returns invalid -> CheckAllStacks violations++ */
     (void)StackProtection_CheckAllStacks();
