@@ -192,7 +192,9 @@ SECTIONS
 
     /* App<->Bootloader 握手块 — NOLOAD, 不加入任何清零表
      * 启动代码 (__bss_start..__bss_end) 不清零此区域;
-     * App 在 EcuM_PerformReset 前写入, SBL 在 Boot_Loader_Main Phase 0 读取。 */
+     * App 在 EcuM_PerformReset 前写入, SBL 在 Boot_Loader_Main Phase 0 读取。
+     * C 侧经 __boot_handshake_start 符号访问, 无硬编码绝对地址;
+     * ORIGIN 必须与 Boot_Linker.ld 的 ram_handshake 一致。 */
     .boot_handshake (NOLOAD) :
     {
         . = ALIGN(4);
@@ -202,6 +204,9 @@ SECTIONS
         . = . + 0x20;   /* 强制保留 32 字节, 即使无输入段也占位 */
         __boot_handshake_end = ABSOLUTE(.);
     } > ram_handshake
+
+    ASSERT((__boot_handshake_end - __boot_handshake_start) == 0x20,
+           "boot_handshake region must be 32 bytes")
 
     /* Initialized Data Section — LMA contiguous after .ram_safe_data LMA */
     .data : AT(__safe_data_load + SIZEOF(.ram_safe_data))

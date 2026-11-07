@@ -367,7 +367,7 @@ EcuM_PerformReset()                   Boot_Handshake 模块
   → EcuM_AL_Reset() ──复位──►
 ```
 
-**握手块布局** (32 字节, 固定 SRAM 地址 `0x2000_FFE0`, S32K312 Safe RAM 顶部保留区):
+**握手块布局** (32 字节; 地址由链接脚本 `ram_handshake` 区单点定义, 当前 `0x2000_FFE0`, S32K312 Safe RAM 顶部保留区; C 侧经链接符号 `__boot_handshake_start` 访问, 无硬编码):
 
 | 字段 | 大小 | 说明 |
 |:-----|:-----|:-----|
@@ -428,7 +428,7 @@ sequenceDiagram
 1. **跨层共享布局头** `include/autosar/Boot_Handshake.h` — 仅含数据结构与内联辅助 (`WritePersist/ReadPersist/ClearPersist`), App 与 SBL 各自包含, **App 不依赖 bsw/boot 静态库**。
 2. **一次性消费**: SBL 读取后立即 `Boot_Handshake_Clear()`, 避免残留导致后续上电误进入下载模式。
 3. **默认安全**: 握手块无效/非法 target → 返回 `APPLICATION`, 正常启动 App (fail-open for boot, 不阻断正常启动)。
-4. **存储介质可替换**: 当前为 SRAM 保留区 (跨软复位 `NVIC_SystemReset` 保持, 须链接脚本排除 `.bss` 清零)。如需掉电保持, 平台层可改写 `BOOT_HANDSHAKE_PTR()` 指向 S32K312 Sticky/Backup 寄存器。
+4. **地址单一事实源在链接脚本**: C 代码不硬编码地址; Cortex-M 镜像经链接脚本导出符号 `__boot_handshake_start` 定位握手块 (`s32k312.ld` 与 `Boot_Linker.ld` 的 `ram_handshake` 区 ORIGIN 必须一致, 两处均带 `ASSERT` 校验 32B)。调整布局只改链接脚本; Host 构建经 `BOOT_HANDSHAKE_USE_LD_SYMBOL=0` 回退静态变量。如需掉电保持, 可将 `ram_handshake` 改指 Sticky/Backup 寄存器地址。
 5. **ECC 冷启动安全 (已实现)**: S32K312 SRAM 带 ECC, POR (掉电) 后校验位未初始化, 直接读会触发不可纠正 ECC 错误 (HardFault)。`Boot_Loader_Main` Phase 0 在读握手块前先调 `Boot_Handshake_EccColdInit()`:
    - 判定: 读 `MC_RGM` (`0x40080000`) — `DES==0 && FES==0` → POR (与 `Cdd_Boot` 寄存器地图一致; 软件/外部复位在 FES 留标志, 看门狗等在 DES 留标志, 功能性/破坏性复位不清 SRAM, 仅 POR 使 SRAM+ECC 失效);
    - 冷启动 → 整块写 0 (**写操作生成 ECC 校验位**), 同时天然清除残留握手; 热复位 → 跳过, 握手内容保留;

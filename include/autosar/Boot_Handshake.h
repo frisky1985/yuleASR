@@ -10,9 +10,9 @@
  *   - 布局头仅含数据结构与常量, 无函数实现, App 与 SBL 各自包含即可,
  *     避免 App 依赖 bsw/boot 静态库。
  *   - 完整性校验采用 magic + target 反码, 无需 CRC 库 (EcuM 侧零依赖)。
- *   - 存储介质为 S32K312 SRAM_U 顶部 32 字节保留区, 跨软复位 (NVIC_SystemReset)
- *     不被清零 (须在链接脚本中排除 .bss 清零范围, 或上电由 BootROM 保留)。
- *     如需掉电保持, 可由平台层改写为 Sticky/Backup 寄存器。
+ *   - 握手块地址由链接脚本单点定义 (ram_handshake 区导出符号
+ *     __boot_handshake_start), C 代码不硬编码绝对地址; 链接脚本已将其
+ *     排除在 .bss 清零范围外, 跨软复位 (NVIC_SystemReset) 保持。
  *
  * @version 1.0.0
  * @date 2026-11-07
@@ -34,19 +34,10 @@ typedef uint32_t Boot_HandshakeType;
 #define BOOT_HANDSHAKE_INVALID          0xFFFFFFFFU   /* 无效 / 无请求                    */
 
 /*==================================================================================================
-* 握手块 (32 字节, 固定地址)
+* 握手块 (32 字节, 地址由链接脚本 ram_handshake 区定义)
 *================================================================================================*/
 #define BOOT_HANDSHAKE_MAGIC            0x48534842U   /* 'BHSH' = Boot HandShake */
 #define BOOT_HANDSHAKE_VERSION          0x00010000U   /* v1.0 */
-
-/** S32K312 Safe RAM 顶部保留 32 字节 (0x2000FFE0 - 0x2000FFFF)
- *  选位原则: 必须同时避开 ①栈区 (0x20060000-0x20080000, 向下增长)
- *            ②所有 BSS 清零范围 (.bss 在 ram_general, __bss_start..__bss_end)
- *            ③PBL ram_pbl (0x20000000-0x20000FFF, 仅 4KB)
- *  0x2000FFE0 位于 ram_safe 顶部, 低于栈底且远超 PBL RAM, 满足全部约束。 */
-#ifndef BOOT_HANDSHAKE_ADDR
-#define BOOT_HANDSHAKE_ADDR             0x2000FFE0UL
-#endif
 
 typedef struct {
     uint32_t magic;          /**< BOOT_HANDSHAKE_MAGIC                          */
@@ -105,11 +96,24 @@ static inline void Boot_Handshake_Fill(Boot_HandshakeBlock_t *blk,
 
 /*==================================================================================================
 * 跨复位持久化读写 (App/SBL 单一实现, 平台相关)
-*   - ARM: 读写 BOOT_HANDSHAKE_ADDR 固定 SRAM 地址
-*   - Host (x86 单测): 使用进程内静态变量 (无真实复位)
+*   - 目标镜像 (Cortex-M): 地址由链接脚本定义 — s32k312.ld / Boot_Linker.ld
+*     的 ram_handshake 区导出符号 __boot_handshake_start, C 代码取其地址。
+*     单一事实源在链接脚本, 调整布局无需改 C 代码。
+*   - Host (x86 单测): 进程内静态变量 (无真实复位/链接脚本)。
+*   - 可用 -DBOOT_HANDSHAKE_USE_LD_SYMBOL=0/1 显式覆盖自动判定。
 *================================================================================================*/
-#if defined(__arm__) || defined(__thumb__) || defined(__aarch64__)
-#define BOOT_HANDSHAKE_PTR()  ((volatile Boot_HandshakeBlock_t *)(uintptr_t)BOOT_HANDSHAKE_ADDR)
+#ifndef BOOT_HANDSHAKE_USE_LD_SYMBOL
+#  if defined(__arm__) || defined(__thumb__)
+#    define BOOT_HANDSHAKE_USE_LD_SYMBOL  1
+#  else
+#    define BOOT_HANDSHAKE_USE_LD_SYMBOL  0
+#  endif
+#endif
+
+#if BOOT_HANDSHAKE_USE_LD_SYMBOL
+/* 链接脚本导出的握手块起始符号 (绝对符号, 取其地址即物理地址) */
+extern const Boot_HandshakeBlock_t __boot_handshake_start;
+#define BOOT_HANDSHAKE_PTR()  ((volatile Boot_HandshakeBlock_t *)&__boot_handshake_start)
 #else
 static inline Boot_HandshakeBlock_t *Boot_Handshake_HostBlock(void)
 {
