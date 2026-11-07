@@ -416,7 +416,8 @@ sequenceDiagram
     EcuM->>PBL: EcuM_AL_Reset() 硬件复位
     PBL->>PBL: 验签 SBL → 跳转
     PBL->>SBL: 进入 Boot_Loader_Main
-    SBL->>RAM: Phase 0: Boot_Handshake_GetTarget()
+    SBL->>SBL: Phase 0: Boot_Handshake_EccColdInit()<br/>RGM 判定 POR? 冷启动→整块写 0 (ECC 初始化)
+    SBL->>RAM: Boot_Handshake_GetTarget()
     RAM-->>SBL: OEM_BOOTLOADER
     SBL->>RAM: Boot_Handshake_Clear() (一次性消费)
     SBL->>SBL: Boot_Loader_EnterRecovery()<br/>UDS 下载循环 (0x34/0x36/0x37)
@@ -428,7 +429,11 @@ sequenceDiagram
 2. **一次性消费**: SBL 读取后立即 `Boot_Handshake_Clear()`, 避免残留导致后续上电误进入下载模式。
 3. **默认安全**: 握手块无效/非法 target → 返回 `APPLICATION`, 正常启动 App (fail-open for boot, 不阻断正常启动)。
 4. **存储介质可替换**: 当前为 SRAM 保留区 (跨软复位 `NVIC_SystemReset` 保持, 须链接脚本排除 `.bss` 清零)。如需掉电保持, 平台层可改写 `BOOT_HANDSHAKE_PTR()` 指向 S32K312 Sticky/Backup 寄存器。
-5. **Host 单测兼容**: 非 ARM 构建下 `BOOT_HANDSHAKE_PTR()` 映射到进程内静态变量, 单测 `test_boot_handshake.c` 覆盖 Set/Get/Clear/非法值/完整性校验。
+5. **ECC 冷启动安全 (已实现)**: S32K312 SRAM 带 ECC, POR (掉电) 后校验位未初始化, 直接读会触发不可纠正 ECC 错误 (HardFault)。`Boot_Loader_Main` Phase 0 在读握手块前先调 `Boot_Handshake_EccColdInit()`:
+   - 判定: 读 `MC_RGM` (`0x40080000`) — `DES==0 && FES==0` → POR (与 `Cdd_Boot` 寄存器地图一致; 软件/外部复位在 FES 留标志, 看门狗等在 DES 留标志, 功能性/破坏性复位不清 SRAM, 仅 POR 使 SRAM+ECC 失效);
+   - 冷启动 → 整块写 0 (**写操作生成 ECC 校验位**), 同时天然清除残留握手; 热复位 → 跳过, 握手内容保留;
+   - `Boot_Handshake_IsColdStart()` 为**弱符号**, 单测可覆写注入 POR 场景; 只读 RGM 不清标志 (PBL 与 SBL 需看到同一状态)。
+6. **Host 单测兼容**: 非 ARM 构建下 `BOOT_HANDSHAKE_PTR()` 映射到进程内静态变量, 单测 `test_boot_handshake.c` 覆盖 Set/Get/Clear/非法值/完整性校验/冷启动 ECC 初始化 (弱符号注入)。
 
 **代码落点:**
 - 共享头: [Boot_Handshake.h](file:///workspace/include/autosar/Boot_Handshake.h)

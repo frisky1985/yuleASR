@@ -6,7 +6,7 @@
  * 本测试覆盖 SetTarget/GetTarget/Clear 及异常输入的容错行为。
  */
 
-#include "Boot_Handshake.h"
+#include "../include/Boot_Handshake.h"   /* 模块头 (相对路径, 避免与共享头同名歧义) */
 #include <assert.h>
 #include <stdio.h>
 
@@ -17,6 +17,14 @@ static int g_fail = 0;
     if (cond) { g_pass++; printf("  [PASS] %s\n", msg); } \
     else      { g_fail++; printf("  [FAIL] %s\n", msg); } \
 } while (0)
+
+/* 覆写库内弱符号 Boot_Handshake_IsColdStart, 注入冷/热启动场景 */
+static uint8_t g_fake_cold_start = 0U;
+
+uint8_t Boot_Handshake_IsColdStart(void)
+{
+    return g_fake_cold_start;
+}
 
 int main(void)
 {
@@ -62,6 +70,32 @@ int main(void)
     blk.target_inv = ~blk.target;
     blk.magic = 0U;
     CHECK(Boot_Handshake_IsValid(&blk) == 0, "corrupted magic -> invalid");
+
+    /* 8. ECC 冷启动: 热复位 → 不清零, 握手内容保留 */
+    g_fake_cold_start = 0U;
+    Boot_Handshake_SetTarget(BOOT_HANDSHAKE_OEM_BOOTLOADER);
+    CHECK(Boot_Handshake_EccColdInit() == 0U,
+          "warm reset -> EccColdInit returns 0 (no clear)");
+    CHECK(Boot_Handshake_GetTarget() == BOOT_HANDSHAKE_OEM_BOOTLOADER,
+          "warm reset -> handshake preserved");
+
+    /* 9. ECC 冷启动: 冷启动(POR) → 整块写 0 (ECC 初始化), 握手无效化 */
+    g_fake_cold_start = 1U;
+    Boot_Handshake_SetTarget(BOOT_HANDSHAKE_OEM_BOOTLOADER);
+    CHECK(Boot_Handshake_EccColdInit() == 1U,
+          "cold start (POR) -> EccColdInit returns 1 (cleared)");
+    CHECK(Boot_Handshake_GetTarget() == BOOT_HANDSHAKE_APPLICATION,
+          "cold start (POR) -> handshake cleared, boot App");
+    g_fake_cold_start = 0U;
+
+    /* 10. ECC 冷启动: 冷启动后再次调用, 内容已被清零, 不重复动作 */
+    g_fake_cold_start = 1U;
+    Boot_Handshake_Clear();
+    CHECK(Boot_Handshake_EccColdInit() == 1U,
+          "cold start again -> still reports clear (idempotent)");
+    CHECK(Boot_Handshake_GetTarget() == BOOT_HANDSHAKE_APPLICATION,
+          "after cold init -> default APPLICATION");
+    g_fake_cold_start = 0U;
 
     printf("\nResult: %d passed, %d failed\n", g_pass, g_fail);
     return (g_fail == 0) ? 0 : 1;

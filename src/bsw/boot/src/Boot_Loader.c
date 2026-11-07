@@ -37,7 +37,10 @@ void Boot_Loader_Main(void)
 
     /* Phase 0: App->Bootloader 握手检查 (一次性)
      * App 在 EcuM_PerformReset 前写入 BOOT_HANDSHAKE_ADDR;
-     * 若请求 OEM/SYS Bootloader, 直接进入下载/恢复模式, 不启动 App。 */
+     * 若请求 OEM/SYS Bootloader, 直接进入下载/恢复模式, 不启动 App。
+     * ECC 冷启动安全: POR 后 SRAM ECC 校验位未初始化, 直接读会触发
+     * 不可纠正 ECC 错误 (HardFault); 先按需整块写 0 再读。 */
+    (void)Boot_Handshake_EccColdInit();
     Boot_HandshakeType hs_target = Boot_Handshake_GetTarget();
     if ((hs_target == BOOT_HANDSHAKE_OEM_BOOTLOADER) ||
         (hs_target == BOOT_HANDSHAKE_SYS_BOOTLOADER)) {
