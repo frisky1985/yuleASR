@@ -76,11 +76,11 @@
 *================================================================================================*/
 #define RTE_MEASUREMENT_SUPPORT    STD_ON
 #define RTE_CALIBRATION_SUPPORT    STD_ON
-#define RTE_MAX_PORTS_PER_COMPONENT    (4U)
+#define RTE_MAX_PORTS_PER_COMPONENT    (8U)
 #define RTE_STATE_INIT    (0U)
 #define RTE_STATE_STARTED    (1U)
 #define RTE_STATE_STOPPED    (2U)
-#define RTE_MAX_BUFFER_SIZE    (256U)
+#define RTE_MAX_BUFFER_SIZE    (512U)
 #define RTE_MAX_STRING_LENGTH    (256U)
 #define RTE_MAX_BYTE_ARRAY_LENGTH    (256U)
 #define RTE_MAX_QUEUE_LENGTH    (16U)

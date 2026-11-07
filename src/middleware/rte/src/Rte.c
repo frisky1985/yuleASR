@@ -131,7 +131,7 @@ STATIC Std_ReturnType Rte_ValidatePortHandle(Rte_PortHandleType portHandle)
 {
     Std_ReturnType result = E_NOT_OK;
     uint8 componentId = (uint8)(portHandle >> 8);
-    uint8 portId = (uint8)(portHandle & 0xFF);
+    uint8 portId = (uint8)(portHandle & 0x0Fu);
 
     if ((componentId < RTE_NUM_COMPONENTS) && (portId < RTE_MAX_PORTS_PER_COMPONENT))
     {
@@ -298,7 +298,7 @@ Rte_StatusType Rte_ConnectPort(Rte_PortHandleType portHandle, uint8 direction, u
 {
     Rte_StatusType result = RTE_E_OK;
     uint8 componentId = (uint8)(portHandle >> 8);
-    uint8 portId = (uint8)(portHandle & 0xFF);
+    uint8 portId = (uint8)(portHandle & 0x0Fu);
 
 #if (RTE_DEV_ERROR_DETECT == STD_ON)
     if (!Rte_InternalState.IsInitialized)
@@ -436,7 +436,7 @@ Std_ReturnType Rte_Read(Rte_PortHandleType portHandle, void* data)
 {
     Std_ReturnType result = E_NOT_OK;
     uint8 componentId = (uint8)(portHandle >> 8);
-    uint8 portId = (uint8)(portHandle & 0xFF);
+    uint8 portId = (uint8)(portHandle & 0x0Fu);
 
 #if (RTE_DEV_ERROR_DETECT == STD_ON)
     if (!Rte_InternalState.IsInitialized)
@@ -481,7 +481,7 @@ Std_ReturnType Rte_Write(Rte_PortHandleType portHandle, const void* data)
 {
     Std_ReturnType result = E_NOT_OK;
     uint8 componentId = (uint8)(portHandle >> 8);
-    uint8 portId = (uint8)(portHandle & 0xFF);
+    uint8 portId = (uint8)(portHandle & 0x0Fu);
 
 #if (RTE_DEV_ERROR_DETECT == STD_ON)
     if (!Rte_InternalState.IsInitialized)

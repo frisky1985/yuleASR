@@ -364,18 +364,11 @@ fi
 # ── Test ────────────────────────────────────────────────────────────────────
 if [ "$BUILD_TEST" = "ON" ] && [ "$CMAKE_TARGET" != "install" ] && [ "$CMAKE_TARGET" != "package" ]; then
     echo -e "${BLUE}[3/3] Running tests...${NC}"
-    # s0_smoke 会经真实 SWC 触发 RTE 的已知缺陷 (端口长度硬编码 128B),
-    # 非插桩构建不受影响, sanitizer 构建下临时排除 (见 ci.yml 同名注释)。
-    CTEST_EXCLUDE=""
-    if [ "$ENABLE_ASAN" = "ON" ] || [ "$ENABLE_UBSAN" = "ON" ]; then
-        CTEST_EXCLUDE='-E ^s0_smoke$'
-        echo -e "  ${YELLOW}Note: s0_smoke excluded (known RTE 128-byte port defect)${NC}"
-    fi
     if [ -n "$MODULE" ]; then
         # Run only tests matching the module name
-        ctest --test-dir "${BUILD_DIR}" --output-on-failure -R "${MODULE}" ${CTEST_EXCLUDE}
+        ctest --test-dir "${BUILD_DIR}" --output-on-failure -R "${MODULE}"
     else
-        ctest --test-dir "${BUILD_DIR}" --output-on-failure ${CTEST_EXCLUDE}
+        ctest --test-dir "${BUILD_DIR}" --output-on-failure
     fi
 fi
 

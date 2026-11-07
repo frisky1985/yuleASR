@@ -28,6 +28,18 @@
 #include "Rte.h"
 #include "Rte_Cfg.h"
 
+/* Per-SWC data element types: connection DataLength must equal sizeof(<type>)
+ * so Rte_Read/Rte_Write copy exactly the right number of bytes and never
+ * over-read the sender or over-write the receiver. */
+#include "Swc_EngineControl.h"
+#include "Swc_VehicleDynamics.h"
+#include "Swc_DiagnosticManager.h"
+#include "Swc_CommunicationManager.h"
+#include "Swc_StorageManager.h"
+#include "Swc_IOControl.h"
+#include "Swc_ModeManager.h"
+#include "Swc_WatchdogManager.h"
+
 #define RTE_START_SEC_CODE
 #include "MemMap.h"
 
@@ -47,42 +59,45 @@ typedef struct
 
 STATIC const Rte_SwcPortConnectionType Rte_SwcPortConnections[] =
 {
-    RTE_SWC_PORT_CONNECTION(0U, 0x05U, 1U, 128U),  /* COOLANT_TEMP_R */
-    RTE_SWC_PORT_CONNECTION(0U, 0x04U, 1U, 128U),  /* THROTTLE_POS_R */
-    RTE_SWC_PORT_CONNECTION(0U, 0x06U, 1U, 128U),  /* VEHICLE_SPEED_R */
-    RTE_SWC_PORT_CONNECTION(1U, 0x16U, 1U, 128U),  /* ACCEL_DATA_R */
-    RTE_SWC_PORT_CONNECTION(1U, 0x15U, 1U, 128U),  /* STEERING_ANGLE_R */
-    RTE_SWC_PORT_CONNECTION(1U, 0x14U, 1U, 128U),  /* WHEEL_SPEEDS_R */
-    RTE_SWC_PORT_CONNECTION(2U, 0x24U, 1U, 128U),  /* DIAG_REQUEST_R */
-    RTE_SWC_PORT_CONNECTION(3U, 0x33U, 1U, 128U),  /* PDU_DATA_R */
-    RTE_SWC_PORT_CONNECTION(5U, 0x54U, 1U, 128U),  /* ANALOG_INPUT_R */
-    RTE_SWC_PORT_CONNECTION(5U, 0x52U, 1U, 128U),  /* DIGITAL_INPUT_R */
-    RTE_SWC_PORT_CONNECTION(5U, 0x56U, 1U, 128U),  /* PWM_INPUT_R */
-    RTE_SWC_PORT_CONNECTION(6U, 0x63U, 1U, 128U),  /* MODE_REQUEST_R */
-    RTE_SWC_PORT_CONNECTION(7U, 0x73U, 1U, 128U),  /* ALIVE_INDICATION_R */
-    RTE_SWC_PORT_CONNECTION(0U, 0x01U, 2U, 128U),  /* ENGINE_STATE_P */
-    RTE_SWC_PORT_CONNECTION(0U, 0x02U, 2U, 128U),  /* ENGINE_PARAMS_P */
-    RTE_SWC_PORT_CONNECTION(0U, 0x03U, 2U, 128U),  /* ENGINE_CONTROL_P */
-    RTE_SWC_PORT_CONNECTION(1U, 0x11U, 2U, 128U),  /* VDC_STATE_P */
-    RTE_SWC_PORT_CONNECTION(1U, 0x12U, 2U, 128U),  /* MOTION_DATA_P */
-    RTE_SWC_PORT_CONNECTION(1U, 0x13U, 2U, 128U),  /* VDC_OUTPUT_P */
-    RTE_SWC_PORT_CONNECTION(2U, 0x21U, 2U, 128U),  /* SESSION_P */
-    RTE_SWC_PORT_CONNECTION(2U, 0x22U, 2U, 128U),  /* SECURITY_P */
-    RTE_SWC_PORT_CONNECTION(2U, 0x23U, 2U, 128U),  /* DTC_STATUS_P */
-    RTE_SWC_PORT_CONNECTION(2U, 0x25U, 2U, 128U),  /* DIAG_RESPONSE_P */
-    RTE_SWC_PORT_CONNECTION(3U, 0x31U, 2U, 128U),  /* COMM_STATE_P */
-    RTE_SWC_PORT_CONNECTION(3U, 0x32U, 2U, 128U),  /* SIGNAL_DATA_P */
-    RTE_SWC_PORT_CONNECTION(3U, 0x34U, 2U, 128U),  /* PDU_DATA_P */
-    RTE_SWC_PORT_CONNECTION(4U, 0x42U, 2U, 128U),  /* BLOCK_STATUS_P */
-    RTE_SWC_PORT_CONNECTION(5U, 0x51U, 2U, 128U),  /* IO_STATE_P */
-    RTE_SWC_PORT_CONNECTION(5U, 0x53U, 2U, 128U),  /* DIGITAL_OUTPUT_P */
-    RTE_SWC_PORT_CONNECTION(5U, 0x55U, 2U, 128U),  /* ANALOG_OUTPUT_P */
-    RTE_SWC_PORT_CONNECTION(5U, 0x57U, 2U, 128U),  /* PWM_OUTPUT_P */
-    RTE_SWC_PORT_CONNECTION(6U, 0x61U, 2U, 128U),  /* SYSTEM_MODE_P */
-    RTE_SWC_PORT_CONNECTION(6U, 0x62U, 2U, 128U),  /* SYSTEM_STATE_P */
-    RTE_SWC_PORT_CONNECTION(6U, 0x64U, 2U, 128U),  /* MODE_NOTIFICATION_P */
-    RTE_SWC_PORT_CONNECTION(7U, 0x71U, 2U, 128U),  /* WDG_STATUS_P */
-    RTE_SWC_PORT_CONNECTION(7U, 0x74U, 2U, 128U),  /* WDG_TRIGGER_P */
+    /* ---- Receiver (R) ports: DataLength = sizeof(type read into) ---- */
+    RTE_SWC_PORT_CONNECTION(0U, 0x05U, 1U, (uint16)sizeof(sint16)),                              /* COOLANT_TEMP_R       */
+    RTE_SWC_PORT_CONNECTION(0U, 0x04U, 1U, (uint16)sizeof(uint16)),                              /* THROTTLE_POS_R       */
+    RTE_SWC_PORT_CONNECTION(0U, 0x06U, 1U, (uint16)sizeof(uint16)),                              /* VEHICLE_SPEED_R      */
+    RTE_SWC_PORT_CONNECTION(1U, 0x16U, 1U, (uint16)sizeof(sint16)),                              /* ACCEL_DATA_R         */
+    RTE_SWC_PORT_CONNECTION(1U, 0x15U, 1U, (uint16)sizeof(sint16)),                              /* STEERING_ANGLE_R     */
+    RTE_SWC_PORT_CONNECTION(1U, 0x14U, 1U, (uint16)sizeof(uint16)),                              /* WHEEL_SPEEDS_R       */
+    RTE_SWC_PORT_CONNECTION(2U, 0x24U, 1U, (uint16)sizeof(Swc_DiagnosticRequestType)),           /* DIAG_REQUEST_R       */
+    RTE_SWC_PORT_CONNECTION(3U, 0x33U, 1U, (uint16)sizeof(Swc_PduInfoType)),                     /* PDU_DATA_R           */
+    RTE_SWC_PORT_CONNECTION(5U, 0x54U, 1U, (uint16)sizeof(Swc_AnalogIOValueType)),               /* ANALOG_INPUT_R       */
+    RTE_SWC_PORT_CONNECTION(5U, 0x52U, 1U, (uint16)sizeof(Swc_DigitalIOValueType)),              /* DIGITAL_INPUT_R      */
+    RTE_SWC_PORT_CONNECTION(5U, 0x56U, 1U, (uint16)sizeof(Swc_PwmIOValueType)),                  /* PWM_INPUT_R          */
+    RTE_SWC_PORT_CONNECTION(6U, 0x63U, 1U, (uint16)sizeof(Swc_ModeTransitionRequestType)),       /* MODE_REQUEST_R       */
+    RTE_SWC_PORT_CONNECTION(7U, 0x73U, 1U, (uint16)sizeof(uint8)),                               /* ALIVE_INDICATION_R   */
+
+    /* ---- Sender (P) ports: DataLength = sizeof(type written) ---- */
+    RTE_SWC_PORT_CONNECTION(0U, 0x01U, 2U, (uint16)sizeof(Swc_EngineStateType)),                 /* ENGINE_STATE_P       */
+    RTE_SWC_PORT_CONNECTION(0U, 0x02U, 2U, (uint16)sizeof(Swc_EngineParametersType)),            /* ENGINE_PARAMS_P      */
+    RTE_SWC_PORT_CONNECTION(0U, 0x03U, 2U, (uint16)sizeof(Swc_EngineControlOutputType)),         /* ENGINE_CONTROL_P     */
+    RTE_SWC_PORT_CONNECTION(1U, 0x11U, 2U, (uint16)sizeof(Swc_VdcStateType)),                    /* VDC_STATE_P          */
+    RTE_SWC_PORT_CONNECTION(1U, 0x12U, 2U, (uint16)sizeof(Swc_VehicleMotionType)),               /* MOTION_DATA_P        */
+    RTE_SWC_PORT_CONNECTION(1U, 0x13U, 2U, (uint16)sizeof(Swc_VehicleDynamicsOutputType)),       /* VDC_OUTPUT_P         */
+    RTE_SWC_PORT_CONNECTION(2U, 0x21U, 2U, (uint16)sizeof(Swc_DiagnosticSessionType)),           /* SESSION_P            */
+    RTE_SWC_PORT_CONNECTION(2U, 0x22U, 2U, (uint16)sizeof(Swc_SecurityLevelType)),               /* SECURITY_P           */
+    RTE_SWC_PORT_CONNECTION(2U, 0x23U, 2U, (uint16)sizeof(Swc_DtcStatusType)),                   /* DTC_STATUS_P         */
+    RTE_SWC_PORT_CONNECTION(2U, 0x25U, 2U, (uint16)sizeof(Swc_DiagnosticResponseType)),          /* DIAG_RESPONSE_P      */
+    RTE_SWC_PORT_CONNECTION(3U, 0x31U, 2U, (uint16)sizeof(Swc_CommStateType)),                   /* COMM_STATE_P         */
+    RTE_SWC_PORT_CONNECTION(3U, 0x32U, 2U, (uint16)sizeof(Swc_SignalValueType)),                 /* SIGNAL_DATA_P        */
+    RTE_SWC_PORT_CONNECTION(3U, 0x34U, 2U, (uint16)sizeof(Swc_PduInfoType)),                     /* PDU_DATA_P           */
+    RTE_SWC_PORT_CONNECTION(4U, 0x42U, 2U, (uint16)sizeof(Swc_StorageBlockStatusType)),          /* BLOCK_STATUS_P       */
+    RTE_SWC_PORT_CONNECTION(5U, 0x51U, 2U, (uint16)sizeof(Swc_IOStateType)),                     /* IO_STATE_P           */
+    RTE_SWC_PORT_CONNECTION(5U, 0x53U, 2U, (uint16)sizeof(Swc_DigitalIOValueType)),              /* DIGITAL_OUTPUT_P     */
+    RTE_SWC_PORT_CONNECTION(5U, 0x55U, 2U, (uint16)sizeof(Swc_AnalogIOValueType)),               /* ANALOG_OUTPUT_P      */
+    RTE_SWC_PORT_CONNECTION(5U, 0x57U, 2U, (uint16)sizeof(Swc_PwmIOValueType)),                  /* PWM_OUTPUT_P         */
+    RTE_SWC_PORT_CONNECTION(6U, 0x61U, 2U, (uint16)sizeof(Swc_SystemModeType)),                  /* SYSTEM_MODE_P        */
+    RTE_SWC_PORT_CONNECTION(6U, 0x62U, 2U, (uint16)sizeof(Swc_SystemStateType)),                 /* SYSTEM_STATE_P       */
+    RTE_SWC_PORT_CONNECTION(6U, 0x64U, 2U, (uint16)sizeof(Swc_ComponentModeType)),               /* MODE_NOTIFICATION_P  */
+    RTE_SWC_PORT_CONNECTION(7U, 0x71U, 2U, (uint16)sizeof(Swc_WatchdogStatusType)),              /* WDG_STATUS_P         */
+    RTE_SWC_PORT_CONNECTION(7U, 0x74U, 2U, (uint16)sizeof(uint8))                                /* WDG_TRIGGER_P        */
 };
 
 #define RTE_SWC_NUM_PORT_CONNECTIONS (sizeof(Rte_SwcPortConnections) / sizeof(Rte_SwcPortConnections[0]))

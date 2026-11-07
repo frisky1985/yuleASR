@@ -208,14 +208,7 @@ jobs:
   # Sanitizers — AddressSanitizer 内存越界门禁 (native)
   #   独立构建目录 build-asan, 与 test/coverage 并行执行。
   #   ASan: 堆/栈/全局数组越界、use-after-free、double-free
-  #   基线 (本轮修复后): 192/192 通过。
-  #
-  #   已知例外 — s0_smoke:
-  #     Rte_SwcPortApi.c 的端口连接表把全部 35 个端口的数据长度硬编码为
-  #     128 字节, 而 SWC 写入的结构体更小 (如 ENGINE_CONTROL_P), 导致
-  #     Rte_Write 越界读。属 RTE 端口配置的系统性缺陷, 需按 SWC 数据类型
-  #     修正 per-port 长度 (或引入 Sized 写接口), 不在 sanitiser 门禁范围
-  #     内临时排除; 修复前不得删除此例外。
+  #   基线 (修复 RTE 端口长度缺陷后): 193/193 通过。
   #
   #   UBSan 见独立 job (ubsan), 初始为 advisory: 已知 9 处既有 UB
   #   (blake2s 越界 / RamTst 移位 / dds_auth 非对齐 / 空指针 memcpy 等),
@@ -263,8 +256,7 @@ jobs:
         env:
           ASAN_OPTIONS: detect_leaks=0:abort_on_error=1:strict_string_checks=1
         run: |
-          # s0_smoke 例外见上方注释 (RTE 128 字节端口缺陷)
-          ctest --test-dir build-asan -E "^s0_smoke$" --output-on-failure --timeout 120 -j"$(nproc)" \
+          ctest --test-dir build-asan --output-on-failure --timeout 120 -j"$(nproc)" \
             2>&1 | tee sanitizer-test.log
 
       - name: Upload Sanitizer Logs
@@ -305,7 +297,7 @@ jobs:
         env:
           UBSAN_OPTIONS: print_stacktrace=1:halt_on_error=1
         run: |
-          ctest --test-dir build-ubsan -E "^s0_smoke$" --output-on-failure --timeout 120 -j"$(nproc)" \
+          ctest --test-dir build-ubsan --output-on-failure --timeout 120 -j"$(nproc)" \
             2>&1 | tee ubsan-test.log || true
           echo "--- UBSan findings summary ---"
           grep -E "runtime error:" ubsan-test.log | sort -u || echo "none"
