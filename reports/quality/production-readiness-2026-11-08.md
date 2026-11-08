@@ -23,6 +23,7 @@
 | MISRA C:2012 | 🟡 PARTIAL | **17.2 递归 = 0** ✅；20.9 生产 stdio.h 6 文件（合法 I/O）✅；**8.4 生产代码已清零** ✅；17.7 −60%、10.4 −18%（详见 5.6 / 5.7） |
 | 文件规模 | 🔴 FAIL | 170/343 生产文件 > 500 行（49.6%），58 个 > 1000 行 (P4) |
 | stdio.h 依赖 (MISRA 20.9) | ✅ PASS (生产) | 生产代码仅 6 文件保留 `<stdio.h>`（Debug.c 封装 + 5 个 fopen/fread 文件 I/O）；测试代码豁免 |
+| 依赖安全 (Dependabot) | ✅ PASS (High) | npm 高危 `follow-redirects` / `joi` 已升级清零；1 个 low（`deepmerge`）无上游修复且仅构建期使用（详见 5.8） |
 
 **结论**: P0/P1 已全部完成并验证通过；P3 覆盖率已达标（整体 81.7% / MCAL 91.0% / MCAL 分支 85.1%）；P2 生产代码 8.4 已清零（唯一残留为测试桩），17.7 与 10.4 仍待收敛。
 
@@ -384,6 +385,34 @@
 | LIN `LinSlave_GetVersionInfo` 仅声明无实现 | 在 `LinSlave.c` 按 `LINSLAVE_VERSION_INFO_API` 条件编译补实现 |
 | LIN `LinSlave_CfgTable_IsDirectionMatching` 仅声明无实现 | 在 `LinSlave_CfgTable.c` 补实现（NULL→FALSE；`RX_TX` 通配→TRUE；否则比较方向） |
 | `dds_log_deinit` 潜在 join 死锁 | `pthread_join` 前先置 `queue.shutdown = true` 并 `pthread_cond_broadcast`，唤醒阻塞的刷写线程 |
+
+### 5.8 依赖安全整改（Dependabot 告警，2026-11-08 补录 3）
+
+GitHub Dependabot REST/GraphQL 接口以当前令牌访问均无权限（`Resource not accessible by integration`），改用本地 `npm audit`（官方 registry）+ `pip-audit` + OSV 情报复现并修复。仓库内 3 个 npm 清单、9 个 pip 清单扫描结果：
+
+#### npm（两个受影响清单，其余 0 漏洞）
+
+| 清单 | 漏洞包 | 原版本 → 修复版本 | 公告 | 等级 |
+|:-----|:-------|:------------------|:-----|:----:|
+| `tools/yuleasr-configurator/web/package-lock.json` | follow-redirects | 1.16.1 → **1.16.2** | GHSA-mrwp-f3q8-3g9p | 🔴 High |
+| `tools/yuleasr-configurator/web/package-lock.json` | joi | 17.13.8 → **17.13.9** | GHSA-4528-x5fx-h6hg | 🔴 High |
+| `website/package-lock.json` | follow-redirects | 1.16.1 → **1.16.2** | GHSA-mrwp-f3q8-3g9p | 🔴 High |
+| `website/package-lock.json` | joi | 17.13.8 → **17.13.9** | GHSA-4528-x5fx-h6hg | 🔴 High |
+| `website/package-lock.json` | deepmerge | 4.3.1（无修复版本） | GHSA-gcqx-w48m-w2h4 | 🟡 Low |
+| `docs/docs-site/package-lock.json` | — | 无漏洞 | — | — |
+
+- 修复方式：`npm audit fix --package-lock-only`，仅升级语义化兼容范围内的补丁版本；同步带动的 `electron-builder` 26.18.0→26.18.1、`semver`、`sanitize-filename` 等均为补丁级。
+- **deepmerge 低危无上游修复**：OSV 标记 `last_affected 4.3.1`（4.3.1 为最终发布版），且仅经 `@docusaurus → @svgr/webpack → @svgr/plugin-svgo` 在**构建期**合并可信配置对象时使用，不接受运行时用户输入，实际不可利用；建议在 GitHub 侧以 `vulnerable_code_not_in_execution_path` 理由 dismiss。
+- **验证**：两个清单重新执行 `npm audit --registry=https://registry.npmjs.org`，`high = 0 / critical = 0`；`npm install --package-lock-only --dry-run` 一致性检查通过。
+
+#### pip（一方清单 0 漏洞）
+
+| 范围 | 结论 |
+|:-----|:-----|
+| `tools/{arxml-tool,code_generators,can_config,dtc_config,dds_config,web_gui}` 等 8 个一方清单 | 以官方 PyPI 解析后 **0 漏洞**（`>=` 约束已指向修复版本；`web_gui/server` 的 9 个精确锁定版本均无公告） |
+| `third_party/mbedtls/docs/requirements.txt` | 16 条公告（certifi/idna/jinja2/pygments/requests/urllib3），属 vendored 上游 mbedtls 的文档构建锁定，非本项目一方依赖，升级会与上游 `pip-compile` 产物偏离；建议由上游同步或从 Dependabot 扫描范围排除 |
+
+> 说明：本地 PyPI 镜像版本滞后（如 werkzeug 停在 3.1.3），初测会误报已由官方 PyPI 修复的包；上表 pip 结论以 `https://pypi.org/simple` 为准。
 
 ---
 
