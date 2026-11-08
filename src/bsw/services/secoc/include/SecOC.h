@@ -432,6 +432,10 @@ extern void SecOC_MainFunctionTx(void);
 #define SECOC_STOP_SEC_CODE
 #include "SecOC_MemMap.h"
 
+/*==================[external data declarations]============================*/
+/* Configuration object defined in SecOc_Lcfg.c (MISRA C:2012 8.4) */
+extern const SecOC_ConfigType SecOc_Config;
+
 #ifdef __cplusplus
 }
 #endif

@@ -337,5 +337,8 @@ extern void EthSM_MainFunction(void);
  */
 extern EthSM_StateType EthSM_GetInternalState(EthSM_NetworkHandleType NetworkHandle);
 
+/*==================[external data declarations]============================*/
+/* Configuration object defined in EthSM_Lcfg.c (MISRA C:2012 8.4) */
+extern const EthSM_ConfigType* const EthSM_Config;
 
 #endif /* ETHSM_H */

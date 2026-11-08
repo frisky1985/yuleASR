@@ -459,4 +459,8 @@ void CanSM_CheckTransceiverWakeFlagIndication(uint8 TransceiverId);
 
 void CanSm_GetVersionInfo(Std_VersionInfoType* versioninfo);
 
+/*==================[external data declarations]============================*/
+/* Configuration object defined in CanSm_Lcfg.c (MISRA C:2012 8.4) */
+extern const CanSm_ConfigType* const CanSm_ConfigPtr;
+
 #endif /* CANSM_H */

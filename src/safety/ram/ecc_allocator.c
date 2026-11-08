@@ -35,7 +35,7 @@
 
 EccHeapStateType g_heap_state;
 static boolean g_initialized = FALSE;
-void (*g_failure_callback)(uint32_t size, uint32_t flags) = NULL;
+static void (*g_failure_callback)(uint32_t size, uint32_t flags) = NULL;
 
 /* Default heap buffer (can be overridden) */
 static uint8_t g_default_heap[ECC_ALLOC_HEAP_SIZE];

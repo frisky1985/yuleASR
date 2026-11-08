@@ -106,7 +106,7 @@ LOCAL FUNC(Std_ReturnType, DET_CODE) Det_DefaultTransientFaultHook(
  * @details Array of function pointers to error hook callbacks.
  *          These hooks are called in sequence when Det_ReportError is invoked.
  */
-const Det_ErrorHookPtrType Det_ErrorHooks[DET_NUMBER_OF_ERROR_HOOKS] =
+const Det_ErrorHookPtrType Det_ErrorHookTable[DET_NUMBER_OF_ERROR_HOOKS] =
 {
     &Det_DefaultErrorHook
     /* Additional hooks can be added here */
@@ -166,15 +166,15 @@ const Det_ConfigType Det_Config =
  * To add custom error hooks:
  * 1. Define DET_NUMBER_OF_ERROR_HOOKS to the total number of hooks
  * 2. Declare the hook function(s) with Det_ErrorHookPtrType signature
- * 3. Add function pointers to Det_ErrorHooks array above
+ * 3. Add function pointers to Det_ErrorHookTable array above
  */
 
 /* Example custom hook declaration (to be implemented in application):
  * extern Std_ReturnType MyCustomErrorHandler(uint16 ModuleId, uint8 InstanceId, 
  *                                            uint8 ApiId, uint8 ErrorId);
  * 
- * Then add to Det_ErrorHooks array:
- * const Det_ErrorHookPtrType Det_ErrorHooks[DET_NUMBER_OF_ERROR_HOOKS] =
+ * Then add to Det_ErrorHookTable array:
+ * const Det_ErrorHookPtrType Det_ErrorHookTable[DET_NUMBER_OF_ERROR_HOOKS] =
  * {
  *     &Det_DefaultErrorHook,
  *     &MyCustomErrorHandler

@@ -460,4 +460,6 @@ Std_ReturnType CanTrcv_CheckWakeupByTransceiver(CanTrcv_TrcvChnlType Transceiver
     {
         CanTrcv_CheckWakeupInternal(chIdx);
     }
+
+    return E_OK;
 }

@@ -203,4 +203,10 @@ extern uint32 Crc_CalculateCRC32(
 extern void Crc_GetVersionInfo(Std_VersionInfoType* versioninfo);
 #endif
 
+/*==================[external data declarations]============================*/
+/* Lookup tables defined in Crc_Lcfg.c (MISRA C:2012 8.4) */
+extern const uint8 Crc_8_Table[CRC_8_TABLE_SIZE];
+extern const uint16 Crc_16_Table[CRC_16_TABLE_SIZE];
+extern const uint32 Crc_32_Table[CRC_32_TABLE_SIZE];
+
 #endif /* CRC_H */

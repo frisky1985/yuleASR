@@ -20,6 +20,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include "Debug.h"
+#include "microdds/transport.h"
 
 /* ============================================================================
  * 平台检测与抽象

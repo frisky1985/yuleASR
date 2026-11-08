@@ -263,4 +263,9 @@ void Dio_Init(const Dio_ConfigType* ConfigPtr);
 
 void Dio_MaskedWritePort(Dio_PortType PortId, Dio_PortLevelType Level, Dio_PortLevelType Mask);
 
+/*==================[external data declarations]============================*/
+/* Configuration objects defined in Dio_Lcfg.c (MISRA C:2012 8.4) */
+extern const Dio_ConfigType Dio_Config;
+extern const Dio_ConfigType* const Dio_ConfigPtr;
+
 #endif /* DIO_H */

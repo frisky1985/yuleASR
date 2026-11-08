@@ -38,7 +38,7 @@ static UpdateContext g_ctx;
 static boolean g_ctx_valid = FALSE;
 
 /* 单调时间源 (确认超时用; NULL = 无时间源) */
-uint64_t (*s_tick_fn)(void) = NULL_PTR;
+static uint64_t (*s_tick_fn)(void) = NULL_PTR;
 
 /* 延后递增阈值 N (P1-4): 新版本成功启动 N 次后提交抗回滚计数器 */
 static uint32_t s_confirm_boots = BOOT_ROLLBACK_CONFIRM_BOOTS;

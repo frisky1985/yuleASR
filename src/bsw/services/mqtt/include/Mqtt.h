@@ -425,5 +425,9 @@ extern void Mqtt_SetConnectionCallback(
 extern void Mqtt_GetVersionInfo(Std_VersionInfoType* versioninfo);
 #endif
 
+/*==================[external data declarations]============================*/
+/* Configuration objects defined in Mqtt_Lcfg.c (MISRA C:2012 8.4) */
+extern const Mqtt_ConfigType Mqtt_Config;
+extern const Mqtt_ConnectionConfigType Mqtt_DefaultConnectionConfig;
 
 #endif /* MQTT_H */

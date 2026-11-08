@@ -5,8 +5,9 @@
  *  @implements AUTOSAR_SWS_WatchdogInterface.pdf
  */
 
-#include "WdgIf.h"
+/* 配置头必须先于主头: WdgIf.h 的 WDGIF_VERSION_INFO_API 条件声明依赖此宏 */
 #include "WdgIf_Cfg.h"
+#include "WdgIf.h"
 #include "Det.h"
 
 #define WDGIF_NUM_DEVICES              4U

@@ -35,9 +35,9 @@ Eth_CtrlStateType Eth_CtrlState[ETH_MAX_CONTROLLERS];
 Eth_TxDescType Eth_TxDesc[ETH_MAX_CONTROLLERS][ETH_MAX_TX_BUFS];
 Eth_RxDescType Eth_RxDesc[ETH_MAX_CONTROLLERS][ETH_MAX_RX_BUFS];
 
-/* TX and RX buffer pools */
-uint8 Eth_TxBufPool[ETH_MAX_CONTROLLERS][ETH_MAX_TX_BUFS][ETH_MAX_FRAME_SIZE];
-uint8 Eth_RxBufPool[ETH_MAX_CONTROLLERS][ETH_MAX_RX_BUFS][ETH_MAX_FRAME_SIZE];
+/* TX and RX buffer pools (module-internal storage) */
+static uint8 Eth_TxBufPool[ETH_MAX_CONTROLLERS][ETH_MAX_TX_BUFS][ETH_MAX_FRAME_SIZE];
+static uint8 Eth_RxBufPool[ETH_MAX_CONTROLLERS][ETH_MAX_RX_BUFS][ETH_MAX_FRAME_SIZE];
 #endif
 
 #define ETH_STOP_SEC_VAR_CLEARED_UNSPECIFIED

@@ -156,4 +156,9 @@ void WdgIf_GetVersionInfo(Std_VersionInfoType* VersionInfo);
 Std_ReturnType WdgIf_SetTriggerCondition(WdgIf_DeviceType Device, 
                                           WdgIf_TimeoutType Timeout);
 
+/*==================[external data declarations]============================*/
+/* Configuration objects defined in WdgIf_Lcfg.c (MISRA C:2012 8.4) */
+extern const WdgIf_ConfigType WdgIf_Config;
+extern const WdgIf_ConfigType* const WdgIf_ConfigPtr;
+
 #endif /* WDGIF_H */

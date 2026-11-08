@@ -18,6 +18,9 @@
 #include <stdarg.h>
 #include <time.h>
 
+/* 时钟源实现 (公共声明见 dds_runtime.h; 按 dds_access.c 惯例前置声明, MISRA C:2012 8.4) */
+extern uint64_t dds_get_current_time_ms(void);
+
 /* ============================================================================
  * Utility Functions
  * ============================================================================ */

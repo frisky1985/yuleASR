@@ -424,3 +424,25 @@ boolean LinSlave_CfgTable_IsDiagnosticFrame(uint8 Pid)
     
     return ((Pid == diag->RequestPid) || (Pid == diag->ResponsePid));
 }
+
+/**
+ * @brief 检查报文配置项方向是否与期望方向匹配
+ * @param Entry     - 无条件报文配置项
+ * @param Direction - 期望方向
+ * @return TRUE 表示匹配（双向报文匹配任意方向），FALSE 表示不匹配
+ */
+boolean LinSlave_CfgTable_IsDirectionMatching(
+    const LinSlave_UnconditionalFrameConfigType* Entry,
+    LinSlave_DirectionType Direction
+)
+{
+    if (Entry == NULL_PTR) {
+        return FALSE;
+    }
+
+    if (Entry->Direction == LINSLAVE_DIR_RX_TX) {
+        return TRUE;
+    }
+
+    return (Entry->Direction == Direction) ? TRUE : FALSE;
+}

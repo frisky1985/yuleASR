@@ -312,4 +312,14 @@ typedef enum {
     DLT_BUSY = 3U             /**< 忙 */
 } Dlt_ReturnType;
 
+/**
+ * @brief 日志过滤器表项
+ */
+typedef struct {
+    Dlt_ApplicationIdType appId;
+    Dlt_ContextIdType contextId;
+    Dlt_LogLevelType minLogLevel;
+    boolean enabled;
+} Dlt_LogFilterType;
+
 #endif /* DLT_TYPES_H */

@@ -222,6 +222,10 @@ bool MicroDDS_UDP_GetDiscoveredParticipant(uint32_t index, uint32_t* participant
  */
 void MicroDDS_UDP_SetPlatformHooks(uint32_t (*get_time_fn)(void), void (*sleep_fn)(uint32_t));
 
+/* 平台抽象钩子实例 (定义于 udp.c, 由 MicroDDS_UDP_SetPlatformHooks 赋值) */
+extern uint32_t (*platform_get_time_ms)(void);
+extern void (*platform_sleep_ms)(uint32_t ms);
+
 /**
  * @brief 获取传输统计信息
  * @param packets_sent 输出发送包数 (可为NULL)

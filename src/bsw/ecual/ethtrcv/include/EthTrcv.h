@@ -502,6 +502,12 @@ extern Std_ReturnType EthTrcv_GetCableDiagnosticsResult(
 #define ETHTRCV_STOP_SEC_CODE
 #include "EthTrcv_MemMap.h"
 
+/*==================[external data declarations]============================*/
+/* Configuration objects defined in EthTrcv_Lcfg.c (MISRA C:2012 8.4) */
+extern const EthTrcv_TrcvConfigType EthTrcv_TrcvConfig[ETHTRCV_NUMBER_OF_TRCVS];
+extern const EthTrcv_LinkStateChgCbkType EthTrcv_LinkStateChgCallback;
+extern const EthTrcv_WakeupIndicationCbkType EthTrcv_WakeupIndicationCallback;
+
 #ifdef __cplusplus
 }
 #endif

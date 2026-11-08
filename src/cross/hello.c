@@ -18,7 +18,7 @@
 typedef unsigned int uint32_t;
 typedef unsigned char uint8_t;
 
-volatile uint32_t g_cross_probe_counter = 0u;
+static volatile uint32_t g_cross_probe_counter = 0u;
 
 static void cross_probe_tick(void){
     g_cross_probe_counter++;

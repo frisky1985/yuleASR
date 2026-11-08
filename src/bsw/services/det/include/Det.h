@@ -304,6 +304,17 @@ extern void Det_GetVersionInfo(Std_VersionInfoType* versioninfo);
 #define DET_STOP_SEC_CODE
 #include "Det_MemMap.h"
 
+/*==================[external data declarations]============================*/
+/* Objects defined in Det_Lcfg.c (MISRA C:2012 8.4) */
+extern const Det_ConfigType Det_Config;
+extern const Det_ErrorHookPtrType Det_ErrorHookTable[DET_NUMBER_OF_ERROR_HOOKS];
+#if (DET_RUNTIME_ERROR_REPORTING == STD_ON)
+extern const Det_RuntimeErrorHookPtrType Det_RuntimeErrorHooks[DET_NUMBER_OF_RUNTIME_ERROR_HOOKS];
+#endif
+#if (DET_TRANSIENT_FAULT_REPORTING == STD_ON)
+extern const Det_TransientFaultHookPtrType Det_TransientFaultHooks[DET_NUMBER_OF_TRANSIENT_FAULT_HOOKS];
+#endif
+
 #ifdef __cplusplus
 }
 #endif

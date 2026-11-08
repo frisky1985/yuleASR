@@ -700,4 +700,23 @@ void Dlt_ComRxIndication(const uint8* data, uint16 length);
 
 extern const uint16 Dlt_ContextGroupCount;
 
+/*==================[external data declarations]============================*/
+/* Objects defined in Dlt_Lcfg.c (MISRA C:2012 8.4) */
+extern Dlt_ContextType Dlt_RuntimeContext[DLT_MAX_CONTEXT_COUNT];
+extern Dlt_BufferType Dlt_Buffer[DLT_BUFFER_COUNT];
+extern Dlt_LogFilterType Dlt_LogFilters[DLT_MAX_CONTEXT_COUNT];
+extern const Dlt_ContextType Dlt_ContextConfig[DLT_MAX_CONTEXT_COUNT];
+extern const Dlt_LogLevelType Dlt_DefaultLogLevels[8];
+extern const Dlt_TraceStatusType Dlt_DefaultTraceStatus[8];
+extern const Dlt_ContextGroupType Dlt_ContextGroups[];
+extern const uint8 Dlt_EcuId[DLT_ECU_ID_LENGTH];
+extern const uint16 Dlt_BufferSize[DLT_BUFFER_COUNT];
+extern const uint8 Dlt_BufferPriority[DLT_BUFFER_COUNT];
+extern const uint32 Dlt_DefaultSessionId;
+extern const uint8 Dlt_ProtocolVersionMajor;
+extern const uint8 Dlt_ProtocolVersionMinor;
+extern const uint16 Dlt_ComPduId;
+extern const uint32 Dlt_BufferTimeout;
+extern const uint32 Dlt_MainFunctionPeriod;
+
 #endif /* DLT_H */

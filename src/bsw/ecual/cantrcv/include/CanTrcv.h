@@ -619,4 +619,11 @@ extern const CanTrcv_ConfigType CanTrcv_Lcfg;
 /** @brief External reference to the module initialization state */
 extern boolean CanTrcv_IsInitialized;
 
+/*==================[external data declarations]============================*/
+/* Configuration objects defined in CanTrcv_Lcfg.c (MISRA C:2012 8.4) */
+extern const CanTrcv_ConfigType CanTrcv_Config;
+extern const CanTrcv_ConfigType CanTrcv_Config_Variant1;
+extern const CanTrcv_ConfigType CanTrcv_Config_Variant2;
+extern const CanTrcv_ConfigType CanTrcv_Config_Variant3;
+
 #endif /* CANTRCV_H */

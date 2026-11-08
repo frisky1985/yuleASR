@@ -421,5 +421,17 @@ void Nm_RemoteSleepCancellation(NetworkHandleType nmNetworkHandle);
  */
 void Nm_SynchronizationPoint(NetworkHandleType nmNetworkHandle);
 
+/*==================[external data declarations]============================*/
+/* Configuration objects defined in LinNm_Lcfg.c (MISRA C:2012 8.4) */
+extern const LinNm_ConfigType LinNm_Config;
+extern const LinNm_ConfigType LinNm_Config_Fast;
+extern const LinNm_ConfigType LinNm_Config_Extended;
+extern const uint16 LinNm_TimingConstants[];
+extern const uint8 LinNm_NumTimingConstants;
+extern const boolean LinNm_StateChangeCallbackEnabled;
+extern const boolean LinNm_RemoteSleepCallbackEnabled;
+extern const boolean LinNm_SyncPointCallbackEnabled;
+extern const Std_VersionInfoType LinNm_VersionInfo;
+extern const Std_VersionInfoType LinNm_CfgVersionInfo;
 
 #endif /* LINNM_H */

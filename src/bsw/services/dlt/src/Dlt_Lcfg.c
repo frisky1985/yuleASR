@@ -542,13 +542,6 @@ const uint16 Dlt_ComPduId = 0;  /* PDU ID for DLT messages via Com */
 /**
  * @brief 日志过滤器表 (按 context 预配置)
  */
-typedef struct {
-    Dlt_ApplicationIdType appId;
-    Dlt_ContextIdType contextId;
-    Dlt_LogLevelType minLogLevel;
-    boolean enabled;
-} Dlt_LogFilterType;
-
 Dlt_LogFilterType Dlt_LogFilters[DLT_MAX_CONTEXT_COUNT] = {
     {0x44454641, 0x434D444C, DLT_LOG_INFO, TRUE},
     {0x4543554D, 0x4D41494E, DLT_LOG_DEBUG, TRUE},

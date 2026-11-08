@@ -17,8 +17,9 @@
  * @date 2026-05-05
  */
 
-#include "IpduM.h"
+/* 配置头必须先于主头: IpduM.h 的 IPDUM_VERSION_INFO_API 条件声明依赖此宏 */
 #include "IpduM_Cfg.h"
+#include "IpduM.h"
 #include "PduR.h"
 #include "Det.h"
 #include "Com.h"

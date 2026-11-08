@@ -16,6 +16,7 @@
 #include "Std_Types.h"
 #include "ComStack_Types.h"
 #include "Eth_GeneralTypes.h"
+#include "Eth_Cfg.h"
 #include <string.h>
 
 #ifdef __cplusplus

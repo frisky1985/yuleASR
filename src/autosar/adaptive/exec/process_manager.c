@@ -21,7 +21,7 @@
 static bool g_initialized = false;
 static ProcessEntryType g_processTable[EXEC_MAX_PROCESSES];
 static ProcessIdType g_nextPid = 1U;
-void (*g_globalStateCallback)(ProcessIdType, ProcessStateType) = NULL;
+static void (*g_globalStateCallback)(ProcessIdType, ProcessStateType) = NULL;
 
 /******************************************************************************
  * Private Functions

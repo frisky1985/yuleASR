@@ -7,7 +7,7 @@
 
 /* 共享布局头 (Boot_HandshakeType / 块结构 / 跨复位持久化读写)。
  * 相对路径引用: 本模块头与共享头同名, 用相对路径消除 -I 顺序歧义。 */
-#include "../../../include/autosar/Boot_Handshake.h"
+#include "../../../../include/autosar/Boot_Handshake.h"
 
 #include <stdint.h>
 

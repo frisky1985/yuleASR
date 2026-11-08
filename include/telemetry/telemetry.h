@@ -221,4 +221,8 @@ uint16_t Tel_RB_GetFree(const TelRingBuffer_t *rb);
 uint16_t Tel_CompressRLE(const uint8_t *input, uint16_t input_len, uint8_t *output, uint16_t output_max);
 uint32_t Tel_GetTimestamp(void);
 
+/* 平台适配钩子 (弱符号默认实现位于 telemetry.c, 平台层可用强符号覆盖) */
+uint32_t Tel_Platform_GetTickMs(void);
+void Tel_Platform_MemoryBarrier(void);
+
 #endif /* TELEMETRY_H */

@@ -346,20 +346,11 @@ extern void MemIf_SetMode(uint8 DeviceIndex, MemIf_ModeType Mode);
 
 #if (MEMIF_VERSION_INFO_API == STD_ON)
 /**
- * @brief Get version information
- * @param VersionInfo Pointer to version info structure
+ * @brief Get version information (out-of-line implementation in MemIf.c)
+ * @param VersionInfoPtr Pointer to version info structure
  * @return None
  */
-#define MemIf_GetVersionInfo(VersionInfoPtr) \
-    do { \
-        if ((VersionInfoPtr) != NULL_PTR) { \
-            (VersionInfoPtr)->vendorID = MEMIF_VENDOR_ID; \
-            (VersionInfoPtr)->moduleID = MEMIF_MODULE_ID; \
-            (VersionInfoPtr)->sw_major_version = MEMIF_SW_MAJOR_VERSION; \
-            (VersionInfoPtr)->sw_minor_version = MEMIF_SW_MINOR_VERSION; \
-            (VersionInfoPtr)->sw_patch_version = MEMIF_SW_PATCH_VERSION; \
-        } \
-    } while(0)
+extern void MemIf_GetVersionInfo(Std_VersionInfoType* VersionInfoPtr);
 #endif
 
 /*******************************************************************************
@@ -388,5 +379,11 @@ extern void MemIf_SetMode(uint8 DeviceIndex, MemIf_ModeType Mode);
 void MemIf_DeInit(void);
 uint8 MemIf_GetNumberOfDevices(void);
 Std_ReturnType MemIf_EraseBlock(uint8 DeviceIndex, uint16 BlockNumber);
+
+/*==================[external data declarations]============================*/
+/* Objects defined in MemIf.c (MISRA C:2012 8.4) */
+extern MemIf_DeviceStateType MemIf_DeviceState[MEMIF_NUMBER_OF_DEVICES];
+extern const MemIf_ConfigType* MemIf_ConfigPtr;
+extern boolean MemIf_ModuleInitialized;
 
 #endif /* MEMIF_H */

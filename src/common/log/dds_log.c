@@ -635,6 +635,14 @@ void dds_log_deinit(void) {
     /* 停止刷新线程 */
     if (g_log_state.config.enable_async) {
         g_log_state.flush_running = false;
+
+        /* 先置位 shutdown 并唤醒可能阻塞在 queue_pop 的刷写线程，
+         * 否则队列为空时 queue_pop 会持续等待约 100ms 超时，join 无法返回。 */
+        pthread_mutex_lock(&g_log_state.queue.mutex);
+        g_log_state.queue.shutdown = true;
+        pthread_cond_broadcast(&g_log_state.queue.cond_not_empty);
+        pthread_mutex_unlock(&g_log_state.queue.mutex);
+
         pthread_join(g_log_state.flush_thread, NULL);
         queue_destroy(&g_log_state.queue);
     }

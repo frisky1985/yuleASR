@@ -7,7 +7,8 @@
 #include "Boot_Verify.h"
 #include "Boot_Update.h"
 #include "Boot_Hsm.h"
-#include "Boot_Handshake.h"
+/* 模块头与共享布局头同名: 用相对路径锁定模块头 (含 Boot_Handshake_* API 声明) */
+#include "../include/Boot_Handshake.h"
 #include <string.h>
 
 /* External symbols defined by the linker script */

@@ -45,21 +45,6 @@ static uint32 Crc32_RuntimeCalculate(const uint8* dataPtr, uint32 length, uint32
 static boolean Crc_InitStatus = FALSE;
 
 /*==================================================================================================
- * EXTERNAL DECLARATIONS (Lookup Tables)
- ==================================================================================================*/
-#if (CRC_8_MODE == STD_ON) && (CRC_8_TABLE_MODE == STD_ON)
-extern const uint8 Crc_8_Table[CRC_8_TABLE_SIZE];
-#endif
-
-#if (CRC_16_MODE == STD_ON) && (CRC_16_TABLE_MODE == STD_ON)
-extern const uint16 Crc_16_Table[CRC_16_TABLE_SIZE];
-#endif
-
-#if (CRC_32_MODE == STD_ON) && (CRC_32_TABLE_MODE == STD_ON)
-extern const uint32 Crc_32_Table[CRC_32_TABLE_SIZE];
-#endif
-
-/*==================================================================================================
  * GLOBAL FUNCTIONS
  ==================================================================================================*/
 

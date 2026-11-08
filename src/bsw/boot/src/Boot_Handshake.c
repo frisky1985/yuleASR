@@ -8,7 +8,9 @@
  * ECC 冷启动安全: 见 Boot_Handshake_EccColdInit()。
  */
 
-#include "Boot_Handshake.h"
+/* 模块头与共享布局头同名: 用相对路径锁定模块头, 避免 -I 顺序导致共享头遮蔽
+ * (共享头仅含布局/内联函数, 不含本模块 API 声明)。 */
+#include "../include/Boot_Handshake.h"
 
 #if defined(__arm__) || defined(__thumb__) || defined(__aarch64__)
 /* MC_RGM (S32K312) — 寄存器地图与 Cdd_Boot 保持一致 */

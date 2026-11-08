@@ -31,6 +31,9 @@
 #include "Compiler.h"
 #include "MemMap.h"
 
+/* Forward declaration (MISRA C:2012 8.4) — 与 Dem_Lcfg.h 中的公共声明一致 */
+extern const Dem_ConfigType Dem_Config;
+
 /*==================================================================================================
 *                                    EVENT PARAMETERS CONFIGURATION
 ==================================================================================================*/

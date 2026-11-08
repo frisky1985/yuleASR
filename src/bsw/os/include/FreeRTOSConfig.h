@@ -16,6 +16,7 @@ extern "C" {
 #endif
 
 #include <assert.h>
+#include <stdint.h>
 
 /*-----------------------------------------------------------
  * Application specific definitions
@@ -92,6 +93,10 @@ extern "C" {
 #define INCLUDE_xTimerPendFunctionCall          0
 #define INCLUDE_xTaskAbortDelay                 0
 #define INCLUDE_xTaskGetHandle                  0
+
+/* Prototype for the application-provided assert hook defined in Os_FreertosHooks.c
+ * (MISRA C:2012 8.4 — declaration must be visible to the definition). */
+void vAssertCalled(const char *pcFile, uint32_t ulLine);
 
 #ifdef __cplusplus
 }

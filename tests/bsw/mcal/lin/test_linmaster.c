@@ -1430,6 +1430,160 @@ void test_Diag_ServiceWrappers_ReturnOk(void)
 }
 
 /*===========================================================================
+ * Diagnostic - additional branch coverage
+ *===========================================================================*/
+
+/** Every service wrapper hits its !DiagInitialized guard after DeInit. */
+void test_Diag_ServiceWrappers_UninitGuards(void)
+{
+    uint8 payload[2] = {0x01U, 0x02U};
+
+    (void)LinMaster_Tp_Init();
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_DIAG_OK, LinMaster_Diag_Init());
+    LinMaster_Diag_DeInit();
+
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_DIAG_E_NOT_INITIALIZED, LinMaster_Diag_SessionControl(0x03U));
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_DIAG_E_NOT_INITIALIZED, LinMaster_Diag_EcuReset(0x01U));
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_DIAG_E_NOT_INITIALIZED, LinMaster_Diag_ReadDataById(0xF190U));
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_DIAG_E_NOT_INITIALIZED, LinMaster_Diag_WriteDataById(0xF190U, payload, 1U));
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_DIAG_E_NOT_INITIALIZED, LinMaster_Diag_SecurityAccess(0x01U, payload, 1U));
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_DIAG_E_NOT_INITIALIZED, LinMaster_Diag_RoutineControl(0x01U, 0x0200U, payload, 1U));
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_DIAG_E_NOT_INITIALIZED, LinMaster_Diag_ClearDiagnosticInformation(0x00000000UL));
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_DIAG_E_NOT_INITIALIZED, LinMaster_Diag_ReadDTCInformation(0x01U, 0x08U));
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_DIAG_E_NOT_INITIALIZED, LinMaster_Diag_TesterPresent(0x80U));
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_DIAG_E_NOT_INITIALIZED, LinMaster_Diag_CommunicationControl(0x00U, 0x03U));
+}
+
+/** GetResponse(NULL) and the out-of-range SetTimeout values are rejected. */
+void test_Diag_GetResponseNull_And_SetTimeoutBounds(void)
+{
+    (void)LinMaster_Tp_Init();
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_DIAG_OK, LinMaster_Diag_Init());
+
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_DIAG_E_INVALID_PARAM, LinMaster_Diag_GetResponse(NULL));
+
+    LinMaster_Diag_SetTimeout(0U);                              /* lower bound */
+    LinMaster_Diag_SetTimeout(LINMASTER_DIAG_P2_MAX_TIMEOUT + 1U); /* upper bound */
+    LinMaster_Diag_SetTimeout(LINMASTER_DIAG_P2_MAX_TIMEOUT);   /* accepted */
+}
+
+/** Timeout without a registered callback covers the NULL-callback branch and
+ *  a subsequent MainFunction in the ERROR state. */
+void test_Diag_Timeout_WithoutCallback_AndErrorState(void)
+{
+    LinMaster_Diag_RequestType req;
+
+    (void)LinMaster_Tp_Init();
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_DIAG_OK, LinMaster_Diag_Init());
+    LinMaster_Diag_SetTimeout(1U);
+
+    (void)memset(&req, 0, sizeof(req));
+    req.Sid = 0x3EU;
+    req.Length = 0U;
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_DIAG_OK, LinMaster_Diag_SendRequest(&req));
+
+    LinMaster_Diag_MainFunction();  /* TX_REQUEST -> WAIT_RESPONSE */
+    LinMaster_Diag_MainFunction();  /* timer 1 >= 1 -> timeout, callback NULL */
+    TEST_ASSERT_TRUE(LinMaster_Diag_IsRequestComplete());
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_DIAG_E_TIMEOUT, LinMaster_Diag_GetLastError());
+
+    LinMaster_Diag_MainFunction();  /* ERROR case: no-op */
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_DIAG_E_TIMEOUT, LinMaster_Diag_GetLastError());
+}
+
+/** Transit TX failure without a callback covers the NULL-callback branch. */
+void test_Diag_TxError_WithoutCallback(void)
+{
+    LinMaster_Diag_RequestType req;
+
+    LinMaster_Tp_DeInit();
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_DIAG_OK, LinMaster_Diag_Init());
+
+    (void)memset(&req, 0, sizeof(req));
+    req.Sid = 0x22U;
+    req.Length = 2U;
+    req.Data[0] = 0xF1U;
+    req.Data[1] = 0x90U;
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_DIAG_OK, LinMaster_Diag_SendRequest(&req));
+
+    LinMaster_Diag_MainFunction();
+    TEST_ASSERT_TRUE(LinMaster_Diag_IsRequestComplete());
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_DIAG_E_NOT_OK, LinMaster_Diag_GetLastError());
+}
+
+/** Positive response without a callback covers the NULL-callback branch and the
+ *  IDLE / COMPLETE MainFunction cases. */
+void test_Diag_RxResponse_WithoutCallback_IdleAndCompleteStates(void)
+{
+    LinMaster_Diag_RequestType req;
+    LinMaster_Diag_ResponseType resp;
+    uint8 respFrame[3] = {0x22U, 0xF1U, 0x90U};
+
+    (void)LinMaster_Tp_Init();
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_DIAG_OK, LinMaster_Diag_Init());
+
+    LinMaster_Diag_MainFunction();      /* IDLE case */
+
+    (void)memset(&req, 0, sizeof(req));
+    req.Sid = 0x22U;
+    req.Length = 2U;
+    req.Data[0] = 0xF1U;
+    req.Data[1] = 0x90U;
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_DIAG_OK, LinMaster_Diag_SendRequest(&req));
+
+    LinMaster_Diag_MainFunction();      /* TX_REQUEST -> WAIT_RESPONSE */
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_TP_OK, LinMaster_Tp_RxIndication(respFrame, 3U));
+    LinMaster_Diag_MainFunction();      /* WAIT_RESPONSE -> RX_RESPONSE */
+    LinMaster_Diag_MainFunction();      /* RX_RESPONSE -> COMPLETE, cb NULL */
+    TEST_ASSERT_TRUE(LinMaster_Diag_IsRequestComplete());
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_DIAG_OK, LinMaster_Diag_GetLastError());
+
+    LinMaster_Diag_MainFunction();      /* COMPLETE case: no-op */
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_DIAG_OK, LinMaster_Diag_GetResponse(&resp));
+}
+
+/** TP busy (waiting flow control) keeps the request in TX_REQUEST (E_BUSY path). */
+void test_Diag_MainFunction_TpBusy_StaysInTxRequest(void)
+{
+    LinMaster_Diag_RequestType req;
+    uint8 firstFrame[8] = {1U, 2U, 3U, 4U, 5U, 6U, 7U, 8U};
+
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_TP_OK, LinMaster_Tp_Init());
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_DIAG_OK, LinMaster_Diag_Init());
+
+    /* Long transmit leaves the TP channel in WAIT_FC -> subsequent transmit BUSY. */
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_TP_OK, LinMaster_Tp_Transmit(8U, firstFrame));
+
+    (void)memset(&req, 0, sizeof(req));
+    req.Sid = 0x22U;
+    req.Length = 2U;
+    req.Data[0] = 0xF1U;
+    req.Data[1] = 0x90U;
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_DIAG_OK, LinMaster_Diag_SendRequest(&req));
+
+    LinMaster_Diag_MainFunction();      /* E_BUSY -> stay in TX_REQUEST, no error */
+    TEST_ASSERT_FALSE(LinMaster_Diag_IsRequestComplete());
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_DIAG_OK, LinMaster_Diag_GetLastError());
+}
+
+/** SecurityAccess/RoutineControl optional-argument guards (false branches). */
+void test_Diag_OptionalArguments_EmptyBranches(void)
+{
+    uint8 payload[1] = {0xAAU};
+
+    (void)LinMaster_Tp_Init();
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_DIAG_OK, LinMaster_Diag_Init());
+
+    /* KeyPtr != NULL but KeyLen == 0 -> request.Length = 0. */
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_DIAG_OK, LinMaster_Diag_SecurityAccess(0x02U, payload, 0U));
+    LinMaster_Diag_CancelRequest();
+
+    /* DataPtr != NULL but Length == 0 -> request.Length = 2. */
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_DIAG_OK, LinMaster_Diag_RoutineControl(0x01U, 0x0200U, payload, 0U));
+    LinMaster_Diag_CancelRequest();
+}
+
+/*===========================================================================
  * TP - BeforeInit tests
  *===========================================================================*/
 
@@ -1712,6 +1866,209 @@ void test_Tp_Stmin_PacesConsecutiveFrames(void)
     TEST_ASSERT_EQUAL_UINT32(LINMASTER_TP_STATE_IDLE, LinMaster_Tp_GetState());
 }
 
+/*===========================================================================
+ * Schedule - additional branch coverage (error paths / empty & oversized
+ * tables / out-of-range indices / every entry type)
+ *===========================================================================*/
+
+static LinMaster_ScheduleTableType test_SchTblEmptyCov = {
+    .Entries = NULL, .EntryCount = 0U, .EntryIndex = 0U,
+    .IsRunning = FALSE, .IsCyclic = FALSE, .LastEntryTime = 0U, .Name = "emptyCov"
+};
+
+/** Every API called while the module is UNINIT must return its guard value. */
+void test_Schedule_UninitErrorPaths_AllGuards(void)
+{
+    LinMaster_Schedule_DeInit();    /* force UNINIT even if a prior test left it on */
+
+    TEST_ASSERT_EQUAL_UINT32(E_NOT_OK, LinMaster_Schedule_Pause());
+    TEST_ASSERT_EQUAL_UINT32(E_NOT_OK, LinMaster_Schedule_Resume());
+    TEST_ASSERT_EQUAL_UINT32(E_NOT_OK, LinMaster_Schedule_AddEntry(&test_SchEntry0));
+    TEST_ASSERT_EQUAL_UINT32(E_NOT_OK, LinMaster_Schedule_SwitchTable(&test_SchTblEmptyCov, TRUE));
+    TEST_ASSERT_EQUAL_UINT32(E_NOT_OK, LinMaster_Schedule_SetEntryIndex(0U));
+    TEST_ASSERT_EQUAL_UINT8(0U, LinMaster_Schedule_GetEntryIndex());
+    TEST_ASSERT_EQUAL_UINT32(0U, LinMaster_Schedule_GetElapsedTime());
+    TEST_ASSERT_EQUAL_UINT32(0U, LinMaster_Schedule_GetRemainingTime());
+    TEST_ASSERT_FALSE(LinMaster_Schedule_IsRunning());
+    TEST_ASSERT_FALSE(LinMaster_Schedule_IsCyclic());
+    LinMaster_Schedule_SetCyclic(TRUE);     /* guarded no-op */
+    TEST_ASSERT_EQUAL_UINT32(E_NOT_OK, LinMaster_Schedule_Reset());
+    TEST_ASSERT_NULL(LinMaster_Schedule_GetCurrentEntry());
+}
+
+/** Init with (Entries == NULL) and with (Entries != NULL, EntryCount == 0). */
+void test_Schedule_Init_NullOrZeroEntryTables(void)
+{
+    LinMaster_ScheduleTableType zeroCount = {
+        .Entries = &test_SchEntry0, .EntryCount = 0U, .EntryIndex = 0U,
+        .IsRunning = FALSE, .IsCyclic = FALSE, .LastEntryTime = 0U, .Name = "zero"
+    };
+
+    /* Entries == NULL: inner copy block is skipped entirely. */
+    test_SchTblEmptyCov.Entries = NULL;
+    test_SchTblEmptyCov.EntryCount = 0U;
+    test_SchTblEmptyCov.EntryIndex = 0U;
+    TEST_ASSERT_EQUAL_UINT32(E_OK, LinMaster_Schedule_Init(&test_SchTblEmptyCov));
+
+    /* Entries != NULL but EntryCount == 0: second condition of the copy guard. */
+    TEST_ASSERT_EQUAL_UINT32(E_OK, LinMaster_Schedule_Init(&zeroCount));
+    TEST_ASSERT_EQUAL_PTR(&zeroCount, LinMaster_Schedule_GetCurrentTable());
+    TEST_ASSERT_NULL(LinMaster_Schedule_GetCurrentEntry());
+}
+
+/** Empty table: Start succeeds without executing, Process completes it. */
+void test_Schedule_EmptyTable_StartProcessCompletes(void)
+{
+    test_SchTblEmptyCov.Entries = NULL;
+    test_SchTblEmptyCov.EntryCount = 0U;
+    test_SchTblEmptyCov.EntryIndex = 0U;
+    test_SchTblEmptyCov.IsRunning = FALSE;
+    test_SchTblEmptyCov.IsCyclic = FALSE;
+
+    TEST_ASSERT_EQUAL_UINT32(E_OK, LinMaster_Schedule_Init(&test_SchTblEmptyCov));
+    TEST_ASSERT_NULL(LinMaster_Schedule_GetCurrentEntry());
+    TEST_ASSERT_EQUAL_UINT32(E_OK, LinMaster_Schedule_Start());
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_SCHEDULE_STATE_RUNNING, LinMaster_Schedule_GetState());
+
+    /* No current entry -> required delay falls back to CurrentDelay (0). */
+    TEST_ASSERT_EQUAL_UINT32(0U, LinMaster_Schedule_GetRemainingTime());
+
+    LinMaster_Schedule_Process();   /* non-cyclic empty table completes */
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_SCHEDULE_STATE_IDLE, LinMaster_Schedule_GetState());
+    TEST_ASSERT_EQUAL_UINT32(E_NOT_OK, LinMaster_Schedule_Stop());
+}
+
+/** EntryIndex >= EntryCount: Start skips the entry, Process completes the table. */
+void test_Schedule_OutOfRangeIndex_StartProcessGuards(void)
+{
+    static LinMaster_ScheduleEntryType entries[2];
+
+    entries[0] = test_SchEntry0;
+    entries[1] = test_SchEntry1;
+
+    test_SchTblNonCyclic.Entries = entries;
+    test_SchTblNonCyclic.EntryCount = 2U;
+    test_SchTblNonCyclic.EntryIndex = 5U;   /* deliberately out of range */
+    test_SchTblNonCyclic.IsRunning = FALSE;
+    test_SchTblNonCyclic.IsCyclic = FALSE;
+
+    TEST_ASSERT_EQUAL_UINT32(E_OK, LinMaster_Schedule_Init(&test_SchTblNonCyclic));
+    TEST_ASSERT_NULL(LinMaster_Schedule_GetCurrentEntry());
+    TEST_ASSERT_EQUAL_UINT32(E_OK, LinMaster_Schedule_Start());    /* no entry executed */
+    TEST_ASSERT_EQUAL_UINT32(0U, LinMaster_Schedule_GetRemainingTime());
+
+    LinMaster_Schedule_Process();   /* CheckDelay uses CurrentDelay, then completes */
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_SCHEDULE_STATE_IDLE, LinMaster_Schedule_GetState());
+}
+
+/** AddEntry without a current table, filled up to LINMASTER_SCHEDULE_MAX_ENTRIES. */
+void test_Schedule_AddEntry_NullTableAndTableFull(void)
+{
+    uint8 i;
+
+    TEST_ASSERT_EQUAL_UINT32(E_OK, LinMaster_Schedule_Init(NULL));
+    TEST_ASSERT_NULL(LinMaster_Schedule_GetCurrentTable());
+
+    for (i = 0U; i < LINMASTER_SCHEDULE_MAX_ENTRIES; i++) {
+        TEST_ASSERT_EQUAL_UINT32(E_OK, LinMaster_Schedule_AddEntry(&test_SchEntry0));
+    }
+    /* RuntimeEntryCount is now at the limit: the next add is rejected. */
+    TEST_ASSERT_EQUAL_UINT32(E_NOT_OK, LinMaster_Schedule_AddEntry(&test_SchEntry0));
+    TEST_ASSERT_NULL(LinMaster_Schedule_GetCurrentEntry());
+    TEST_ASSERT_EQUAL_UINT8(0U, LinMaster_Schedule_GetEntryIndex());
+}
+
+/** SwitchTable to an empty table (else-branch) and to an oversized table. */
+void test_Schedule_SwitchTable_EmptyAndOversized(void)
+{
+    static LinMaster_ScheduleEntryType one[1];
+    static LinMaster_ScheduleEntryType oversized[1];
+
+    one[0] = test_SchEntry0;
+    oversized[0] = test_SchEntry0;
+
+    test_SchTblSwA.Entries = one;
+    test_SchTblSwA.EntryCount = 1U;
+    test_SchTblSwA.EntryIndex = 0U;
+    test_SchTblSwA.IsRunning = FALSE;
+    TEST_ASSERT_EQUAL_UINT32(E_OK, LinMaster_Schedule_Init(&test_SchTblSwA));
+    TEST_ASSERT_EQUAL_UINT32(E_OK, LinMaster_Schedule_Start());
+
+    /* Empty table: Entries == NULL and EntryCount == 0 take the else-branch. */
+    test_SchTblEmptyCov.Entries = NULL;
+    test_SchTblEmptyCov.EntryCount = 0U;
+    test_SchTblEmptyCov.EntryIndex = 0U;
+    TEST_ASSERT_EQUAL_UINT32(E_OK, LinMaster_Schedule_SwitchTable(&test_SchTblEmptyCov, FALSE));
+    TEST_ASSERT_EQUAL_PTR(&test_SchTblEmptyCov, LinMaster_Schedule_GetCurrentTable());
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_SCHEDULE_STATE_RUNNING, LinMaster_Schedule_GetState());
+
+    /* Oversized table (> MAX_ENTRIES) is rejected and the state returns to IDLE. */
+    test_SchTblBig.Entries = oversized;
+    test_SchTblBig.EntryCount = 33U;
+    test_SchTblBig.EntryIndex = 0U;
+    TEST_ASSERT_EQUAL_UINT32(E_NOT_OK, LinMaster_Schedule_SwitchTable(&test_SchTblBig, TRUE));
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_SCHEDULE_STATE_IDLE, LinMaster_Schedule_GetState());
+}
+
+/** Restart = FALSE keeps an in-range index of the new table. */
+void test_Schedule_SwitchTable_KeepValidIndex(void)
+{
+    static LinMaster_ScheduleEntryType one[1];
+
+    one[0] = test_SchEntry0;
+    test_SchTblSwA.Entries = one;
+    test_SchTblSwA.EntryCount = 1U;
+    test_SchTblSwA.EntryIndex = 0U;
+    test_SchTblSwA.IsRunning = FALSE;
+
+    test_SchTblSwB.Entries = test_SchEntryPairB;
+    test_SchTblSwB.EntryCount = 2U;
+    test_SchTblSwB.EntryIndex = 1U;     /* valid -> must be preserved */
+
+    TEST_ASSERT_EQUAL_UINT32(E_OK, LinMaster_Schedule_Init(&test_SchTblSwA));
+    TEST_ASSERT_EQUAL_UINT32(E_OK, LinMaster_Schedule_Start());
+    TEST_ASSERT_EQUAL_UINT32(E_OK, LinMaster_Schedule_SwitchTable(&test_SchTblSwB, FALSE));
+    TEST_ASSERT_EQUAL_UINT8(1U, LinMaster_Schedule_GetEntryIndex());
+}
+
+/** Every EntryType (plus an out-of-enum value for default) executes cleanly. */
+void test_Schedule_ExecuteEntry_AllTypesAndDefault(void)
+{
+    static LinMaster_ScheduleEntryType entries[6];
+    uint8 i;
+
+    entries[0] = test_SchEntry0;
+    entries[0].EntryType = LINMASTER_ENTRY_UNCONDITIONAL;
+    entries[1] = test_SchEntry0;
+    entries[1].EntryType = LINMASTER_ENTRY_EVENT_TRIGGERED;
+    entries[2] = test_SchEntry0;
+    entries[2].EntryType = LINMASTER_ENTRY_SPORADIC;
+    entries[3] = test_SchEntry0;
+    entries[3].EntryType = LINMASTER_ENTRY_DIAGNOSTIC_MASTER_REQ;
+    entries[4] = test_SchEntry0;
+    entries[4].EntryType = LINMASTER_ENTRY_DIAGNOSTIC_SLAVE_RESP;
+    entries[5] = test_SchEntry0;
+    entries[5].EntryType = (LinMaster_EntryTypeType)99;   /* default case */
+    for (i = 0U; i < 6U; i++) {
+        entries[i].DelayMs = 0U;
+    }
+
+    test_SchTblCyclic.Entries = entries;
+    test_SchTblCyclic.EntryCount = 6U;
+    test_SchTblCyclic.EntryIndex = 0U;
+    test_SchTblCyclic.IsRunning = FALSE;
+    test_SchTblCyclic.IsCyclic = TRUE;
+
+    TEST_ASSERT_EQUAL_UINT32(E_OK, LinMaster_Schedule_Init(&test_SchTblCyclic));
+    /* No callbacks registered: the NULL-callback branches are taken. */
+    TEST_ASSERT_EQUAL_UINT32(E_OK, LinMaster_Schedule_Start());
+    for (i = 0U; i < 5U; i++) {
+        LinMaster_Schedule_Process();
+    }
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_SCHEDULE_STATE_RUNNING, LinMaster_Schedule_GetState());
+    TEST_ASSERT_EQUAL_UINT8(5U, LinMaster_Schedule_GetEntryIndex());
+}
+
 /** Cancel during WAIT_FC confirms E_NOT_OK and resets; idle cancel is no-op. */
 void test_Tp_Cancel_ConfirmsNotOk_AndResets(void)
 {
@@ -1730,4 +2087,70 @@ void test_Tp_Cancel_ConfirmsNotOk_AndResets(void)
     /* Cancel while idle must not fire another confirm. */
     LinMaster_Tp_Cancel();
     TEST_ASSERT_EQUAL_UINT32(1U, test_Tp_ConfirmCount);
+}
+
+/*===========================================================================
+ * LinMaster core - additional branch coverage
+ *===========================================================================*/
+
+/** SendFrame / ReceiveFrame are guarded while the driver is UNINIT. */
+void test_LinMaster_BeforeInit_SendReceiveFrame_Guards(void)
+{
+    uint8 data[1] = {0x01U};
+
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_NOT_OK,
+        LinMaster_SendFrame(0xC1U, data, 1U, LINMASTER_CHECKSUM_CLASSIC));
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_NOT_OK,
+        LinMaster_ReceiveFrame(0xC1U, 1U, LINMASTER_CHECKSUM_CLASSIC));
+}
+
+/** Completing a TX frame without a Tx callback takes the NULL-callback branch. */
+void test_LinMaster_SendFrame_WithoutTxCallback(void)
+{
+    uint8 data[1] = {0x02U};
+
+    test_Core_EnsureInit(&test_CoreConfig);
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_OK,
+        LinMaster_SendFrame(0xC1U, data, 1U, LINMASTER_CHECKSUM_CLASSIC));
+
+    LinMaster_MainFunction();   /* SEND_BREAK -> SEND_SYNC */
+    LinMaster_MainFunction();   /* SEND_SYNC  -> SEND_PID */
+    LinMaster_MainFunction();   /* SEND_PID   -> SEND_TX_DATA */
+    LinMaster_MainFunction();   /* send data  -> WAIT_CHECKSUM */
+    LinMaster_MainFunction();   /* checksum   -> DELAY (TxCallback == NULL) */
+
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_STATE_DELAY, LinMaster_GetState());
+    TEST_ASSERT_FALSE(test_TxCbCalled);
+}
+
+/** Completing an RX frame without an Rx callback takes the NULL-callback branch. */
+void test_LinMaster_ReceiveFrame_WithoutRxCallback(void)
+{
+    test_Core_EnsureInit(&test_CoreConfig);
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_OK,
+        LinMaster_ReceiveFrame(0xC1U, 2U, LINMASTER_CHECKSUM_CLASSIC));
+
+    LinMaster_MainFunction();
+    LinMaster_MainFunction();
+    LinMaster_MainFunction();
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_STATE_WAIT_RX_DATA, LinMaster_GetState());
+
+    LinMaster_RxInterruptHandler(0x02U);
+    LinMaster_RxInterruptHandler(0x03U);
+    LinMaster_RxInterruptHandler(0xFAU);   /* classic checksum, RxCallback == NULL */
+
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_STATE_DELAY, LinMaster_GetState());
+    TEST_ASSERT_FALSE(test_RxCbCalled);
+}
+
+/** A registered state callback fires on UNINIT -> IDLE and IDLE -> SEND_BREAK. */
+void test_LinMaster_StateCallback_FiresOnTransitions(void)
+{
+    test_Core_EnsureInit(&test_CoreConfig);
+    LinMaster_RegisterStateCallback(test_Core_StateCb);
+
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_OK, LinMaster_SendHeader(0xC1U));
+    TEST_ASSERT_TRUE(test_StateCbCalled);
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_STATE_IDLE, test_StateCbOld);
+    TEST_ASSERT_EQUAL_UINT32(LINMASTER_STATE_SEND_BREAK, test_StateCbNew);
 }

@@ -147,6 +147,6 @@ void Tel_Dds_CyclicTask(void) {
     
     /* 检查是否到达发送间隔 */
     if (elapsed >= s_dds_config.publish_interval_ms) {
-        Tel_Dds_FlushBuffer();
+        (void)Tel_Dds_FlushBuffer();
     }
 }

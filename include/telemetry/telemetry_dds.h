@@ -33,6 +33,10 @@ typedef struct {
     bool compression_enabled;
 } TelDdsConfig_t;
 
+/* 外部DDS API (弱符号默认实现位于 telemetry_dds.c, DDS 层可用强符号覆盖) */
+bool DDS_PublishTelemetry(const TelDdsSample_t *sample);
+uint32_t DDS_GetTimestamp(void);
+
 /* API */
 TelStatus_t Tel_Dds_Init(const TelDdsConfig_t *config);
 void Tel_Dds_Deinit(void);
@@ -43,5 +47,6 @@ const TelDdsSample_t* Tel_Dds_GetLastSample(void);
 /* 内部函数 */
 TelStatus_t Tel_Dds_FlushBuffer(void);
 uint16_t Tel_Dds_PackEvents(uint8_t *output, uint16_t max_len);
+void Tel_Dds_CyclicTask(void);
 
 #endif /* TELEMETRY_DDS_H */

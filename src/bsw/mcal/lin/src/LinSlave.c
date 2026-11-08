@@ -639,3 +639,20 @@ void LinSlave_MainFunction(void)
     /* 调用UDS主函数 */
     LinSlave_Uds_MainFunction();
 }
+
+/**
+ * @brief 获取版本信息
+ * @param VersionInfo - 版本信息缓冲区指针
+ */
+#if (LINSLAVE_VERSION_INFO_API == STD_ON)
+void LinSlave_GetVersionInfo(Std_VersionInfoType* VersionInfo)
+{
+    if (VersionInfo != NULL_PTR) {
+        VersionInfo->vendorID = 0x00U;
+        VersionInfo->moduleID = LINSLAVE_MODULE_ID;
+        VersionInfo->sw_major_version = LINSLAVE_SW_MAJOR_VERSION;
+        VersionInfo->sw_minor_version = LINSLAVE_SW_MINOR_VERSION;
+        VersionInfo->sw_patch_version = LINSLAVE_SW_PATCH_VERSION;
+    }
+}
+#endif

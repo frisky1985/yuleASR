@@ -403,4 +403,37 @@ extern void ComM_Nm_PrepareBusSleepMode(uint8 NetworkHandle);
  */
 extern void ComM_Nm_BusSleepMode(uint8 NetworkHandle);
 
+/*==================[external data declarations]============================*/
+/* Link-time configuration objects defined in ComM_Lcfg.c (MISRA C:2012 8.4).
+ * The effective ComM_Cfg.h seen by some build/analysis include orders may be
+ * the short config/input variant, so keep the declarations in the module API
+ * header to guarantee they are visible for every translation unit. */
+extern const ComM_ChannelConfigType ComM_ChannelConfig[];
+extern const ComM_ChannelStateStrType ComM_ChannelStateConfig[];
+extern const ComM_UserConfigType ComM_UserConfig[];
+extern const ComM_PncConfigType ComM_PncConfig[];
+
+extern const ComM_ChannelHandleType ComM_User0_Channels[];
+extern const ComM_ChannelHandleType ComM_User1_Channels[];
+extern const ComM_ChannelHandleType ComM_User2_Channels[];
+extern const ComM_ChannelHandleType ComM_User3_Channels[];
+extern const ComM_ChannelHandleType ComM_User4_Channels[];
+extern const ComM_ChannelHandleType ComM_User5_Channels[];
+extern const ComM_ChannelHandleType ComM_User6_Channels[];
+extern const ComM_ChannelHandleType ComM_User7_Channels[];
+
+extern const ComM_PncHandleType ComM_User0_Pncs[];
+extern const ComM_PncHandleType ComM_User1_Pncs[];
+extern const ComM_PncHandleType ComM_User2_Pncs[];
+extern const ComM_PncHandleType ComM_User3_Pncs[];
+extern const ComM_PncHandleType ComM_User4_Pncs[];
+extern const ComM_PncHandleType ComM_User5_Pncs[];
+extern const ComM_PncHandleType ComM_User6_Pncs[];
+extern const ComM_PncHandleType ComM_User7_Pncs[];
+
+extern const ComM_PncChannelMappingType ComM_Pnc0_Channels[];
+extern const ComM_PncChannelMappingType ComM_Pnc1_Channels[];
+
+extern const ComM_ConfigType ComM_Config;
+
 #endif /* COMM_H */

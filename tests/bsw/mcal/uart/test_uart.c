@@ -1286,3 +1286,158 @@ void test_Uart_ReceiveDMA_NoDma_ShouldReturnNotOk(void)
     TEST_ASSERT_EQUAL(E_NOT_OK, ret);
     TEST_ASSERT_EQUAL_UINT32(0U, test_DmaInitCalls);
 }
+
+/*===========================================================================
+ * Additional branch coverage
+ *===========================================================================*/
+
+/** EnableInterrupt/ClearFIFO/Abort with a valid channel while UNINIT: silent. */
+void test_Uart_BeforeInit_SilentApis_ValidChannel_ShouldReturnSilently(void)
+{
+    Uart_EnableInterrupt(0U);   /* second condition (Initialized == FALSE) */
+    Uart_ClearFIFO(0U);         /* second condition (Initialized == FALSE) */
+    Uart_Abort(0U);             /* second condition (Initialized == FALSE) */
+    TEST_ASSERT_EQUAL_UINT32(0U, Det_MockData.CallCount);
+}
+
+/** SendInterrupt validation: the uninit guard is reached with valid args. */
+void test_Uart_BeforeInit_SendInterrupt_Uninit_ShouldReportDet(void)
+{
+    uint8 data[2U] = {0x11U, 0x22U};
+
+    Std_ReturnType ret = Uart_SendInterrupt(0U, data, 1U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    test_Uart_ExpectDet(UART_SERVICE_ID_SEND, UART_E_UNINIT);
+}
+
+/** SendInterrupt rejects invalid channel and NULL data (before the init check
+ *  they are already initialised, so the channel/pointer guards fire). */
+void test_Uart_SendInterrupt_ParamValidation_ShouldReportDet(void)
+{
+    uint8 data[2U] = {0x11U, 0x22U};
+
+    test_Uart_EnsureInitialized();
+
+    TEST_ASSERT_EQUAL(E_NOT_OK, Uart_SendInterrupt(200U, data, 1U));
+    test_Uart_ExpectDet(UART_SERVICE_ID_SEND, UART_E_PARAM_CHANNEL);
+
+    Det_Mock_Reset();
+    TEST_ASSERT_EQUAL(E_NOT_OK, Uart_SendInterrupt(0U, NULL_PTR, 1U));
+    test_Uart_ExpectDet(UART_SERVICE_ID_SEND, UART_E_PARAM_POINTER);
+}
+
+/** Receive/GetRxResult reject an out-of-range channel. */
+void test_Uart_Receive_And_GetRxResult_InvalidChannel_ShouldReportDet(void)
+{
+    uint8 buf[2U];
+
+    test_Uart_EnsureInitialized();
+
+    TEST_ASSERT_EQUAL(E_NOT_OK, Uart_Receive(200U, buf, 1U));
+    test_Uart_ExpectDet(UART_SERVICE_ID_RECEIVE, UART_E_PARAM_CHANNEL);
+
+    Det_Mock_Reset();
+    (void)Uart_GetRxResult(200U);
+    test_Uart_ExpectDet(UART_SERVICE_ID_GETSTATUS, UART_E_PARAM_CHANNEL);
+}
+
+/** Init programmes interrupt-mode, odd-parity and hardware-handshake bits. */
+void test_Uart_Init_InterruptOddParityHandshake_ProgramsRegisters(void)
+{
+    uint32 ucr1c0;
+    uint32 ucr2c0;
+    uint32 ucr4c0;
+    uint32 ucr2c1;
+
+    if (test_UartDriverReady) {
+        Uart_DeInit();
+    }
+    MockRegisters_Reset();
+    test_Uart_InitGptOnce();
+    test_Uart_SetupConfig();
+
+    /* Channel 0: interrupt op-mode, odd parity, RTS/CTS handshake. */
+    test_ChannelConfigs[0].OpMode = UART_MODE_INTERRUPT;
+    test_ChannelConfigs[0].Parity = UART_PARITY_ODD;
+    test_ChannelConfigs[0].HwHandshake = UART_HW_HANDSHAKE_RTS_CTS;
+    /* Channel 1: RTS-only handshake (second handshake guard takes FALSE). */
+    test_ChannelConfigs[1].HwHandshake = UART_HW_HANDSHAKE_RTS;
+
+    Uart_Init(&test_Config);
+    test_UartDriverReady = TRUE;
+    Det_Mock_Reset();
+
+    ucr1c0 = MockRegisters_Read32(TEST_UART0_BASE + TEST_UART_UCR1_OFF);
+    TEST_ASSERT_EQUAL_HEX32(TEST_UCR1_TXMPTYEN | TEST_UCR1_RRDYEN,
+                            ucr1c0 & (TEST_UCR1_TXMPTYEN | TEST_UCR1_RRDYEN));
+
+    ucr2c0 = MockRegisters_Read32(TEST_UART0_BASE + TEST_UART_UCR2_OFF);
+    TEST_ASSERT_EQUAL_HEX32(0x0008UL, ucr2c0 & 0x0008UL);   /* PREN (odd) */
+    TEST_ASSERT_EQUAL_HEX32(0x0000UL, ucr2c0 & 0x0010UL);   /* PROE clear */
+    TEST_ASSERT_EQUAL_HEX32(0x0200UL, ucr2c0 & 0x0200UL);   /* CTS */
+    TEST_ASSERT_EQUAL_HEX32(0x0080UL, ucr2c0 & 0x0080UL);   /* RTSEN */
+
+    ucr4c0 = MockRegisters_Read32(TEST_UART0_BASE + TEST_UART_UCR4_OFF);
+    TEST_ASSERT_EQUAL_HEX32(0x0003UL, ucr4c0 & 0x0003UL);   /* DREN | OREN */
+
+    ucr2c1 = MockRegisters_Read32(TEST_UART1_BASE + TEST_UART_UCR2_OFF);
+    TEST_ASSERT_EQUAL_HEX32(0x0200UL, ucr2c1 & 0x0200UL);   /* CTS */
+    TEST_ASSERT_EQUAL_HEX32(0x0000UL, ucr2c1 & 0x0080UL);   /* no RTSEN */
+}
+
+/** TX_RX_BUSY: MainFunction scans both branches, DMA APIs reject the busy state,
+ *  and a TX/RX interrupt completion from TX_RX_BUSY restores the other state. */
+void test_Uart_TxRxBusy_MainFunction_Dma_And_IsrTransitions(void)
+{
+    uint8 txData[2U] = {'A', 'B'};
+    uint8 rxBuf[2U] = {0U, 0U};
+
+    test_Uart_EnsureInitialized();
+    test_ChannelConfigs[0].DmaEnabled = TRUE;
+
+    /* ReceiveInterrupt -> RX_BUSY, then SendInterrupt -> TX_RX_BUSY. */
+    TEST_ASSERT_EQUAL(E_OK, Uart_ReceiveInterrupt(0U, rxBuf, 2U));
+    TEST_ASSERT_EQUAL(E_OK, Uart_SendInterrupt(0U, txData, 2U));
+    TEST_ASSERT_EQUAL(UART_STATE_TX_RX_BUSY, Uart_GetStatus(0U));
+
+    /* MainFunction sees TX and RX busy with both transfers active; the mock
+     * timestamp never advances so no timeout abort is taken. */
+    Uart_MainFunction();
+    TEST_ASSERT_EQUAL(UART_STATE_TX_RX_BUSY, Uart_GetStatus(0U));
+
+    /* DMA entry points reject a channel that is already TX_RX_BUSY. */
+    TEST_ASSERT_EQUAL(E_NOT_OK, Uart_SendDMA(0U, txData, 1U));
+    TEST_ASSERT_EQUAL(E_NOT_OK, Uart_ReceiveDMA(0U, rxBuf, 1U));
+
+    /* Complete the RX transfer first: 2 data ISRs fill the buffer, the 3rd sees
+     * Transferred == Length and finishes the transfer. */
+    MockRegisters_Write32(TEST_UART0_BASE + TEST_UART_URXD_OFF, 0x5AU);
+    MockRegisters_Write32(TEST_UART0_BASE + TEST_UART_USR1_OFF, TEST_USR1_RRDY);
+    Uart_IsrHandler(0U);
+    Uart_IsrHandler(0U);
+    Uart_IsrHandler(0U);
+
+    /* RX completion from TX_RX_BUSY must leave the TX side busy. */
+    TEST_ASSERT_EQUAL(UART_STATE_TX_BUSY, Uart_GetStatus(0U));
+}
+
+/** TX completion from a TX_RX_BUSY state must restore RX_BUSY. */
+void test_Uart_TxComplete_FromTxRxBusy_RestoresRxBusy(void)
+{
+    uint8 txData[1U] = {'A'};
+    uint8 rxBuf[2U] = {0U, 0U};
+
+    test_Uart_EnsureInitialized();
+
+    /* TX_BUSY first, then ReceiveInterrupt -> TX_RX_BUSY. */
+    TEST_ASSERT_EQUAL(E_OK, Uart_SendInterrupt(0U, txData, 1U));
+    TEST_ASSERT_EQUAL(E_OK, Uart_ReceiveInterrupt(0U, rxBuf, 2U));
+    TEST_ASSERT_EQUAL(UART_STATE_TX_RX_BUSY, Uart_GetStatus(0U));
+
+    /* First TRDY ISR pushes the byte (Transferred = 1), second completes TX. */
+    MockRegisters_Write32(TEST_UART0_BASE + TEST_UART_USR1_OFF, TEST_USR1_TRDY);
+    Uart_IsrHandler(0U);
+    Uart_IsrHandler(0U);    /* TX complete from TX_RX_BUSY -> RX_BUSY remains */
+
+    TEST_ASSERT_EQUAL(UART_STATE_RX_BUSY, Uart_GetStatus(0U));
+}

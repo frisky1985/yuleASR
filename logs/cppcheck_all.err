@@ -8029,20 +8029,20 @@ int test_error_handling(void)
 src/autosar/e2e/tests/test_e2e_full.c:35:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.9]
 static int g_tests_failed = 0;
            ^
-src/autosar/e2e/tests/test_e2e_full.c:45:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
-    uint8_t data[32] = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
-            ^
-src/autosar/e2e/tests/test_e2e_full.c:122:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
-    uint8_t data2[16] = {0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27};
-            ^
 src/autosar/e2e/tests/test_e2e_full.c:303:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
     uint8_t data[32] = {0xAA, 0xBB, 0xCC, 0xDD};
+            ^
+src/autosar/e2e/tests/test_e2e_full.c:45:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
+    uint8_t data[32] = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
             ^
 src/autosar/e2e/tests/test_e2e_full.c:95:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
     uint8_t data[16] = {0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17};
             ^
 src/autosar/e2e/tests/test_e2e_full.c:574:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
     uint8_t data[64] = {0x11, 0x22, 0x33, 0x44};
+            ^
+src/autosar/e2e/tests/test_e2e_full.c:122:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
+    uint8_t data2[16] = {0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27};
             ^
 src/autosar/e2e/tests/test_e2e_full.c:68:5: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-10.4]
     TEST_ASSERT(data[0] != 0x00); /* CRC should be written */
@@ -9868,14 +9868,26 @@ static uint32_t switch_cb_old = 0, switch_cb_new = 0;
 src/bootloader/tests/test_bootloader.c:139:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.9]
 static int rollback_cb_count = 0;
            ^
-src/bootloader/tests/test_bootloader.c:613:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
-    uint8_t hash[32] = {0x61};
+src/bootloader/tests/test_bootloader.c:552:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
+    uint8_t hash_old[32] = {0x31};
             ^
-src/bootloader/tests/test_bootloader.c:726:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
-    uint8_t root_key[64] = {0xAA};
+src/bootloader/tests/test_bootloader.c:503:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
+    uint8_t hash_old[32] = {0x21};
             ^
 src/bootloader/tests/test_bootloader.c:553:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
     uint8_t hash_new[32] = {0x33};
+            ^
+src/bootloader/tests/test_bootloader.c:504:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
+    uint8_t hash_new[32] = {0x22};
+            ^
+src/bootloader/tests/test_bootloader.c:573:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
+    uint8_t hash[32] = {0x44};
+            ^
+src/bootloader/tests/test_bootloader.c:655:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
+    uint8_t hash_old[32] = {0x51};
+            ^
+src/bootloader/tests/test_bootloader.c:656:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
+    uint8_t hash_new[32] = {0x52};
             ^
 src/bootloader/tests/test_bootloader.c:468:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
     uint8_t hash[32] = {0x11};
@@ -9883,26 +9895,14 @@ src/bootloader/tests/test_bootloader.c:468:13: style: misra violation (use --rul
 src/bootloader/tests/test_bootloader.c:288:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
     uint8_t payload[32] = {0xAA};
             ^
-src/bootloader/tests/test_bootloader.c:656:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
-    uint8_t hash_new[32] = {0x52};
-            ^
-src/bootloader/tests/test_bootloader.c:655:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
-    uint8_t hash_old[32] = {0x51};
-            ^
-src/bootloader/tests/test_bootloader.c:573:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
-    uint8_t hash[32] = {0x44};
-            ^
-src/bootloader/tests/test_bootloader.c:552:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
-    uint8_t hash_old[32] = {0x31};
-            ^
 src/bootloader/tests/test_bootloader.c:356:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
     uint8_t hash[32] = {0x01};
             ^
-src/bootloader/tests/test_bootloader.c:503:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
-    uint8_t hash_old[32] = {0x21};
+src/bootloader/tests/test_bootloader.c:613:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
+    uint8_t hash[32] = {0x61};
             ^
-src/bootloader/tests/test_bootloader.c:504:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
-    uint8_t hash_new[32] = {0x22};
+src/bootloader/tests/test_bootloader.c:726:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
+    uint8_t root_key[64] = {0xAA};
             ^
 src/bootloader/tests/test_bootloader.c:58:26: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-10.4]
     if (address + length > MOCK_FLASH_SIZE || data == NULL) {
@@ -15718,38 +15718,8 @@ extern const ComM_PncChannelMappingType ComM_Pnc0_Channels[];
 src/bsw/services/comM/include/ComM_Cfg.h:167:20: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.11]
 extern const uint8 ComM_User6_Channels[];
                    ^
-src/bsw/services/comM/include/ComM_Cfg.h:182:41: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.11]
-extern const ComM_PncChannelMappingType ComM_Pnc1_Channels[];
-                                        ^
 src/bsw/services/comM/include/ComM_Cfg.h:162:20: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.11]
 extern const uint8 ComM_User1_Channels[];
-                   ^
-src/bsw/services/comM/include/ComM_Cfg.h:177:20: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.11]
-extern const uint8 ComM_User6_Pncs[];
-                   ^
-src/bsw/services/comM/include/ComM_Cfg.h:172:20: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.11]
-extern const uint8 ComM_User1_Pncs[];
-                   ^
-src/bsw/services/comM/include/ComM_Cfg.h:168:20: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.11]
-extern const uint8 ComM_User7_Channels[];
-                   ^
-src/bsw/services/comM/include/ComM_Cfg.h:166:20: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.11]
-extern const uint8 ComM_User5_Channels[];
-                   ^
-src/bsw/services/comM/include/ComM_Cfg.h:178:20: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.11]
-extern const uint8 ComM_User7_Pncs[];
-                   ^
-src/bsw/services/comM/include/ComM_Cfg.h:161:20: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.11]
-extern const uint8 ComM_User0_Channels[];
-                   ^
-src/bsw/services/comM/include/ComM_Cfg.h:164:20: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.11]
-extern const uint8 ComM_User3_Channels[];
-                   ^
-src/bsw/services/comM/include/ComM_Cfg.h:173:20: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.11]
-extern const uint8 ComM_User2_Pncs[];
-                   ^
-src/bsw/services/comM/include/ComM_Cfg.h:165:20: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.11]
-extern const uint8 ComM_User4_Channels[];
                    ^
 src/bsw/services/comM/include/ComM_Cfg.h:163:20: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.11]
 extern const uint8 ComM_User2_Channels[];
@@ -15757,14 +15727,44 @@ extern const uint8 ComM_User2_Channels[];
 src/bsw/services/comM/include/ComM_Cfg.h:176:20: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.11]
 extern const uint8 ComM_User5_Pncs[];
                    ^
-src/bsw/services/comM/include/ComM_Cfg.h:174:20: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.11]
-extern const uint8 ComM_User3_Pncs[];
+src/bsw/services/comM/include/ComM_Cfg.h:178:20: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.11]
+extern const uint8 ComM_User7_Pncs[];
+                   ^
+src/bsw/services/comM/include/ComM_Cfg.h:182:41: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.11]
+extern const ComM_PncChannelMappingType ComM_Pnc1_Channels[];
+                                        ^
+src/bsw/services/comM/include/ComM_Cfg.h:173:20: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.11]
+extern const uint8 ComM_User2_Pncs[];
+                   ^
+src/bsw/services/comM/include/ComM_Cfg.h:161:20: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.11]
+extern const uint8 ComM_User0_Channels[];
+                   ^
+src/bsw/services/comM/include/ComM_Cfg.h:168:20: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.11]
+extern const uint8 ComM_User7_Channels[];
+                   ^
+src/bsw/services/comM/include/ComM_Cfg.h:175:20: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.11]
+extern const uint8 ComM_User4_Pncs[];
                    ^
 src/bsw/services/comM/include/ComM_Cfg.h:171:20: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.11]
 extern const uint8 ComM_User0_Pncs[];
                    ^
-src/bsw/services/comM/include/ComM_Cfg.h:175:20: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.11]
-extern const uint8 ComM_User4_Pncs[];
+src/bsw/services/comM/include/ComM_Cfg.h:174:20: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.11]
+extern const uint8 ComM_User3_Pncs[];
+                   ^
+src/bsw/services/comM/include/ComM_Cfg.h:166:20: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.11]
+extern const uint8 ComM_User5_Channels[];
+                   ^
+src/bsw/services/comM/include/ComM_Cfg.h:172:20: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.11]
+extern const uint8 ComM_User1_Pncs[];
+                   ^
+src/bsw/services/comM/include/ComM_Cfg.h:164:20: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.11]
+extern const uint8 ComM_User3_Channels[];
+                   ^
+src/bsw/services/comM/include/ComM_Cfg.h:177:20: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.11]
+extern const uint8 ComM_User6_Pncs[];
+                   ^
+src/bsw/services/comM/include/ComM_Cfg.h:165:20: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.11]
+extern const uint8 ComM_User4_Channels[];
                    ^
 src/bsw/ecual/canNm/src/CanNm.c:425:27: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-10.3]
         boolean Immediate = (ChState->ImmediateTxCounter > 0U);
@@ -16549,24 +16549,12 @@ src/bsw/ecual/cantrcv/src/CanTrcv.c:370:9: style: misra violation (use --rule-te
 src/bsw/ecual/cantrcv/src/CanTrcv.c:430:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-17.7]
         CANTRCV_DET_REPORT_ERROR(CANTRCV_SID_GETVERSIONINFO, CANTRCV_E_PARAM_POINTER);
         ^
-src/bsw/ecual/cantrcv/src/CanTrcv_Lcfg.c:192:26: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-const CanTrcv_ConfigType CanTrcv_Config =
-                         ^
 src/bsw/ecual/cantrcv/src/CanTrcv_Lcfg.c:153:40: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
 static const CanTrcv_ChannelConfigType CanTrcv_ChannelConfig[CANTRCV_MAX_CHANNELS] =
                                        ^
 src/bsw/ecual/cantrcv/src/CanTrcv_Lcfg.c:259:0: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.1]
 #include "MemMap.h"
 ^
-src/bsw/ecual/cantrcv/src/CanTrcv_Lcfg.c:218:26: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-const CanTrcv_ConfigType CanTrcv_Config_Variant1 =
-                         ^
-src/bsw/ecual/cantrcv/src/CanTrcv_Lcfg.c:249:26: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-const CanTrcv_ConfigType CanTrcv_Config_Variant3 =
-                         ^
-src/bsw/ecual/cantrcv/src/CanTrcv_Lcfg.c:234:26: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-const CanTrcv_ConfigType CanTrcv_Config_Variant2 =
-                         ^
 src/bsw/ecual/doIP/src/DoIP.c:910:15: style: The scope of the variable 'pduRTargetPduId' can be reduced. [variableScope]
     PduIdType pduRTargetPduId;
               ^
@@ -16963,9 +16951,6 @@ src/bsw/ecual/ethSm/src/EthSM_Lcfg.c:269:35: style: struct member 'EthSM_GlobalC
 src/bsw/ecual/ethSm/src/EthSM_Lcfg.c:270:11: style: struct member 'EthSM_GlobalConfigType::maxNetworks' is never used. [unusedStructMember]
     uint8 maxNetworks;                              /**< Maximum number of networks */
           ^
-src/bsw/ecual/ethSm/src/EthSM_Lcfg.c:294:31: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-const EthSM_ConfigType* const EthSM_Config = (const EthSM_ConfigType*)&EthSM_GlobalConfig;
-                              ^
 src/bsw/ecual/ethSm/src/EthSM_Lcfg.c:118:38: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.9]
 static const EthSM_NetworkConfigType EthSM_NetworkConfig[ETHSM_MAX_NETWORKS] =
                                      ^
@@ -16978,6 +16963,9 @@ static const EthSM_TrcvConfigType EthSM_TrcvConfig[ETHSM_MAX_NETWORKS] =
 src/bsw/ecual/ethSm/src/EthSM_Lcfg.c:233:37: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.9]
 static const EthSM_TcpIpMappingType EthSM_TcpIpMapping[ETHSM_MAX_NETWORKS] =
                                     ^
+src/bsw/ecual/ethSm/src/EthSM_Lcfg.c:294:46: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-11.3]
+const EthSM_ConfigType* const EthSM_Config = (const EthSM_ConfigType*)&EthSM_GlobalConfig;
+                                             ^
 src/bsw/ecual/ethif/src/EthIf.c:139:27: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-10.3]
                     match = (memcmp(filter->MacAddress, PduInfoPtr->MacAddress, 6) == 0 );
                           ^
@@ -17026,12 +17014,12 @@ src/bsw/ecual/ethif/src/EthIf.c:167:36: style: misra violation (use --rule-texts
 src/bsw/ecual/ethif/src/EthIf.c:142:17: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.7]
                 }
                 ^
-src/bsw/ecual/ethif/src/EthIf_Lcfg.c:38:35: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
-static const EthIf_VlanConfigType EthIf_Vlans[ETHIF_MAX_VLANS] = {
-                                  ^
 src/bsw/ecual/ethif/src/EthIf_Lcfg.c:24:41: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
 static const EthIf_ControllerConfigType EthIf_Controllers[ETHIF_MAX_CONTROLLERS] = {
                                         ^
+src/bsw/ecual/ethif/src/EthIf_Lcfg.c:38:35: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
+static const EthIf_VlanConfigType EthIf_Vlans[ETHIF_MAX_VLANS] = {
+                                  ^
 src/bsw/ecual/ethswt/src/EthSwt.c:1400:30: style: The scope of the variable 'savedConfig' can be reduced. [variableScope]
     const EthSwt_ConfigType* savedConfig;
                              ^
@@ -17800,15 +17788,6 @@ src/bsw/ecual/ethtrcv/src/EthTrcv_Lcfg.c:104:28: style: struct member 'EthTrcv_I
 src/bsw/ecual/ethtrcv/src/EthTrcv_Lcfg.c:105:29: style: struct member 'EthTrcv_InterfaceConfigUnionType::Rgmii' is never used. [unusedStructMember]
     EthTrcv_RgmiiConfigType Rgmii;
                             ^
-src/bsw/ecual/ethtrcv/src/EthTrcv_Lcfg.c:168:30: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-const EthTrcv_TrcvConfigType EthTrcv_TrcvConfig[ETHTRCV_NUMBER_OF_TRCVS] =
-                             ^
-src/bsw/ecual/ethtrcv/src/EthTrcv_Lcfg.c:246:35: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-const EthTrcv_LinkStateChgCbkType EthTrcv_LinkStateChgCallback = EthIf_LinkStateChg;
-                                  ^
-src/bsw/ecual/ethtrcv/src/EthTrcv_Lcfg.c:267:39: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-const EthTrcv_WakeupIndicationCbkType EthTrcv_WakeupIndicationCallback = EthTrcv_WakeupInd;
-                                      ^
 src/bsw/ecual/ethtrcv/src/EthTrcv_Lcfg.c:220:42: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.9]
 static const EthTrcv_InterfaceConfigType EthTrcv_InterfaceConfig[ETHTRCV_NUMBER_OF_TRCVS] =
                                          ^
@@ -18682,6 +18661,9 @@ src/bsw/services/com/include/Com.h:603:0: style: misra violation (use --rule-tex
 src/bsw/ecual/ipdum/include/IpduM.h:152:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
 #if (IPDUM_VERSION_INFO_API == STD_ON)
  ^
+src/bsw/ecual/ipdum/src/IpduM_Lcfg.c:42:14: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
+static uint8 IpduM_TxMuxPdu0_Dyn2_Data[8] = {0x00};
+             ^
 src/bsw/ecual/ipdum/src/IpduM_Lcfg.c:43:14: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
 static uint8 IpduM_TxMuxPdu0_Dyn3_Data[8] = {0x00};
              ^
@@ -18690,9 +18672,6 @@ static uint8 IpduM_TxMuxPdu0_Dyn0_Data[8] = {0x00};
              ^
 src/bsw/ecual/ipdum/src/IpduM_Lcfg.c:41:14: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
 static uint8 IpduM_TxMuxPdu0_Dyn1_Data[8] = {0x00};
-             ^
-src/bsw/ecual/ipdum/src/IpduM_Lcfg.c:42:14: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
-static uint8 IpduM_TxMuxPdu0_Dyn2_Data[8] = {0x00};
              ^
 src/bsw/ecual/ipdum/src/IpduM_Lcfg.c:278:0: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.1]
 #include "MemMap.h"
@@ -18709,6 +18688,9 @@ src/bsw/ecual/linNm/src/LinNm.c:158:26: style: Variable 'activeWakeup' is assign
 src/bsw/ecual/linNm/src/LinNm.c:168:22: style: Variable 'activeWakeup' is assigned a value that is never used. [unreadVariable]
         activeWakeup = TRUE;
                      ^
+src/bsw/ecual/linNm/include/LinNm.h:429:21: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.11]
+extern const uint16 LinNm_TimingConstants[];
+                    ^
 src/bsw/ecual/linNm/src/LinNm.c:134:46: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-12.1]
     for (i = 0; i < chConfig->UserDataLength && i < LINNM_PDU_USER_DATA_SIZE; i++)
                                              ^
@@ -18883,30 +18865,6 @@ src/bsw/ecual/linNm/src/LinNm.c:1045:9: style: misra violation (use --rule-texts
 src/bsw/ecual/linNm/src/LinNm.c:1067:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
         return;
         ^
-src/bsw/ecual/linNm/src/LinNm_Lcfg.c:384:15: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-const boolean LinNm_RemoteSleepCallbackEnabled = TRUE;
-              ^
-src/bsw/ecual/linNm/src/LinNm_Lcfg.c:409:27: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-const Std_VersionInfoType LinNm_VersionInfo = {
-                          ^
-src/bsw/ecual/linNm/src/LinNm_Lcfg.c:284:14: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-const uint16 LinNm_TimingConstants[] = {
-             ^
-src/bsw/ecual/linNm/src/LinNm_Lcfg.c:420:27: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-const Std_VersionInfoType LinNm_CfgVersionInfo = {
-                          ^
-src/bsw/ecual/linNm/src/LinNm_Lcfg.c:373:15: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-const boolean LinNm_StateChangeCallbackEnabled = TRUE;
-              ^
-src/bsw/ecual/linNm/src/LinNm_Lcfg.c:121:24: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-const LinNm_ConfigType LinNm_Config = {
-                       ^
-src/bsw/ecual/linNm/src/LinNm_Lcfg.c:297:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-const uint8 LinNm_NumTimingConstants = 7U;
-            ^
-src/bsw/ecual/linNm/src/LinNm_Lcfg.c:395:15: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-const boolean LinNm_SyncPointCallbackEnabled = TRUE;
-              ^
 src/bsw/ecual/linNm/src/LinNm_Lcfg.c:88:33: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.9]
 static LinNm_ChannelRuntimeType LinNm_ChannelRuntime[LINNM_NUMBER_OF_CHANNELS];
                                 ^
@@ -18916,12 +18874,6 @@ static const LinNm_ChannelConfigType LinNm_ChannelConfig[LINNM_NUMBER_OF_CHANNEL
 src/bsw/ecual/linNm/src/LinNm_Lcfg.c:307:20: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.9]
 static const uint8 LinNm_DefaultUserData[LINNM_PDU_USER_DATA_SIZE] = {
                    ^
-src/bsw/ecual/linNm/src/LinNm_Lcfg.c:240:24: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-const LinNm_ConfigType LinNm_Config_Extended = {
-                       ^
-src/bsw/ecual/linNm/src/LinNm_Lcfg.c:231:24: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-const LinNm_ConfigType LinNm_Config_Fast = {
-                       ^
 src/bsw/ecual/linSM/src/LinSM.c:540:12: style: The scope of the variable 'timeoutValue' can be reduced. [variableScope]
     uint16 timeoutValue;
            ^
@@ -19249,11 +19201,11 @@ src/bsw/ecual/linTp/src/LinTp_Lcfg.c:222:0: style: misra violation (use --rule-t
 src/bsw/ecual/linTp/src/LinTp_Lcfg.c:235:0: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.1]
 #include "MemMap.h"
 ^
-src/bsw/ecual/linTp/src/LinTp_Lcfg.c:239:31: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.8]
-extern const LinTp_ConfigType LinTp_Config_Variant_1;
-                              ^
 src/bsw/ecual/linTp/src/LinTp_Lcfg.c:238:31: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.8]
 extern const LinTp_ConfigType LinTp_Config_Variant_2;
+                              ^
+src/bsw/ecual/linTp/src/LinTp_Lcfg.c:239:31: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.8]
+extern const LinTp_ConfigType LinTp_Config_Variant_1;
                               ^
 src/bsw/ecual/linTp/src/LinTp_Lcfg.c:192:38: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
 static const LinTp_ChannelConfigType LinTp_ChannelConfig_Extended[LINTP_MAX_CHANNEL_COUNT] =
@@ -19486,18 +19438,18 @@ src/bsw/mcal/lin/include/Lin.h:215:0: style: misra violation (use --rule-texts=<
 src/bsw/mcal/lin/include/Lin.h:235:0: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.1]
 #include "MemMap.h"
 ^
-src/bsw/ecual/linif/src/LinIf_Lcfg.c:24:36: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
-static const LinIf_FrameConfigType LinIf_Frames[LINIF_MAX_FRAMES] = {
-                                   ^
-src/bsw/ecual/linif/src/LinIf_Lcfg.c:90:33: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
-static const LinIf_TxPduMapType LinIf_TxPduMap[LINIF_MAX_TX_PDUS] = {
-                                ^
-src/bsw/ecual/linif/src/LinIf_Lcfg.c:79:38: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
-static const LinIf_ChannelConfigType LinIf_Channels[LINIF_MAX_CHANNELS] = {
-                                     ^
 src/bsw/ecual/linif/src/LinIf_Lcfg.c:60:44: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
 static const LinIf_ScheduleTableConfigType LinIf_Schedules[LINIF_MAX_SCHEDULES] = {
                                            ^
+src/bsw/ecual/linif/src/LinIf_Lcfg.c:24:36: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
+static const LinIf_FrameConfigType LinIf_Frames[LINIF_MAX_FRAMES] = {
+                                   ^
+src/bsw/ecual/linif/src/LinIf_Lcfg.c:79:38: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
+static const LinIf_ChannelConfigType LinIf_Channels[LINIF_MAX_CHANNELS] = {
+                                     ^
+src/bsw/ecual/linif/src/LinIf_Lcfg.c:90:33: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
+static const LinIf_TxPduMapType LinIf_TxPduMap[LINIF_MAX_TX_PDUS] = {
+                                ^
 src/bsw/ecual/lintrcv/src/LinTrcv.c:0:0: information: This file is not analyzed. Cppcheck failed to extract a valid configuration. Use -v for more details. [noValidConfiguration]
 
 ^
@@ -19639,12 +19591,6 @@ src/bsw/ecual/wdgif/src/WdgIf.c:120:9: style: misra violation (use --rule-texts=
 src/bsw/ecual/wdgif/include/WdgIf.h:144:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
 #if (WDGIF_VERSION_INFO_API == STD_ON)
  ^
-src/bsw/ecual/wdgif/src/WdgIf_Lcfg.c:7:31: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-const WdgIf_ConfigType* const WdgIf_ConfigPtr = &WdgIf_Config;
-                              ^
-src/bsw/ecual/wdgif/src/WdgIf_Lcfg.c:6:24: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-const WdgIf_ConfigType WdgIf_Config = { 0U };
-                       ^
 src/bsw/mcal/adc/src/Adc.c:88:37: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-10.3]
         case ADC_HWUNIT_0: baseAddr = ADC1_BASE_ADDR; break;
                                     ^
@@ -21676,6 +21622,87 @@ src/bsw/mcal/crypto/src/Crypto_S32K312_Hsm.c:1937:0: style: misra violation (use
 src/bsw/mcal/crypto/src/Crypto_S32K312_Hsm.c:1930:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
     #if (CRYPTO_CFG_DEV_ERROR_DETECT == STD_ON)
      ^
+src/bsw/mcal/crypto/tests/test_crypto_hsm.c:26:0: information: Include file: "unity.h" not found. [missingInclude]
+#include "unity.h"
+^
+src/bsw/mcal/crypto/tests/test_crypto_hsm.c:32:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+void setUp(void)
+     ^
+src/bsw/mcal/crypto/tests/test_crypto_hsm.c:37:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+void tearDown(void)
+     ^
+src/bsw/mcal/crypto/tests/test_crypto_mbedtls.c:26:0: information: Include file: "unity.h" not found. [missingInclude]
+#include "unity.h"
+^
+src/bsw/mcal/crypto/tests/test_crypto_mbedtls.c:29:0: information: Include file: "mbedtls/bignum.h" not found. [missingInclude]
+#include "mbedtls/bignum.h"
+^
+src/bsw/mcal/crypto/tests/test_crypto_mbedtls.c:30:0: information: Include file: "mbedtls/ecp.h" not found. [missingInclude]
+#include "mbedtls/ecp.h"
+^
+src/bsw/mcal/crypto/tests/test_crypto_mbedtls.c:31:0: information: Include file: "mbedtls/md.h" not found. [missingInclude]
+#include "mbedtls/md.h"
+^
+src/bsw/mcal/crypto/tests/test_crypto_mbedtls.c:32:0: information: Include file: "mbedtls/hkdf.h" not found. [missingInclude]
+#include "mbedtls/hkdf.h"
+^
+src/bsw/mcal/crypto/tests/test_crypto_mbedtls.c:33:0: information: Include file: "mbedtls/sha256.h" not found. [missingInclude]
+#include "mbedtls/sha256.h"
+^
+src/bsw/mcal/crypto/tests/test_crypto_mbedtls.c:499:28: error: Uninitialized variable: ciphertext [uninitvar]
+    (void)memcpy(inputBuf, ciphertext, 32U);
+                           ^
+src/bsw/mcal/crypto/tests/test_crypto_mbedtls.c:500:34: error: Uninitialized variable: tag [uninitvar]
+    (void)memcpy(inputBuf + 32U, tag, 16U);
+                                 ^
+src/bsw/mcal/crypto/tests/test_crypto_mbedtls.c:164:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+void setUp(void)
+     ^
+src/bsw/mcal/crypto/tests/test_crypto_mbedtls.c:170:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+void tearDown(void)
+     ^
+src/bsw/mcal/crypto/tests/test_crypto_mbedtls.c:86:15: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.9]
+static uint32 g_rng_state = 1U;
+              ^
+src/bsw/mcal/crypto/tests/test_crypto_mbedtls.c:153:20: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.9]
+static const uint8 kSha256Abc[32] = {
+                   ^
+src/bsw/mcal/crypto/tests/test_crypto_mbedtls.c:430:44: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.9]
+static Crypto_JobPrimitiveInfoType         g_info;
+                                           ^
+src/bsw/mcal/crypto/tests/test_crypto_mbedtls.c:431:44: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.9]
+static Crypto_AlgorithmInfoType            g_alg;
+                                           ^
+src/bsw/mcal/crypto/tests/test_crypto_mbedtls.c:495:34: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-11.5]
+    g_io.secondaryOutputPtr    = (uint32*)(void*)tag;
+                                 ^
+src/bsw/mcal/crypto/tests/test_crypto_mbedtls.c:518:31: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-11.5]
+    g_io.secondaryOutputPtr = (uint32*)(void*)tag;
+                              ^
+src/bsw/mcal/crypto/tests/test_crypto_mbedtls.c:581:33: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-11.5]
+    g_io.secondaryInputPtr    = (uint32*)(void*)signature;
+                                ^
+src/bsw/mcal/crypto/tests/test_crypto_mbedtls.c:591:33: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-11.5]
+    g_io.secondaryInputPtr    = (uint32*)(void*)signature;
+                                ^
+src/bsw/mcal/crypto/tests/test_crypto_mbedtls.c:55:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return E_NOT_OK;
+        ^
+src/bsw/mcal/crypto/tests/test_crypto_mbedtls.c:58:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return E_NOT_OK;
+        ^
+src/bsw/mcal/crypto/tests/test_crypto_mbedtls.c:63:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+            return E_OK;
+            ^
+src/bsw/mcal/crypto/tests/test_crypto_mbedtls.c:67:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+            return E_OK;
+            ^
+src/bsw/mcal/crypto/tests/test_crypto_mbedtls.c:69:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return E_NOT_OK;
+        ^
+src/bsw/mcal/crypto/tests/test_crypto_mbedtls.c:500:27: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-18.4]
+    (void)memcpy(inputBuf + 32U, tag, 16U);
+                          ^
 src/bsw/mcal/dio/src/Dio.c:141:30: warning: Shifting 32-bit value by 255 bits is undefined behaviour. See condition at line 130. [shiftTooManyBits]
     level = ((psrValue & (1U << pin)) != 0U) ? STD_HIGH : STD_LOW;
                              ^
@@ -21820,9 +21847,6 @@ src/bsw/mcal/dio/src/Dio.c:106:0: style: misra violation (use --rule-texts=<file
 src/bsw/mcal/dio/src/Dio.c:325:0: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.1]
 #include "MemMap.h"
 ^
-src/bsw/mcal/dio/src/Dio_Lcfg.c:7:29: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-const Dio_ConfigType* const Dio_ConfigPtr = &Dio_Config;
-                            ^
 src/bsw/mcal/eep/src/Eep.c:79:25: style: struct member 'Eep_VirtualPageType::PhysicalPage' is never used. [unusedStructMember]
     uint32              PhysicalPage;      /**< Physical Flash page number */
                         ^
@@ -24682,9 +24706,6 @@ src/bsw/mcal/mcu/include/Mcu.h:198:0: style: misra violation (use --rule-texts=<
 src/bsw/mcal/mcu/include/Mcu.h:362:0: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.1]
 #include "MemMap.h"
 ^
-src/bsw/mcal/mcu/src/Mcu_Lcfg.c:7:29: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-const Mcu_ConfigType* const Mcu_ConfigPtr = &Mcu_Config;
-                            ^
 src/bsw/mcal/ocu/src/Ocu.c:226:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
         return;
         ^
@@ -26713,18 +26734,18 @@ src/bsw/services/bswm/src/BswM.c:1033:9: style: misra violation (use --rule-text
 src/bsw/services/bswm/src/BswM.c:558:19: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-17.8]
         ConfigPtr = &BswM_Config;
                   ^
-src/bsw/services/bswm/src/BswM_Lcfg.c:73:34: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
-static const BswM_ActionListType BswM_ActionLists[BSWM_MAX_ACTION_LISTS] = {
-                                 ^
-src/bsw/services/bswm/src/BswM_Lcfg.c:39:40: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
-static const BswM_ExpressionConfigType BswM_Expressions[BSWM_MAX_EXPRESSIONS] = {
-                                       ^
 src/bsw/services/bswm/src/BswM_Lcfg.c:19:39: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
 static const BswM_ModeRequestPortType BswM_ModeRequestPorts[BSWM_MAX_MODE_REQUEST_PORTS] = {
                                       ^
 src/bsw/services/bswm/src/BswM_Lcfg.c:64:28: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
 static const BswM_RuleType BswM_Rules[BSWM_MAX_RULES] = {
                            ^
+src/bsw/services/bswm/src/BswM_Lcfg.c:39:40: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
+static const BswM_ExpressionConfigType BswM_Expressions[BSWM_MAX_EXPRESSIONS] = {
+                                       ^
+src/bsw/services/bswm/src/BswM_Lcfg.c:73:34: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
+static const BswM_ActionListType BswM_ActionLists[BSWM_MAX_ACTION_LISTS] = {
+                                 ^
 src/bsw/services/cansm/src/CanSm.c:790:29: style: The scope of the variable 'netState' can be reduced. [variableScope]
     CanSm_NetworkStateType* netState;
                             ^
@@ -26899,9 +26920,6 @@ src/bsw/services/cansm/include/CanSm.h:228:0: style: misra violation (use --rule
 src/bsw/services/cansm/include/CanSm.h:458:0: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.1]
 #include "MemMap.h"
 ^
-src/bsw/services/cansm/src/CanSm_Lcfg.c:7:31: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-const CanSm_ConfigType* const CanSm_ConfigPtr = &CanSm_Config;
-                              ^
 src/bsw/services/cantsyn/src/CanTSyn.c:92:24: style: struct member 'CanTSyn_TimeDomainInfoType::TxTimeStamp' is never used. [unusedStructMember]
     StbM_TimeStampType TxTimeStamp;
                        ^
@@ -27304,12 +27322,12 @@ src/bsw/services/com/src/Com.c:1357:0: style: misra violation (use --rule-texts=
 src/bsw/services/com/src/Com.c:1075:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
 #if (COM_GATEWAY_SUPPORT == STD_ON)
  ^
-src/bsw/services/com/src/Com_Lcfg.c:25:35: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
-static const Com_SignalConfigType Com_Signals[COM_MAX_SIGNALS] = {
-                                  ^
 src/bsw/services/com/src/Com_Lcfg.c:51:33: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
 static const Com_IPduConfigType Com_IPdus[COM_MAX_IPDUS] = {
                                 ^
+src/bsw/services/com/src/Com_Lcfg.c:25:35: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
+static const Com_SignalConfigType Com_Signals[COM_MAX_SIGNALS] = {
+                                  ^
 src/bsw/services/com/src/Com_test.c:393:1: error: Unmatched '}'. Configuration: ''. [syntaxError]
 TEST_MAIN_END()
 ^
@@ -27421,7 +27439,7 @@ src/bsw/services/comM/src/ComM.c:726:13: style: misra violation (use --rule-text
 src/bsw/services/comM/src/ComM_Lcfg.c:94:26: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.2]
 const ComM_PncHandleType ComM_User1_Pncs[] = {
                          ^
-src/bsw/services/crc/src/Crc.c:72:27: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.7]
+src/bsw/services/crc/src/Crc.c:57:27: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.7]
 void Crc_Init(const void* configPtr)
                           ^
 src/bsw/services/crc/src/Crc.c:45:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.9]
@@ -29509,12 +29527,12 @@ src/bsw/services/dem/include/Dem_Int.h:275:0: style: misra violation (use --rule
 src/bsw/services/dem/src/Dem_Cfg.c:292:22: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
 const Dem_ConfigType Dem_Config = {
                      ^
-src/bsw/services/dem/src/Dem_Cfg.c:176:35: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
-STATIC const Dem_DtcParameterType Dem_DtcParameters[DEM_NUM_DTCS] = {
-                                  ^
 src/bsw/services/dem/src/Dem_Cfg.c:47:37: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
 STATIC const Dem_EventParameterType Dem_EventParameters[DEM_NUM_EVENTS] = {
                                     ^
+src/bsw/services/dem/src/Dem_Cfg.c:176:35: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-9.3]
+STATIC const Dem_DtcParameterType Dem_DtcParameters[DEM_NUM_DTCS] = {
+                                  ^
 src/bsw/services/dem/src/Dem_Cfg.c:143:0: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.1]
 #include "MemMap.h"
 ^
@@ -29842,6 +29860,9 @@ src/bsw/services/det/src/Det_Lcfg.c:115:2: style: misra violation (use --rule-te
 src/bsw/services/det/src/Det_Lcfg.c:125:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
 #if (DET_TRANSIENT_FAULT_REPORTING == STD_ON)
  ^
+src/bsw/services/dlt/include/Dlt.h:711:35: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.11]
+extern const Dlt_ContextGroupType Dlt_ContextGroups[];
+                                  ^
 src/bsw/services/dlt/src/Dlt.c:892:8: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-14.4]
     if (Dlt_FindContext(appId, contextId, NULL_PTR)) {
        ^
@@ -30118,54 +30139,6 @@ src/bsw/services/dlt/src/Dlt.c:1066:9: style: misra violation (use --rule-texts=
 src/bsw/services/dlt/src/Dlt.c:383:15: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-21.15]
         (void)memcpy(messageBuffer, &queueEntry.header, sizeof(Dlt_MessageHeaderType));
               ^
-src/bsw/services/dlt/src/Dlt_Lcfg.c:591:14: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-const uint32 Dlt_MainFunctionPeriod = DLT_MAIN_FUNCTION_PERIOD;
-             ^
-src/bsw/services/dlt/src/Dlt_Lcfg.c:459:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-const uint8 Dlt_EcuId[DLT_ECU_ID_LENGTH] = { DLT_ECU_ID[0], DLT_ECU_ID[1], DLT_ECU_ID[2], DLT_ECU_ID[3] };
-            ^
-src/bsw/services/dlt/src/Dlt_Lcfg.c:470:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-const uint8 Dlt_ProtocolVersionMinor = DLT_PROTOCOL_VERSION_MINOR;
-            ^
-src/bsw/services/dlt/src/Dlt_Lcfg.c:464:14: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-const uint32 Dlt_DefaultSessionId = DLT_DEFAULT_SESSION_ID;
-             ^
-src/bsw/services/dlt/src/Dlt_Lcfg.c:469:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-const uint8 Dlt_ProtocolVersionMajor = DLT_PROTOCOL_VERSION_MAJOR;
-            ^
-src/bsw/services/dlt/src/Dlt_Lcfg.c:485:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-const uint8 Dlt_BufferPriority[DLT_BUFFER_COUNT] = {
-            ^
-src/bsw/services/dlt/src/Dlt_Lcfg.c:431:24: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-const Dlt_LogLevelType Dlt_DefaultLogLevels[8] = {
-                       ^
-src/bsw/services/dlt/src/Dlt_Lcfg.c:86:23: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-const Dlt_ContextType Dlt_ContextConfig[DLT_MAX_CONTEXT_COUNT] = {
-                      ^
-src/bsw/services/dlt/src/Dlt_Lcfg.c:445:27: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-const Dlt_TraceStatusType Dlt_DefaultTraceStatus[8] = {
-                          ^
-src/bsw/services/dlt/src/Dlt_Lcfg.c:539:14: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-const uint16 Dlt_ComPduId = 0;  /* PDU ID for DLT messages via Com */
-             ^
-src/bsw/services/dlt/src/Dlt_Lcfg.c:382:17: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-Dlt_ContextType Dlt_RuntimeContext[DLT_MAX_CONTEXT_COUNT];
-                ^
-src/bsw/services/dlt/src/Dlt_Lcfg.c:495:28: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-const Dlt_ContextGroupType Dlt_ContextGroups[] = {
-                           ^
-src/bsw/services/dlt/src/Dlt_Lcfg.c:590:14: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-const uint32 Dlt_BufferTimeout = DLT_BUFFERING_TIMEOUT;
-             ^
-src/bsw/services/dlt/src/Dlt_Lcfg.c:552:19: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-Dlt_LogFilterType Dlt_LogFilters[DLT_MAX_CONTEXT_COUNT] = {
-                  ^
-src/bsw/services/dlt/src/Dlt_Lcfg.c:475:14: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-const uint16 Dlt_BufferSize[DLT_BUFFER_COUNT] = {
-             ^
-src/bsw/services/dlt/src/Dlt_Lcfg.c:390:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-Dlt_BufferType Dlt_Buffer[DLT_BUFFER_COUNT] = {
-               ^
 src/bsw/services/docan/src/DoCan.c:102:11: style: The scope of the variable 'i' can be reduced. [variableScope]
     uint8 i;
           ^
@@ -30718,11 +30691,11 @@ Std_ReturnType FiM_SetFunctionPermission(FiM_FunctionIdType FID, FiM_PermissionS
 src/bsw/services/fim/src/FiM.c:512:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
 Std_ReturnType FiM_GetInhibitionStatus(FiM_FunctionIdType FID, FiM_InhibitionStatusType* InhibitionStatus)
                ^
-src/bsw/ecual/fim/include/FiM.h:80:20: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.11]
-extern const uint8 FiM_EventFidInhibitionMask[];
-                   ^
 src/bsw/ecual/fim/include/FiM.h:78:20: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.11]
 extern const uint8 FiM_InhibitionConfiguration[];
+                   ^
+src/bsw/ecual/fim/include/FiM.h:80:20: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.11]
+extern const uint8 FiM_EventFidInhibitionMask[];
                    ^
 src/bsw/ecual/fim/include/FiM.h:79:21: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.11]
 extern const uint16 FiM_EventIdFidMap[];
@@ -31777,12 +31750,12 @@ uint8 MemIf_GetNumberOfDevices(void){
 src/bsw/services/memif/src/MemIf.c:95:23: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
 MemIf_DeviceStateType MemIf_DeviceState[MEMIF_NUMBER_OF_DEVICES];
                       ^
-src/bsw/services/memif/src/MemIf.c:97:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-boolean MemIf_ModuleInitialized = FALSE;
-        ^
 src/bsw/services/memif/src/MemIf.c:96:25: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
 const MemIf_ConfigType* MemIf_ConfigPtr = NULL_PTR;
                         ^
+src/bsw/services/memif/src/MemIf.c:97:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+boolean MemIf_ModuleInitialized = FALSE;
+        ^
 src/bsw/services/memif/src/MemIf.c:106:37: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.9]
 static const MemIf_DeviceConfigType MemIf_DefaultDeviceConfig[MEMIF_TOTAL_NUM_DEVICES] = {
                                     ^
@@ -32545,12 +32518,6 @@ src/bsw/services/mqtt/src/Mqtt_CertMgr.c:817:9: style: misra violation (use --ru
 src/bsw/services/mqtt/include/mbedtls/x509_crt.h:13:0: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-21.10]
 #include <time.h>
 ^
-src/bsw/services/mqtt/src/Mqtt_Lcfg.c:60:23: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-const Mqtt_ConfigType Mqtt_Config = {
-                      ^
-src/bsw/services/mqtt/src/Mqtt_Lcfg.c:41:33: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-const Mqtt_ConnectionConfigType Mqtt_DefaultConnectionConfig = {
-                                ^
 src/bsw/services/mqtt/src/Mqtt_Tls.c:24:0: information: Include file: "mbedtls/ssl.h" not found. [missingInclude]
 #include "mbedtls/ssl.h"
 ^
@@ -34303,9 +34270,6 @@ src/bsw/services/secoc/include/SecOC_MemMap.h:80:0: style: misra violation (use 
 src/bsw/services/secoc/include/SecOC_MemMap.h:85:0: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.5]
     #undef SECOC_STOP_SEC_CONFIG_DATA_UNSPECIFIED
 ^
-src/bsw/services/secoc/src/SecOc_Lcfg.c:147:24: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-const SecOC_ConfigType SecOc_Config = {
-                       ^
 src/bsw/services/soad/src/SoAd.c:133:12: style: The scope of the variable 'i' can be reduced. [variableScope]
     uint16 i;
            ^
@@ -37891,9 +37855,9 @@ src/common/utils/eth_utils.c:60:9: style: misra violation (use --rule-texts=<fil
 src/cross/hello.c:1:1: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-3.1]
 /**
 ^
-src/cross/hello.c:21:19: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-volatile uint32_t g_cross_probe_counter = 0u;
-                  ^
+src/cross/hello.c:21:26: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.9]
+static volatile uint32_t g_cross_probe_counter = 0u;
+                         ^
 src/crypto_stack/cryif/cryif_core.c:211:56: style: Parameter 'ctx' can be declared as pointer to const [constParameterPointer]
 cryif_status_t cryif_channel_get_info(cryif_context_t *ctx, uint8_t channel_id,
                                                        ^
@@ -48565,72 +48529,6 @@ src/middleware/microdds/src/qos/qos_policy.c:219:9: style: misra violation (use 
 src/middleware/microdds/src/qos/qos_policy.c:224:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
         return false;
         ^
-src/middleware/microdds/include/microdds/cdr.h:106:45: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.2]
-DDS_ReturnCode_t CDR_serialize_sample_header(CDR_Buffer* buffer, uint32_t sequence_number, DDS_Time_t timestamp);
-                                            ^
-src/middleware/microdds/include/microdds/cdr.h:107:47: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.2]
-DDS_ReturnCode_t CDR_deserialize_sample_header(CDR_Buffer* buffer, uint32_t* sequence_number, DDS_Time_t* timestamp);
-                                              ^
-src/middleware/microdds/src/serialization/cdr.c:125:18: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-DDS_ReturnCode_t CDR_Buffer_set_write_pos(CDR_Buffer *buffer, uint32_t offset) {    if (buffer == NULL_PTR) {
-                 ^
-src/middleware/microdds/src/serialization/cdr.c:138:18: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-DDS_ReturnCode_t CDR_Buffer_set_read_pos(CDR_Buffer *buffer, uint32_t offset) {    if (buffer == NULL_PTR) {
-                 ^
-src/middleware/microdds/src/serialization/cdr.c:151:10: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-uint32_t CDR_Buffer_remaining_write(const CDR_Buffer *buffer) {    if (buffer == NULL_PTR) {
-         ^
-src/middleware/microdds/src/serialization/cdr.c:158:10: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-uint32_t CDR_Buffer_remaining_read(const CDR_Buffer *buffer) {    if (buffer == NULL_PTR) {
-         ^
-src/middleware/microdds/src/serialization/cdr.c:165:18: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-DDS_ReturnCode_t CDR_Buffer_align_write(CDR_Buffer *buffer, uint8_t alignment) {    if (buffer == NULL_PTR) {
-                 ^
-src/middleware/microdds/src/serialization/cdr.c:188:18: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-DDS_ReturnCode_t CDR_Buffer_align_read(CDR_Buffer *buffer, uint8_t alignment) {    if (buffer == NULL_PTR) {
-                 ^
-src/middleware/microdds/src/serialization/cdr.c:597:18: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-DDS_ReturnCode_t CDR_serialize_fixed_string(CDR_Buffer *buffer, const char *str, uint32_t fixed_len) {    if ((buffer == NULL_PTR) || (str == NULL_PTR)) {
-                 ^
-src/middleware/microdds/src/serialization/cdr.c:624:18: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-DDS_ReturnCode_t CDR_deserialize_fixed_string(CDR_Buffer *buffer, char *str, uint32_t fixed_len) {    if ((buffer == NULL_PTR) || (str == NULL_PTR)) {
-                 ^
-src/middleware/microdds/src/serialization/cdr.c:645:18: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-DDS_ReturnCode_t CDR_serialize_bytes(CDR_Buffer *buffer, const uint8_t *data, uint32_t len) {    if ((buffer == NULL_PTR) || (data == NULL_PTR)) {
-                 ^
-src/middleware/microdds/src/serialization/cdr.c:665:18: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-DDS_ReturnCode_t CDR_deserialize_bytes(CDR_Buffer *buffer, uint8_t *data, uint32_t len) {    if ((buffer == NULL_PTR) || (data == NULL_PTR)) {
-                 ^
-src/middleware/microdds/src/serialization/cdr.c:688:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-void CDR_SampleHeader_init(CDR_SampleHeader *header, uint32_t seq_num, uint16_t encapsulation) {    if (header != NULL_PTR) {
-     ^
-src/middleware/microdds/src/serialization/cdr.c:697:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-void CDR_SampleHeader_set_timestamp(CDR_SampleHeader *header, uint32_t sec, uint32_t nsec) {    if (header != NULL_PTR) {
-     ^
-src/middleware/microdds/src/serialization/cdr.c:770:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-void CDR_RTPSHeader_init(CDR_RTPSHeader *header, uint8_t version_major, uint8_t version_minor) {    if (header != NULL_PTR) {
-     ^
-src/middleware/microdds/src/serialization/cdr.c:784:18: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-DDS_ReturnCode_t CDR_serialize_rtps_header(CDR_Buffer *buffer, const CDR_RTPSHeader *header) {    DDS_ReturnCode_t ret;
-                 ^
-src/middleware/microdds/src/serialization/cdr.c:818:18: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-DDS_ReturnCode_t CDR_deserialize_rtps_header(CDR_Buffer *buffer, CDR_RTPSHeader *header) {    DDS_ReturnCode_t ret;
-                 ^
-src/middleware/microdds/src/serialization/cdr.c:860:10: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-uint32_t CDR_generate_sequence_number(void) {    uint32_t seq = sequence_counter;
-         ^
-src/middleware/microdds/src/serialization/cdr.c:868:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-void CDR_reset_sequence_number(void) {    sequence_counter = 1U;
-     ^
-src/middleware/microdds/src/serialization/cdr.c:874:18: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-DDS_ReturnCode_t CDR_begin_sample(CDR_Buffer *buffer, uint16_t encapsulation) {    if (buffer == NULL_PTR) {
-                 ^
-src/middleware/microdds/src/serialization/cdr.c:887:18: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-DDS_ReturnCode_t CDR_end_sample(CDR_Buffer *buffer) {    /* CDR样本不需要特殊的结束标记 */
-                 ^
-src/middleware/microdds/src/serialization/cdr.c:892:18: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-DDS_ReturnCode_t CDR_get_serialized_data(const CDR_Buffer *buffer, uint8_t **data, uint32_t *len) {    if ((buffer == NULL_PTR) || (data == NULL_PTR) || (len == NULL_PTR)) {
-                 ^
 src/middleware/microdds/src/serialization/cdr.c:23:19: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.9]
 static const char RTPS_PROTOCOL_ID[4] = {'R', 'T', 'P', 'S'};
                   ^
@@ -49069,12 +48967,12 @@ bool MicroDDS_UDP_IsInitialized(void) {
 src/middleware/microdds/src/transport/udp.c:1310:10: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
 uint32_t MicroDDS_UDP_GetPeerCount(void) {
          ^
-src/middleware/microdds/src/transport/udp.c:199:8: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-void (*platform_sleep_ms)(uint32_t ms) = NULL_PTR;
-       ^
 src/middleware/microdds/src/transport/udp.c:198:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
 uint32_t (*platform_get_time_ms)(void) = NULL_PTR;
            ^
+src/middleware/microdds/src/transport/udp.c:199:8: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+void (*platform_sleep_ms)(uint32_t ms) = NULL_PTR;
+       ^
 src/middleware/microdds/src/transport/udp.c:195:17: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.9]
 static uint32_t g_system_time_ms = 0U;
                 ^
@@ -49252,46 +49150,28 @@ src/middleware/microdds/src/transport/udp.c:439:9: style: misra violation (use -
 src/middleware/microdds/src/transport/udp.c:321:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-17.3]
     if (inet_aton(ip_str, &addr) == 0U ) {
         ^
-src/middleware/microdds/src/utils/buffer_pool.c:111:37: style: Parameter 'buffer' can be declared as pointer to const [constParameterPointer]
+src/middleware/microdds/src/utils/buffer_pool.c:113:37: style: Parameter 'buffer' can be declared as pointer to const [constParameterPointer]
 void MicroDDS_BufferPool_Free(void* buffer) {
                                     ^
-src/middleware/microdds/src/utils/buffer_pool.c:57:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-bool MicroDDS_BufferPool_Init(void) {
-     ^
-src/middleware/microdds/src/utils/buffer_pool.c:75:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-void MicroDDS_BufferPool_Shutdown(void) {
-     ^
-src/middleware/microdds/src/utils/buffer_pool.c:91:7: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-void* MicroDDS_BufferPool_Alloc(void) {
-      ^
-src/middleware/microdds/src/utils/buffer_pool.c:111:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-void MicroDDS_BufferPool_Free(void* buffer) {
-     ^
-src/middleware/microdds/src/utils/buffer_pool.c:129:10: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-uint16_t MicroDDS_BufferPool_GetBufferSize(void) {
-         ^
-src/middleware/microdds/src/utils/buffer_pool.c:137:10: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-uint32_t MicroDDS_BufferPool_GetAvailableCount(void) {
-         ^
-src/middleware/microdds/src/utils/buffer_pool.c:59:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+src/middleware/microdds/src/utils/buffer_pool.c:61:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
         return true;
         ^
-src/middleware/microdds/src/utils/buffer_pool.c:77:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+src/middleware/microdds/src/utils/buffer_pool.c:79:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
         return;
         ^
-src/middleware/microdds/src/utils/buffer_pool.c:93:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+src/middleware/microdds/src/utils/buffer_pool.c:95:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
         return NULL_PTR;
         ^
-src/middleware/microdds/src/utils/buffer_pool.c:100:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+src/middleware/microdds/src/utils/buffer_pool.c:102:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
             return g_buffer_pool.buffers[i].data;
             ^
-src/middleware/microdds/src/utils/buffer_pool.c:113:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+src/middleware/microdds/src/utils/buffer_pool.c:115:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
         return;
         ^
-src/middleware/microdds/src/utils/buffer_pool.c:120:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+src/middleware/microdds/src/utils/buffer_pool.c:122:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
             return;
             ^
-src/middleware/microdds/src/utils/buffer_pool.c:139:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+src/middleware/microdds/src/utils/buffer_pool.c:141:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
         return 0U;
         ^
 src/middleware/microdds/tests/unity/test_buffer_pool.c:39:5: portability: Assigning a pointer to an integer is not portable. [AssignmentAddressToInteger]
@@ -49384,6 +49264,9 @@ src/middleware/microdds/tests/unity/test_cdr.c:67:5: style: misra violation (use
 src/middleware/microdds/tests/unity/test_cdr.c:71:25: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-17.7]
     CDR_serialize_uint32(&g_cdr_buffer, 0x12345678);
                         ^
+src/middleware/microdds/tests/unity/test_cdr.c:72:21: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-17.7]
+    CDR_Buffer_reset(&g_cdr_buffer);
+                    ^
 src/middleware/microdds/tests/unity/test_cdr.c:73:5: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-17.7]
     TEST_ASSERT_EQUAL(0, g_cdr_buffer.write_pos);
     ^
@@ -55918,9 +55801,6 @@ __attribute__((weak)) bool DDS_PublishTelemetry(const TelDdsSample_t *sample) {
 src/telemetry/telemetry_dds.c:29:32: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
 __attribute__((weak)) uint32_t DDS_GetTimestamp(void) {
                                ^
-src/telemetry/telemetry_dds.c:140:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
-void Tel_Dds_CyclicTask(void) {
-     ^
 src/telemetry/telemetry_dds.c:61:35: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-10.4]
     while (total_bytes < (max_len - TEL_MAX_EVENT_SIZE)) {
                                   ^
@@ -59835,15 +59715,6 @@ Std_ReturnType Crypto_AesStreamUpdate(Crypto_JobType* job)
 ^
 src/bsw/mcal/crypto/src/Crypto_Aes.c:692:0: style: The function 'Crypto_AesStreamFinish' is never used. [unusedFunction]
 Std_ReturnType Crypto_AesStreamFinish(Crypto_JobType* job)
-^
-src/bsw/mcal/crypto/src/Crypto_Hsm.c:186:0: style: The function 'Crypto_Hsm_UnloadKey' is never used. [unusedFunction]
-static Std_ReturnType Crypto_Hsm_UnloadKey(Crypto_KeyIdType keyId){
-^
-src/bsw/mcal/crypto/src/Crypto_Hsm.c:215:0: style: The function 'Crypto_Hsm_GenerateRandom' is never used. [unusedFunction]
-static Std_ReturnType Crypto_Hsm_GenerateRandom(uint8* output, uint32 length){
-^
-src/bsw/mcal/crypto/src/Crypto_Hsm.c:235:0: style: The function 'Crypto_Hsm_SecureBootVerify' is never used. [unusedFunction]
-static Std_ReturnType Crypto_Hsm_SecureBootVerify(const uint8* imageHash, uint32 imageHashLen, const uint8* signature,                                           uint32 signatureLen, Crypto_VerifyResultType* verifyResult)
 ^
 src/bsw/mcal/crypto/src/Crypto_HwTrng.c:420:0: style: The function 'Crypto_HwTrng_GetStatus' is never used. [unusedFunction]
 Std_ReturnType Crypto_HwTrng_GetStatus(Crypto_HwTrngStatusType* status)
@@ -64570,30 +64441,30 @@ uint32 Rte_GetTime(void)
 src/application/communication_manager/tests/test_communication_manager.c:75:8: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.6]
 uint32 Rte_GetTime(void)
        ^
-src/application/diagnostic_manager/tests/test_diagnostic_manager.c:41:23: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static Std_ReturnType mockWriteResult;
-                      ^
-src/application/communication_manager/tests/test_communication_manager.c:34:23: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static Std_ReturnType mockWriteResult;
-                      ^
 src/application/diagnostic_manager/tests/test_diagnostic_manager.c:42:15: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static uint32 mockTime;
               ^
 src/application/communication_manager/tests/test_communication_manager.c:35:15: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static uint32 mockTime;
               ^
-src/application/diagnostic_manager/tests/test_diagnostic_manager.c:50:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static int detCalls;
-           ^
-src/application/communication_manager/tests/test_communication_manager.c:42:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static int detCalls;
-           ^
 src/application/diagnostic_manager/tests/test_diagnostic_manager.c:40:23: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static Std_ReturnType mockReadResult;
                       ^
 src/application/communication_manager/tests/test_communication_manager.c:33:23: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static Std_ReturnType mockReadResult;
                       ^
+src/application/diagnostic_manager/tests/test_diagnostic_manager.c:41:23: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static Std_ReturnType mockWriteResult;
+                      ^
+src/application/communication_manager/tests/test_communication_manager.c:34:23: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static Std_ReturnType mockWriteResult;
+                      ^
+src/application/diagnostic_manager/tests/test_diagnostic_manager.c:50:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static int detCalls;
+           ^
+src/application/communication_manager/tests/test_communication_manager.c:42:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static int detCalls;
+           ^
 src/application/diagnostic_manager/tests/test_diagnostic_manager.c:111:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static void mock_reset(void)
             ^
@@ -64609,24 +64480,24 @@ uint32 Rte_GetTime(void)
 src/application/engine_control/tests/test_engine_control.c:458:5: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.6]
 int main(void)
     ^
-src/application/engine_control/tests/test_engine_control.c:41:28: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static Swc_EngineStateType lastWrittenState;
-                           ^
-src/application/communication_manager/tests/test_communication_manager.c:40:26: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static Swc_CommStateType lastWrittenState;
-                         ^
 src/application/engine_control/tests/test_engine_control.c:36:23: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static Std_ReturnType mockReadResult;
                       ^
+src/application/engine_control/tests/test_engine_control.c:48:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static int detCalls;
+           ^
 src/application/engine_control/tests/test_engine_control.c:37:23: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static Std_ReturnType mockWriteResult;
                       ^
 src/application/engine_control/tests/test_engine_control.c:38:15: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static uint32 mockTime;
               ^
-src/application/engine_control/tests/test_engine_control.c:48:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static int detCalls;
-           ^
+src/application/engine_control/tests/test_engine_control.c:41:28: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static Swc_EngineStateType lastWrittenState;
+                           ^
+src/application/communication_manager/tests/test_communication_manager.c:40:26: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static Swc_CommStateType lastWrittenState;
+                         ^
 src/application/engine_control/tests/test_engine_control.c:45:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static int stateWrites;
            ^
@@ -64660,9 +64531,6 @@ uint32 Rte_GetTime(void)
 src/application/io_control/tests/test_io_control.c:47:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static int detCalls;
            ^
-src/application/io_control/tests/test_io_control.c:37:15: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static uint32 mockTime;
-              ^
 src/application/io_control/tests/test_io_control.c:46:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static int stateWrites;
            ^
@@ -64672,6 +64540,9 @@ static Swc_IOStateType lastWrittenState;
 src/application/io_control/tests/test_io_control.c:36:23: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static Std_ReturnType mockWriteResult;
                       ^
+src/application/io_control/tests/test_io_control.c:37:15: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static uint32 mockTime;
+              ^
 src/application/io_control/tests/test_io_control.c:117:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static void fresh_init(void)
             ^
@@ -64702,15 +64573,30 @@ int main(void)
 src/application/mode_manager/tests/test_mode_manager.c:76:8: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.6]
 uint32 Rte_GetTime(void)
        ^
-src/application/mode_manager/tests/test_mode_manager.c:39:28: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static Swc_SystemStateType lastWrittenState;
-                           ^
-src/application/mode_manager/tests/test_mode_manager.c:34:23: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static Std_ReturnType mockReadResult;
-                      ^
 src/application/mode_manager/tests/test_mode_manager.c:36:15: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static uint32 mockTime;
               ^
+src/application/mode_manager/tests/test_mode_manager.c:34:23: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static Std_ReturnType mockReadResult;
+                      ^
+src/application/mode_manager/tests/test_mode_manager.c:39:28: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static Swc_SystemStateType lastWrittenState;
+                           ^
+src/application/mode_manager/tests/test_mode_manager.c:35:23: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static Std_ReturnType mockWriteResult;
+                      ^
+src/application/mode_manager/tests/test_mode_manager.c:46:14: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static uint8 lastDetError;
+             ^
+src/application/engine_control/tests/test_engine_control.c:50:14: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static uint8 lastDetError;
+             ^
+src/application/mode_manager/tests/test_mode_manager.c:45:14: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static uint8 lastDetApi;
+             ^
+src/application/engine_control/tests/test_engine_control.c:49:14: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static uint8 lastDetApi;
+             ^
 src/application/mode_manager/tests/test_mode_manager.c:44:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static int detCalls;
            ^
@@ -64720,24 +64606,9 @@ static Swc_ModeTransitionRequestType mockRequest;
 src/application/diagnostic_manager/tests/test_diagnostic_manager.c:39:34: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static Swc_DiagnosticRequestType mockRequest;
                                  ^
-src/application/mode_manager/tests/test_mode_manager.c:46:14: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static uint8 lastDetError;
-             ^
-src/application/engine_control/tests/test_engine_control.c:50:14: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static uint8 lastDetError;
-             ^
 src/application/mode_manager/tests/test_mode_manager.c:42:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static int stateWrites;
            ^
-src/application/mode_manager/tests/test_mode_manager.c:45:14: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static uint8 lastDetApi;
-             ^
-src/application/engine_control/tests/test_engine_control.c:49:14: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static uint8 lastDetApi;
-             ^
-src/application/mode_manager/tests/test_mode_manager.c:35:23: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static Std_ReturnType mockWriteResult;
-                      ^
 src/application/mode_manager/tests/test_mode_manager.c:95:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static void fresh_init(void)
             ^
@@ -64768,21 +64639,21 @@ int main(void)
 src/application/storage_manager/tests/test_storage_manager.c:48:8: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.6]
 uint32 Rte_GetTime(void)
        ^
-src/application/storage_manager/tests/test_storage_manager.c:39:14: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static uint8 lastDetError;
+src/application/storage_manager/tests/test_storage_manager.c:37:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static int detCalls;
+           ^
+src/application/storage_manager/tests/test_storage_manager.c:33:15: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static uint32 mockTime;
+              ^
+src/application/storage_manager/tests/test_storage_manager.c:38:14: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static uint8 lastDetApi;
              ^
 src/application/storage_manager/tests/test_storage_manager.c:32:23: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static Std_ReturnType mockWriteResult;
                       ^
-src/application/storage_manager/tests/test_storage_manager.c:38:14: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static uint8 lastDetApi;
+src/application/storage_manager/tests/test_storage_manager.c:39:14: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static uint8 lastDetError;
              ^
-src/application/storage_manager/tests/test_storage_manager.c:33:15: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static uint32 mockTime;
-              ^
-src/application/storage_manager/tests/test_storage_manager.c:37:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static int detCalls;
-           ^
 src/application/storage_manager/tests/test_storage_manager.c:67:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static void fresh_init(void)
             ^
@@ -64807,24 +64678,27 @@ int main(void)
 src/application/vehicle_dynamics/tests/test_vehicle_dynamics.c:89:8: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.6]
 uint32 Rte_GetTime(void)
        ^
-src/application/vehicle_dynamics/tests/test_vehicle_dynamics.c:36:23: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static Std_ReturnType mockWriteResult;
-                      ^
-src/application/vehicle_dynamics/tests/test_vehicle_dynamics.c:42:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static int stateWrites;
-           ^
-src/application/vehicle_dynamics/tests/test_vehicle_dynamics.c:39:25: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static Swc_VdcStateType lastWrittenState;
-                        ^
 src/application/vehicle_dynamics/tests/test_vehicle_dynamics.c:44:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static int outputWrites;
            ^
 src/application/engine_control/tests/test_engine_control.c:44:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static int outputWrites;
            ^
+src/application/vehicle_dynamics/tests/test_vehicle_dynamics.c:36:23: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static Std_ReturnType mockWriteResult;
+                      ^
+src/application/vehicle_dynamics/tests/test_vehicle_dynamics.c:42:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static int stateWrites;
+           ^
 src/application/vehicle_dynamics/tests/test_vehicle_dynamics.c:35:23: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static Std_ReturnType mockReadResult;
                       ^
+src/application/vehicle_dynamics/tests/test_vehicle_dynamics.c:37:15: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static uint32 mockTime;
+              ^
+src/application/vehicle_dynamics/tests/test_vehicle_dynamics.c:39:25: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static Swc_VdcStateType lastWrittenState;
+                        ^
 src/application/vehicle_dynamics/tests/test_vehicle_dynamics.c:45:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static int detCalls;
            ^
@@ -64834,9 +64708,6 @@ static Swc_VehicleDynamicsOutputType lastOutput;
 src/application/engine_control/tests/test_engine_control.c:40:36: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static Swc_EngineControlOutputType lastOutput;
                                    ^
-src/application/vehicle_dynamics/tests/test_vehicle_dynamics.c:37:15: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static uint32 mockTime;
-              ^
 src/application/vehicle_dynamics/tests/test_vehicle_dynamics.c:108:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static void fresh_init(void)
             ^
@@ -64867,30 +64738,30 @@ static Std_ReturnType mockWriteResult;
 src/application/watchdog_manager/tests/test_watchdog_manager.c:42:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static int detCalls;
            ^
-src/application/watchdog_manager/tests/test_watchdog_manager.c:44:14: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static uint8 lastDetError;
-             ^
-src/application/watchdog_manager/tests/test_watchdog_manager.c:43:14: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static uint8 lastDetApi;
-             ^
+src/application/watchdog_manager/tests/test_watchdog_manager.c:34:23: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static Std_ReturnType mockReadResult;
+                      ^
 src/application/watchdog_manager/tests/test_watchdog_manager.c:39:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static int statusWrites;
            ^
 src/application/storage_manager/tests/test_storage_manager.c:36:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static int statusWrites;
            ^
+src/application/watchdog_manager/tests/test_watchdog_manager.c:44:14: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static uint8 lastDetError;
+             ^
 src/application/watchdog_manager/tests/test_watchdog_manager.c:38:31: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static Swc_WatchdogStatusType lastWrittenStatus;
                               ^
 src/application/storage_manager/tests/test_storage_manager.c:35:35: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static Swc_StorageBlockStatusType lastWrittenStatus;
                                   ^
+src/application/watchdog_manager/tests/test_watchdog_manager.c:43:14: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static uint8 lastDetApi;
+             ^
 src/application/watchdog_manager/tests/test_watchdog_manager.c:36:15: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static uint32 mockTime;
               ^
-src/application/watchdog_manager/tests/test_watchdog_manager.c:34:23: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static Std_ReturnType mockReadResult;
-                      ^
 src/application/watchdog_manager/tests/test_watchdog_manager.c:93:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static void fresh_init(void)
             ^
@@ -64987,24 +64858,24 @@ static int tests_run = 0;
 src/bootloader/tests/test_e2e_antrollback.c:726:5: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.6]
 int main(void)
     ^
-src/bootloader/tests/test_bootloader.c:47:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static int mock_program_fail = 0;   /* 注入: program 失败 */
-           ^
-src/bootloader/tests/test_e2e_antrollback.c:90:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static uint8_t mock_flash[MOCK_FLASH_SIZE];
-               ^
-src/bootloader/tests/test_bootloader.c:45:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static uint8_t mock_flash[MOCK_FLASH_SIZE];
-               ^
-src/bootloader/tests/test_e2e_antrollback.c:70:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static int tests_passed = 0;
-           ^
 src/bootloader/tests/test_e2e_antrollback.c:147:32: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static const bl_flash_driver_t mock_flash_driver = {
                                ^
 src/bootloader/tests/test_bootloader.c:107:32: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static const bl_flash_driver_t mock_flash_driver = {
                                ^
+src/bootloader/tests/test_e2e_antrollback.c:90:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static uint8_t mock_flash[MOCK_FLASH_SIZE];
+               ^
+src/bootloader/tests/test_bootloader.c:45:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static uint8_t mock_flash[MOCK_FLASH_SIZE];
+               ^
+src/bootloader/tests/test_bootloader.c:47:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static int mock_program_fail = 0;   /* 注入: program 失败 */
+           ^
+src/bootloader/tests/test_e2e_antrollback.c:70:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static int tests_passed = 0;
+           ^
 src/bootloader/tests/test_e2e_antrollback.c:69:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static int tests_run = 0;
            ^
@@ -65074,9 +64945,6 @@ static uint32_t test_crc32(const uint8_t *data, uint32_t length)
 src/bootloader/tests/test_sbl_main.c:740:5: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.6]
 int main(void)
     ^
-src/bootloader/tests/test_sbl_main.c:50:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static uint8_t mock_flash[MOCK_FLASH_SIZE];
-               ^
 src/bootloader/tests/test_sbl_main.c:103:32: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static const bl_flash_driver_t mock_flash_driver = {
                                ^
@@ -65086,12 +64954,15 @@ static uint64_t mock_time_ms = 1000;
 src/bootloader/tests/test_bootloader.c:122:17: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static uint64_t mock_time_ms = 1000;
                 ^
-src/bootloader/tests/test_sbl_main.c:42:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static int tests_passed = 0;
-           ^
 src/bootloader/tests/test_sbl_main.c:41:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static int tests_run = 0;
            ^
+src/bootloader/tests/test_sbl_main.c:42:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static int tests_passed = 0;
+           ^
+src/bootloader/tests/test_sbl_main.c:50:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static uint8_t mock_flash[MOCK_FLASH_SIZE];
+               ^
 src/bootloader/tests/test_sbl_main.c:55:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static int32_t mock_flash_read(uint32_t address, uint8_t *data, uint32_t length)
                ^
@@ -65224,11 +65095,11 @@ Boot_Result Boot_Flash_SetProtection(uint32_t a, uint32_t s, boolean p)
 src/bsw/boot/src/Boot_Flash.c:104:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.6]
 Boot_Result Boot_Flash_SetProtection(uint32_t address, uint32_t size, boolean protect)
             ^
-src/bsw/boot/test/test_boot_image.c:72:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static int tests_run = 0;
-           ^
 src/bsw/boot/test/test_boot_image.c:73:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static int tests_passed = 0;
+           ^
+src/bsw/boot/test/test_boot_image.c:72:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static int tests_run = 0;
            ^
 src/bsw/boot/test/test_boot_image.c:216:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static int run_test(int (*test_func)(void), const char *name)
@@ -65395,6 +65266,24 @@ src/bsw/mcal/flash/include/Flash.h:111:1: style: misra violation (use --rule-tex
 src/bsw/ecual/ethtrcv/include/EthTrcv.h:42:1: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.6]
 typedef uint8 EcuM_WakeupSourceType;
 ^
+src/bsw/ecual/ethtrcv/src/EthTrcv.c:92:37: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.5]
+extern const EthTrcv_TrcvConfigType EthTrcv_TrcvConfig[ETHTRCV_NUMBER_OF_TRCVS];
+                                    ^
+src/bsw/ecual/ethtrcv/include/EthTrcv.h:507:37: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.5]
+extern const EthTrcv_TrcvConfigType EthTrcv_TrcvConfig[ETHTRCV_NUMBER_OF_TRCVS];
+                                    ^
+src/bsw/ecual/ethtrcv/src/EthTrcv.c:93:42: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.5]
+extern const EthTrcv_LinkStateChgCbkType EthTrcv_LinkStateChgCallback;
+                                         ^
+src/bsw/ecual/ethtrcv/include/EthTrcv.h:508:42: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.5]
+extern const EthTrcv_LinkStateChgCbkType EthTrcv_LinkStateChgCallback;
+                                         ^
+src/bsw/ecual/ethtrcv/src/EthTrcv.c:94:46: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.5]
+extern const EthTrcv_WakeupIndicationCbkType EthTrcv_WakeupIndicationCallback;
+                                             ^
+src/bsw/ecual/ethtrcv/include/EthTrcv.h:509:46: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.5]
+extern const EthTrcv_WakeupIndicationCbkType EthTrcv_WakeupIndicationCallback;
+                                             ^
 src/bsw/ecual/ethtrcv/src/EthTrcv_Lcfg.c:256:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.5]
 extern void EcuM_CheckWakeup(EcuM_WakeupSourceType WakeupSource);
             ^
@@ -65581,6 +65470,33 @@ Std_ReturnType Crypto_HwTrng_Generate(uint8* output, uint32 length);
 src/bsw/boot/src/Boot_Hsm.c:32:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.5]
 Std_ReturnType Crypto_HwTrng_Generate(uint8* output, uint32 length);
                ^
+src/bsw/mcal/crypto/tests/test_crypto_hsm.c:186:5: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.6]
+int main(void)
+    ^
+src/bsw/mcal/crypto/src/Crypto_Hsm.c:34:22: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+STATIC Hsm_StateType Hsm_State = HSM_STATE_UNINIT;
+                     ^
+src/bsw/mcal/crypto/src/Crypto_Hsm.c:35:36: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+STATIC const Crypto_HsmConfigType* Hsm_ConfigPtr = NULL_PTR;
+                                   ^
+src/bsw/mcal/crypto/src/Crypto_Hsm.c:186:23: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static Std_ReturnType Crypto_Hsm_UnloadKey(Crypto_KeyIdType keyId){
+                      ^
+src/bsw/mcal/crypto/src/Crypto_Hsm.c:215:23: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static Std_ReturnType Crypto_Hsm_GenerateRandom(uint8* output, uint32 length){
+                      ^
+src/bsw/mcal/crypto/src/Crypto_Hsm.c:235:23: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static Std_ReturnType Crypto_Hsm_SecureBootVerify(const uint8* imageHash, uint32 imageHashLen, const uint8* signature,                                           uint32 signatureLen, Crypto_VerifyResultType* verifyResult)
+                      ^
+src/bsw/mcal/crypto/tests/test_crypto_mbedtls.c:48:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.6]
+Std_ReturnType Crypto_RandomGenerate(Crypto_KeyIdType cryptoKeyId, uint8* resultPtr, uint32 resultLength)
+               ^
+src/bsw/mcal/crypto/src/Crypto.c:535:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.6]
+Std_ReturnType Crypto_RandomGenerate(Crypto_KeyIdType cryptoKeyId, uint8* resultPtr, uint32 resultLength)
+               ^
+src/bsw/mcal/crypto/tests/test_crypto_mbedtls.c:646:5: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.6]
+int main(void)
+    ^
 src/bsw/mcal/eep/include/Eep.h:161:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.5]
 Std_ReturnType Eep_Read(Eep_AddressType Address, uint8* DataPtr, Eep_LengthType Length);
                ^
@@ -65911,6 +65827,18 @@ extern const Csm_ConfigType Csm_Config;
 src/bsw/services/det/src/Det.c:239:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.6]
 Std_ReturnType Det_ReportError(
                ^
+src/bsw/services/dlt/src/Dlt.c:61:30: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.5]
+extern const Dlt_ContextType Dlt_ContextConfig[DLT_MAX_CONTEXT_COUNT];
+                             ^
+src/bsw/services/dlt/include/Dlt.h:708:30: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.5]
+extern const Dlt_ContextType Dlt_ContextConfig[DLT_MAX_CONTEXT_COUNT];
+                             ^
+src/bsw/services/dlt/src/Dlt.c:66:24: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.5]
+extern Dlt_ContextType Dlt_RuntimeContext[DLT_MAX_CONTEXT_COUNT];
+                       ^
+src/bsw/services/dlt/include/Dlt.h:705:24: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.5]
+extern Dlt_ContextType Dlt_RuntimeContext[DLT_MAX_CONTEXT_COUNT];
+                       ^
 src/bsw/services/docan/src/DoCan.c:27:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.5]
 extern void Dcm_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr);
             ^
@@ -66211,24 +66139,15 @@ typedef double              float64;
 src/bsw/services/soad/src/SoAd_Test.c:405:5: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.6]
 int main(void)
     ^
-src/bsw/services/soad/src/SoAd_Test.c:36:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static int tests_run = 0;
-           ^
 src/bsw/services/soad/src/SoAd_Test.c:37:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static int tests_passed = 0;
+           ^
+src/bsw/services/soad/src/SoAd_Test.c:36:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static int tests_run = 0;
            ^
 src/bsw/services/someiptp/src/SomeIpTp_Test.c:358:5: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.6]
 int main(void)
     ^
-src/bsw/services/someiptp/src/SomeIpTp_Test.c:33:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static int tests_run = 0;
-           ^
-src/bsw/services/someiptp/src/SomeIpTp_Test.c:96:34: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static const SomeIpTp_ConfigType TestConfig = {
-                                 ^
-src/bsw/services/soad/src/SoAd_Test.c:109:30: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static const SoAd_ConfigType TestConfig = {
-                             ^
 src/bsw/services/someiptp/src/SomeIpTp_Test.c:34:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static int tests_passed = 0;
            ^
@@ -66238,6 +66157,15 @@ static int tests_failed = 0;
 src/bsw/services/soad/src/SoAd_Test.c:38:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static int tests_failed = 0;
            ^
+src/bsw/services/someiptp/src/SomeIpTp_Test.c:33:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static int tests_run = 0;
+           ^
+src/bsw/services/someiptp/src/SomeIpTp_Test.c:96:34: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static const SomeIpTp_ConfigType TestConfig = {
+                                 ^
+src/bsw/services/soad/src/SoAd_Test.c:109:30: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static const SoAd_ConfigType TestConfig = {
+                             ^
 src/bsw/services/someipxf/src/SomeIpXf_Test.c:390:5: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.6]
 int main(void)
     ^
@@ -66247,26 +66175,26 @@ static int tests_run = 0;
 src/bsw/services/someipxf/src/SomeIpXf_Test.c:34:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static int tests_failed = 0;
            ^
-src/bsw/services/someipxf/src/SomeIpXf_Test.c:76:34: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static const SomeIpXf_ConfigType TestConfig = {
-                                 ^
 src/bsw/services/someipxf/src/SomeIpXf_Test.c:33:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static int tests_passed = 0;
            ^
+src/bsw/services/someipxf/src/SomeIpXf_Test.c:76:34: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static const SomeIpXf_ConfigType TestConfig = {
+                                 ^
 src/bsw/services/stbm/src/StbM_Test.c:356:5: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.6]
 int main(void)
     ^
-src/bsw/services/stbm/src/StbM_Test.c:35:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static int tests_failed = 0;
-           ^
-src/bsw/services/stbm/src/StbM_Test.c:33:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static int tests_run = 0;
-           ^
 src/bsw/services/stbm/src/StbM_Test.c:97:30: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static const StbM_ConfigType TestConfig = {
                              ^
 src/bsw/services/stbm/src/StbM_Test.c:34:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static int tests_passed = 0;
+           ^
+src/bsw/services/stbm/src/StbM_Test.c:35:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static int tests_failed = 0;
+           ^
+src/bsw/services/stbm/src/StbM_Test.c:33:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static int tests_run = 0;
            ^
 src/middleware/rte/include/Rte_Swc.h:54:1: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.6]
 typedef struct {
@@ -66373,11 +66301,11 @@ int main(void)
 src/crypto_stack/tests/test_cryif.c:378:5: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.6]
 int main(void)
     ^
-src/crypto_stack/tests/test_cryif.c:26:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static int tests_run = 0;
-           ^
 src/crypto_stack/tests/test_cryif.c:27:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static int tests_passed = 0;
+           ^
+src/crypto_stack/tests/test_cryif.c:26:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static int tests_run = 0;
            ^
 src/crypto_stack/tests/test_cryif.c:366:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static int run_test(int (*test_func)(void), const char *name)
@@ -66523,11 +66451,11 @@ void PduR_MainFunction(void)
 src/eth_sm/tests/test_eth_sm.c:893:5: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.6]
 int main(void)
     ^
-src/eth_sm/tests/test_eth_sm.c:50:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static int tests_passed = 0;
-           ^
 src/eth_sm/tests/test_eth_sm.c:49:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static int tests_run = 0;
+           ^
+src/eth_sm/tests/test_eth_sm.c:50:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static int tests_passed = 0;
            ^
 src/eth_sm/tests/test_eth_sm.c:881:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static int run_test(int (*test_func)(void), const char *name)
@@ -66535,17 +66463,17 @@ static int run_test(int (*test_func)(void), const char *name)
 src/ethernet/tests/test_eth_manager.c:1287:5: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.6]
 int main(void)
     ^
-src/ethernet/tests/test_eth_manager.c:57:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static int tests_passed = 0;
-           ^
-src/ethernet/tests/test_eth_manager.c:56:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static int tests_run = 0;
-           ^
 src/ethernet/tests/test_eth_manager.c:126:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static int g_link_cb_count = 0;
            ^
 src/eth_sm/tests/test_eth_sm.c:63:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static int g_link_cb_count = 0;
+           ^
+src/ethernet/tests/test_eth_manager.c:56:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static int tests_run = 0;
+           ^
+src/ethernet/tests/test_eth_manager.c:57:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static int tests_passed = 0;
            ^
 src/ethernet/tests/test_eth_manager.c:63:29: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static eth_manager_config_t make_config(void)
@@ -66670,20 +66598,20 @@ Std_ReturnType SoAd_IfTransmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
 src/middleware/dds/transport/tests/test_dds_eth_transport.c:308:5: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.6]
 int main(void)
     ^
-src/middleware/dds/transport/tests/test_dds_eth_transport.c:14:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static int tests_passed = 0;
-           ^
 src/middleware/dds/transport/tests/test_dds_eth_transport.c:15:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static int tests_failed = 0;
+           ^
+src/middleware/dds/transport/tests/test_dds_eth_transport.c:14:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static int tests_passed = 0;
            ^
 src/middleware/microdds/examples/hello_world/main.c:158:5: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.6]
 int main(void) {
     ^
-src/middleware/microdds/examples/hello_world/main.c:25:23: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static DDS_DataWriter g_writer = NULL_PTR;
+src/middleware/microdds/examples/hello_world/main.c:26:23: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static DDS_DataReader g_reader = NULL_PTR;
                       ^
-src/middleware/dds/tests/test_dds_core.c:32:33: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static dds_DataWriterHandleType g_writer = DDS_ENTITY_INVALID;
+src/middleware/dds/tests/test_dds_core.c:33:33: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static dds_DataReaderHandleType g_reader = DDS_ENTITY_INVALID;
                                 ^
 src/middleware/microdds/examples/hello_world/main.c:23:22: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static DDS_Publisher g_publisher = NULL_PTR;
@@ -66691,29 +66619,29 @@ static DDS_Publisher g_publisher = NULL_PTR;
 src/middleware/dds/tests/test_dds_core.c:29:32: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static dds_PublisherHandleType g_publisher = DDS_ENTITY_INVALID;
                                ^
-src/middleware/microdds/examples/hello_world/main.c:26:23: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static DDS_DataReader g_reader = NULL_PTR;
-                      ^
-src/middleware/dds/tests/test_dds_core.c:33:33: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static dds_DataReaderHandleType g_reader = DDS_ENTITY_INVALID;
-                                ^
 src/middleware/microdds/examples/hello_world/main.c:22:18: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static DDS_Topic g_topic = NULL_PTR;
                  ^
 src/middleware/dds/tests/test_dds_core.c:31:28: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static dds_TopicHandleType g_topic = DDS_ENTITY_INVALID;
                            ^
+src/middleware/microdds/examples/hello_world/main.c:24:23: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static DDS_Subscriber g_subscriber = NULL_PTR;
+                      ^
+src/middleware/dds/tests/test_dds_core.c:30:33: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static dds_SubscriberHandleType g_subscriber = DDS_ENTITY_INVALID;
+                                ^
 src/middleware/microdds/examples/hello_world/main.c:21:30: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static DDS_DomainParticipant g_participant = NULL_PTR;
                              ^
 src/middleware/dds/tests/test_dds_core.c:28:40: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static dds_DomainParticipantHandleType g_participant = DDS_ENTITY_INVALID;
                                        ^
-src/middleware/microdds/examples/hello_world/main.c:24:23: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static DDS_Subscriber g_subscriber = NULL_PTR;
+src/middleware/microdds/examples/hello_world/main.c:25:23: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static DDS_DataWriter g_writer = NULL_PTR;
                       ^
-src/middleware/dds/tests/test_dds_core.c:30:33: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static dds_SubscriberHandleType g_subscriber = DDS_ENTITY_INVALID;
+src/middleware/dds/tests/test_dds_core.c:32:33: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static dds_DataWriterHandleType g_writer = DDS_ENTITY_INVALID;
                                 ^
 src/middleware/microdds/src/core/domain.c:29:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static bool g_initialized = false;
@@ -66781,18 +66709,18 @@ void tearDown(void) {
 src/middleware/microdds/tests/unity/test_reader.c:80:5: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.6]
 int main(void) {
     ^
-src/middleware/microdds/tests/unity/test_reader.c:11:30: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static DDS_DomainParticipant g_participant = NULL_PTR;
-                             ^
-src/middleware/microdds/tests/unity/test_reader.c:12:18: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static DDS_Topic g_topic = NULL_PTR;
-                 ^
 src/middleware/microdds/tests/unity/test_reader.c:14:23: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static DDS_DataReader g_reader = NULL_PTR;
                       ^
+src/middleware/microdds/tests/unity/test_reader.c:12:18: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static DDS_Topic g_topic = NULL_PTR;
+                 ^
 src/middleware/microdds/tests/unity/test_reader.c:13:23: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static DDS_Subscriber g_subscriber = NULL_PTR;
                       ^
+src/middleware/microdds/tests/unity/test_reader.c:11:30: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static DDS_DomainParticipant g_participant = NULL_PTR;
+                             ^
 src/middleware/microdds/tests/unity/test_subscriber.c:18:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.6]
 void setUp(void) {
      ^
@@ -66826,15 +66754,15 @@ void tearDown(void) {
 src/middleware/microdds/tests/unity/test_writer.c:84:5: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.6]
 int main(void) {
     ^
-src/middleware/microdds/tests/unity/test_writer.c:14:23: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static DDS_DataWriter g_writer = NULL_PTR;
-                      ^
 src/middleware/microdds/tests/unity/test_writer.c:13:22: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static DDS_Publisher g_publisher = NULL_PTR;
                      ^
 src/middleware/microdds/tests/unity/test_writer.c:11:30: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static DDS_DomainParticipant g_participant = NULL_PTR;
                              ^
+src/middleware/microdds/tests/unity/test_writer.c:14:23: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static DDS_DataWriter g_writer = NULL_PTR;
+                      ^
 src/middleware/microdds/tests/unity/test_writer.c:12:18: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static DDS_Topic g_topic = NULL_PTR;
                  ^
@@ -67147,11 +67075,11 @@ extern void RamSafety_GetVersionInfo(Std_VersionInfoType* versioninfo);
 src/safety/ram/test_ram_ecc.c:455:5: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.6]
 int main(void)
     ^
-src/safety/ram/test_ram_ecc.c:20:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static int tests_passed = 0;
-           ^
 src/safety/ram/test_ram_ecc.c:21:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static int tests_failed = 0;
+           ^
+src/safety/ram/test_ram_ecc.c:20:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static int tests_passed = 0;
            ^
 src/safety/ram/tests/test_double_bit_errors.c:316:5: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.6]
 int main(void)
@@ -67174,15 +67102,15 @@ static RamPartitionViolationCallbackType g_violation_callback = NULL;
 src/safety/saferam/heap_protection.c:30:34: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static HeapViolationCallbackType g_violation_callback = NULL;
                                  ^
+src/safety/saferam/ram_partition.c:28:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static boolean g_initialized = FALSE;
+               ^
 src/safety/saferam/ram_partition.c:26:34: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static RamPartitionViolationType g_last_violation;
                                  ^
 src/safety/saferam/heap_protection.c:29:26: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static HeapViolationType g_last_violation;
                          ^
-src/safety/saferam/ram_partition.c:28:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static boolean g_initialized = FALSE;
-               ^
 src/safety/saferam/ram_partition.c:37:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static void ReportViolation(const RamPartitionViolationType *violation);
             ^
@@ -67195,27 +67123,27 @@ static boolean g_initialized = FALSE;
 src/safety/saferam/safe_data.c:29:17: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static uint32_t g_system_time_ms = 0;
                 ^
+src/safety/saferam/saferam_manager.c:26:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static boolean g_initialized = FALSE;
+               ^
 src/safety/saferam/saferam_manager.c:25:27: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static SafeRamContextType g_context;
                           ^
 src/autosar/adaptive/sm/state_machine.c:20:32: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static StateMachineContextType g_context;
                                ^
-src/safety/saferam/saferam_manager.c:26:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static boolean g_initialized = FALSE;
-               ^
 src/safety/saferam/stack_protection.c:30:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static boolean g_initialized = FALSE;
                ^
+src/safety/saferam/stack_protection.c:29:31: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static StackMonitorConfigType g_config;
+                              ^
 src/safety/saferam/stack_protection.c:28:35: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static StackViolationCallbackType g_violation_callback = NULL;
                                   ^
 src/safety/saferam/stack_protection.c:27:27: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static StackViolationType g_last_violation;
                           ^
-src/safety/saferam/stack_protection.c:29:31: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static StackMonitorConfigType g_config;
-                              ^
 src/safety/saferam/stack_protection.c:38:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static void ReportViolation(const StackViolationType *violation);
             ^
@@ -67303,11 +67231,11 @@ tcpip_error_t tcpip_udp_leave_multicast(tcpip_socket_id_t socket_id,
 src/telemetry/tests/test_telemetry.c:1148:5: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.6]
 int main(void)
     ^
-src/telemetry/tests/test_telemetry.c:44:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static int tests_run = 0;
-           ^
 src/telemetry/tests/test_telemetry.c:45:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static int tests_passed = 0;
+           ^
+src/telemetry/tests/test_telemetry.c:44:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static int tests_run = 0;
            ^
 src/telemetry/tests/test_telemetry.c:1136:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static int run_test(int (*test_func)(void), const char *name)
@@ -67339,14 +67267,14 @@ static eth_status_t check_safety(uint16_t port_id) {
 src/tsn/tests/test_tsn_stack.c:471:5: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.6]
 int main(int argc, char *argv[]) {
     ^
-src/tsn/tests/test_tsn_stack.c:17:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static int tests_passed = 0;
+src/tsn/tests/test_tsn_stack.c:18:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static int tests_failed = 0;
            ^
 src/tsn/tests/test_tsn_stack.c:16:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static int tests_run = 0;
            ^
-src/tsn/tests/test_tsn_stack.c:18:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
-static int tests_failed = 0;
+src/tsn/tests/test_tsn_stack.c:17:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
+static int tests_passed = 0;
            ^
 src/tsn/tsn_stack.c:41:17: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.9]
 static uint64_t get_current_time_ns(void) {
@@ -67987,28 +67915,28 @@ typedef enum {
 src/bsw/services/dlt/include/Dlt_Types.h:25:1: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.3]
 typedef struct {
 ^
-src/bsw/services/dlt/src/Dlt_Lcfg.c:598:1: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.3]
+src/bsw/services/dlt/src/Dlt_Lcfg.c:591:1: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.3]
 typedef char Dlt_LcfgCheck_Buffer[(sizeof(Dlt_Buffer) / sizeof(Dlt_BufferType)) == DLT_BUFFER_COUNT ? 1 : -1];
 ^
-src/bsw/services/dlt/src/Dlt_Lcfg.c:602:1: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.3]
+src/bsw/services/dlt/src/Dlt_Lcfg.c:595:1: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.3]
 typedef char Dlt_LcfgCheck_BufferPriority[(sizeof(Dlt_BufferPriority) / sizeof(uint8)) == DLT_BUFFER_COUNT ? 1 : -1];
 ^
-src/bsw/services/dlt/src/Dlt_Lcfg.c:601:1: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.3]
+src/bsw/services/dlt/src/Dlt_Lcfg.c:594:1: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.3]
 typedef char Dlt_LcfgCheck_BufferSize[(sizeof(Dlt_BufferSize) / sizeof(uint16)) == DLT_BUFFER_COUNT ? 1 : -1];
 ^
-src/bsw/services/dlt/src/Dlt_Lcfg.c:597:1: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.3]
+src/bsw/services/dlt/src/Dlt_Lcfg.c:590:1: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.3]
 typedef char Dlt_LcfgCheck_ContextConfig[(sizeof(Dlt_ContextConfig) / sizeof(Dlt_ContextType)) == DLT_MAX_CONTEXT_COUNT ? 1 : -1];
 ^
-src/bsw/services/dlt/src/Dlt_Lcfg.c:603:1: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.3]
+src/bsw/services/dlt/src/Dlt_Lcfg.c:596:1: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.3]
 typedef char Dlt_LcfgCheck_ContextGroups[(sizeof(Dlt_ContextGroups) / sizeof(Dlt_ContextGroupType)) == DLT_MAX_CONTEXT_COUNT ? 1 : -1];
 ^
-src/bsw/services/dlt/src/Dlt_Lcfg.c:599:1: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.3]
+src/bsw/services/dlt/src/Dlt_Lcfg.c:592:1: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.3]
 typedef char Dlt_LcfgCheck_DefaultLogLevels[(sizeof(Dlt_DefaultLogLevels) / sizeof(Dlt_LogLevelType)) == 8U ? 1 : -1];
 ^
-src/bsw/services/dlt/src/Dlt_Lcfg.c:600:1: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.3]
+src/bsw/services/dlt/src/Dlt_Lcfg.c:593:1: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.3]
 typedef char Dlt_LcfgCheck_DefaultTraceStatus[(sizeof(Dlt_DefaultTraceStatus) / sizeof(Dlt_TraceStatusType)) == 8U ? 1 : -1];
 ^
-src/bsw/services/dlt/src/Dlt_Lcfg.c:604:1: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.3]
+src/bsw/services/dlt/src/Dlt_Lcfg.c:597:1: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.3]
 typedef char Dlt_LcfgCheck_LogFilters[(sizeof(Dlt_LogFilters) / sizeof(Dlt_LogFilterType)) == DLT_MAX_CONTEXT_COUNT ? 1 : -1];
 ^
 src/bsw/services/docan/include/DoCan.h:60:1: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.3]
@@ -68334,6 +68262,9 @@ typedef uint32_t DDS_StatusMask;
 ^
 src/middleware/microdds/include/microdds/qos.h:303:1: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.3]
 typedef struct {
+^
+src/middleware/microdds/include/microdds/types.h:165:1: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.3]
+typedef int64_t DDS_Time_t;
 ^
 src/middleware/microdds/src/transport/udp.c:165:1: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.3]
 typedef enum {
@@ -87721,9 +87652,9 @@ static const Spi_ConfigType* Spi_ConfigPtr = NULL_PTR;
 src/bsw/mcal/spi/src/Spi_Lcfg.c:9:29: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.8]
 const Spi_ConfigType* const Spi_ConfigPtr = &Spi_Config;
                             ^
-src/bsw/services/linm/include/LinM.h:211:86: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.8]
-extern Std_ReturnType LinM_StartSchedule(LinM_ChannelType Channel, LinM_ScheduleType Schedule);
-                                                                                     ^
+src/bsw/services/linm/include/LinM.h:202:85: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.8]
+extern Std_ReturnType LinM_InitSchedule(LinM_ChannelType Channel, LinM_ScheduleType Schedule);
+                                                                                    ^
 src/bsw/os/src/Os.c:400:12: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.8]
 StatusType Schedule(void)
            ^
@@ -87754,9 +87685,6 @@ static void Icu_ClearChannelFlag(Icu_ChannelType Channel);
 src/bsw/mcal/icu/include/Icu_Private.h:126:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.8]
 static void Icu_ProcessSignalMeasurement(Icu_ChannelType Channel);
             ^
-src/bsw/mcal/mcu/src/Mcu.c:88:30: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.8]
-static const Mcu_ConfigType* Mcu_ConfigPtr = NULL_PTR;
-                             ^
 src/bsw/services/pdur/src/PduR.c:114:23: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.8]
 STATIC Std_ReturnType PduR_RoutePdu(const PduR_RoutingPathConfigType* PathPtr, const PduInfoType* PduInfoPtr);
                       ^
@@ -87904,6 +87832,9 @@ Std_ReturnType Cdd_RamEcc_ClearErrorLog(void)
 src/bsw/cdd/src/Cdd_Safety_1.0.0.c:230:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.7]
 Std_ReturnType Cdd_Safety_ReportFault(Cdd_Safety_FaultSourceType source, uint32 faultId)
                ^
+src/bsw/ecual/cantrcv/src/CanTrcv_Lcfg.c:192:26: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.7]
+const CanTrcv_ConfigType CanTrcv_Config =
+                         ^
 src/bsw/ecual/doIP/src/DoIP.c:697:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.7]
 Std_ReturnType DoIP_ProcessRoutingActivation(
                ^
@@ -87964,6 +87895,12 @@ LINIF_WEAK void LinIf_GotoSleepConfirmation(uint8 Channel)
 src/bsw/ecual/linif/src/LinIf.c:74:17: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.7]
 LINIF_WEAK void LinIf_RxCallback(uint8 Channel, const LinIf_PduType* PduInfoPtr)
                 ^
+src/bsw/ecual/wdgif/src/WdgIf_Lcfg.c:7:31: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.7]
+const WdgIf_ConfigType* const WdgIf_ConfigPtr = &WdgIf_Config;
+                              ^
+src/bsw/ecual/wdgif/src/WdgIf_Lcfg.c:6:24: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.7]
+const WdgIf_ConfigType WdgIf_Config = { 0U };
+                       ^
 src/bsw/mcal/can/src/Can_Lcfg.c:7:22: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.7]
 const Can_ConfigType Can_Config = { 0U };
                      ^
@@ -87975,15 +87912,6 @@ Std_ReturnType Crypto_HwTrng_GetEntropyEstimate(uint32* entropyBits)
                ^
 src/bsw/mcal/crypto/src/Crypto_HwTrng.c:596:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.7]
 Std_ReturnType Crypto_HwTrng_Reseed(const uint8* seedData, uint32 seedLength)
-               ^
-src/bsw/mcal/crypto/src/Crypto_MbedTLS.c:587:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.7]
-Std_ReturnType Crypto_MbedTLS_HMAC(Crypto_KeyIdType keyId,
-               ^
-src/bsw/mcal/crypto/src/Crypto_MbedTLS.c:285:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.7]
-Std_ReturnType Crypto_MbedTLS_ECDSA_Verify(Crypto_KeyIdType keyId,
-               ^
-src/bsw/mcal/crypto/src/Crypto_MbedTLS.c:620:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.7]
-Std_ReturnType Crypto_MbedTLS_HKDF(Crypto_KeyIdType ikmKeyId,
                ^
 src/bsw/mcal/crypto/src/Crypto_S32K312_Hsm.c:476:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.7]
 Std_ReturnType S32K312_Hsm_AesInit(S32K312_HsmAesContextType* context,
@@ -87997,6 +87925,9 @@ Std_ReturnType S32K312_Hsm_AesGcmEncrypt(const S32K312_HsmAesContextType* contex
 src/bsw/mcal/crypto/src/Crypto_S32K312_Hsm.c:1389:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.7]
 Std_ReturnType S32K312_Hsm_Sha256Init(S32K312_HsmSha256ContextType* context)
                ^
+src/bsw/mcal/dio/src/Dio_Lcfg.c:7:29: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.7]
+const Dio_ConfigType* const Dio_ConfigPtr = &Dio_Config;
+                            ^
 src/bsw/mcal/dio/src/Dio_Lcfg.c:6:22: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.7]
 const Dio_ConfigType Dio_Config = { 0U };
                      ^
@@ -88048,9 +87979,6 @@ uint8 LinSlave_CalculatePid(uint8 Id)
 src/bsw/mcal/lin/src/LinSlave_Uds.c:236:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.7]
 void LinSlave_Uds_SetSessionType(LinSlave_Uds_SessionType SessionType)
      ^
-src/bsw/mcal/mcu/src/Mcu_Lcfg.c:6:22: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.7]
-const Mcu_ConfigType Mcu_Config = { 0U };
-                     ^
 src/bsw/mcal/ocu/src/Ocu.c:88:29: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.7]
 const Ocu_ChannelConfigType Ocu_ChannelConfig[OCU_NUM_CHANNELS] = {
                             ^
@@ -88138,6 +88066,9 @@ void Os_AlarmCallback(TimerHandle_t xTimer)
 src/bsw/os/src/Os_TimingProtection.c:107:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.7]
 void Os_CheckTaskExecutionBudget(TaskType TaskID){
      ^
+src/bsw/services/cansm/src/CanSm_Lcfg.c:7:31: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.7]
+const CanSm_ConfigType* const CanSm_ConfigPtr = &CanSm_Config;
+                              ^
 src/bsw/services/cantsyn/src/CanTSyn.c:458:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.7]
 Std_ReturnType CanTSyn_GetCurrentTime(
                ^
@@ -88270,6 +88201,9 @@ const Dlt_TransportConfigType Dlt_TransportConfig = {
 src/bsw/services/dlt/src/Dlt_Lcfg.c:59:14: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.7]
 const uint16 Dlt_FilterConfigCount = 1U;
              ^
+src/bsw/services/dlt/src/Dlt_Lcfg.c:495:28: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.7]
+const Dlt_ContextGroupType Dlt_ContextGroups[] = {
+                           ^
 src/bsw/services/ecum/src/EcuM.c:190:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.7]
 void EcuM_StartupOne(void)
      ^
@@ -88375,6 +88309,9 @@ Mqtt_ReturnType Mqtt_ReceivePacket(Mqtt_InternalConnectionType* conn)
 src/bsw/services/mqtt/src/Mqtt_CertMgr.c:476:17: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.7]
 Mqtt_ReturnType Mqtt_CertMgr_CheckExpiry(const char* alias,
                 ^
+src/bsw/services/mqtt/src/Mqtt_Lcfg.c:60:23: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.7]
+const Mqtt_ConfigType Mqtt_Config = {
+                      ^
 src/bsw/services/mqtt/src/Mqtt_Tls.c:493:17: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.7]
 Mqtt_ReturnType Mqtt_Tls_VerifyCertificate(
                 ^
@@ -88825,6 +88762,15 @@ uint64_t CDR_swap64(uint64_t value) {
 src/middleware/microdds/src/serialization/cdr.c:37:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.7]
 CDR_Endianness CDR_get_native_endian(void) {
                ^
+src/middleware/microdds/src/serialization/cdr.c:688:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.7]
+void CDR_SampleHeader_init(CDR_SampleHeader *header, uint32_t seq_num, uint16_t encapsulation) {    if (header != NULL_PTR) {
+     ^
+src/middleware/microdds/src/serialization/cdr.c:860:10: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.7]
+uint32_t CDR_generate_sequence_number(void) {    uint32_t seq = sequence_counter;
+         ^
+src/middleware/microdds/src/serialization/cdr.c:697:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.7]
+void CDR_SampleHeader_set_timestamp(CDR_SampleHeader *header, uint32_t sec, uint32_t nsec) {    if (header != NULL_PTR) {
+     ^
 src/middleware/microdds/src/serialization/cdr.c:703:18: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.7]
 DDS_ReturnCode_t CDR_serialize_sample_header(CDR_Buffer *buffer, const CDR_SampleHeader *header) {
                  ^

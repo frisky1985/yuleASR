@@ -210,7 +210,7 @@ static void Icu_DisableChannelInterrupt(Icu_ChannelType channel)
  * @brief Clear channel flag
  */
 /** @req SWS_Icu_00107 */
-void Icu_ClearChannelFlag(Icu_ChannelType channel)
+static void Icu_ClearChannelFlag(Icu_ChannelType channel)
 {
     uint32 emiosBase = Icu_GetEmiosBaseAddr(channel);
     uint8 chNum = Icu_GetEmiosChannelNum(channel);
@@ -237,7 +237,7 @@ static uint32 Icu_GetChannelFlag(Icu_ChannelType channel)
  * @brief Process signal measurement for a channel
  */
 /** @req SWS_Icu_00109 */
-void Icu_ProcessSignalMeasurement(Icu_ChannelType channel, uint16 currentCapture)
+static void Icu_ProcessSignalMeasurement(Icu_ChannelType channel, uint16 currentCapture)
 {
     uint16 period;
     uint16 activeTime;

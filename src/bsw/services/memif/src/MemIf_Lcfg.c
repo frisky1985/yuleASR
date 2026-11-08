@@ -316,7 +316,7 @@ typedef struct {
 
 /** @brief Block configuration table - example for Fee blocks */
 #if (MEMIF_FEE_USED == STD_ON)
-const MemIf_BlockConfigType MemIf_FeeBlockConfig[] = {
+static const MemIf_BlockConfigType MemIf_FeeBlockConfig[] = {
     {0,  64,   MEMIF_FEE_DEVICE_INDEX, FALSE},   /* Block 0: 64 bytes */
     {1,  128,  MEMIF_FEE_DEVICE_INDEX, FALSE},   /* Block 1: 128 bytes */
     {2,  256,  MEMIF_FEE_DEVICE_INDEX, FALSE},   /* Block 2: 256 bytes */
@@ -329,7 +329,7 @@ const MemIf_BlockConfigType MemIf_FeeBlockConfig[] = {
 
 /** @brief Block configuration table - example for Ea blocks */
 #if (MEMIF_EA_USED == STD_ON)
-const MemIf_BlockConfigType MemIf_EaBlockConfig[] = {
+static const MemIf_BlockConfigType MemIf_EaBlockConfig[] = {
     {0,  8,    MEMIF_EA_DEVICE_INDEX, FALSE},    /* Block 0: 8 bytes */
     {1,  16,   MEMIF_EA_DEVICE_INDEX, FALSE},    /* Block 1: 16 bytes */
     {2,  32,   MEMIF_EA_DEVICE_INDEX, FALSE},    /* Block 2: 32 bytes */

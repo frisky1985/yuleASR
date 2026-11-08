@@ -14,6 +14,7 @@
  ************************************************************************************/
 #include "Flash.h"
 #include "Flash_Cfg.h"
+#include "Fls_Cfg.h"   /* Fls_JobEndNotification / Fls_JobErrorNotification 声明 (MISRA 8.4) */
 
 /************************************************************************************
  *                              Sector Configuration
