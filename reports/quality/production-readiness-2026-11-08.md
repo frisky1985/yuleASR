@@ -39,7 +39,7 @@
 | 2 | MISRA 10.4 = 318（Required） | 标准强制 | 同上 |
 | 3 | MCAL 函数覆盖率 93.0%（门槛 100%）+ MC/DC 未测量 | 门禁+工具链 | 覆盖率数值可通过补测收敛；MC/DC 需先决策工具链（VectorCAST/LDRA 或 GCC 14 `-fcondition-coverage`） |
 
-**已按偏差豁免（非阻断）**：圈复杂度（355 个 CCN>10）、函数规模（587 个 >50 行）、文件规模（170 个 >500 行）—— 三者均为 `quality-gates.yml` 自定义门禁而非 MISRA Required 规则，经项目决策走 deviation 流程处理（需补齐正式 deviation 记录，见 5.9）。
+**已按项目决策记偏差豁免（非阻断，仅报告记录，未改门禁）**：圈复杂度（355 个 CCN>10）、函数规模（587 个 >50 行）、文件规模（170 个 >500 行）—— 三者均为 `quality-gates.yml` 自定义门禁而非 MISRA Required 规则，经项目决策在报告中记为偏差豁免；`quality-gates.yml` 本轮**未修改**，CI 仍判 FAIL，待后续统一处理（见 5.9）。
 
 ---
 
@@ -173,7 +173,9 @@
 | 函数圈复杂度上限 | 10 | **lizard 实测：355 个函数超限（5.0%），47 个 > 20，峰值 60 @ [NvM.c](file:///workspace/src/bsw/services/nvm/src/NvM.c)** | 🟡 DEVIATION |
 | 函数行数上限 | 50 | **lizard 实测：587 个函数超限（>100 行 63 个）** | 🟡 DEVIATION |
 
-> **偏差依据**：上述三项（文件规模 / 函数规模 / 圈复杂度）均为 `quality-gates.yml` 的 `complexity.limits` 自定义门禁，**不属于 MISRA C:2012 Required 规则**（MISRA 中与复杂度相关的 15.5 单出口为 Advisory，本就计划走 deviation）。按 MISRA C:2012 偏差管理流程（见 `docs/compliance/misra-deviation-report.md` §1.3），项目自有度量门禁可由项目方出具正式 deviation 豁免。**豁免生效的前置条件**：(1) 在 `quality-gates.yml` 的 `complexity` 段增加 `allow_deviation: true` 或将该段降为 warning 级；(2) 在偏差报告中登记三项偏差，写明技术理由（AUTOSAR BSW 模块化组织 + 生成式配置表 + 寄存器驱动表）与替代控制措施（强制 code review、关键函数静态栈深度分析、CCN>20 的 47 个函数优先评审）。
+> **偏差依据**：上述三项（文件规模 / 函数规模 / 圈复杂度）均为 `quality-gates.yml` 的 `complexity.limits` 自定义门禁，**不属于 MISRA C:2012 Required 规则**（MISRA 中与复杂度相关的 15.5 单出口为 Advisory，本就计划走 deviation）。按 MISRA C:2012 偏差管理流程（见 `docs/compliance/misra-deviation-report.md` §1.3），项目自有度量门禁可由项目方出具 deviation 豁免。
+>
+> **本次处置口径（2026-11-08 决定）**：**仅在评估报告中记录为"项目决策偏差、非量产阻断项"，本轮不修改 `quality-gates.yml`**，CI 现状与门禁判定保持不变（即流水线对这三项仍会报 FAIL），待后续统一处理。因此这三项在**本报告的结论层面为偏差豁免**，在**工具体系层面仍为未修改的 FAIL** —— 两处口径差异已如实记录，避免报告与 CI 结果互相矛盾。
 
 **圈复杂度 Top 5（lizard，2026-11-08 晚）**：
 
@@ -485,9 +487,9 @@ GitHub Dependabot REST/GraphQL 接口以当前令牌访问均无权限（`Resour
 | 依赖安全（High = 0） | ✅ | — |
 | 功能安全文档链 | 🟡 | 文档刷新后可转 ✅ |
 
-**量产阻断项：3 项**（MISRA 17.7、MISRA 10.4、MCAL 函数覆盖率+MC/DC）。**已偏差豁免：3 项**（圈复杂度、函数规模、文件规模）。
+**量产阻断项：3 项**（MISRA 17.7、MISRA 10.4、MCAL 函数覆盖率+MC/DC）。**已按项目决策记偏差豁免：3 项**（圈复杂度、函数规模、文件规模）。
 
-> 偏差豁免须完成两个配套动作方可视为闭环：(1) `quality-gates.yml` 的 `complexity` 段声明允许偏差（当前该段仅有 `enabled` + `limits`，无 `allow_deviation` 字段，CI 仍会判 FAIL）；(2) 在 `docs/compliance/misra-deviation-report.md` 登记这三项偏差（编号、理由、批准人、替代措施）。未完成前，这三项在**流程层面**仍是未闭环状态。
+> **口径说明**：本轮仅在本报告中记录这三项为"项目决策偏差、非阻断"，**未修改 `quality-gates.yml`**，故 CI/流水线对这三项仍会判 FAIL —— 报告结论与工具判定存在有意保留的差异，待后续统一处理时再同步门禁配置与偏差台账（`misra-deviation-report.md` 登记、`complexity` 段增加允差声明）。在此之前，若以 CI 结果为唯一依据，这三项仍显示为未通过。
 
 ---
 
@@ -510,7 +512,7 @@ GitHub Dependabot REST/GraphQL 接口以当前令牌访问均无权限（`Resour
 2. **覆盖率门槛需区分 ASIL 等级**：当前 quality-gates.yml 对 MCAL 要求 90% 行 + 100% 函数 + 100% MC/DC，后者在 host 侧单测中极难达成且 gcov/lcov 无 MC/DC 测量能力，建议按 ISO 26262 ASIL 等级重设（QM: 行覆盖即可；ASIL-B: 分支；ASIL-D: MC/DC），并决策 MC/DC 工具链（VectorCAST/LDRA 或 GCC 14 `-fcondition-coverage`）。
 3. **MISRA 15.5 单出口**：生产 6,998 条全改不现实且会降低可读性，建议按 MISRA 规程出具 deviation（"AUTOSAR BSW 错误处理模式，多处 return 可提升可读性与错误隔离"），并将现有 COM 模块偏差许可扩展为全仓统一记录，刷新 `misra-deviation-report.md` 至当前代码口径。
 4. **建议引入 clang-tidy CI 门禁**：当前仅 cppcheck，clang-tidy 可补充 `bugprone-*`、`cert-*`、`misc-*` 检查，建议 P1 后加入。
-5. **复杂度/规模的偏差管理**（项目决策：豁免）：355 个 CCN>10 函数、587 个函数 >50 行、170 个文件 >500 行，均为 `quality-gates.yml` 自定门禁（非 MISRA Required），项目决策走 deviation。落地需两步：在 `complexity` 段声明允许偏差（否则 CI 仍判 FAIL），并在 `misra-deviation-report.md` 登记理由（AUTOSAR BSW 模块化组织、生成式配置表、寄存器驱动表）与替代措施（强制 code review、关键函数静态栈深度分析、CCN>20 的 47 个函数优先评审）。
+5. **复杂度/规模的偏差管理**（项目决策：记偏差，仅报告层面）：355 个 CCN>10 函数、587 个函数 >50 行、170 个文件 >500 行，均为 `quality-gates.yml` 自定门禁（非 MISRA Required），本轮在报告中记为偏差豁免、**不改门禁配置**。后续统一处理时建议：在 `complexity` 段声明允差（否则 CI 持续 FAIL）、在偏差台账登记理由（AUTOSAR BSW 模块化组织、生成式配置表、寄存器驱动表）与替代措施（强制 code review、关键函数静态栈深度分析、CCN>20 的 47 个函数优先评审），并引入"只降不升"棘轮机制防止存量恶化。
 6. **量产前文档刷新清单**：`misra-deviation-report.md`（对齐 17.7/10.4 实测）、`VERIFICATION_REPORT.md`（对齐当前覆盖率）、15.5 全仓 deviation、HIL 硬件模式实测记录（当前 hil-tests.yml 默认仿真模式）。
 
 ---
@@ -553,5 +555,5 @@ lizard src --csv | awk -F',' 'NR>1 && $2>10 {ccn++} $5>50 {len++} END {print "CC
 
 ---
 
-*首版生成：2026-11-08 01:05 CST；P2/P3 补录更新：2026-11-08 14:00 CST；8.4 清零与产品缺陷修复补录：2026-11-08 15:10 CST；量产门禁复核（209/209 全绿 + cppcheck 权威口径 + lizard 复杂度 + 门禁总账）：2026-11-08 23:00 CST；圈复杂度/函数规模/文件规模三项按项目决策转偏差豁免（阻断项 6→3）：2026-11-08 23:40 CST*
+*首版生成：2026-11-08 01:05 CST；P2/P3 补录更新：2026-11-08 14:00 CST；8.4 清零与产品缺陷修复补录：2026-11-08 15:10 CST；量产门禁复核（209/209 全绿 + cppcheck 权威口径 + lizard 复杂度 + 门禁总账）：2026-11-08 23:00 CST；圈复杂度/函数规模/文件规模三项按项目决策记为偏差豁免（阻断项 6→3，仅报告记录、未改 quality-gates.yml）：2026-11-08 23:50 CST*
 *评估工具：cppcheck 2.13.0, lcov, lizard, GCC ASan/UBSan*
