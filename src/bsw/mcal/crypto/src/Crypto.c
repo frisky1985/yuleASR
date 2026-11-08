@@ -110,14 +110,14 @@ void Crypto_Init(const Crypto_ConfigType* configPtr)
 #if (CRYPTO_CFG_DEV_ERROR_DETECT == STD_ON)
     if (configPtr == NULL_PTR)
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_INIT, CRYPTO_E_PARAM_POINTER);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_INIT, CRYPTO_E_PARAM_POINTER);
         return;
     }
 #endif
     if (Crypto_DriverState != CRYPTO_DRIVER_UNINIT)
     {
 #if (CRYPTO_CFG_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_INIT, CRYPTO_E_ALREADY_INITIALIZED);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_INIT, CRYPTO_E_ALREADY_INITIALIZED);
 #endif
         return;
     }
@@ -129,7 +129,7 @@ void Crypto_Init(const Crypto_ConfigType* configPtr)
     if (Crypto_MbedTLS_Init() != E_OK)
     {
 #if (CRYPTO_CFG_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_MBEDTLS_INIT, CRYPTO_E_NOT_SUPPORTED);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_MBEDTLS_INIT, CRYPTO_E_NOT_SUPPORTED);
 #endif
         return;
     }
@@ -182,7 +182,7 @@ void Crypto_GetVersionInfo(Std_VersionInfoType* versioninfo)
 #    if (CRYPTO_CFG_DEV_ERROR_DETECT == STD_ON)
     if (versioninfo == NULL_PTR)
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_GETVERSIONINFO, CRYPTO_E_PARAM_POINTER);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_GETVERSIONINFO, CRYPTO_E_PARAM_POINTER);
         return;
     }
 #    endif
@@ -203,17 +203,17 @@ Std_ReturnType Crypto_ProcessJob(uint32 objectId, Crypto_JobType* job)
 #if (CRYPTO_CFG_DEV_ERROR_DETECT == STD_ON)
     if (Crypto_DriverState != CRYPTO_DRIVER_INIT)
     {
-        Det_ReportError(CRYPTO_MODULE_ID, (uint8)objectId, CRYPTO_SID_PROCESSJOB, CRYPTO_E_UNINIT);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, (uint8)objectId, CRYPTO_SID_PROCESSJOB, CRYPTO_E_UNINIT);
         return E_NOT_OK;
     }
     if (job == NULL_PTR)
     {
-        Det_ReportError(CRYPTO_MODULE_ID, (uint8)objectId, CRYPTO_SID_PROCESSJOB, CRYPTO_E_PARAM_POINTER);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, (uint8)objectId, CRYPTO_SID_PROCESSJOB, CRYPTO_E_PARAM_POINTER);
         return E_NOT_OK;
     }
     if (objectId >= Crypto_ConfigPtr->numChannels)
     {
-        Det_ReportError(CRYPTO_MODULE_ID, (uint8)objectId, CRYPTO_SID_PROCESSJOB, CRYPTO_E_PARAM_HANDLE);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, (uint8)objectId, CRYPTO_SID_PROCESSJOB, CRYPTO_E_PARAM_HANDLE);
         return E_NOT_OK;
     }
 #endif
@@ -233,7 +233,7 @@ Std_ReturnType Crypto_ProcessJob(uint32 objectId, Crypto_JobType* job)
         if (Crypto_QueueCount >= Crypto_ConfigPtr->queueSize)
         {
 #if (CRYPTO_CFG_DEV_ERROR_DETECT == STD_ON)
-            Det_ReportError(CRYPTO_MODULE_ID, (uint8)objectId, CRYPTO_SID_PROCESSJOB, CRYPTO_E_QUEUE_FULL);
+            (void)Det_ReportError(CRYPTO_MODULE_ID, (uint8)objectId, CRYPTO_SID_PROCESSJOB, CRYPTO_E_QUEUE_FULL);
 #endif
             result = E_NOT_OK;
         }
@@ -253,12 +253,12 @@ Std_ReturnType Crypto_CancelJob(uint32 objectId, Crypto_JobType* job)
 #if (CRYPTO_CFG_DEV_ERROR_DETECT == STD_ON)
     if (Crypto_DriverState != CRYPTO_DRIVER_INIT)
     {
-        Det_ReportError(CRYPTO_MODULE_ID, (uint8)objectId, CRYPTO_SID_CANCELJOB, CRYPTO_E_UNINIT);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, (uint8)objectId, CRYPTO_SID_CANCELJOB, CRYPTO_E_UNINIT);
         return E_NOT_OK;
     }
     if (job == NULL_PTR)
     {
-        Det_ReportError(CRYPTO_MODULE_ID, (uint8)objectId, CRYPTO_SID_CANCELJOB, CRYPTO_E_PARAM_POINTER);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, (uint8)objectId, CRYPTO_SID_CANCELJOB, CRYPTO_E_PARAM_POINTER);
         return E_NOT_OK;
     }
 #endif
@@ -286,17 +286,17 @@ Std_ReturnType Crypto_KeyElementSet(Crypto_KeyIdType cryptoKeyId, Crypto_KeyElem
 #if (CRYPTO_CFG_DEV_ERROR_DETECT == STD_ON)
     if (Crypto_DriverState != CRYPTO_DRIVER_INIT)
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_KEYELEMENTSET, CRYPTO_E_UNINIT);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_KEYELEMENTSET, CRYPTO_E_UNINIT);
         return E_NOT_OK;
     }
     if (keyPtr == NULL_PTR)
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_KEYELEMENTSET, CRYPTO_E_PARAM_POINTER);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_KEYELEMENTSET, CRYPTO_E_PARAM_POINTER);
         return E_NOT_OK;
     }
     if (keyLength == 0U)
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_KEYELEMENTSET, CRYPTO_E_PARAM_VALUE);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_KEYELEMENTSET, CRYPTO_E_PARAM_VALUE);
         return E_NOT_OK;
     }
 #endif
@@ -322,7 +322,7 @@ Std_ReturnType Crypto_KeyElementSet(Crypto_KeyIdType cryptoKeyId, Crypto_KeyElem
 #if (CRYPTO_CFG_DEV_ERROR_DETECT == STD_ON)
     if ((!element->allowPartialAccess) && (keyLength > element->size))
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_KEYELEMENTSET, CRYPTO_E_SMALL_BUFFER);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_KEYELEMENTSET, CRYPTO_E_SMALL_BUFFER);
         return E_NOT_OK;
     }
 #endif
@@ -346,12 +346,12 @@ Std_ReturnType Crypto_KeyElementGet(Crypto_KeyIdType cryptoKeyId, Crypto_KeyElem
 #if (CRYPTO_CFG_DEV_ERROR_DETECT == STD_ON)
     if (Crypto_DriverState != CRYPTO_DRIVER_INIT)
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_KEYELEMENTGET, CRYPTO_E_UNINIT);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_KEYELEMENTGET, CRYPTO_E_UNINIT);
         return E_NOT_OK;
     }
     if ((keyPtr == NULL_PTR) || (keyLengthPtr == NULL_PTR))
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_KEYELEMENTGET, CRYPTO_E_PARAM_POINTER);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_KEYELEMENTGET, CRYPTO_E_PARAM_POINTER);
         return E_NOT_OK;
     }
 #endif
@@ -394,7 +394,7 @@ Std_ReturnType Crypto_KeyValidSet(Crypto_KeyIdType cryptoKeyId, boolean valid)
 #if (CRYPTO_CFG_DEV_ERROR_DETECT == STD_ON)
     if (Crypto_DriverState != CRYPTO_DRIVER_INIT)
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_KEYVALIDSET, CRYPTO_E_UNINIT);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_KEYVALIDSET, CRYPTO_E_UNINIT);
         return E_NOT_OK;
     }
 #endif
@@ -416,12 +416,12 @@ Std_ReturnType Crypto_KeyElementIdsGet(Crypto_KeyIdType cryptoKeyId, uint32* key
 #if (CRYPTO_CFG_DEV_ERROR_DETECT == STD_ON)
     if (Crypto_DriverState != CRYPTO_DRIVER_INIT)
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_KEYELEMENTIDSGET, CRYPTO_E_UNINIT);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_KEYELEMENTIDSGET, CRYPTO_E_UNINIT);
         return E_NOT_OK;
     }
     if (keyElementIdsPtr == NULL_PTR)
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_KEYELEMENTIDSGET, CRYPTO_E_PARAM_POINTER);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_KEYELEMENTIDSGET, CRYPTO_E_PARAM_POINTER);
         return E_NOT_OK;
     }
 #endif
@@ -462,12 +462,12 @@ Std_ReturnType Crypto_KeyGenerate(Crypto_KeyIdType cryptoKeyId)
 #if (CRYPTO_CFG_DEV_ERROR_DETECT == STD_ON)
     if (Crypto_DriverState != CRYPTO_DRIVER_INIT)
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_KEYGENERATE, CRYPTO_E_UNINIT);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_KEYGENERATE, CRYPTO_E_UNINIT);
         return E_NOT_OK;
     }
     if (cryptoKeyId >= Crypto_ConfigPtr->numKeys)
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_KEYGENERATE, CRYPTO_E_PARAM_HANDLE);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_KEYGENERATE, CRYPTO_E_PARAM_HANDLE);
         return E_NOT_OK;
     }
 #endif
@@ -493,7 +493,7 @@ Std_ReturnType Crypto_KeyDerive(Crypto_KeyIdType cryptoKeyId, Crypto_KeyIdType t
 #if (CRYPTO_CFG_DEV_ERROR_DETECT == STD_ON)
     if (Crypto_DriverState != CRYPTO_DRIVER_INIT)
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_KEYDERIVE, CRYPTO_E_UNINIT);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_KEYDERIVE, CRYPTO_E_UNINIT);
         return E_NOT_OK;
     }
 
@@ -517,12 +517,12 @@ Std_ReturnType Crypto_KeyExchangeCalcSecret(Crypto_KeyIdType cryptoKeyId, const 
 #if (CRYPTO_CFG_DEV_ERROR_DETECT == STD_ON)
     if (Crypto_DriverState != CRYPTO_DRIVER_INIT)
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_KEYEXCHSYNCCALCSECRET, CRYPTO_E_UNINIT);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_KEYEXCHSYNCCALCSECRET, CRYPTO_E_UNINIT);
         return E_NOT_OK;
     }
     if (partnerPublicKeyPtr == NULL_PTR)
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_KEYEXCHSYNCCALCSECRET, CRYPTO_E_PARAM_POINTER);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_KEYEXCHSYNCCALCSECRET, CRYPTO_E_PARAM_POINTER);
         return E_NOT_OK;
     }
 #endif
@@ -537,17 +537,17 @@ Std_ReturnType Crypto_RandomGenerate(Crypto_KeyIdType cryptoKeyId, uint8* result
 #if (CRYPTO_CFG_DEV_ERROR_DETECT == STD_ON)
     if (Crypto_DriverState != CRYPTO_DRIVER_INIT)
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_RANDOMGENERATE, CRYPTO_E_UNINIT);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_RANDOMGENERATE, CRYPTO_E_UNINIT);
         return E_NOT_OK;
     }
     if (resultPtr == NULL_PTR)
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_RANDOMGENERATE, CRYPTO_E_PARAM_POINTER);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_RANDOMGENERATE, CRYPTO_E_PARAM_POINTER);
         return E_NOT_OK;
     }
     if (resultLength == 0U)
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_RANDOMGENERATE, CRYPTO_E_PARAM_VALUE);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_RANDOMGENERATE, CRYPTO_E_PARAM_VALUE);
         return E_NOT_OK;
     }
     if ((Crypto_ConfigPtr == NULL_PTR) || (cryptoKeyId >= Crypto_ConfigPtr->numKeys))
@@ -575,12 +575,12 @@ Std_ReturnType Crypto_RandomSeed(Crypto_KeyIdType cryptoKeyId, const uint8* entr
 #if (CRYPTO_CFG_DEV_ERROR_DETECT == STD_ON)
     if (Crypto_DriverState != CRYPTO_DRIVER_INIT)
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_RANDOMGENERATE, CRYPTO_E_UNINIT);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_RANDOMGENERATE, CRYPTO_E_UNINIT);
         return E_NOT_OK;
     }
     if (entropyPtr == NULL_PTR)
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_RANDOMGENERATE, CRYPTO_E_PARAM_POINTER);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_RANDOMGENERATE, CRYPTO_E_PARAM_POINTER);
         return E_NOT_OK;
     }
 #endif
@@ -623,7 +623,7 @@ Std_ReturnType Crypto_HsmLoadKey(Crypto_KeyIdType cryptoKeyId)
 #    if (CRYPTO_CFG_DEV_ERROR_DETECT == STD_ON)
     if (Crypto_DriverState != CRYPTO_DRIVER_INIT)
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_HSM_INIT, CRYPTO_E_UNINIT);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_HSM_INIT, CRYPTO_E_UNINIT);
         return E_NOT_OK;
     }
 #    endif
@@ -676,32 +676,32 @@ Std_ReturnType Crypto_Blake2b(const uint8* dataPtr, uint32 dataLength, const uin
 #if (CRYPTO_CFG_DEV_ERROR_DETECT == STD_ON)
     if (Crypto_DriverState != CRYPTO_DRIVER_INIT)
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA0U, CRYPTO_E_UNINIT);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA0U, CRYPTO_E_UNINIT);
         return E_NOT_OK;
     }
     if (digestPtr == NULL_PTR)
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA0U, CRYPTO_E_PARAM_POINTER);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA0U, CRYPTO_E_PARAM_POINTER);
         return E_NOT_OK;
     }
     if ((digestLength == 0U) || (digestLength > BLAKE2B_OUTBYTES))
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA0U, CRYPTO_E_PARAM_VALUE);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA0U, CRYPTO_E_PARAM_VALUE);
         return E_NOT_OK;
     }
     if ((dataLength > 0U) && (dataPtr == NULL_PTR))
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA0U, CRYPTO_E_PARAM_POINTER);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA0U, CRYPTO_E_PARAM_POINTER);
         return E_NOT_OK;
     }
     if ((keyLength > 0U) && (keyPtr == NULL_PTR))
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA0U, CRYPTO_E_PARAM_POINTER);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA0U, CRYPTO_E_PARAM_POINTER);
         return E_NOT_OK;
     }
     if (keyLength > BLAKE2B_KEYBYTES)
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA0U, CRYPTO_E_PARAM_VALUE);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA0U, CRYPTO_E_PARAM_VALUE);
         return E_NOT_OK;
     }
 #endif
@@ -719,32 +719,32 @@ Std_ReturnType Crypto_Blake2s(const uint8* dataPtr, uint32 dataLength, const uin
 #if (CRYPTO_CFG_DEV_ERROR_DETECT == STD_ON)
     if (Crypto_DriverState != CRYPTO_DRIVER_INIT)
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA1U, CRYPTO_E_UNINIT);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA1U, CRYPTO_E_UNINIT);
         return E_NOT_OK;
     }
     if (digestPtr == NULL_PTR)
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA1U, CRYPTO_E_PARAM_POINTER);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA1U, CRYPTO_E_PARAM_POINTER);
         return E_NOT_OK;
     }
     if ((digestLength == 0U) || (digestLength > BLAKE2S_OUTBYTES))
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA1U, CRYPTO_E_PARAM_VALUE);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA1U, CRYPTO_E_PARAM_VALUE);
         return E_NOT_OK;
     }
     if ((dataLength > 0U) && (dataPtr == NULL_PTR))
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA1U, CRYPTO_E_PARAM_POINTER);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA1U, CRYPTO_E_PARAM_POINTER);
         return E_NOT_OK;
     }
     if ((keyLength > 0U) && (keyPtr == NULL_PTR))
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA1U, CRYPTO_E_PARAM_POINTER);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA1U, CRYPTO_E_PARAM_POINTER);
         return E_NOT_OK;
     }
     if (keyLength > BLAKE2S_KEYBYTES)
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA1U, CRYPTO_E_PARAM_VALUE);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA1U, CRYPTO_E_PARAM_VALUE);
         return E_NOT_OK;
     }
 #endif
@@ -768,22 +768,22 @@ Std_ReturnType Crypto_Blake2b_Start(uint32 jobId, const uint8* keyPtr, uint32 ke
 #if (CRYPTO_CFG_DEV_ERROR_DETECT == STD_ON)
     if (Crypto_DriverState != CRYPTO_DRIVER_INIT)
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA2U, CRYPTO_E_UNINIT);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA2U, CRYPTO_E_UNINIT);
         return E_NOT_OK;
     }
     if ((digestLength == 0U) || (digestLength > BLAKE2B_OUTBYTES))
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA2U, CRYPTO_E_PARAM_VALUE);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA2U, CRYPTO_E_PARAM_VALUE);
         return E_NOT_OK;
     }
     if ((keyLength > 0U) && (keyPtr == NULL_PTR))
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA2U, CRYPTO_E_PARAM_POINTER);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA2U, CRYPTO_E_PARAM_POINTER);
         return E_NOT_OK;
     }
     if (keyLength > BLAKE2B_KEYBYTES)
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA2U, CRYPTO_E_PARAM_VALUE);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA2U, CRYPTO_E_PARAM_VALUE);
         return E_NOT_OK;
     }
 #endif
@@ -814,17 +814,17 @@ Std_ReturnType Crypto_Blake2b_Update(uint32 jobId, const uint8* dataPtr, uint32 
 #if (CRYPTO_CFG_DEV_ERROR_DETECT == STD_ON)
     if (Crypto_DriverState != CRYPTO_DRIVER_INIT)
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA3U, CRYPTO_E_UNINIT);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA3U, CRYPTO_E_UNINIT);
         return E_NOT_OK;
     }
     if (Crypto_Blake2b_ContextInitialized == 0U)
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA3U, CRYPTO_E_PARAM_STATE);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA3U, CRYPTO_E_PARAM_STATE);
         return E_NOT_OK;
     }
     if ((dataLength > 0U) && (dataPtr == NULL_PTR))
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA3U, CRYPTO_E_PARAM_POINTER);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA3U, CRYPTO_E_PARAM_POINTER);
         return E_NOT_OK;
     }
 #endif
@@ -844,22 +844,22 @@ Std_ReturnType Crypto_Blake2b_Finish(uint32 jobId, uint8* digestPtr, uint32* dig
 #if (CRYPTO_CFG_DEV_ERROR_DETECT == STD_ON)
     if (Crypto_DriverState != CRYPTO_DRIVER_INIT)
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA4U, CRYPTO_E_UNINIT);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA4U, CRYPTO_E_UNINIT);
         return E_NOT_OK;
     }
     if (Crypto_Blake2b_ContextInitialized == 0U)
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA4U, CRYPTO_E_PARAM_STATE);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA4U, CRYPTO_E_PARAM_STATE);
         return E_NOT_OK;
     }
     if (digestPtr == NULL_PTR)
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA4U, CRYPTO_E_PARAM_POINTER);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA4U, CRYPTO_E_PARAM_POINTER);
         return E_NOT_OK;
     }
     if (digestLengthPtr == NULL_PTR)
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA4U, CRYPTO_E_PARAM_POINTER);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA4U, CRYPTO_E_PARAM_POINTER);
         return E_NOT_OK;
     }
 #endif
@@ -887,7 +887,7 @@ Std_ReturnType Crypto_CccGenerateAttestation(const uint8* challengePtr, uint32 c
 #if (CRYPTO_CFG_DEV_ERROR_DETECT == STD_ON)
     if ((challengePtr == NULL_PTR) || (signaturePtr == NULL_PTR) || (signatureLengthPtr == NULL_PTR))
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xF0U, CRYPTO_E_PARAM_POINTER);
+        (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xF0U, CRYPTO_E_PARAM_POINTER);
         return E_NOT_OK;
     }
 #endif

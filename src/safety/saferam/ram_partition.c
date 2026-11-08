@@ -132,7 +132,7 @@ Std_ReturnType RamPartition_Register(
     partition->attributes = config->attributes;
     partition->safety_level = config->safety_level;
     partition->start_addr = config->start_addr;
-    partition->end_addr = config->start_addr + config->size - 1;
+    partition->end_addr = config->start_addr + config->size - (uint32_t)1;
     partition->size = config->size;
     partition->used_size = 0;
     partition->permissions = config->permissions;
@@ -408,7 +408,7 @@ Std_ReturnType RamPartition_CheckAccess(
     RamPartitionInfoType *partition;
     boolean found = FALSE;
     
-    if (!g_initialized || result == NULL || size == 0) {
+    if (!g_initialized || result == NULL || size == (uint32_t)0) {
         return E_NOT_OK;
     }
     
@@ -423,7 +423,7 @@ Std_ReturnType RamPartition_CheckAccess(
         
         if (partition->is_initialized) {
             if (addr >= partition->start_addr && 
-                (addr + size - 1) <= partition->end_addr) {
+                (addr + size - (uint32_t)1) <= partition->end_addr) {
                 found = TRUE;
                 result->partition_id = i;
                 result->actual_perm = partition->permissions;
@@ -757,7 +757,7 @@ Std_ReturnType RamPartition_ValidateConfig(const RamPartitionConfigType *config)
     }
     
     /* Validate size */
-    if (config->size == 0) {
+    if (config->size == (uint32_t)0) {
         return E_NOT_OK;
     }
     
@@ -780,8 +780,8 @@ boolean RamPartition_CheckOverlap(
     uint32_t addr2,
     uint32_t size2)
 {
-    uint32_t end1 = addr1 + size1 - 1;
-    uint32_t end2 = addr2 + size2 - 1;
+    uint32_t end1 = addr1 + size1 - (uint32_t)1;
+    uint32_t end2 = addr2 + size2 - (uint32_t)1;
     
     /* Check if ranges overlap */
     return (addr1 <= end2) && (addr2 <= end1);
@@ -807,7 +807,7 @@ static Std_ReturnType ValidateAddressRange(uint32_t start, uint32_t size)
     uint32_t end;
     
     /* Check for overflow */
-    if (start == 0 && size > 0) {
+    if (start == (uint32_t)0 && size > 0) {
         return E_NOT_OK;  /* Null pointer not allowed */
     }
     

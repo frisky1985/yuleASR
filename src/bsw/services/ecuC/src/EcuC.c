@@ -38,7 +38,7 @@ void EcuC_Init(const EcuC_ConfigType* ConfigPtr)
 {
 #if (ECUC_DEV_ERROR_DETECT == STD_ON)
     if (NULL_PTR == ConfigPtr) {
-        Det_ReportError(ECUC_MODULE_ID, 0U, ECUC_SID_INIT, ECUC_E_PARAM_POINTER);
+        (void)Det_ReportError(ECUC_MODULE_ID, 0U, ECUC_SID_INIT, ECUC_E_PARAM_POINTER);
         return;
     }
 #endif
@@ -60,11 +60,11 @@ Std_ReturnType EcuC_GetConfigValue(uint16 ConfigId, uint32* Value)
 {
 #if (ECUC_DEV_ERROR_DETECT == STD_ON)
     if (EcuC_State.state == ECUC_UNINIT) {
-        Det_ReportError(ECUC_MODULE_ID, 0U, ECUC_SID_GET_CONFIG, ECUC_E_UNINIT);
+        (void)Det_ReportError(ECUC_MODULE_ID, 0U, ECUC_SID_GET_CONFIG, ECUC_E_UNINIT);
         return E_NOT_OK;
     }
     if (NULL_PTR == Value) {
-        Det_ReportError(ECUC_MODULE_ID, 0U, ECUC_SID_GET_CONFIG, ECUC_E_PARAM_POINTER);
+        (void)Det_ReportError(ECUC_MODULE_ID, 0U, ECUC_SID_GET_CONFIG, ECUC_E_PARAM_POINTER);
         return E_NOT_OK;
     }
 #endif
@@ -86,7 +86,7 @@ Std_ReturnType EcuC_SetConfigValue(uint16 ConfigId, uint32 Value)
 {
 #if (ECUC_DEV_ERROR_DETECT == STD_ON)
     if (EcuC_State.state == ECUC_UNINIT) {
-        Det_ReportError(ECUC_MODULE_ID, 0U, ECUC_SID_SET_CONFIG, ECUC_E_UNINIT);
+        (void)Det_ReportError(ECUC_MODULE_ID, 0U, ECUC_SID_SET_CONFIG, ECUC_E_UNINIT);
         return E_NOT_OK;
     }
 #endif
@@ -108,7 +108,7 @@ void EcuC_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
 #if (ECUC_DEV_ERROR_DETECT == STD_ON)
     if (NULL_PTR == versioninfo) {
-        Det_ReportError(ECUC_MODULE_ID, 0U, ECUC_SID_GET_VERSION_INFO, ECUC_E_PARAM_POINTER);
+        (void)Det_ReportError(ECUC_MODULE_ID, 0U, ECUC_SID_GET_VERSION_INFO, ECUC_E_PARAM_POINTER);
         return;
     }
 #endif

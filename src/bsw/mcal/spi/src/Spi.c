@@ -149,7 +149,7 @@ void Spi_Init(const Spi_ConfigType* Config)
     
     if (Config == NULL_PTR) {
         #if (SPI_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(SPI_MODULE_ID, 0, SPI_SERVICE_ID_INIT, SPI_E_PARAM_POINTER);
+        (void)Det_ReportError(SPI_MODULE_ID, 0, SPI_SERVICE_ID_INIT, SPI_E_PARAM_POINTER);
         #endif
         return;
     }
@@ -577,7 +577,7 @@ void Spi_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
 #if (SPI_DEV_ERROR_DETECT == STD_ON)
     if (NULL_PTR == versioninfo) {
-        Det_ReportError(SPI_MODULE_ID, SPI_INSTANCE_ID, SPI_SERVICE_ID_GETVERSIONINFO, SPI_E_PARAM_POINTER);
+        (void)Det_ReportError(SPI_MODULE_ID, SPI_INSTANCE_ID, SPI_SERVICE_ID_GETVERSIONINFO, SPI_E_PARAM_POINTER);
         return;
     }
 #endif

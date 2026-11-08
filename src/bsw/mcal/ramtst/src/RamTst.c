@@ -582,7 +582,7 @@ void RamTst_Init(const RamTst_ConfigType* ConfigPtr)
 {
 #if (RAMTST_DEV_ERROR_DETECT == STD_ON)
     if (NULL_PTR == ConfigPtr) {
-        Det_ReportError(RAMTST_MODULE_ID, RAMTST_INSTANCE_ID, RAMTST_SID_INIT, RAMTST_E_PARAM_POINTER);
+        (void)Det_ReportError(RAMTST_MODULE_ID, RAMTST_INSTANCE_ID, RAMTST_SID_INIT, RAMTST_E_PARAM_POINTER);
         return;
     }
 #endif
@@ -624,14 +624,14 @@ Std_ReturnType RamTst_Run(void)
 {
 #if (RAMTST_DEV_ERROR_DETECT == STD_ON)
     if (RamTst_State.Status == RAMTST_STATUS_UNINIT) {
-        Det_ReportError(RAMTST_MODULE_ID, RAMTST_INSTANCE_ID, RAMTST_SID_RUN, RAMTST_E_UNINIT);
+        (void)Det_ReportError(RAMTST_MODULE_ID, RAMTST_INSTANCE_ID, RAMTST_SID_RUN, RAMTST_E_UNINIT);
         return E_NOT_OK;
     }
 #endif
 
     if (RamTst_State.Status == RAMTST_STATUS_RUNNING) {
 #if (RAMTST_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(RAMTST_MODULE_ID, RAMTST_INSTANCE_ID, RAMTST_SID_RUN, RAMTST_E_BUSY);
+        (void)Det_ReportError(RAMTST_MODULE_ID, RAMTST_INSTANCE_ID, RAMTST_SID_RUN, RAMTST_E_BUSY);
 #endif
         return E_NOT_OK;
     }
@@ -716,7 +716,7 @@ Std_ReturnType RamTst_GetErrorRecord(RamTst_ErrorRecordType* ErrorRecord)
 {
 #if (RAMTST_DEV_ERROR_DETECT == STD_ON)
     if (NULL_PTR == ErrorRecord) {
-        Det_ReportError(RAMTST_MODULE_ID, RAMTST_INSTANCE_ID, RAMTST_SID_GET_RESULT, RAMTST_E_PARAM_POINTER);
+        (void)Det_ReportError(RAMTST_MODULE_ID, RAMTST_INSTANCE_ID, RAMTST_SID_GET_RESULT, RAMTST_E_PARAM_POINTER);
         return E_NOT_OK;
     }
 #endif
@@ -797,7 +797,7 @@ void RamTst_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
 #if (RAMTST_DEV_ERROR_DETECT == STD_ON)
     if (NULL_PTR == versioninfo) {
-        Det_ReportError(RAMTST_MODULE_ID, RAMTST_INSTANCE_ID, RAMTST_SID_GET_VERSION_INFO, RAMTST_E_PARAM_POINTER);
+        (void)Det_ReportError(RAMTST_MODULE_ID, RAMTST_INSTANCE_ID, RAMTST_SID_GET_VERSION_INFO, RAMTST_E_PARAM_POINTER);
         return;
     }
 #endif

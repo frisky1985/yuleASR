@@ -351,7 +351,7 @@ Std_ReturnType SafeData_InitArray(
     uint32_t element_count)
 {
     if (!g_initialized || array == NULL || config == NULL ||
-        element_size == 0 || element_count == 0) {
+        element_size == (uint32_t)0 || element_count == 0) {
         return E_NOT_OK;
     }
     
@@ -499,7 +499,7 @@ Std_ReturnType SafeData_InitContainer(
     uint32_t size)
 {
     if (!g_initialized || container == NULL || config == NULL || 
-        data_ptr == NULL || size == 0) {
+        data_ptr == NULL || size == (uint32_t)0) {
         return E_NOT_OK;
     }
     
@@ -631,7 +631,7 @@ Std_ReturnType SafeData_Vote2of3(
 {
     uint32_t matches = 0;
     
-    if (copy1 == NULL || copy2 == NULL || copy3 == NULL || result == NULL || size == 0) {
+    if (copy1 == NULL || copy2 == NULL || copy3 == NULL || result == NULL || size == (uint32_t)0) {
         return E_NOT_OK;
     }
     
@@ -671,7 +671,7 @@ uint8_t SafeData_CalcCRC8(const void *data, uint32_t size)
     uint8_t crc = 0xFF;
     uint32_t i;
     
-    if (data == NULL || size == 0) {
+    if (data == NULL || size == (uint32_t)0) {
         return 0;
     }
     
@@ -689,13 +689,13 @@ uint16_t SafeData_CalcCRC16(const void *data, uint32_t size)
     uint32_t i;
     uint8_t bit;
     
-    if (data == NULL || size == 0) {
+    if (data == NULL || size == (uint32_t)0) {
         return 0;
     }
     
     for (i = 0; i < size; i++) {
         crc ^= (uint16_t)bytes[i] << 8;
-        for (bit = 0; bit < 8; bit++) {
+        for (bit = 0; bit < (uint8_t)8; bit++) {
             if (crc & 0x8000) {
                 crc = (crc << 1) ^ 0x1021;
             } else {
@@ -714,13 +714,13 @@ uint32_t SafeData_CalcCRC32(const void *data, uint32_t size)
     uint32_t i;
     uint8_t bit;
     
-    if (data == NULL || size == 0) {
+    if (data == NULL || size == (uint32_t)0) {
         return 0;
     }
     
     for (i = 0; i < size; i++) {
         crc ^= bytes[i];
-        for (bit = 0; bit < 8; bit++) {
+        for (bit = 0; bit < (uint8_t)8; bit++) {
             if (crc & 1) {
                 crc = (crc >> 1) ^ 0xEDB88320;
             } else {

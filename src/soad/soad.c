@@ -512,7 +512,7 @@ SoAd_ReturnType SoAd_TpProvideRxBuffer(uint16_t pduId, uint8_t **buffer, uint16_
     if (!g_soad_context.initialized) {
         result = SOAD_E_NOT_INITIALIZED;
     }
-    else if ((buffer == NULL) || (length == 0)) {
+    else if ((buffer == NULL) || (length == (uint16_t)0)) {
         result = SOAD_E_INVALID_PARAMETER;
     }
     else {

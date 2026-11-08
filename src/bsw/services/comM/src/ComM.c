@@ -99,7 +99,7 @@ void ComM_Init(const ComM_ConfigType* ConfigPtr)
 
 #if (COMM_DEV_ERROR_DETECT == STD_ON)
     if (ConfigPtr == NULL_PTR) {
-        Det_ReportError(COMM_MODULE_ID, 0U, COMM_INIT_SID, COMM_E_PARAM_POINTER);
+        (void)Det_ReportError(COMM_MODULE_ID, 0U, COMM_INIT_SID, COMM_E_PARAM_POINTER);
         return;
     }
 #endif
@@ -148,7 +148,7 @@ void ComM_DeInit(void)
 
 #if (COMM_DEV_ERROR_DETECT == STD_ON)
     if (!COMM_IS_INITIALIZED()) {
-        Det_ReportError(COMM_MODULE_ID, 0U, COMM_DEINIT_SID, COMM_E_NOT_INIT);
+        (void)Det_ReportError(COMM_MODULE_ID, 0U, COMM_DEINIT_SID, COMM_E_NOT_INIT);
         return;
     }
 #endif
@@ -169,7 +169,7 @@ void ComM_GetVersionInfo(Std_VersionInfoType* VersionInfo)
 {
 #if (COMM_DEV_ERROR_DETECT == STD_ON)
     if (VersionInfo == NULL_PTR) {
-        Det_ReportError(COMM_MODULE_ID, 0U, COMM_GETVERSIONINFO_SID, COMM_E_PARAM_POINTER);
+        (void)Det_ReportError(COMM_MODULE_ID, 0U, COMM_GETVERSIONINFO_SID, COMM_E_PARAM_POINTER);
         return;
     }
 #endif
@@ -193,19 +193,19 @@ Std_ReturnType ComM_RequestComMode(ComM_UserHandleType User, ComM_ModeType ComMo
 {
 #if (COMM_DEV_ERROR_DETECT == STD_ON)
     if (!COMM_IS_INITIALIZED()) {
-        Det_ReportError(COMM_MODULE_ID, 0U, COMM_REQUESTCOMMODE_SID, COMM_E_NOT_INIT);
+        (void)Det_ReportError(COMM_MODULE_ID, 0U, COMM_REQUESTCOMMODE_SID, COMM_E_NOT_INIT);
         return E_NOT_OK;
     }
     
     if (!COMM_VALIDATE_USER(User)) {
-        Det_ReportError(COMM_MODULE_ID, 0U, COMM_REQUESTCOMMODE_SID, COMM_E_PARAM_USER);
+        (void)Det_ReportError(COMM_MODULE_ID, 0U, COMM_REQUESTCOMMODE_SID, COMM_E_PARAM_USER);
         return E_NOT_OK;
     }
     
     if ((ComMode != COMM_NO_COMMUNICATION) && 
         (ComMode != COMM_SILENT_COMMUNICATION) && 
         (ComMode != COMM_FULL_COMMUNICATION)) {
-        Det_ReportError(COMM_MODULE_ID, 0U, COMM_REQUESTCOMMODE_SID, COMM_E_WRONG_PARAMETERS);
+        (void)Det_ReportError(COMM_MODULE_ID, 0U, COMM_REQUESTCOMMODE_SID, COMM_E_WRONG_PARAMETERS);
         return E_NOT_OK;
     }
 #endif
@@ -221,17 +221,17 @@ Std_ReturnType ComM_GetMaxComMode(ComM_UserHandleType User, ComM_ModeType* ComMo
 {
 #if (COMM_DEV_ERROR_DETECT == STD_ON)
     if (!COMM_IS_INITIALIZED()) {
-        Det_ReportError(COMM_MODULE_ID, 0U, COMM_GETMAXCOMMODE_SID, COMM_E_NOT_INIT);
+        (void)Det_ReportError(COMM_MODULE_ID, 0U, COMM_GETMAXCOMMODE_SID, COMM_E_NOT_INIT);
         return E_NOT_OK;
     }
     
     if (!COMM_VALIDATE_USER(User)) {
-        Det_ReportError(COMM_MODULE_ID, 0U, COMM_GETMAXCOMMODE_SID, COMM_E_PARAM_USER);
+        (void)Det_ReportError(COMM_MODULE_ID, 0U, COMM_GETMAXCOMMODE_SID, COMM_E_PARAM_USER);
         return E_NOT_OK;
     }
     
     if (ComModePtr == NULL_PTR) {
-        Det_ReportError(COMM_MODULE_ID, 0U, COMM_GETMAXCOMMODE_SID, COMM_E_PARAM_POINTER);
+        (void)Det_ReportError(COMM_MODULE_ID, 0U, COMM_GETMAXCOMMODE_SID, COMM_E_PARAM_POINTER);
         return E_NOT_OK;
     }
 #endif
@@ -255,17 +255,17 @@ Std_ReturnType ComM_GetCurrentComMode(ComM_UserHandleType User, ComM_ModeType* C
 
 #if (COMM_DEV_ERROR_DETECT == STD_ON)
     if (!COMM_IS_INITIALIZED()) {
-        Det_ReportError(COMM_MODULE_ID, 0U, COMM_GETCURRENTCOMMODE_SID, COMM_E_NOT_INIT);
+        (void)Det_ReportError(COMM_MODULE_ID, 0U, COMM_GETCURRENTCOMMODE_SID, COMM_E_NOT_INIT);
         return E_NOT_OK;
     }
     
     if (!COMM_VALIDATE_USER(User)) {
-        Det_ReportError(COMM_MODULE_ID, 0U, COMM_GETCURRENTCOMMODE_SID, COMM_E_PARAM_USER);
+        (void)Det_ReportError(COMM_MODULE_ID, 0U, COMM_GETCURRENTCOMMODE_SID, COMM_E_PARAM_USER);
         return E_NOT_OK;
     }
     
     if (ComModePtr == NULL_PTR) {
-        Det_ReportError(COMM_MODULE_ID, 0U, COMM_GETCURRENTCOMMODE_SID, COMM_E_PARAM_POINTER);
+        (void)Det_ReportError(COMM_MODULE_ID, 0U, COMM_GETCURRENTCOMMODE_SID, COMM_E_PARAM_POINTER);
         return E_NOT_OK;
     }
 #endif
@@ -292,12 +292,12 @@ void ComM_CommunicationAllowed(ComM_ChannelHandleType Channel, boolean Allowed)
 {
 #if (COMM_DEV_ERROR_DETECT == STD_ON)
     if (!COMM_IS_INITIALIZED()) {
-        Det_ReportError(COMM_MODULE_ID, 0U, COMM_COMMUNICATIONALLOWED_SID, COMM_E_NOT_INIT);
+        (void)Det_ReportError(COMM_MODULE_ID, 0U, COMM_COMMUNICATIONALLOWED_SID, COMM_E_NOT_INIT);
         return;
     }
     
     if (!COMM_VALIDATE_CHANNEL(Channel)) {
-        Det_ReportError(COMM_MODULE_ID, 0U, COMM_COMMUNICATIONALLOWED_SID, COMM_E_PARAM_CHANNEL);
+        (void)Det_ReportError(COMM_MODULE_ID, 0U, COMM_COMMUNICATIONALLOWED_SID, COMM_E_PARAM_CHANNEL);
         return;
     }
 #endif
@@ -312,7 +312,7 @@ void ComM_MainFunction(void)
 
 #if (COMM_DEV_ERROR_DETECT == STD_ON)
     if (!COMM_IS_INITIALIZED()) {
-        Det_ReportError(COMM_MODULE_ID, 0U, COMM_MAINFUNCTION_SID, COMM_E_NOT_INIT);
+        (void)Det_ReportError(COMM_MODULE_ID, 0U, COMM_MAINFUNCTION_SID, COMM_E_NOT_INIT);
         return;
     }
 #endif

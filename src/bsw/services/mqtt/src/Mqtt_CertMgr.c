@@ -110,7 +110,7 @@ void Mqtt_CertMgr_DeInit(void)
     /* 清理所有证书 */
     for (i = 0; i < MQTT_CERTMGR_MAX_CERTS; i++) {
         if ((CertMgr_Certs[i].isLoaded) != 0U) {
-            Mqtt_CertMgr_RemoveCert(CertMgr_Certs[i].alias);
+            (void)Mqtt_CertMgr_RemoveCert(CertMgr_Certs[i].alias);
         }
     }
     
@@ -169,7 +169,7 @@ Mqtt_ReturnType Mqtt_CertMgr_AddCert(const Mqtt_CertEntryType* entry)
     CertMgr_CertDataUsed += entry->dataLen;
     
     /* 解析证书信息 */
-    CertMgr_ParseCertInfo(entry->data, entry->dataLen, &CertMgr_Certs[idx]);
+    (void)CertMgr_ParseCertInfo(entry->data, entry->dataLen, &CertMgr_Certs[idx]);
     
     return MQTT_OK;
 }

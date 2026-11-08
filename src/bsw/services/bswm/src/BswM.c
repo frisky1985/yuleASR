@@ -597,11 +597,11 @@ Std_ReturnType BswM_RequestMode(uint8 SwCompositionId, BswM_ModeType Mode)
 
 #if (BSWM_DEV_ERROR_DETECT == STD_ON)
     if (BswM_State.internalState == BSWM_INTERNAL_UNINIT) {
-        Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_REQUEST_MODE, BSWM_E_UNINIT);
+        (void)Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_REQUEST_MODE, BSWM_E_UNINIT);
         return E_NOT_OK;
     }
     if (Mode > BSWM_MODE_VALUE_MAX) {
-        Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_REQUEST_MODE, BSWM_E_PARAM_MODE);
+        (void)Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_REQUEST_MODE, BSWM_E_PARAM_MODE);
         return E_NOT_OK;
     }
 #endif
@@ -709,7 +709,7 @@ void BswM_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
 #if (BSWM_DEV_ERROR_DETECT == STD_ON)
     if (NULL_PTR == versioninfo) {
-        Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_GETVERSIONINFO, BSWM_E_PARAM_POINTER);
+        (void)Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_GETVERSIONINFO, BSWM_E_PARAM_POINTER);
         return;
     }
 #endif
@@ -724,11 +724,11 @@ void BswM_ActionSwitchMode(BswM_ModeType Mode)
 {
 #if (BSWM_DEV_ERROR_DETECT == STD_ON)
     if (BswM_State.internalState == BSWM_INTERNAL_UNINIT) {
-        Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_SWITCH_MODE, BSWM_E_UNINIT);
+        (void)Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_SWITCH_MODE, BSWM_E_UNINIT);
         return;
     }
     if (Mode > BSWM_MODE_VALUE_MAX) {
-        Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_SWITCH_MODE, BSWM_E_PARAM_MODE);
+        (void)Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_SWITCH_MODE, BSWM_E_PARAM_MODE);
         return;
     }
 #endif
@@ -744,7 +744,7 @@ Std_ReturnType BswM_RuleEnable(uint16 RuleId)
 {
 #if (BSWM_DEV_ERROR_DETECT == STD_ON)
     if (BswM_State.internalState == BSWM_INTERNAL_UNINIT) {
-        Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_RULE_ENABLE, BSWM_E_UNINIT);
+        (void)Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_RULE_ENABLE, BSWM_E_UNINIT);
         return E_NOT_OK;
     }
 #endif
@@ -752,7 +752,7 @@ Std_ReturnType BswM_RuleEnable(uint16 RuleId)
         (RuleId >= (uint16)BswM_State.configPtr->NumRules) ||
         (RuleId >= (uint16)BSWM_MAX_RULES)) {
 #if (BSWM_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_RULE_ENABLE, BSWM_E_PARAM_RULE_ID);
+        (void)Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_RULE_ENABLE, BSWM_E_PARAM_RULE_ID);
 #endif
         return E_NOT_OK;
     }
@@ -765,7 +765,7 @@ Std_ReturnType BswM_RuleDisable(uint16 RuleId)
 {
 #if (BSWM_DEV_ERROR_DETECT == STD_ON)
     if (BswM_State.internalState == BSWM_INTERNAL_UNINIT) {
-        Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_RULE_DISABLE, BSWM_E_UNINIT);
+        (void)Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_RULE_DISABLE, BSWM_E_UNINIT);
         return E_NOT_OK;
     }
 #endif
@@ -773,7 +773,7 @@ Std_ReturnType BswM_RuleDisable(uint16 RuleId)
         (RuleId >= (uint16)BswM_State.configPtr->NumRules) ||
         (RuleId >= (uint16)BSWM_MAX_RULES)) {
 #if (BSWM_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_RULE_DISABLE, BSWM_E_PARAM_RULE_ID);
+        (void)Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_RULE_DISABLE, BSWM_E_PARAM_RULE_ID);
 #endif
         return E_NOT_OK;
     }
@@ -790,11 +790,11 @@ Std_ReturnType BswM_Com_CurrentPduGroupState(BswM_Com_IpduGroupVector IpduGroupV
 
 #if (BSWM_DEV_ERROR_DETECT == STD_ON)
     if (BswM_State.internalState == BSWM_INTERNAL_UNINIT) {
-        Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_COMM_CURRENT_PDU_GROUP, BSWM_E_UNINIT);
+        (void)Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_COMM_CURRENT_PDU_GROUP, BSWM_E_UNINIT);
         return E_NOT_OK;
     }
     if (NULL_PTR == IpduGroupVector) {
-        Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_COMM_CURRENT_PDU_GROUP, BSWM_E_PARAM_POINTER);
+        (void)Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_COMM_CURRENT_PDU_GROUP, BSWM_E_PARAM_POINTER);
         return E_NOT_OK;
     }
 #endif
@@ -841,7 +841,7 @@ void BswM_ComM_CurrentMode(BswM_NetworkHandleType Network, BswM_ComMModeType Cur
 {
 #if (BSWM_DEV_ERROR_DETECT == STD_ON)
     if (BswM_State.internalState == BSWM_INTERNAL_UNINIT) {
-        Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_COMM_CURRENT_MODE, BSWM_E_UNINIT);
+        (void)Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_COMM_CURRENT_MODE, BSWM_E_UNINIT);
         return;
     }
 #endif
@@ -854,7 +854,7 @@ void BswM_ComM_CurrentPNCMode(BswM_NetworkHandleType Network, boolean IsPNCActiv
 {
 #if (BSWM_DEV_ERROR_DETECT == STD_ON)
     if (BswM_State.internalState == BSWM_INTERNAL_UNINIT) {
-        Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_COMM_CURRENT_PNC_MODE, BSWM_E_UNINIT);
+        (void)Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_COMM_CURRENT_PNC_MODE, BSWM_E_UNINIT);
         return;
     }
 #endif
@@ -868,7 +868,7 @@ void BswM_Dcm_CommunicationMode_CurrentState(BswM_NetworkHandleType Network,
 {
 #if (BSWM_DEV_ERROR_DETECT == STD_ON)
     if (BswM_State.internalState == BSWM_INTERNAL_UNINIT) {
-        Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_DCM_COMM_MODE, BSWM_E_UNINIT);
+        (void)Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_DCM_COMM_MODE, BSWM_E_UNINIT);
         return;
     }
 #endif
@@ -881,7 +881,7 @@ void BswM_Dcm_ApplicationUpdated(BswM_NetworkHandleType Network)
 {
 #if (BSWM_DEV_ERROR_DETECT == STD_ON)
     if (BswM_State.internalState == BSWM_INTERNAL_UNINIT) {
-        Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_DCM_APP_UPDATED, BSWM_E_UNINIT);
+        (void)Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_DCM_APP_UPDATED, BSWM_E_UNINIT);
         return;
     }
 #endif
@@ -894,7 +894,7 @@ void BswM_Nm_StateChangeNotification(BswM_NetworkHandleType Network, BswM_NmStat
 {
 #if (BSWM_DEV_ERROR_DETECT == STD_ON)
     if (BswM_State.internalState == BSWM_INTERNAL_UNINIT) {
-        Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_NM_STATE_CHANGE, BSWM_E_UNINIT);
+        (void)Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_NM_STATE_CHANGE, BSWM_E_UNINIT);
         return;
     }
 #endif
@@ -907,7 +907,7 @@ void BswM_Nm_CarWakeUpIndication(BswM_NetworkHandleType Network)
 {
 #if (BSWM_DEV_ERROR_DETECT == STD_ON)
     if (BswM_State.internalState == BSWM_INTERNAL_UNINIT) {
-        Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_NM_CAR_WAKEUP, BSWM_E_UNINIT);
+        (void)Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_NM_CAR_WAKEUP, BSWM_E_UNINIT);
         return;
     }
 #endif
@@ -920,7 +920,7 @@ void BswM_CanSM_CurrentState(BswM_NetworkHandleType Network, BswM_CanSmStateType
 {
 #if (BSWM_DEV_ERROR_DETECT == STD_ON)
     if (BswM_State.internalState == BSWM_INTERNAL_UNINIT) {
-        Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_CANSM_CURRENT_STATE, BSWM_E_UNINIT);
+        (void)Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_CANSM_CURRENT_STATE, BSWM_E_UNINIT);
         return;
     }
 #endif
@@ -933,7 +933,7 @@ void BswM_EthSM_CurrentState(BswM_NetworkHandleType Network, BswM_EthSmStateType
 {
 #if (BSWM_DEV_ERROR_DETECT == STD_ON)
     if (BswM_State.internalState == BSWM_INTERNAL_UNINIT) {
-        Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_ETHSM_CURRENT_STATE, BSWM_E_UNINIT);
+        (void)Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_ETHSM_CURRENT_STATE, BSWM_E_UNINIT);
         return;
     }
 #endif
@@ -946,7 +946,7 @@ void BswM_FrSM_CurrentState(BswM_NetworkHandleType Network, BswM_FrSmStateType C
 {
 #if (BSWM_DEV_ERROR_DETECT == STD_ON)
     if (BswM_State.internalState == BSWM_INTERNAL_UNINIT) {
-        Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_FRSM_CURRENT_STATE, BSWM_E_UNINIT);
+        (void)Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_FRSM_CURRENT_STATE, BSWM_E_UNINIT);
         return;
     }
 #endif
@@ -959,7 +959,7 @@ void BswM_LinSM_CurrentState(BswM_NetworkHandleType Network, BswM_LinSmStateType
 {
 #if (BSWM_DEV_ERROR_DETECT == STD_ON)
     if (BswM_State.internalState == BSWM_INTERNAL_UNINIT) {
-        Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_LINSM_CURRENT_STATE, BSWM_E_UNINIT);
+        (void)Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_LINSM_CURRENT_STATE, BSWM_E_UNINIT);
         return;
     }
 #endif
@@ -972,7 +972,7 @@ void BswM_LinSM_CurrentSchedule(BswM_NetworkHandleType Network, uint8 ScheduleIn
 {
 #if (BSWM_DEV_ERROR_DETECT == STD_ON)
     if (BswM_State.internalState == BSWM_INTERNAL_UNINIT) {
-        Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_LINSM_CURRENT_SCHEDULE, BSWM_E_UNINIT);
+        (void)Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_LINSM_CURRENT_SCHEDULE, BSWM_E_UNINIT);
         return;
     }
 #endif
@@ -985,7 +985,7 @@ void BswM_LinTp_RequestMode(BswM_NetworkHandleType Network, BswM_LinTpModeType L
 {
 #if (BSWM_DEV_ERROR_DETECT == STD_ON)
     if (BswM_State.internalState == BSWM_INTERNAL_UNINIT) {
-        Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_LINTP_REQUEST_MODE, BSWM_E_UNINIT);
+        (void)Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_LINTP_REQUEST_MODE, BSWM_E_UNINIT);
         return;
     }
 #endif
@@ -1001,7 +1001,7 @@ void BswM_EcuM_RequestedState(BswM_EcuMStateType State)
 
 #if (BSWM_DEV_ERROR_DETECT == STD_ON)
     if (BswM_State.internalState == BSWM_INTERNAL_UNINIT) {
-        Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_ECUM_REQUESTED_STATE, BSWM_E_UNINIT);
+        (void)Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_ECUM_REQUESTED_STATE, BSWM_E_UNINIT);
         return;
     }
 #endif
@@ -1017,7 +1017,7 @@ void BswM_BswMPartitionRestarted(BswM_ApplicationType Application)
 {
 #if (BSWM_DEV_ERROR_DETECT == STD_ON)
     if (BswM_State.internalState == BSWM_INTERNAL_UNINIT) {
-        Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_PARTITION_RESTARTED, BSWM_E_UNINIT);
+        (void)Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_PARTITION_RESTARTED, BSWM_E_UNINIT);
         return;
     }
 #endif
@@ -1029,7 +1029,7 @@ void BswM_EthIf_PortGroupLinkStateChg(uint8 PortGroup, boolean LinkState)
 {
 #if (BSWM_DEV_ERROR_DETECT == STD_ON)
     if (BswM_State.internalState == BSWM_INTERNAL_UNINIT) {
-        Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_ETHIF_PORTGROUP_LINKSTATE, BSWM_E_UNINIT);
+        (void)Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_ETHIF_PORTGROUP_LINKSTATE, BSWM_E_UNINIT);
         return;
     }
 #endif

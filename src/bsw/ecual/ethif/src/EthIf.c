@@ -50,7 +50,7 @@ void EthIf_Init(const EthIf_ConfigType* ConfigPtr)
 {
 #if (ETHIF_DEV_ERROR_DETECT == STD_ON)
     if (NULL_PTR == ConfigPtr) {
-        Det_ReportError(ETHIF_MODULE_ID, 0U, ETHIF_SID_INIT, ETHIF_E_PARAM_POINTER);
+        (void)Det_ReportError(ETHIF_MODULE_ID, 0U, ETHIF_SID_INIT, ETHIF_E_PARAM_POINTER);
         return;
     }
 #endif
@@ -79,15 +79,15 @@ Std_ReturnType EthIf_Transmit(uint8 ControllerId, uint32 BufferHandle, const Eth
 {
 #if (ETHIF_DEV_ERROR_DETECT == STD_ON)
     if (EthIf_State.state < ETHIF_INIT) {
-        Det_ReportError(ETHIF_MODULE_ID, 0U, ETHIF_SID_TRANSMIT, ETHIF_E_UNINIT);
+        (void)Det_ReportError(ETHIF_MODULE_ID, 0U, ETHIF_SID_TRANSMIT, ETHIF_E_UNINIT);
         return E_NOT_OK;
     }
     if (NULL_PTR == PduInfoPtr) {
-        Det_ReportError(ETHIF_MODULE_ID, 0U, ETHIF_SID_TRANSMIT, ETHIF_E_PARAM_POINTER);
+        (void)Det_ReportError(ETHIF_MODULE_ID, 0U, ETHIF_SID_TRANSMIT, ETHIF_E_PARAM_POINTER);
         return E_NOT_OK;
     }
     if (ControllerId >= EthIf_State.activeControllerCount) {
-        Det_ReportError(ETHIF_MODULE_ID, 0U, ETHIF_SID_TRANSMIT, ETHIF_E_PARAM_CONTROLLER);
+        (void)Det_ReportError(ETHIF_MODULE_ID, 0U, ETHIF_SID_TRANSMIT, ETHIF_E_PARAM_CONTROLLER);
         return E_NOT_OK;
     }
 #endif
@@ -103,11 +103,11 @@ Std_ReturnType EthIf_SetControllerMode(uint8 ControllerId, EthIf_ControllerMode 
 {
 #if (ETHIF_DEV_ERROR_DETECT == STD_ON)
     if (EthIf_State.state < ETHIF_INIT) {
-        Det_ReportError(ETHIF_MODULE_ID, 0U, ETHIF_SID_SET_CONTROLLER_MODE, ETHIF_E_UNINIT);
+        (void)Det_ReportError(ETHIF_MODULE_ID, 0U, ETHIF_SID_SET_CONTROLLER_MODE, ETHIF_E_UNINIT);
         return E_NOT_OK;
     }
     if (ControllerId >= EthIf_State.activeControllerCount) {
-        Det_ReportError(ETHIF_MODULE_ID, 0U, ETHIF_SID_SET_CONTROLLER_MODE, ETHIF_E_PARAM_CONTROLLER);
+        (void)Det_ReportError(ETHIF_MODULE_ID, 0U, ETHIF_SID_SET_CONTROLLER_MODE, ETHIF_E_PARAM_CONTROLLER);
         return E_NOT_OK;
     }
 #endif

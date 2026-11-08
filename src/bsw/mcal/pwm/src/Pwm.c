@@ -115,11 +115,11 @@ void Pwm_Init(const Pwm_ConfigType* ConfigPtr)
 {
     #if (PWM_DEV_ERROR_DETECT == STD_ON)
     if (ConfigPtr == NULL_PTR) {
-        Det_ReportError(PWM_MODULE_ID, 0U, PWM_SID_INIT, PWM_E_PARAM_CONFIG);
+        (void)Det_ReportError(PWM_MODULE_ID, 0U, PWM_SID_INIT, PWM_E_PARAM_CONFIG);
         return;
     }
     if (Pwm_DriverInitialized == TRUE) {
-        Det_ReportError(PWM_MODULE_ID, 0U, PWM_SID_INIT, PWM_E_ALREADY_INITIALIZED);
+        (void)Det_ReportError(PWM_MODULE_ID, 0U, PWM_SID_INIT, PWM_E_ALREADY_INITIALIZED);
         return;
     }
     #endif
@@ -169,7 +169,7 @@ void Pwm_DeInit(void)
 {
     #if (PWM_DEV_ERROR_DETECT == STD_ON)
     if (Pwm_DriverInitialized == FALSE) {
-        Det_ReportError(PWM_MODULE_ID, 0U, PWM_SID_DEINIT, PWM_E_UNINIT);
+        (void)Det_ReportError(PWM_MODULE_ID, 0U, PWM_SID_DEINIT, PWM_E_UNINIT);
         return;
     }
     #endif
@@ -194,11 +194,11 @@ void Pwm_SetDutyCycle(Pwm_ChannelType Channel, uint16 DutyCycle)
 {
     #if (PWM_DEV_ERROR_DETECT == STD_ON)
     if (Pwm_DriverInitialized == FALSE) {
-        Det_ReportError(PWM_MODULE_ID, 0U, PWM_SID_SETDUTYCYCLE, PWM_E_UNINIT);
+        (void)Det_ReportError(PWM_MODULE_ID, 0U, PWM_SID_SETDUTYCYCLE, PWM_E_UNINIT);
         return;
     }
     if (Channel >= PWM_NUM_CHANNELS) {
-        Det_ReportError(PWM_MODULE_ID, 0U, PWM_SID_SETDUTYCYCLE, PWM_E_PARAM_CHANNEL);
+        (void)Det_ReportError(PWM_MODULE_ID, 0U, PWM_SID_SETDUTYCYCLE, PWM_E_PARAM_CHANNEL);
         return;
     }
     #endif
@@ -220,15 +220,15 @@ void Pwm_SetPeriodAndDuty(Pwm_ChannelType Channel, Pwm_PeriodType Period, uint16
 {
     #if (PWM_DEV_ERROR_DETECT == STD_ON)
     if (Pwm_DriverInitialized == FALSE) {
-        Det_ReportError(PWM_MODULE_ID, 0U, PWM_SID_SETPERIODANDDUTY, PWM_E_UNINIT);
+        (void)Det_ReportError(PWM_MODULE_ID, 0U, PWM_SID_SETPERIODANDDUTY, PWM_E_UNINIT);
         return;
     }
     if (Channel >= PWM_NUM_CHANNELS) {
-        Det_ReportError(PWM_MODULE_ID, 0U, PWM_SID_SETPERIODANDDUTY, PWM_E_PARAM_CHANNEL);
+        (void)Det_ReportError(PWM_MODULE_ID, 0U, PWM_SID_SETPERIODANDDUTY, PWM_E_PARAM_CHANNEL);
         return;
     }
     if (Pwm_ConfigPtr->Channels[Channel].ChannelClass == PWM_FIXED_PERIOD) {
-        Det_ReportError(PWM_MODULE_ID, 0U, PWM_SID_SETPERIODANDDUTY, PWM_E_PERIOD_UNCHANGEABLE);
+        (void)Det_ReportError(PWM_MODULE_ID, 0U, PWM_SID_SETPERIODANDDUTY, PWM_E_PERIOD_UNCHANGEABLE);
         return;
     }
     #endif
@@ -253,11 +253,11 @@ void Pwm_SetOutputToIdle(Pwm_ChannelType Channel)
 {
     #if (PWM_DEV_ERROR_DETECT == STD_ON)
     if (Pwm_DriverInitialized == FALSE) {
-        Det_ReportError(PWM_MODULE_ID, 0U, PWM_SID_SETOUTPUTTOIDLE, PWM_E_UNINIT);
+        (void)Det_ReportError(PWM_MODULE_ID, 0U, PWM_SID_SETOUTPUTTOIDLE, PWM_E_UNINIT);
         return;
     }
     if (Channel >= PWM_NUM_CHANNELS) {
-        Det_ReportError(PWM_MODULE_ID, 0U, PWM_SID_SETOUTPUTTOIDLE, PWM_E_PARAM_CHANNEL);
+        (void)Det_ReportError(PWM_MODULE_ID, 0U, PWM_SID_SETOUTPUTTOIDLE, PWM_E_PARAM_CHANNEL);
         return;
     }
     #endif
@@ -276,11 +276,11 @@ Pwm_OutputStateType Pwm_GetOutputState(Pwm_ChannelType Channel)
 {
     #if (PWM_DEV_ERROR_DETECT == STD_ON)
     if (Pwm_DriverInitialized == FALSE) {
-        Det_ReportError(PWM_MODULE_ID, 0U, PWM_SID_GETOUTPUTSTATE, PWM_E_UNINIT);
+        (void)Det_ReportError(PWM_MODULE_ID, 0U, PWM_SID_GETOUTPUTSTATE, PWM_E_UNINIT);
         return PWM_LOW;
     }
     if (Channel >= PWM_NUM_CHANNELS) {
-        Det_ReportError(PWM_MODULE_ID, 0U, PWM_SID_GETOUTPUTSTATE, PWM_E_PARAM_CHANNEL);
+        (void)Det_ReportError(PWM_MODULE_ID, 0U, PWM_SID_GETOUTPUTSTATE, PWM_E_PARAM_CHANNEL);
         return PWM_LOW;
     }
     #endif
@@ -304,11 +304,11 @@ void Pwm_DisableNotification(Pwm_ChannelType Channel)
 {
     #if (PWM_DEV_ERROR_DETECT == STD_ON)
     if (Pwm_DriverInitialized == FALSE) {
-        Det_ReportError(PWM_MODULE_ID, 0U, PWM_SID_DISABLENOTIFICATION, PWM_E_UNINIT);
+        (void)Det_ReportError(PWM_MODULE_ID, 0U, PWM_SID_DISABLENOTIFICATION, PWM_E_UNINIT);
         return;
     }
     if (Channel >= PWM_NUM_CHANNELS) {
-        Det_ReportError(PWM_MODULE_ID, 0U, PWM_SID_DISABLENOTIFICATION, PWM_E_PARAM_CHANNEL);
+        (void)Det_ReportError(PWM_MODULE_ID, 0U, PWM_SID_DISABLENOTIFICATION, PWM_E_PARAM_CHANNEL);
         return;
     }
     #endif
@@ -323,11 +323,11 @@ void Pwm_EnableNotification(Pwm_ChannelType Channel, Pwm_EdgeNotificationType No
 {
     #if (PWM_DEV_ERROR_DETECT == STD_ON)
     if (Pwm_DriverInitialized == FALSE) {
-        Det_ReportError(PWM_MODULE_ID, 0U, PWM_SID_ENABLENOTIFICATION, PWM_E_UNINIT);
+        (void)Det_ReportError(PWM_MODULE_ID, 0U, PWM_SID_ENABLENOTIFICATION, PWM_E_UNINIT);
         return;
     }
     if (Channel >= PWM_NUM_CHANNELS) {
-        Det_ReportError(PWM_MODULE_ID, 0U, PWM_SID_ENABLENOTIFICATION, PWM_E_PARAM_CHANNEL);
+        (void)Det_ReportError(PWM_MODULE_ID, 0U, PWM_SID_ENABLENOTIFICATION, PWM_E_PARAM_CHANNEL);
         return;
     }
     #endif
@@ -353,7 +353,7 @@ void Pwm_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
     #if (PWM_DEV_ERROR_DETECT == STD_ON)
     if (versioninfo == NULL_PTR) {
-        Det_ReportError(PWM_MODULE_ID, 0U, PWM_SID_GETVERSIONINFO, PWM_E_PARAM_POINTER);
+        (void)Det_ReportError(PWM_MODULE_ID, 0U, PWM_SID_GETVERSIONINFO, PWM_E_PARAM_POINTER);
         return;
     }
     #endif

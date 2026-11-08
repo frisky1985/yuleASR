@@ -61,7 +61,7 @@ Std_ReturnType HeapProtection_Init(const HeapConfigType *config)
     }
     
     /* Validate configuration */
-    if (config->size == 0 || config->start_addr == 0) {
+    if (config->size == (uint32_t)0 || config->start_addr == 0) {
         return E_NOT_OK;
     }
     
@@ -137,7 +137,7 @@ void* HeapProtection_Malloc(uint32_t size, uint8_t flags)
     uint32_t remaining;
     void *user_ptr;
     
-    if (!g_initialized || size == 0 || g_heap_info.locked) {
+    if (!g_initialized || size == (uint32_t)0 || g_heap_info.locked) {
         g_heap_info.stats.fail_count++;
         return NULL;
     }
@@ -240,7 +240,7 @@ void* HeapProtection_Calloc(uint32_t num, uint32_t size, uint8_t flags)
     uint32_t total_size;
     void *ptr;
     
-    if (num == 0 || size == 0) {
+    if (num == (uint32_t)0 || size == 0) {
         return NULL;
     }
     
@@ -267,7 +267,7 @@ void* HeapProtection_Realloc(void *ptr, uint32_t new_size, uint8_t flags)
         return HeapProtection_Malloc(new_size, flags);
     }
     
-    if (new_size == 0) {
+    if (new_size == (uint32_t)0) {
         /* Behave like free */
         (void)HeapProtection_Free(ptr, flags);
         return NULL;
@@ -679,7 +679,7 @@ void HeapProtection_SecureClear(void *ptr, uint32_t size)
     volatile uint8_t *p = ptr;
     uint32_t i;
     
-    if (ptr == NULL || size == 0) {
+    if (ptr == NULL || size == (uint32_t)0) {
         return;
     }
     
@@ -699,7 +699,7 @@ void HeapProtection_SecureClear(void *ptr, uint32_t size)
 
 void HeapProtection_FillPattern(void *ptr, uint32_t size, uint8_t pattern)
 {
-    if (ptr == NULL || size == 0) {
+    if (ptr == NULL || size == (uint32_t)0) {
         return;
     }
     
@@ -798,7 +798,7 @@ uint32_t HeapProtection_FullCheck(void)
     /* Update heap state */
     if (errors > 0) {
         g_heap_info.state = HEAP_STATE_CORRUPTED;
-    } else if (g_heap_info.stats.free_size < (g_config.size / 10)) {
+    } else if (g_heap_info.stats.free_size < (g_config.size / (uint32_t)10)) {
         g_heap_info.state = HEAP_STATE_CRITICAL;
     } else if (g_heap_info.stats.fragmentation > 30) {
         g_heap_info.state = HEAP_STATE_FRAGMENTED;

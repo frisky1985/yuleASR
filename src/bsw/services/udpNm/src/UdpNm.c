@@ -120,12 +120,12 @@ static Std_ReturnType UdpNm_ValidateChannel(Nm_ChannelHandleType nmChannelHandle
 #if (UDPNM_DEV_ERROR_DETECT == STD_ON)
     if (UdpNm_ModuleInitialized == 0U)
     {
-        Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, ServiceId, UDPNM_E_UNINIT);
+        (void)Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, ServiceId, UDPNM_E_UNINIT);
         return E_NOT_OK;
     }
     if (nmChannelHandle >= UDPNM_NUMBER_OF_CHANNELS)
     {
-        Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, ServiceId, UDPNM_E_INVALID_CHANNEL);
+        (void)Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, ServiceId, UDPNM_E_INVALID_CHANNEL);
         return E_NOT_OK;
     }
 #else
@@ -450,7 +450,7 @@ void UdpNm_Init(const UdpNm_ConfigType *ConfigPtr)
 #if (UDPNM_DEV_ERROR_DETECT == STD_ON)
     if (ConfigPtr == NULL_PTR)
     {
-        Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_INIT, UDPNM_E_INVALID_POINTER);
+        (void)Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_INIT, UDPNM_E_INVALID_POINTER);
         return;
     }
 #endif
@@ -497,7 +497,7 @@ void UdpNm_DeInit(void)
 #if (UDPNM_DEV_ERROR_DETECT == STD_ON)
     if (UdpNm_ModuleInitialized == 0U)
     {
-        Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_DEINIT, UDPNM_E_UNINIT);
+        (void)Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_DEINIT, UDPNM_E_UNINIT);
         return;
     }
 #endif
@@ -638,17 +638,17 @@ Std_ReturnType UdpNm_GetUserData(Nm_ChannelHandleType nmChannelHandle, uint8 *nm
 #if (UDPNM_DEV_ERROR_DETECT == STD_ON)
     if (UdpNm_ModuleInitialized == 0U)
     {
-        Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_GETUSERDATA, UDPNM_E_UNINIT);
+        (void)Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_GETUSERDATA, UDPNM_E_UNINIT);
         result = E_NOT_OK;
     }
     else if (nmChannelHandle >= UDPNM_NUMBER_OF_CHANNELS)
     {
-        Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_GETUSERDATA, UDPNM_E_INVALID_CHANNEL);
+        (void)Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_GETUSERDATA, UDPNM_E_INVALID_CHANNEL);
         result = E_NOT_OK;
     }
     else if (nmUserDataPtr == NULL_PTR)
     {
-        Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_GETUSERDATA, UDPNM_E_INVALID_POINTER);
+        (void)Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_GETUSERDATA, UDPNM_E_INVALID_POINTER);
         result = E_NOT_OK;
     }
     else
@@ -680,17 +680,17 @@ Std_ReturnType UdpNm_SetUserData(Nm_ChannelHandleType nmChannelHandle, const uin
 #if (UDPNM_DEV_ERROR_DETECT == STD_ON)
     if (UdpNm_ModuleInitialized == 0U)
     {
-        Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_SETUSERDATA, UDPNM_E_UNINIT);
+        (void)Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_SETUSERDATA, UDPNM_E_UNINIT);
         result = E_NOT_OK;
     }
     else if (nmChannelHandle >= UDPNM_NUMBER_OF_CHANNELS)
     {
-        Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_SETUSERDATA, UDPNM_E_INVALID_CHANNEL);
+        (void)Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_SETUSERDATA, UDPNM_E_INVALID_CHANNEL);
         result = E_NOT_OK;
     }
     else if (nmUserDataPtr == NULL_PTR)
     {
-        Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_SETUSERDATA, UDPNM_E_INVALID_POINTER);
+        (void)Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_SETUSERDATA, UDPNM_E_INVALID_POINTER);
         result = E_NOT_OK;
     }
     else
@@ -722,17 +722,17 @@ Std_ReturnType UdpNm_GetPduData(Nm_ChannelHandleType nmChannelHandle, uint8 *nmP
 #if (UDPNM_DEV_ERROR_DETECT == STD_ON)
     if (UdpNm_ModuleInitialized == 0U)
     {
-        Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_GETPDUDATA, UDPNM_E_UNINIT);
+        (void)Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_GETPDUDATA, UDPNM_E_UNINIT);
         result = E_NOT_OK;
     }
     else if (nmChannelHandle >= UDPNM_NUMBER_OF_CHANNELS)
     {
-        Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_GETPDUDATA, UDPNM_E_INVALID_CHANNEL);
+        (void)Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_GETPDUDATA, UDPNM_E_INVALID_CHANNEL);
         result = E_NOT_OK;
     }
     else if (nmPduDataPtr == NULL_PTR)
     {
-        Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_GETPDUDATA, UDPNM_E_INVALID_POINTER);
+        (void)Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_GETPDUDATA, UDPNM_E_INVALID_POINTER);
         result = E_NOT_OK;
     }
     else
@@ -764,17 +764,17 @@ Std_ReturnType UdpNm_GetState(Nm_ChannelHandleType nmChannelHandle,
 #if (UDPNM_DEV_ERROR_DETECT == STD_ON)
     if (UdpNm_ModuleInitialized == 0U)
     {
-        Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_GETSTATE, UDPNM_E_UNINIT);
+        (void)Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_GETSTATE, UDPNM_E_UNINIT);
         result = E_NOT_OK;
     }
     else if (nmChannelHandle >= UDPNM_NUMBER_OF_CHANNELS)
     {
-        Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_GETSTATE, UDPNM_E_INVALID_CHANNEL);
+        (void)Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_GETSTATE, UDPNM_E_INVALID_CHANNEL);
         result = E_NOT_OK;
     }
     else if ((nmStatePtr == NULL_PTR) || (nmModePtr == NULL_PTR))
     {
-        Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_GETSTATE, UDPNM_E_INVALID_POINTER);
+        (void)Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_GETSTATE, UDPNM_E_INVALID_POINTER);
         result = E_NOT_OK;
     }
     else
@@ -872,17 +872,17 @@ Std_ReturnType UdpNm_CheckRemoteSleepIndication(Nm_ChannelHandleType nmChannelHa
 #if (UDPNM_DEV_ERROR_DETECT == STD_ON)
     if (UdpNm_ModuleInitialized == 0U)
     {
-        Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_CHECKREMOTESLEEPINDICATION, UDPNM_E_UNINIT);
+        (void)Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_CHECKREMOTESLEEPINDICATION, UDPNM_E_UNINIT);
         result = E_NOT_OK;
     }
     else if (nmChannelHandle >= UDPNM_NUMBER_OF_CHANNELS)
     {
-        Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_CHECKREMOTESLEEPINDICATION, UDPNM_E_INVALID_CHANNEL);
+        (void)Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_CHECKREMOTESLEEPINDICATION, UDPNM_E_INVALID_CHANNEL);
         result = E_NOT_OK;
     }
     else if (nmRemoteSleepIndPtr == NULL_PTR)
     {
-        Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_CHECKREMOTESLEEPINDICATION, UDPNM_E_INVALID_POINTER);
+        (void)Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_CHECKREMOTESLEEPINDICATION, UDPNM_E_INVALID_POINTER);
         result = E_NOT_OK;
     }
     else
@@ -927,17 +927,17 @@ Std_ReturnType UdpNm_Transmit(Nm_ChannelHandleType nmChannelHandle,
 #if (UDPNM_DEV_ERROR_DETECT == STD_ON)
     if (UdpNm_ModuleInitialized == 0U)
     {
-        Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_TRANSMIT, UDPNM_E_UNINIT);
+        (void)Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_TRANSMIT, UDPNM_E_UNINIT);
         result = E_NOT_OK;
     }
     else if (nmChannelHandle >= UDPNM_NUMBER_OF_CHANNELS)
     {
-        Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_TRANSMIT, UDPNM_E_INVALID_CHANNEL);
+        (void)Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_TRANSMIT, UDPNM_E_INVALID_CHANNEL);
         result = E_NOT_OK;
     }
     else if (PduInfoPtr == NULL_PTR)
     {
-        Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_TRANSMIT, UDPNM_E_INVALID_POINTER);
+        (void)Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_TRANSMIT, UDPNM_E_INVALID_POINTER);
         result = E_NOT_OK;
     }
     else

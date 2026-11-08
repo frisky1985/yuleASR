@@ -97,7 +97,7 @@ Std_ReturnType J1939Tp_Init(const J1939Tp_ConfigType* ConfigPtr)
 
 #if (J1939TP_DEV_ERROR_DETECT == STD_ON)
     if (ConfigPtr == NULL_PTR) {
-        Det_ReportError(J1939TP_MODULE_ID, J1939TP_INSTANCE_ID, J1939TP_SID_INIT, J1939TP_E_PARAM_POINTER);
+        (void)Det_ReportError(J1939TP_MODULE_ID, J1939TP_INSTANCE_ID, J1939TP_SID_INIT, J1939TP_E_PARAM_POINTER);
         return E_NOT_OK;
     }
 #endif
@@ -142,7 +142,7 @@ void J1939Tp_GetVersionInfo(Std_VersionInfoType* VersionInfo)
 #if (J1939TP_VERSION_INFO_API == STD_ON)
 #if (J1939TP_DEV_ERROR_DETECT == STD_ON)
     if (VersionInfo == NULL_PTR) {
-        Det_ReportError(J1939TP_MODULE_ID, J1939TP_INSTANCE_ID, J1939TP_SID_GET_VERSION_INFO, J1939TP_E_PARAM_POINTER);
+        (void)Det_ReportError(J1939TP_MODULE_ID, J1939TP_INSTANCE_ID, J1939TP_SID_GET_VERSION_INFO, J1939TP_E_PARAM_POINTER);
         return;
     }
 #endif
@@ -162,12 +162,12 @@ Std_ReturnType J1939Tp_Transmit(PduIdType TxSduId, const PduInfoType* TxInfoPtr)
 
 #if (J1939TP_DEV_ERROR_DETECT == STD_ON)
     if (J1939Tp_ModuleState != J1939TP_STATE_INITED) {
-        Det_ReportError(J1939TP_MODULE_ID, J1939TP_INSTANCE_ID, J1939TP_SID_TRANSMIT, J1939TP_E_UNINIT);
+        (void)Det_ReportError(J1939TP_MODULE_ID, J1939TP_INSTANCE_ID, J1939TP_SID_TRANSMIT, J1939TP_E_UNINIT);
         return E_NOT_OK;
     }
 
     if (TxInfoPtr == NULL_PTR) {
-        Det_ReportError(J1939TP_MODULE_ID, J1939TP_INSTANCE_ID, J1939TP_SID_TRANSMIT, J1939TP_E_PARAM_POINTER);
+        (void)Det_ReportError(J1939TP_MODULE_ID, J1939TP_INSTANCE_ID, J1939TP_SID_TRANSMIT, J1939TP_E_PARAM_POINTER);
         return E_NOT_OK;
     }
 #endif
@@ -221,7 +221,7 @@ Std_ReturnType J1939Tp_CancelTransmit(PduIdType TxSduId)
 
 #if (J1939TP_DEV_ERROR_DETECT == STD_ON)
     if (J1939Tp_ModuleState != J1939TP_STATE_INITED) {
-        Det_ReportError(J1939TP_MODULE_ID, J1939TP_INSTANCE_ID, J1939TP_SID_CANCEL_TRANSMIT, J1939TP_E_UNINIT);
+        (void)Det_ReportError(J1939TP_MODULE_ID, J1939TP_INSTANCE_ID, J1939TP_SID_CANCEL_TRANSMIT, J1939TP_E_UNINIT);
         return E_NOT_OK;
     }
 #endif
@@ -244,7 +244,7 @@ Std_ReturnType J1939Tp_CancelReceive(PduIdType RxSduId)
 
 #if (J1939TP_DEV_ERROR_DETECT == STD_ON)
     if (J1939Tp_ModuleState != J1939TP_STATE_INITED) {
-        Det_ReportError(J1939TP_MODULE_ID, J1939TP_INSTANCE_ID, J1939TP_SID_CANCEL_RECEIVE, J1939TP_E_UNINIT);
+        (void)Det_ReportError(J1939TP_MODULE_ID, J1939TP_INSTANCE_ID, J1939TP_SID_CANCEL_RECEIVE, J1939TP_E_UNINIT);
         return E_NOT_OK;
     }
 #endif
@@ -291,7 +291,7 @@ void J1939Tp_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
 {
 #if (J1939TP_DEV_ERROR_DETECT == STD_ON)
     if (PduInfoPtr == NULL_PTR) {
-        Det_ReportError(J1939TP_MODULE_ID, J1939TP_INSTANCE_ID, J1939TP_SID_RX_INDICATION, J1939TP_E_PARAM_POINTER);
+        (void)Det_ReportError(J1939TP_MODULE_ID, J1939TP_INSTANCE_ID, J1939TP_SID_RX_INDICATION, J1939TP_E_PARAM_POINTER);
         return;
     }
 #endif

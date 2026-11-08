@@ -144,7 +144,7 @@ void EcuM_Init(void)
 #if (ECUM_DEV_ERROR_DETECT == STD_ON)
     if (EcuM_IsInitialized)
     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_INIT_SID, ECUM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_INIT_SID, ECUM_E_NOT_INITIALIZED);
         return;
     }
 #endif
@@ -191,13 +191,13 @@ void EcuM_StartupOne(void)
 {
 #if (ECUM_DEV_ERROR_DETECT == STD_ON)
     if (EcuM_IsInitialized == 0U)     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_STARTUPONE_SID, ECUM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_STARTUPONE_SID, ECUM_E_NOT_INITIALIZED);
         return;
     }
     
     if (EcuM_CurrentSubState != ECUM_SUBSTATE_STARTUP_ONE)
     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_STARTUPONE_SID, ECUM_E_WRONG_API_ORDER);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_STARTUPONE_SID, ECUM_E_WRONG_API_ORDER);
         return;
     }
 #endif
@@ -214,13 +214,13 @@ void EcuM_StartupTwo(void)
 {
 #if (ECUM_DEV_ERROR_DETECT == STD_ON)
     if (EcuM_IsInitialized == 0U)     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_STARTUPTWO_SID, ECUM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_STARTUPTWO_SID, ECUM_E_NOT_INITIALIZED);
         return;
     }
     
     if (EcuM_CurrentSubState != ECUM_SUBSTATE_STARTUP_TWO)
     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_STARTUPTWO_SID, ECUM_E_WRONG_API_ORDER);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_STARTUPTWO_SID, ECUM_E_WRONG_API_ORDER);
         return;
     }
 #endif
@@ -311,11 +311,11 @@ static void EcuM_ProcessStartupTwo(void)
     /* Initialize NV memory */
 #if (ECUM_NVM_ENABLED == STD_ON)
     NvM_Init(NULL_PTR);
-    NvM_ReadAll();
+    (void)NvM_ReadAll();
 #endif
 
     /* CDD: Flash Virtual Memory Manager (bank integrity + failover) */
-    Cdd_Fvm_Init(NULL_PTR);
+    (void)Cdd_Fvm_Init(NULL_PTR);
 
     /* Initialize COM module */
     /* Com_Init(&Com_Config); */
@@ -338,7 +338,7 @@ static void EcuM_ProcessStartupTwo(void)
     
     /* Start RTE */
 #if (ECUM_RTE_ENABLED == STD_ON)
-    Rte_Start();
+    (void)Rte_Start();
 #endif
     
     /* Call third phase init (SW-C initialization) */
@@ -369,7 +369,7 @@ void EcuM_MainFunction(void)
 {
 #if (ECUM_DEV_ERROR_DETECT == STD_ON)
     if (EcuM_IsInitialized == 0U)     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_MAINFUNCTION_SID, ECUM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_MAINFUNCTION_SID, ECUM_E_NOT_INITIALIZED);
         return;
     }
 #endif
@@ -381,7 +381,7 @@ void EcuM_MainFunction(void)
     {
         case ECUM_STATE_RUN:
             EcuM_ProcessRun();
-            Cdd_Fvm_MainFunction();
+            (void)Cdd_Fvm_MainFunction();
             break;
             
         case ECUM_STATE_POST_RUN:
@@ -466,13 +466,13 @@ void EcuM_GoSleep(void)
 {
 #if (ECUM_DEV_ERROR_DETECT == STD_ON)
     if (EcuM_IsInitialized == 0U)     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_SLEEP_SID, ECUM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_SLEEP_SID, ECUM_E_NOT_INITIALIZED);
         return;
     }
     
     if (EcuM_CurrentState != ECUM_STATE_SLEEP)
     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_SLEEP_SID, ECUM_E_STATE_CHANGE_FAILED);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_SLEEP_SID, ECUM_E_STATE_CHANGE_FAILED);
         return;
     }
 #endif
@@ -489,13 +489,13 @@ void EcuM_GoHalt(void)
 {
 #if (ECUM_DEV_ERROR_DETECT == STD_ON)
     if (EcuM_IsInitialized == 0U)     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_HALT_SID, ECUM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_HALT_SID, ECUM_E_NOT_INITIALIZED);
         return;
     }
     
     if (EcuM_CurrentState != ECUM_STATE_SLEEP)
     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_HALT_SID, ECUM_E_STATE_CHANGE_FAILED);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_HALT_SID, ECUM_E_STATE_CHANGE_FAILED);
         return;
     }
 #endif
@@ -514,13 +514,13 @@ void EcuM_GoPoll(void)
 {
 #if (ECUM_DEV_ERROR_DETECT == STD_ON)
     if (EcuM_IsInitialized == 0U)     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_POLL_SID, ECUM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_POLL_SID, ECUM_E_NOT_INITIALIZED);
         return;
     }
     
     if (EcuM_CurrentState != ECUM_STATE_SLEEP)
     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_POLL_SID, ECUM_E_STATE_CHANGE_FAILED);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_POLL_SID, ECUM_E_STATE_CHANGE_FAILED);
         return;
     }
 #endif
@@ -635,7 +635,7 @@ void EcuM_WakeupRestart(void)
 {
 #if (ECUM_DEV_ERROR_DETECT == STD_ON)
     if (EcuM_IsInitialized == 0U)     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_WAKEUPRESTART_SID, ECUM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_WAKEUPRESTART_SID, ECUM_E_NOT_INITIALIZED);
         return;
     }
 #endif
@@ -691,7 +691,7 @@ static void EcuM_ProcessWakeupTwo(void)
     
     /* Re-initialize RTE */
 #if (ECUM_RTE_ENABLED == STD_ON)
-    Rte_Start();
+    (void)Rte_Start();
 #endif
     
     /* Transition back to RUN */
@@ -715,7 +715,7 @@ void EcuM_Shutdown(void)
 {
 #if (ECUM_DEV_ERROR_DETECT == STD_ON)
     if (EcuM_IsInitialized == 0U)     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_SHUTDOWN_SID, ECUM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_SHUTDOWN_SID, ECUM_E_NOT_INITIALIZED);
         return;
     }
 #endif
@@ -753,7 +753,7 @@ static void EcuM_ProcessGoOffOne(void)
     
     /* Write all NV data */
 #if (ECUM_NVM_ENABLED == STD_ON)
-    NvM_WriteAll();
+    (void)NvM_WriteAll();
     /* Wait for completion or timeout */
 #endif
     
@@ -814,7 +814,7 @@ static void EcuM_ProcessGoOffTwo(void)
 static void EcuM_PerformShutdown(void)
 {
     /* De-init CDD modules before power-off */
-    Cdd_Fvm_DeInit();
+    (void)Cdd_Fvm_DeInit();
 
     /* Call shutdown hook */
     EcuM_AL_SwitchOff();
@@ -897,13 +897,13 @@ Std_ReturnType EcuM_RequestRUN(EcuM_UserType user)
 {
 #if (ECUM_DEV_ERROR_DETECT == STD_ON)
     if (EcuM_IsInitialized == 0U)     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_REQUESTRUN_SID, ECUM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_REQUESTRUN_SID, ECUM_E_NOT_INITIALIZED);
         return E_NOT_OK;
     }
     
     if (user >= ECUM_MAX_USERS)
     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_REQUESTRUN_SID, ECUM_E_INVALID_PAR);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_REQUESTRUN_SID, ECUM_E_INVALID_PAR);
         return E_NOT_OK;
     }
 #endif
@@ -931,13 +931,13 @@ Std_ReturnType EcuM_ReleaseRUN(EcuM_UserType user)
 {
 #if (ECUM_DEV_ERROR_DETECT == STD_ON)
     if (EcuM_IsInitialized == 0U)     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_RELEASERUN_SID, ECUM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_RELEASERUN_SID, ECUM_E_NOT_INITIALIZED);
         return E_NOT_OK;
     }
     
     if (user >= ECUM_MAX_USERS)
     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_RELEASERUN_SID, ECUM_E_INVALID_PAR);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_RELEASERUN_SID, ECUM_E_INVALID_PAR);
         return E_NOT_OK;
     }
 #endif
@@ -960,7 +960,7 @@ Std_ReturnType EcuM_KillAllRUNRequests(void)
 {
 #if (ECUM_DEV_ERROR_DETECT == STD_ON)
     if (EcuM_IsInitialized == 0U)     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_KILLALLRUNREQUESTS_SID, ECUM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_KILLALLRUNREQUESTS_SID, ECUM_E_NOT_INITIALIZED);
         return E_NOT_OK;
     }
 #endif
@@ -1011,13 +1011,13 @@ Std_ReturnType EcuM_GetState(EcuM_StateType* state)
 {
 #if (ECUM_DEV_ERROR_DETECT == STD_ON)
     if (EcuM_IsInitialized == 0U)     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_GETSTATE_SID, ECUM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_GETSTATE_SID, ECUM_E_NOT_INITIALIZED);
         return E_NOT_OK;
     }
     
     if (state == NULL_PTR)
     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_GETSTATE_SID, ECUM_E_NULL_POINTER);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_GETSTATE_SID, ECUM_E_NULL_POINTER);
         return E_NOT_OK;
     }
 #endif
@@ -1036,13 +1036,13 @@ Std_ReturnType EcuM_GetSubState(EcuM_SubStateType* subState)
 {
 #if (ECUM_DEV_ERROR_DETECT == STD_ON)
     if (EcuM_IsInitialized == 0U)     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_GETSTATE_SID, ECUM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_GETSTATE_SID, ECUM_E_NOT_INITIALIZED);
         return E_NOT_OK;
     }
     
     if (subState == NULL_PTR)
     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_GETSTATE_SID, ECUM_E_NULL_POINTER);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_GETSTATE_SID, ECUM_E_NULL_POINTER);
         return E_NOT_OK;
     }
 #endif
@@ -1066,7 +1066,7 @@ Std_ReturnType EcuM_SelectShutdownTarget(EcuM_ShutdownTargetType target, uint8 m
 {
 #if (ECUM_DEV_ERROR_DETECT == STD_ON)
     if (EcuM_IsInitialized == 0U)     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_SELECTSHUTDOWNTARGET_SID, ECUM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_SELECTSHUTDOWNTARGET_SID, ECUM_E_NOT_INITIALIZED);
         return E_NOT_OK;
     }
     
@@ -1074,7 +1074,7 @@ Std_ReturnType EcuM_SelectShutdownTarget(EcuM_ShutdownTargetType target, uint8 m
         (target != ECUM_SHUTDOWN_TARGET_RESET) && 
         (target != ECUM_SHUTDOWN_TARGET_SLEEP))
     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_SELECTSHUTDOWNTARGET_SID, ECUM_E_INVALID_PAR);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_SELECTSHUTDOWNTARGET_SID, ECUM_E_INVALID_PAR);
         return E_NOT_OK;
     }
 #endif
@@ -1104,13 +1104,13 @@ Std_ReturnType EcuM_GetShutdownTarget(EcuM_ShutdownTargetType* target, uint8* mo
 {
 #if (ECUM_DEV_ERROR_DETECT == STD_ON)
     if (EcuM_IsInitialized == 0U)     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_GETSHUTDOWNTARGET_SID, ECUM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_GETSHUTDOWNTARGET_SID, ECUM_E_NOT_INITIALIZED);
         return E_NOT_OK;
     }
     
     if ((target == NULL_PTR) || (mode == NULL_PTR))
     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_GETSHUTDOWNTARGET_SID, ECUM_E_NULL_POINTER);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_GETSHUTDOWNTARGET_SID, ECUM_E_NULL_POINTER);
         return E_NOT_OK;
     }
 #endif
@@ -1140,13 +1140,13 @@ Std_ReturnType EcuM_GetLastShutdownTarget(EcuM_ShutdownTargetType* target, uint8
 {
 #if (ECUM_DEV_ERROR_DETECT == STD_ON)
     if (EcuM_IsInitialized == 0U)     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_GETLASTSHUTDOWNTARGET_SID, ECUM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_GETLASTSHUTDOWNTARGET_SID, ECUM_E_NOT_INITIALIZED);
         return E_NOT_OK;
     }
     
     if ((target == NULL_PTR) || (mode == NULL_PTR))
     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_GETLASTSHUTDOWNTARGET_SID, ECUM_E_NULL_POINTER);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_GETLASTSHUTDOWNTARGET_SID, ECUM_E_NULL_POINTER);
         return E_NOT_OK;
     }
 #endif
@@ -1168,7 +1168,7 @@ Std_ReturnType EcuM_SelectShutdownCause(EcuM_ShutdownCauseType cause)
 {
 #if (ECUM_DEV_ERROR_DETECT == STD_ON)
     if (EcuM_IsInitialized == 0U)     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_SELECTSHUTDOWNCAUSE_SID, ECUM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_SELECTSHUTDOWNCAUSE_SID, ECUM_E_NOT_INITIALIZED);
         return E_NOT_OK;
     }
 #endif
@@ -1187,13 +1187,13 @@ Std_ReturnType EcuM_GetShutdownCause(EcuM_ShutdownCauseType* cause)
 {
 #if (ECUM_DEV_ERROR_DETECT == STD_ON)
     if (EcuM_IsInitialized == 0U)     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_GETSHUTDOWNCAUSE_SID, ECUM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_GETSHUTDOWNCAUSE_SID, ECUM_E_NOT_INITIALIZED);
         return E_NOT_OK;
     }
     
     if (cause == NULL_PTR)
     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_GETSHUTDOWNCAUSE_SID, ECUM_E_NULL_POINTER);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_GETSHUTDOWNCAUSE_SID, ECUM_E_NULL_POINTER);
         return E_NOT_OK;
     }
 #endif
@@ -1215,7 +1215,7 @@ void EcuM_SetWakeupEvent(EcuM_WakeupSourceType sources)
 {
 #if (ECUM_DEV_ERROR_DETECT == STD_ON)
     if (EcuM_IsInitialized == 0U)     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_SETWAKEUPEVENT_SID, ECUM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_SETWAKEUPEVENT_SID, ECUM_E_NOT_INITIALIZED);
         return;
     }
 #endif
@@ -1258,7 +1258,7 @@ void EcuM_ClearWakeupEvent(EcuM_WakeupSourceType sources)
 {
 #if (ECUM_DEV_ERROR_DETECT == STD_ON)
     if (EcuM_IsInitialized == 0U)     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_CLEARWAKEUPEVENT_SID, ECUM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_CLEARWAKEUPEVENT_SID, ECUM_E_NOT_INITIALIZED);
         return;
     }
 #endif
@@ -1289,7 +1289,7 @@ void EcuM_CheckWakeup(EcuM_WakeupSourceType sources)
 {
 #if (ECUM_DEV_ERROR_DETECT == STD_ON)
     if (EcuM_IsInitialized == 0U)     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_CHECKWAKEUP_SID, ECUM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_CHECKWAKEUP_SID, ECUM_E_NOT_INITIALIZED);
         return;
     }
 #endif
@@ -1313,7 +1313,7 @@ Std_ReturnType EcuM_EnableWakeupSources(EcuM_WakeupSourceType sources)
 {
 #if (ECUM_DEV_ERROR_DETECT == STD_ON)
     if (EcuM_IsInitialized == 0U)     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_ENABLEWAKEUPSOURCES_SID, ECUM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_ENABLEWAKEUPSOURCES_SID, ECUM_E_NOT_INITIALIZED);
         return E_NOT_OK;
     }
 #endif
@@ -1337,7 +1337,7 @@ Std_ReturnType EcuM_DisableWakeupSources(EcuM_WakeupSourceType sources)
 {
 #if (ECUM_DEV_ERROR_DETECT == STD_ON)
     if (EcuM_IsInitialized == 0U)     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_DISABLEWAKEUPSOURCES_SID, ECUM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_DISABLEWAKEUPSOURCES_SID, ECUM_E_NOT_INITIALIZED);
         return E_NOT_OK;
     }
 #endif
@@ -1361,14 +1361,14 @@ EcuM_WakeupStatusType EcuM_GetStatusOfWakeupSource(EcuM_WakeupSourceType sources
 {
 #if (ECUM_DEV_ERROR_DETECT == STD_ON)
     if (EcuM_IsInitialized == 0U)     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_GETSTATUSOFWAKEUPSOURCE_SID, ECUM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_GETSTATUSOFWAKEUPSOURCE_SID, ECUM_E_NOT_INITIALIZED);
         return ECUM_WKSTATUS_NONE;
     }
     
     if ((sources == ECUM_WKSOURCE_NONE) || ((sources & (sources - 1u)) != 0u))
     {
         /* Multiple or no sources specified */
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_GETSTATUSOFWAKEUPSOURCE_SID, ECUM_E_INVALID_PAR);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_GETSTATUSOFWAKEUPSOURCE_SID, ECUM_E_INVALID_PAR);
         return ECUM_WKSTATUS_NONE;
     }
 #endif
@@ -1393,13 +1393,13 @@ Std_ReturnType EcuM_GetWakeupSources(EcuM_WakeupSourceType* sources)
 {
 #if (ECUM_DEV_ERROR_DETECT == STD_ON)
     if (EcuM_IsInitialized == 0U)     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_GETWAKEUPSOURCES_SID, ECUM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_GETWAKEUPSOURCES_SID, ECUM_E_NOT_INITIALIZED);
         return E_NOT_OK;
     }
     
     if (sources == NULL_PTR)
     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_GETWAKEUPSOURCES_SID, ECUM_E_NULL_POINTER);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_GETWAKEUPSOURCES_SID, ECUM_E_NULL_POINTER);
         return E_NOT_OK;
     }
 #endif
@@ -1418,7 +1418,7 @@ Std_ReturnType EcuM_CheckValidation(EcuM_WakeupSourceType source)
 {
 #if (ECUM_DEV_ERROR_DETECT == STD_ON)
     if (EcuM_IsInitialized == 0U)     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_VALIDATEMCUWAKEUPEVENT_SID, ECUM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_VALIDATEMCUWAKEUPEVENT_SID, ECUM_E_NOT_INITIALIZED);
         return E_NOT_OK;
     }
 #endif
@@ -1555,7 +1555,7 @@ Std_ReturnType EcuM_SelectBootTarget(EcuM_BootTargetType target)
 {
 #if (ECUM_DEV_ERROR_DETECT == STD_ON)
     if (EcuM_IsInitialized == 0U)     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_SELECTBOOTTARGET_SID, ECUM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_SELECTBOOTTARGET_SID, ECUM_E_NOT_INITIALIZED);
         return E_NOT_OK;
     }
     
@@ -1563,7 +1563,7 @@ Std_ReturnType EcuM_SelectBootTarget(EcuM_BootTargetType target)
         (target != ECUM_BOOT_TARGET_SYS_BOOTLOADER) && 
         (target != ECUM_BOOT_TARGET_APPLICATION))
     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_SELECTBOOTTARGET_SID, ECUM_E_INVALID_PAR);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_SELECTBOOTTARGET_SID, ECUM_E_INVALID_PAR);
         return E_NOT_OK;
     }
 #endif
@@ -1582,13 +1582,13 @@ Std_ReturnType EcuM_GetBootTarget(EcuM_BootTargetType* target)
 {
 #if (ECUM_DEV_ERROR_DETECT == STD_ON)
     if (EcuM_IsInitialized == 0U)     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_GETBOOTTARGET_SID, ECUM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_GETBOOTTARGET_SID, ECUM_E_NOT_INITIALIZED);
         return E_NOT_OK;
     }
     
     if (target == NULL_PTR)
     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_GETBOOTTARGET_SID, ECUM_E_NULL_POINTER);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_GETBOOTTARGET_SID, ECUM_E_NULL_POINTER);
         return E_NOT_OK;
     }
 #endif
@@ -1613,7 +1613,7 @@ Std_ReturnType EcuM_SelectApplicationMode(EcuM_AppModeType appMode)
     if (EcuM_IsInitialized)
     {
         /* Can only change app mode before initialization */
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_SELECTAPPMODE_SID, ECUM_E_STATE_CHANGE_FAILED);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_SELECTAPPMODE_SID, ECUM_E_STATE_CHANGE_FAILED);
         return E_NOT_OK;
     }
 #endif
@@ -1632,13 +1632,13 @@ Std_ReturnType EcuM_GetApplicationMode(EcuM_AppModeType* appMode)
 {
 #if (ECUM_DEV_ERROR_DETECT == STD_ON)
     if (EcuM_IsInitialized == 0U)     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_GETAPPMODE_SID, ECUM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_GETAPPMODE_SID, ECUM_E_NOT_INITIALIZED);
         return E_NOT_OK;
     }
     
     if (appMode == NULL_PTR)
     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_GETAPPMODE_SID, ECUM_E_NULL_POINTER);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_GETAPPMODE_SID, ECUM_E_NULL_POINTER);
         return E_NOT_OK;
     }
 #endif
@@ -1662,7 +1662,7 @@ Std_ReturnType EcuM_ComM_RequestComMode(uint8 channel, EcuM_ModeType mode)
 {
 #if (ECUM_DEV_ERROR_DETECT == STD_ON)
     if (EcuM_IsInitialized == 0U)     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_COMMODEREQUEST_SID, ECUM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_COMMODEREQUEST_SID, ECUM_E_NOT_INITIALIZED);
         return E_NOT_OK;
     }
 #endif
@@ -1687,7 +1687,7 @@ Std_ReturnType EcuM_ComM_ReleaseComMode(uint8 channel)
 {
 #if (ECUM_DEV_ERROR_DETECT == STD_ON)
     if (EcuM_IsInitialized == 0U)     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_COMMODERERELEASE_SID, ECUM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_COMMODERERELEASE_SID, ECUM_E_NOT_INITIALIZED);
         return E_NOT_OK;
     }
 #endif
@@ -1737,7 +1737,7 @@ void EcuM_GetVersionInfo(Std_VersionInfoType* versionInfo)
 #if (ECUM_DEV_ERROR_DETECT == STD_ON)
     if (versionInfo == NULL_PTR)
     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, 0x00u, ECUM_E_NULL_POINTER);
+        (void)Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, 0x00u, ECUM_E_NULL_POINTER);
         return;
     }
 #endif

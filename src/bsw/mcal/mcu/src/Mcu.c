@@ -298,12 +298,12 @@ Std_ReturnType Mcu_Init(const Mcu_ConfigType* ConfigPtr)
 {
     #if (MCU_DEV_ERROR_DETECT == STD_ON)
     if (ConfigPtr == NULL_PTR) {
-        Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_INIT, MCU_E_PARAM_CONFIG);
+        (void)Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_INIT, MCU_E_PARAM_CONFIG);
         return E_NOT_OK;
     }
 
     if (Mcu_DriverState.initialized == TRUE) {
-        Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_INIT, MCU_E_ALREADY_INITIALIZED);
+        (void)Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_INIT, MCU_E_ALREADY_INITIALIZED);
         return E_NOT_OK;
     }
     #endif
@@ -342,12 +342,12 @@ Std_ReturnType Mcu_InitClock(Mcu_ClockType ClockSetting)
 
     #if (MCU_DEV_ERROR_DETECT == STD_ON)
     if (Mcu_DriverState.initialized == FALSE) {
-        Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_INIT_CLOCK, MCU_E_UNINIT);
+        (void)Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_INIT_CLOCK, MCU_E_UNINIT);
         return E_NOT_OK;
     }
 
     if (ClockSetting >= Mcu_ConfigPtr->NumClockConfigs) {
-        Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_INIT_CLOCK, MCU_E_PARAM_CLOCK);
+        (void)Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_INIT_CLOCK, MCU_E_PARAM_CLOCK);
         return E_NOT_OK;
     }
     #endif
@@ -372,12 +372,12 @@ void Mcu_DistributePllClock(void)
 {
     #if (MCU_DEV_ERROR_DETECT == STD_ON)
     if (Mcu_DriverState.initialized == FALSE) {
-        Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_DISTRIBUTE_PLL_CLOCK, MCU_E_UNINIT);
+        (void)Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_DISTRIBUTE_PLL_CLOCK, MCU_E_UNINIT);
         return;
     }
 
     if (Mcu_DriverState.currentClock == MCU_CLOCK_INVALID) {
-        Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_DISTRIBUTE_PLL_CLOCK, MCU_E_PLL_NOT_LOCKED);
+        (void)Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_DISTRIBUTE_PLL_CLOCK, MCU_E_PLL_NOT_LOCKED);
         return;
     }
     #endif
@@ -400,7 +400,7 @@ Mcu_PllStatusType Mcu_GetPllStatus(void)
 
     #if (MCU_DEV_ERROR_DETECT == STD_ON)
     if (Mcu_DriverState.initialized == FALSE) {
-        Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_GET_PLL_STATUS, MCU_E_UNINIT);
+        (void)Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_GET_PLL_STATUS, MCU_E_UNINIT);
         return MCU_PLL_STATUS_UNDEFINED;
     }
     #endif
@@ -430,12 +430,12 @@ void Mcu_SetMode(Mcu_ModeType McuMode)
 {
     #if (MCU_DEV_ERROR_DETECT == STD_ON)
     if (Mcu_DriverState.initialized == FALSE) {
-        Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_SET_MODE, MCU_E_UNINIT);
+        (void)Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_SET_MODE, MCU_E_UNINIT);
         return;
     }
 
     if (McuMode >= Mcu_ConfigPtr->NumModes) {
-        Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_SET_MODE, MCU_E_PARAM_MODE);
+        (void)Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_SET_MODE, MCU_E_PARAM_MODE);
         return;
     }
     #endif
@@ -479,7 +479,7 @@ Mcu_ResetType Mcu_GetResetReason(void)
 
     #if (MCU_DEV_ERROR_DETECT == STD_ON)
     if (Mcu_DriverState.initialized == FALSE) {
-        Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_GET_RESET_REASON, MCU_E_UNINIT);
+        (void)Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_GET_RESET_REASON, MCU_E_UNINIT);
         return MCU_RST_UNDEFINED;
     }
     #endif
@@ -501,7 +501,7 @@ Mcu_RawResetType Mcu_GetResetRawValue(void)
 
     #if (MCU_DEV_ERROR_DETECT == STD_ON)
     if (Mcu_DriverState.initialized == FALSE) {
-        Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_GET_RESET_RAW_VALUE, MCU_E_UNINIT);
+        (void)Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_GET_RESET_RAW_VALUE, MCU_E_UNINIT);
         return 0U;
     }
     #endif
@@ -521,7 +521,7 @@ void Mcu_PerformReset(void)
 {
     #if (MCU_DEV_ERROR_DETECT == STD_ON)
     if (Mcu_DriverState.initialized == FALSE) {
-        Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_PERFORM_RESET, MCU_E_UNINIT);
+        (void)Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_PERFORM_RESET, MCU_E_UNINIT);
         return;
     }
     #endif
@@ -547,7 +547,7 @@ void Mcu_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
     #if (MCU_DEV_ERROR_DETECT == STD_ON)
     if (versioninfo == NULL_PTR) {
-        Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_GET_VERSION_INFO, MCU_E_PARAM_POINTER);
+        (void)Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_GET_VERSION_INFO, MCU_E_PARAM_POINTER);
         return;
     }
     #endif
@@ -573,12 +573,12 @@ Std_ReturnType Mcu_InitRamSection(uint8 RamSection)
 
     #if (MCU_DEV_ERROR_DETECT == STD_ON)
     if (Mcu_DriverState.initialized == FALSE) {
-        Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_INIT_RAM_SECTION, MCU_E_UNINIT);
+        (void)Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_INIT_RAM_SECTION, MCU_E_UNINIT);
         return E_NOT_OK;
     }
 
     if (RamSection >= Mcu_ConfigPtr->NumRamSections) {
-        Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_INIT_RAM_SECTION, MCU_E_PARAM_RAMSECTION);
+        (void)Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_INIT_RAM_SECTION, MCU_E_PARAM_RAMSECTION);
         return E_NOT_OK;
     }
     #endif
@@ -607,7 +607,7 @@ Mcu_RamStateType Mcu_GetRamState(void)
 
     #if (MCU_DEV_ERROR_DETECT == STD_ON)
     if (Mcu_DriverState.initialized == FALSE) {
-        Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_GET_RAM_STATE, MCU_E_UNINIT);
+        (void)Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_GET_RAM_STATE, MCU_E_UNINIT);
         return MCU_RAMSTATE_INVALID;
     }
     #endif

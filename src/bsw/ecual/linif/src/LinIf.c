@@ -206,7 +206,7 @@ void LinIf_Init(const LinIf_ConfigType* ConfigPtr)
 
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
     if (NULL_PTR == ConfigPtr) {
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_INIT, LINIF_E_PARAM_POINTER);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_INIT, LINIF_E_PARAM_POINTER);
         return;
     }
 #endif
@@ -258,20 +258,20 @@ Std_ReturnType LinIf_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
 
     if (LinIf_State.configPtr == NULL_PTR) {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_TRANSMIT, LINIF_E_UNINIT);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_TRANSMIT, LINIF_E_UNINIT);
 #endif
         return E_NOT_OK;
     }
     if (NULL_PTR == PduInfoPtr) {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_TRANSMIT, LINIF_E_PARAM_POINTER);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_TRANSMIT, LINIF_E_PARAM_POINTER);
 #endif
         return E_NOT_OK;
     }
     if ((LinIf_State.configPtr->TxPduMap == NULL_PTR)
         || (TxPduId >= (PduIdType)LinIf_State.configPtr->NumTxPdus)) {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_TRANSMIT, LINIF_E_PARAM_PDU);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_TRANSMIT, LINIF_E_PARAM_PDU);
 #endif
         return E_NOT_OK;
     }
@@ -280,7 +280,7 @@ Std_ReturnType LinIf_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
     ch = LinIf_GetChannelConfig(mapPtr->Channel);
     if ((ch == NULL_PTR) || (ch->Frames == NULL_PTR) || (mapPtr->FrameIdx >= ch->NumFrames)) {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_TRANSMIT, LINIF_E_PARAM_PDU);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_TRANSMIT, LINIF_E_PARAM_PDU);
 #endif
         return E_NOT_OK;
     }
@@ -289,7 +289,7 @@ Std_ReturnType LinIf_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
 
     if (rt->state < LINIF_CHANNEL_INIT) {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_TRANSMIT, LINIF_E_UNINIT);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_TRANSMIT, LINIF_E_UNINIT);
 #endif
         return E_NOT_OK;
     }
@@ -297,7 +297,7 @@ Std_ReturnType LinIf_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
         || (PduInfoPtr->SduLength != (PduLengthType)framePtr->Dlc)
         || (framePtr->Dlc > LINIF_MAX_FRAME_LENGTH)) {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_TRANSMIT, LINIF_E_PARAM_PDU);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_TRANSMIT, LINIF_E_PARAM_PDU);
 #endif
         return E_NOT_OK;
     }
@@ -317,7 +317,7 @@ Std_ReturnType LinIf_SetSchedule(uint8 ScheduleTableId)
 
     if (LinIf_State.configPtr == NULL_PTR) {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_SCHEDULE, LINIF_E_UNINIT);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_SCHEDULE, LINIF_E_UNINIT);
 #endif
         return E_NOT_OK;
     }
@@ -325,7 +325,7 @@ Std_ReturnType LinIf_SetSchedule(uint8 ScheduleTableId)
     schedulePtr = LinIf_FindSchedule(ch, ScheduleTableId);
     if (schedulePtr == NULL_PTR) {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_SCHEDULE, LINIF_E_PARAM_SCHEDULE);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_SCHEDULE, LINIF_E_PARAM_SCHEDULE);
 #endif
         return E_NOT_OK;
     }
@@ -348,20 +348,20 @@ Std_ReturnType LinIf_ScheduleRequest(uint8 Channel, LinIf_ScheduleTableType Sche
 
     if (LinIf_State.configPtr == NULL_PTR) {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_SCHEDULEREQUEST, LINIF_E_UNINIT);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_SCHEDULEREQUEST, LINIF_E_UNINIT);
 #endif
         return E_NOT_OK;
     }
     ch = LinIf_GetChannelConfig(Channel);
     if (ch == NULL_PTR) {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_SCHEDULEREQUEST, LINIF_E_PARAM_CHANNEL);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_SCHEDULEREQUEST, LINIF_E_PARAM_CHANNEL);
 #endif
         return E_NOT_OK;
     }
     if (LinIf_FindSchedule(ch, (uint8)ScheduleTable) == NULL_PTR) {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_SCHEDULEREQUEST, LINIF_E_PARAM_SCHEDULE);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_SCHEDULEREQUEST, LINIF_E_PARAM_SCHEDULE);
 #endif
         return E_NOT_OK;
     }
@@ -369,7 +369,7 @@ Std_ReturnType LinIf_ScheduleRequest(uint8 Channel, LinIf_ScheduleTableType Sche
     rt = &LinIf_State.channels[Channel];
     if (rt->state < LINIF_CHANNEL_INIT) {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_SCHEDULEREQUEST, LINIF_E_UNINIT);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_SCHEDULEREQUEST, LINIF_E_UNINIT);
 #endif
         return E_NOT_OK;
     }
@@ -387,14 +387,14 @@ Std_ReturnType LinIf_WakeUp(uint8 Channel)
 
     if (LinIf_State.configPtr == NULL_PTR) {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_WAKEUP, LINIF_E_UNINIT);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_WAKEUP, LINIF_E_UNINIT);
 #endif
         return E_NOT_OK;
     }
     ch = LinIf_GetChannelConfig(Channel);
     if (ch == NULL_PTR) {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_WAKEUP, LINIF_E_PARAM_CHANNEL);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_WAKEUP, LINIF_E_PARAM_CHANNEL);
 #endif
         return E_NOT_OK;
     }
@@ -416,14 +416,14 @@ Std_ReturnType LinIf_GotoSleep(uint8 Channel)
 
     if (LinIf_State.configPtr == NULL_PTR) {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_GOTOSLEEP, LINIF_E_UNINIT);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_GOTOSLEEP, LINIF_E_UNINIT);
 #endif
         return E_NOT_OK;
     }
     ch = LinIf_GetChannelConfig(Channel);
     if (ch == NULL_PTR) {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_GOTOSLEEP, LINIF_E_PARAM_CHANNEL);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_GOTOSLEEP, LINIF_E_PARAM_CHANNEL);
 #endif
         return E_NOT_OK;
     }
@@ -446,7 +446,7 @@ void LinIf_RxIndication(uint8 LinChannel, const LinIf_PduType* PduInfoPtr)
 
     if ((LinIf_State.configPtr == NULL_PTR) || (PduInfoPtr == NULL_PTR)) {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_RX_INDICATION, LINIF_E_PARAM_POINTER);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_RX_INDICATION, LINIF_E_PARAM_POINTER);
 #endif
         return;
     }
@@ -517,7 +517,7 @@ void LinIf_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
     if (NULL_PTR == versioninfo) {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_GETVERSIONINFO, LINIF_E_PARAM_POINTER);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_GETVERSIONINFO, LINIF_E_PARAM_POINTER);
 #endif
         return;
     }
@@ -582,19 +582,19 @@ Std_ReturnType LinIf_SetTrcvMode(uint8 Channel, LinIf_TrcvModeType Mode)
 
     if (LinIf_State.configPtr == NULL_PTR) {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_SETTRCVMODE, LINIF_E_UNINIT);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_SETTRCVMODE, LINIF_E_UNINIT);
 #endif
         return E_NOT_OK;
     }
     if (LinIf_GetChannelConfig(Channel) == NULL_PTR) {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_SETTRCVMODE, LINIF_E_PARAM_CHANNEL);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_SETTRCVMODE, LINIF_E_PARAM_CHANNEL);
 #endif
         return E_NOT_OK;
     }
     if (LinIf_TrcvModeToLinTrcv(Mode, &trcvMode) != E_OK) {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_SETTRCVMODE, LINIF_E_PARAM_VALUE);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_SETTRCVMODE, LINIF_E_PARAM_VALUE);
 #endif
         return E_NOT_OK;
     }
@@ -609,19 +609,19 @@ Std_ReturnType LinIf_GetTrcvMode(uint8 Channel, LinIf_TrcvModeType* ModePtr)
 
     if (LinIf_State.configPtr == NULL_PTR) {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_GETTRCVMODE, LINIF_E_UNINIT);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_GETTRCVMODE, LINIF_E_UNINIT);
 #endif
         return E_NOT_OK;
     }
     if (LinIf_GetChannelConfig(Channel) == NULL_PTR) {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_GETTRCVMODE, LINIF_E_PARAM_CHANNEL);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_GETTRCVMODE, LINIF_E_PARAM_CHANNEL);
 #endif
         return E_NOT_OK;
     }
     if (NULL_PTR == ModePtr) {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_GETTRCVMODE, LINIF_E_PARAM_POINTER);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_GETTRCVMODE, LINIF_E_PARAM_POINTER);
 #endif
         return E_NOT_OK;
     }
@@ -632,7 +632,7 @@ Std_ReturnType LinIf_GetTrcvMode(uint8 Channel, LinIf_TrcvModeType* ModePtr)
     }
     if (LinIf_TrcvModeFromLinTrcv(trcvMode, ModePtr) != E_OK) {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_GETTRCVMODE, LINIF_E_PARAM_VALUE);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_GETTRCVMODE, LINIF_E_PARAM_VALUE);
 #endif
         return E_NOT_OK;
     }
@@ -646,13 +646,13 @@ Std_ReturnType LinIf_SetTrcvWakeupMode(uint8 Channel, LinIf_TrcvWakeupModeType M
 
     if (LinIf_State.configPtr == NULL_PTR) {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_SETTRCVWAKEUPMODE, LINIF_E_UNINIT);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_SETTRCVWAKEUPMODE, LINIF_E_UNINIT);
 #endif
         return E_NOT_OK;
     }
     if (LinIf_GetChannelConfig(Channel) == NULL_PTR) {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_SETTRCVWAKEUPMODE, LINIF_E_PARAM_CHANNEL);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_SETTRCVWAKEUPMODE, LINIF_E_PARAM_CHANNEL);
 #endif
         return E_NOT_OK;
     }
@@ -660,7 +660,7 @@ Std_ReturnType LinIf_SetTrcvWakeupMode(uint8 Channel, LinIf_TrcvWakeupModeType M
         && (Mode != LINIF_TRCV_WU_DISABLE)
         && (Mode != LINIF_TRCV_WU_CLEAR)) {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_SETTRCVWAKEUPMODE, LINIF_E_PARAM_VALUE);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_SETTRCVWAKEUPMODE, LINIF_E_PARAM_VALUE);
 #endif
         return E_NOT_OK;
     }
@@ -680,19 +680,19 @@ Std_ReturnType LinIf_GetTrcvWakeupReason(uint8 Channel, LinIf_TrcvWakeupReasonTy
 
     if (LinIf_State.configPtr == NULL_PTR) {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_GETTRCVWAKEUPREASON, LINIF_E_UNINIT);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_GETTRCVWAKEUPREASON, LINIF_E_UNINIT);
 #endif
         return E_NOT_OK;
     }
     if (LinIf_GetChannelConfig(Channel) == NULL_PTR) {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_GETTRCVWAKEUPREASON, LINIF_E_PARAM_CHANNEL);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_GETTRCVWAKEUPREASON, LINIF_E_PARAM_CHANNEL);
 #endif
         return E_NOT_OK;
     }
     if (NULL_PTR == ReasonPtr) {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_GETTRCVWAKEUPREASON, LINIF_E_PARAM_POINTER);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_GETTRCVWAKEUPREASON, LINIF_E_PARAM_POINTER);
 #endif
         return E_NOT_OK;
     }
@@ -703,7 +703,7 @@ Std_ReturnType LinIf_GetTrcvWakeupReason(uint8 Channel, LinIf_TrcvWakeupReasonTy
     }
     if (LinIf_WuReasonFromLinTrcv(trcvReason, ReasonPtr) != E_OK) {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_GETTRCVWAKEUPREASON, LINIF_E_PARAM_VALUE);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_GETTRCVWAKEUPREASON, LINIF_E_PARAM_VALUE);
 #endif
         return E_NOT_OK;
     }
@@ -715,13 +715,13 @@ Std_ReturnType LinIf_CheckWakeup(uint8 Channel)
 {
     if (LinIf_State.configPtr == NULL_PTR) {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_CHECKWAKEUP, LINIF_E_UNINIT);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_CHECKWAKEUP, LINIF_E_UNINIT);
 #endif
         return E_NOT_OK;
     }
     if (LinIf_GetChannelConfig(Channel) == NULL_PTR) {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_CHECKWAKEUP, LINIF_E_PARAM_CHANNEL);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_CHECKWAKEUP, LINIF_E_PARAM_CHANNEL);
 #endif
         return E_NOT_OK;
     }
@@ -737,13 +737,13 @@ Std_ReturnType LinIf_SetConfiguredNAD(uint8 Channel, uint8 NAD)
 {
     if (LinIf_State.configPtr == NULL_PTR) {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_SETCONFIGUREDNAD, LINIF_E_UNINIT);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_SETCONFIGUREDNAD, LINIF_E_UNINIT);
 #endif
         return E_NOT_OK;
     }
     if (LinIf_GetChannelConfig(Channel) == NULL_PTR) {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_SETCONFIGUREDNAD, LINIF_E_PARAM_CHANNEL);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_SETCONFIGUREDNAD, LINIF_E_PARAM_CHANNEL);
 #endif
         return E_NOT_OK;
     }
@@ -757,19 +757,19 @@ Std_ReturnType LinIf_GetConfiguredNAD(uint8 Channel, uint8* NADPtr)
 {
     if (LinIf_State.configPtr == NULL_PTR) {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_GETCONFIGUREDNAD, LINIF_E_UNINIT);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_GETCONFIGUREDNAD, LINIF_E_UNINIT);
 #endif
         return E_NOT_OK;
     }
     if (LinIf_GetChannelConfig(Channel) == NULL_PTR) {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_GETCONFIGUREDNAD, LINIF_E_PARAM_CHANNEL);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_GETCONFIGUREDNAD, LINIF_E_PARAM_CHANNEL);
 #endif
         return E_NOT_OK;
     }
     if (NULL_PTR == NADPtr) {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_GETCONFIGUREDNAD, LINIF_E_PARAM_POINTER);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_GETCONFIGUREDNAD, LINIF_E_PARAM_POINTER);
 #endif
         return E_NOT_OK;
     }
@@ -786,26 +786,26 @@ Std_ReturnType LinIf_SetPIDTable(uint8 Channel, const uint8* PidTable, uint8 Num
 
     if (LinIf_State.configPtr == NULL_PTR) {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_SETPIDTABLE, LINIF_E_UNINIT);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_SETPIDTABLE, LINIF_E_UNINIT);
 #endif
         return E_NOT_OK;
     }
     ch = LinIf_GetChannelConfig(Channel);
     if (ch == NULL_PTR) {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_SETPIDTABLE, LINIF_E_PARAM_CHANNEL);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_SETPIDTABLE, LINIF_E_PARAM_CHANNEL);
 #endif
         return E_NOT_OK;
     }
     if (NULL_PTR == PidTable) {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_SETPIDTABLE, LINIF_E_PARAM_POINTER);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_SETPIDTABLE, LINIF_E_PARAM_POINTER);
 #endif
         return E_NOT_OK;
     }
     if ((NumFrames > ch->NumFrames) || (NumFrames > LINIF_MAX_CHANNEL_FRAMES)) {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_SETPIDTABLE, LINIF_E_PARAM_VALUE);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_SETPIDTABLE, LINIF_E_PARAM_VALUE);
 #endif
         return E_NOT_OK;
     }
@@ -824,19 +824,19 @@ Std_ReturnType LinIf_GetPIDTable(uint8 Channel, uint8* PidTable, uint8* NumFrame
 
     if (LinIf_State.configPtr == NULL_PTR) {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_GETPIDTABLE, LINIF_E_UNINIT);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_GETPIDTABLE, LINIF_E_UNINIT);
 #endif
         return E_NOT_OK;
     }
     if (LinIf_GetChannelConfig(Channel) == NULL_PTR) {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_GETPIDTABLE, LINIF_E_PARAM_CHANNEL);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_GETPIDTABLE, LINIF_E_PARAM_CHANNEL);
 #endif
         return E_NOT_OK;
     }
     if ((NULL_PTR == PidTable) || (NULL_PTR == NumFramesPtr)) {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_GETPIDTABLE, LINIF_E_PARAM_POINTER);
+        (void)Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_GETPIDTABLE, LINIF_E_PARAM_POINTER);
 #endif
         return E_NOT_OK;
     }

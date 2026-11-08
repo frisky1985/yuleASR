@@ -48,7 +48,7 @@ void Nm_Init(const Nm_ConfigType* ConfigPtr)
 #if (NM_DEV_ERROR_DETECT == STD_ON)
     if (ConfigPtr == NULL_PTR)
     {
-        Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, NM_INIT_SID, NM_E_INVALID_POINTER);
+        (void)Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, NM_INIT_SID, NM_E_INVALID_POINTER);
         return;
     }
 #endif
@@ -79,7 +79,7 @@ void Nm_DeInit(void)
 #if (NM_DEV_ERROR_DETECT == STD_ON)
     if (!Nm_ModuleInitialized)
     {
-        Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, NM_DEINIT_SID, NM_E_UNINIT);
+        (void)Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, NM_DEINIT_SID, NM_E_UNINIT);
         return;
     }
 #endif
@@ -114,12 +114,12 @@ Std_ReturnType Nm_PassiveStartUp(Nm_ChannelHandleType nmChannelHandle)
 #if (NM_DEV_ERROR_DETECT == STD_ON)
     if (!Nm_ModuleInitialized)
     {
-        Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, NM_PASSIVESSTARTUP_SID, NM_E_UNINIT);
+        (void)Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, NM_PASSIVESSTARTUP_SID, NM_E_UNINIT);
         return E_NOT_OK;
     }
     if (nmChannelHandle >= NM_MAX_CHANNELS)
     {
-        Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, NM_PASSIVESSTARTUP_SID, NM_E_INVALID_CHANNEL);
+        (void)Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, NM_PASSIVESSTARTUP_SID, NM_E_INVALID_CHANNEL);
         return E_NOT_OK;
     }
 #endif
@@ -137,12 +137,12 @@ Std_ReturnType Nm_NetworkRequest(Nm_ChannelHandleType nmChannelHandle)
 #if (NM_DEV_ERROR_DETECT == STD_ON)
     if (!Nm_ModuleInitialized)
     {
-        Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, NM_NETWORKREQUEST_SID, NM_E_UNINIT);
+        (void)Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, NM_NETWORKREQUEST_SID, NM_E_UNINIT);
         return E_NOT_OK;
     }
     if (nmChannelHandle >= NM_MAX_CHANNELS)
     {
-        Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, NM_NETWORKREQUEST_SID, NM_E_INVALID_CHANNEL);
+        (void)Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, NM_NETWORKREQUEST_SID, NM_E_INVALID_CHANNEL);
         return E_NOT_OK;
     }
 #endif
@@ -166,12 +166,12 @@ Std_ReturnType Nm_NetworkRelease(Nm_ChannelHandleType nmChannelHandle)
 #if (NM_DEV_ERROR_DETECT == STD_ON)
     if (!Nm_ModuleInitialized)
     {
-        Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, NM_NETWORKRELEASE_SID, NM_E_UNINIT);
+        (void)Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, NM_NETWORKRELEASE_SID, NM_E_UNINIT);
         return E_NOT_OK;
     }
     if (nmChannelHandle >= NM_MAX_CHANNELS)
     {
-        Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, NM_NETWORKRELEASE_SID, NM_E_INVALID_CHANNEL);
+        (void)Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, NM_NETWORKRELEASE_SID, NM_E_INVALID_CHANNEL);
         return E_NOT_OK;
     }
 #endif
@@ -194,12 +194,12 @@ Std_ReturnType Nm_DisableCommunication(Nm_ChannelHandleType nmChannelHandle)
 #if (NM_DEV_ERROR_DETECT == STD_ON)
     if (!Nm_ModuleInitialized)
     {
-        Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, NM_DISABLECOMMUNICATION_SID, NM_E_UNINIT);
+        (void)Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, NM_DISABLECOMMUNICATION_SID, NM_E_UNINIT);
         return E_NOT_OK;
     }
     if (nmChannelHandle >= NM_MAX_CHANNELS)
     {
-        Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, NM_DISABLECOMMUNICATION_SID, NM_E_INVALID_CHANNEL);
+        (void)Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, NM_DISABLECOMMUNICATION_SID, NM_E_INVALID_CHANNEL);
         return E_NOT_OK;
     }
 #endif
@@ -214,12 +214,12 @@ Std_ReturnType Nm_EnableCommunication(Nm_ChannelHandleType nmChannelHandle)
 #if (NM_DEV_ERROR_DETECT == STD_ON)
     if (!Nm_ModuleInitialized)
     {
-        Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, NM_ENABLECOMMUNICATION_SID, NM_E_UNINIT);
+        (void)Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, NM_ENABLECOMMUNICATION_SID, NM_E_UNINIT);
         return E_NOT_OK;
     }
     if (nmChannelHandle >= NM_MAX_CHANNELS)
     {
-        Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, NM_ENABLECOMMUNICATION_SID, NM_E_INVALID_CHANNEL);
+        (void)Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, NM_ENABLECOMMUNICATION_SID, NM_E_INVALID_CHANNEL);
         return E_NOT_OK;
     }
 #endif
@@ -234,17 +234,17 @@ Std_ReturnType Nm_GetState(Nm_ChannelHandleType nmChannelHandle, Nm_StateType* n
 #if (NM_DEV_ERROR_DETECT == STD_ON)
     if (!Nm_ModuleInitialized)
     {
-        Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, NM_GETSTATE_SID, NM_E_UNINIT);
+        (void)Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, NM_GETSTATE_SID, NM_E_UNINIT);
         return E_NOT_OK;
     }
     if (nmChannelHandle >= NM_MAX_CHANNELS)
     {
-        Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, NM_GETSTATE_SID, NM_E_INVALID_CHANNEL);
+        (void)Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, NM_GETSTATE_SID, NM_E_INVALID_CHANNEL);
         return E_NOT_OK;
     }
     if (nmStatePtr == NULL_PTR)
     {
-        Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, NM_GETSTATE_SID, NM_E_INVALID_POINTER);
+        (void)Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, NM_GETSTATE_SID, NM_E_INVALID_POINTER);
         return E_NOT_OK;
     }
 #endif
@@ -259,17 +259,17 @@ Std_ReturnType Nm_GetMode(Nm_ChannelHandleType nmChannelHandle, Nm_ModeType* nmM
 #if (NM_DEV_ERROR_DETECT == STD_ON)
     if (!Nm_ModuleInitialized)
     {
-        Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, 0x90, NM_E_UNINIT);
+        (void)Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, 0x90, NM_E_UNINIT);
         return E_NOT_OK;
     }
     if (nmChannelHandle >= NM_MAX_CHANNELS)
     {
-        Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, 0x90, NM_E_INVALID_CHANNEL);
+        (void)Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, 0x90, NM_E_INVALID_CHANNEL);
         return E_NOT_OK;
     }
     if (nmModePtr == NULL_PTR)
     {
-        Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, 0x90, NM_E_INVALID_POINTER);
+        (void)Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, 0x90, NM_E_INVALID_POINTER);
         return E_NOT_OK;
     }
 #endif
@@ -284,12 +284,12 @@ Std_ReturnType Nm_GetLocalNodeIdentifier(Nm_ChannelHandleType nmChannelHandle, N
 #if (NM_DEV_ERROR_DETECT == STD_ON)
     if (!Nm_ModuleInitialized)
     {
-        Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, NM_GETLOCALNODEIDENTIFIER_SID, NM_E_UNINIT);
+        (void)Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, NM_GETLOCALNODEIDENTIFIER_SID, NM_E_UNINIT);
         return E_NOT_OK;
     }
     if (nmNodeIdPtr == NULL_PTR)
     {
-        Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, NM_GETLOCALNODEIDENTIFIER_SID, NM_E_INVALID_POINTER);
+        (void)Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, NM_GETLOCALNODEIDENTIFIER_SID, NM_E_INVALID_POINTER);
         return E_NOT_OK;
     }
 #endif
@@ -305,17 +305,17 @@ Std_ReturnType Nm_GetUserData(Nm_ChannelHandleType nmChannelHandle, uint8* nmUse
 #if (NM_DEV_ERROR_DETECT == STD_ON)
     if (!Nm_ModuleInitialized)
     {
-        Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, NM_GETUSERDATA_SID, NM_E_UNINIT);
+        (void)Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, NM_GETUSERDATA_SID, NM_E_UNINIT);
         return E_NOT_OK;
     }
     if (nmChannelHandle >= NM_MAX_CHANNELS)
     {
-        Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, NM_GETUSERDATA_SID, NM_E_INVALID_CHANNEL);
+        (void)Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, NM_GETUSERDATA_SID, NM_E_INVALID_CHANNEL);
         return E_NOT_OK;
     }
     if (nmUserDataPtr == NULL_PTR)
     {
-        Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, NM_GETUSERDATA_SID, NM_E_INVALID_POINTER);
+        (void)Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, NM_GETUSERDATA_SID, NM_E_INVALID_POINTER);
         return E_NOT_OK;
     }
 #endif
@@ -335,17 +335,17 @@ Std_ReturnType Nm_SetUserData(Nm_ChannelHandleType nmChannelHandle, const uint8*
 #if (NM_DEV_ERROR_DETECT == STD_ON)
     if (!Nm_ModuleInitialized)
     {
-        Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, 0x91, NM_E_UNINIT);
+        (void)Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, 0x91, NM_E_UNINIT);
         return E_NOT_OK;
     }
     if (nmChannelHandle >= NM_MAX_CHANNELS)
     {
-        Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, 0x91, NM_E_INVALID_CHANNEL);
+        (void)Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, 0x91, NM_E_INVALID_CHANNEL);
         return E_NOT_OK;
     }
     if (nmUserDataPtr == NULL_PTR)
     {
-        Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, 0x91, NM_E_INVALID_POINTER);
+        (void)Det_ReportError(NM_MODULE_ID, NM_INSTANCE_ID, 0x91, NM_E_INVALID_POINTER);
         return E_NOT_OK;
     }
 #endif

@@ -207,13 +207,13 @@ void Swc_Init(const Swc_ConfigType* ConfigPtr)
     #if (SWC_DEV_ERROR_DETECT == STD_ON)
     if ((Swc_InternalData.initialized) != 0U)
     {
-        Det_ReportError(SWC_MODULE_ID, SWC_INSTANCE_ID, SWC_INIT_SERVICE_ID, SWC_E_ALREADY_INITIALIZED);
+        (void)Det_ReportError(SWC_MODULE_ID, SWC_INSTANCE_ID, SWC_INIT_SERVICE_ID, SWC_E_ALREADY_INITIALIZED);
         return;
     }
     
     if (ConfigPtr == NULL_PTR)
     {
-        Det_ReportError(SWC_MODULE_ID, SWC_INSTANCE_ID, SWC_INIT_SERVICE_ID, SWC_E_PARAM_POINTER);
+        (void)Det_ReportError(SWC_MODULE_ID, SWC_INSTANCE_ID, SWC_INIT_SERVICE_ID, SWC_E_PARAM_POINTER);
         return;
     }
     #endif
@@ -235,7 +235,7 @@ void Swc_DeInit(void)
     #if (SWC_DEV_ERROR_DETECT == STD_ON)
     if (!Swc_InternalData.initialized)
     {
-        Det_ReportError(SWC_MODULE_ID, SWC_INSTANCE_ID, SWC_DEINIT_SERVICE_ID, SWC_E_UNINIT);
+        (void)Det_ReportError(SWC_MODULE_ID, SWC_INSTANCE_ID, SWC_DEINIT_SERVICE_ID, SWC_E_UNINIT);
         return;
     }
     #endif
@@ -255,7 +255,7 @@ Std_ReturnType Swc_GetVersionInfo(Std_VersionInfoType* versioninfo)
     #if (SWC_DEV_ERROR_DETECT == STD_ON)
     if (versioninfo == NULL_PTR)
     {
-        Det_ReportError(SWC_MODULE_ID, SWC_INSTANCE_ID, SWC_GETVERSIONINFO_SERVICE_ID, SWC_E_PARAM_POINTER);
+        (void)Det_ReportError(SWC_MODULE_ID, SWC_INSTANCE_ID, SWC_GETVERSIONINFO_SERVICE_ID, SWC_E_PARAM_POINTER);
         return E_NOT_OK;
     }
     #endif
@@ -280,25 +280,25 @@ Std_ReturnType Swc_CreateInstance(Swc_ComponentHandleType componentId,
     #if (SWC_DEV_ERROR_DETECT == STD_ON)
     if (!Swc_InternalData.initialized)
     {
-        Det_ReportError(SWC_MODULE_ID, SWC_INSTANCE_ID, 0x10U, SWC_E_UNINIT);
+        (void)Det_ReportError(SWC_MODULE_ID, SWC_INSTANCE_ID, 0x10U, SWC_E_UNINIT);
         return E_NOT_OK;
     }
     
     if (outHandle == NULL_PTR)
     {
-        Det_ReportError(SWC_MODULE_ID, SWC_INSTANCE_ID, 0x10U, SWC_E_PARAM_POINTER);
+        (void)Det_ReportError(SWC_MODULE_ID, SWC_INSTANCE_ID, 0x10U, SWC_E_PARAM_POINTER);
         return E_NOT_OK;
     }
     
     if (Swc_CurrentConfig == NULL_PTR)
     {
-        Det_ReportError(SWC_MODULE_ID, SWC_INSTANCE_ID, 0x10U, SWC_E_INVALID_COMPONENT);
+        (void)Det_ReportError(SWC_MODULE_ID, SWC_INSTANCE_ID, 0x10U, SWC_E_INVALID_COMPONENT);
         return E_NOT_OK;
     }
     
     if (componentId >= Swc_CurrentConfig->numComponents)
     {
-        Det_ReportError(SWC_MODULE_ID, SWC_INSTANCE_ID, 0x10U, SWC_E_INVALID_COMPONENT);
+        (void)Det_ReportError(SWC_MODULE_ID, SWC_INSTANCE_ID, 0x10U, SWC_E_INVALID_COMPONENT);
         return E_NOT_OK;
     }
     #endif
@@ -331,7 +331,7 @@ Std_ReturnType Swc_DestroyInstance(Swc_ComponentHandleType handle)
     #if (SWC_DEV_ERROR_DETECT == STD_ON)
     if (!Swc_InternalData.initialized)
     {
-        Det_ReportError(SWC_MODULE_ID, SWC_INSTANCE_ID, 0x11U, SWC_E_UNINIT);
+        (void)Det_ReportError(SWC_MODULE_ID, SWC_INSTANCE_ID, 0x11U, SWC_E_UNINIT);
         return E_NOT_OK;
     }
     #endif
@@ -358,7 +358,7 @@ Std_ReturnType Swc_SetComponentState(Swc_ComponentHandleType handle, Swc_StateTy
     #if (SWC_DEV_ERROR_DETECT == STD_ON)
     if (!Swc_InternalData.initialized)
     {
-        Det_ReportError(SWC_MODULE_ID, SWC_INSTANCE_ID, 0x12U, SWC_E_UNINIT);
+        (void)Det_ReportError(SWC_MODULE_ID, SWC_INSTANCE_ID, 0x12U, SWC_E_UNINIT);
         return E_NOT_OK;
     }
     #endif
@@ -380,7 +380,7 @@ Swc_StateType Swc_GetComponentState(Swc_ComponentHandleType handle)
     #if (SWC_DEV_ERROR_DETECT == STD_ON)
     if (!Swc_InternalData.initialized)
     {
-        Det_ReportError(SWC_MODULE_ID, SWC_INSTANCE_ID, 0x13U, SWC_E_UNINIT);
+        (void)Det_ReportError(SWC_MODULE_ID, SWC_INSTANCE_ID, 0x13U, SWC_E_UNINIT);
         return SWC_STATE_ERROR;
     }
     #endif
@@ -401,7 +401,7 @@ Std_ReturnType Swc_ActivateRunnable(Swc_RunnableHandleType runnableHandle)
     #if (SWC_DEV_ERROR_DETECT == STD_ON)
     if (!Swc_InternalData.initialized)
     {
-        Det_ReportError(SWC_MODULE_ID, SWC_INSTANCE_ID, SWC_ACTIVATERUNNABLE_SERVICE_ID, SWC_E_UNINIT);
+        (void)Det_ReportError(SWC_MODULE_ID, SWC_INSTANCE_ID, SWC_ACTIVATERUNNABLE_SERVICE_ID, SWC_E_UNINIT);
         return E_NOT_OK;
     }
     #endif
@@ -443,7 +443,7 @@ void Swc_ScheduleRunnables(void)
     #if (SWC_DEV_ERROR_DETECT == STD_ON)
     if (!Swc_InternalData.initialized)
     {
-        Det_ReportError(SWC_MODULE_ID, SWC_INSTANCE_ID, 0x14U, SWC_E_UNINIT);
+        (void)Det_ReportError(SWC_MODULE_ID, SWC_INSTANCE_ID, 0x14U, SWC_E_UNINIT);
         return;
     }
     #endif
@@ -465,7 +465,7 @@ Std_ReturnType Swc_IsRunnableReady(Swc_RunnableHandleType runnableHandle, boolea
     #if (SWC_DEV_ERROR_DETECT == STD_ON)
     if (isReady == NULL_PTR)
     {
-        Det_ReportError(SWC_MODULE_ID, SWC_INSTANCE_ID, 0x15U, SWC_E_PARAM_POINTER);
+        (void)Det_ReportError(SWC_MODULE_ID, SWC_INSTANCE_ID, 0x15U, SWC_E_PARAM_POINTER);
         return E_NOT_OK;
     }
     #endif
@@ -534,7 +534,7 @@ Std_ReturnType Swc_TriggerEvent(Swc_EventHandleType eventHandle)
     #if (SWC_DEV_ERROR_DETECT == STD_ON)
     if (!Swc_InternalData.initialized)
     {
-        Det_ReportError(SWC_MODULE_ID, SWC_INSTANCE_ID, SWC_TRIGGEREVENT_SERVICE_ID, SWC_E_UNINIT);
+        (void)Det_ReportError(SWC_MODULE_ID, SWC_INSTANCE_ID, SWC_TRIGGEREVENT_SERVICE_ID, SWC_E_UNINIT);
         return E_NOT_OK;
     }
     #endif
@@ -552,7 +552,7 @@ Std_ReturnType Swc_TriggerEvent(Swc_EventHandleType eventHandle)
     else
     {
         #if (SWC_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(SWC_MODULE_ID, SWC_INSTANCE_ID, SWC_TRIGGEREVENT_SERVICE_ID, SWC_E_EVENT_QUEUE_FULL);
+        (void)Det_ReportError(SWC_MODULE_ID, SWC_INSTANCE_ID, SWC_TRIGGEREVENT_SERVICE_ID, SWC_E_EVENT_QUEUE_FULL);
         #endif
     }
     
@@ -581,7 +581,7 @@ void Swc_ProcessEvents(void)
     #if (SWC_DEV_ERROR_DETECT == STD_ON)
     if (!Swc_InternalData.initialized)
     {
-        Det_ReportError(SWC_MODULE_ID, SWC_INSTANCE_ID, 0x16U, SWC_E_UNINIT);
+        (void)Det_ReportError(SWC_MODULE_ID, SWC_INSTANCE_ID, 0x16U, SWC_E_UNINIT);
         return;
     }
     #endif

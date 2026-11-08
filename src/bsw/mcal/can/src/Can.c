@@ -208,11 +208,11 @@ void Can_Init(const Can_ConfigType* Config)
 {
     #if (CAN_DEV_ERROR_DETECT == STD_ON)
     if (Config == NULL_PTR) {
-        Det_ReportError(CAN_MODULE_ID, 0U, CAN_SID_INIT, CAN_E_PARAM_POINTER);
+        (void)Det_ReportError(CAN_MODULE_ID, 0U, CAN_SID_INIT, CAN_E_PARAM_POINTER);
         return;
     }
     if (Can_DriverInitialized == TRUE) {
-        Det_ReportError(CAN_MODULE_ID, 0U, CAN_SID_INIT, CAN_E_TRANSITION);
+        (void)Det_ReportError(CAN_MODULE_ID, 0U, CAN_SID_INIT, CAN_E_TRANSITION);
         return;
     }
     #endif
@@ -286,7 +286,7 @@ void Can_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
     #if (CAN_DEV_ERROR_DETECT == STD_ON)
     if (versioninfo == NULL_PTR) {
-        Det_ReportError(CAN_MODULE_ID, 0U, CAN_SID_GETVERSIONINFO, CAN_E_PARAM_POINTER);
+        (void)Det_ReportError(CAN_MODULE_ID, 0U, CAN_SID_GETVERSIONINFO, CAN_E_PARAM_POINTER);
         return;
     }
     #endif
@@ -302,11 +302,11 @@ Can_ReturnType Can_SetControllerMode(uint8 Controller, Can_ControllerStateType T
 {
     #if (CAN_DEV_ERROR_DETECT == STD_ON)
     if (Can_DriverInitialized == FALSE) {
-        Det_ReportError(CAN_MODULE_ID, Controller, CAN_SID_SETCONTROLLERMODE, CAN_E_UNINIT);
+        (void)Det_ReportError(CAN_MODULE_ID, Controller, CAN_SID_SETCONTROLLERMODE, CAN_E_UNINIT);
         return CAN_NOT_OK;
     }
     if (Controller >= CAN_NUM_CONTROLLERS) {
-        Det_ReportError(CAN_MODULE_ID, Controller, CAN_SID_SETCONTROLLERMODE, CAN_E_PARAM_CONTROLLER);
+        (void)Det_ReportError(CAN_MODULE_ID, Controller, CAN_SID_SETCONTROLLERMODE, CAN_E_PARAM_CONTROLLER);
         return CAN_NOT_OK;
     }
     #endif
@@ -364,11 +364,11 @@ void Can_DisableControllerInterrupts(uint8 Controller)
 {
     #if (CAN_DEV_ERROR_DETECT == STD_ON)
     if (Can_DriverInitialized == FALSE) {
-        Det_ReportError(CAN_MODULE_ID, Controller, CAN_SID_DISABLECONTROLLERINTERRUPTS, CAN_E_UNINIT);
+        (void)Det_ReportError(CAN_MODULE_ID, Controller, CAN_SID_DISABLECONTROLLERINTERRUPTS, CAN_E_UNINIT);
         return;
     }
     if (Controller >= CAN_NUM_CONTROLLERS) {
-        Det_ReportError(CAN_MODULE_ID, Controller, CAN_SID_DISABLECONTROLLERINTERRUPTS, CAN_E_PARAM_CONTROLLER);
+        (void)Det_ReportError(CAN_MODULE_ID, Controller, CAN_SID_DISABLECONTROLLERINTERRUPTS, CAN_E_PARAM_CONTROLLER);
         return;
     }
     #endif
@@ -383,11 +383,11 @@ void Can_EnableControllerInterrupts(uint8 Controller)
 {
     #if (CAN_DEV_ERROR_DETECT == STD_ON)
     if (Can_DriverInitialized == FALSE) {
-        Det_ReportError(CAN_MODULE_ID, Controller, CAN_SID_ENABLECONTROLLERINTERRUPTS, CAN_E_UNINIT);
+        (void)Det_ReportError(CAN_MODULE_ID, Controller, CAN_SID_ENABLECONTROLLERINTERRUPTS, CAN_E_UNINIT);
         return;
     }
     if (Controller >= CAN_NUM_CONTROLLERS) {
-        Det_ReportError(CAN_MODULE_ID, Controller, CAN_SID_ENABLECONTROLLERINTERRUPTS, CAN_E_PARAM_CONTROLLER);
+        (void)Det_ReportError(CAN_MODULE_ID, Controller, CAN_SID_ENABLECONTROLLERINTERRUPTS, CAN_E_PARAM_CONTROLLER);
         return;
     }
     #endif
@@ -407,15 +407,15 @@ Can_ReturnType Can_Write(Can_HwHandleType Hth, const Can_PduType* PduInfo)
 {
     #if (CAN_DEV_ERROR_DETECT == STD_ON)
     if (Can_DriverInitialized == FALSE) {
-        Det_ReportError(CAN_MODULE_ID, 0U, CAN_SID_WRITECANID, CAN_E_UNINIT);
+        (void)Det_ReportError(CAN_MODULE_ID, 0U, CAN_SID_WRITECANID, CAN_E_UNINIT);
         return CAN_NOT_OK;
     }
     if (PduInfo == NULL_PTR) {
-        Det_ReportError(CAN_MODULE_ID, 0U, CAN_SID_WRITECANID, CAN_E_PARAM_POINTER);
+        (void)Det_ReportError(CAN_MODULE_ID, 0U, CAN_SID_WRITECANID, CAN_E_PARAM_POINTER);
         return CAN_NOT_OK;
     }
     if (Hth >= CAN_NUM_HOH) {
-        Det_ReportError(CAN_MODULE_ID, 0U, CAN_SID_WRITECANID, CAN_E_PARAM_HANDLE);
+        (void)Det_ReportError(CAN_MODULE_ID, 0U, CAN_SID_WRITECANID, CAN_E_PARAM_HANDLE);
         return CAN_NOT_OK;
     }
     #endif
@@ -432,16 +432,16 @@ Can_ReturnType Can_Write(Can_HwHandleType Hth, const Can_PduType* PduInfo)
         const Can_ControllerConfigType* ctrlConfig = &Can_ConfigPtr->Controllers[controller];
         const Can_BaudrateConfigType* fdConfig = &ctrlConfig->BaudrateConfigs[0];
         if (fdConfig->FdEnabled != TRUE) {
-            Det_ReportError(CAN_MODULE_ID, 0U, CAN_SID_WRITECANID, CAN_E_PARAM_DLC);
+            (void)Det_ReportError(CAN_MODULE_ID, 0U, CAN_SID_WRITECANID, CAN_E_PARAM_DLC);
             return CAN_NOT_OK;
         }
         if (Can_IsValidFdLength(PduInfo->CanDlc) != TRUE) {
-            Det_ReportError(CAN_MODULE_ID, 0U, CAN_SID_WRITECANID, CAN_E_PARAM_DLC);
+            (void)Det_ReportError(CAN_MODULE_ID, 0U, CAN_SID_WRITECANID, CAN_E_PARAM_DLC);
             return CAN_NOT_OK;
         }
     } else if (PduInfo->CanDlc > 8U) {
         /* Classic frames remain limited to the 0..8 DLC range */
-        Det_ReportError(CAN_MODULE_ID, 0U, CAN_SID_WRITECANID, CAN_E_PARAM_DLC);
+        (void)Det_ReportError(CAN_MODULE_ID, 0U, CAN_SID_WRITECANID, CAN_E_PARAM_DLC);
         return CAN_NOT_OK;
     }
     #endif
@@ -606,11 +606,11 @@ Std_ReturnType Can_CheckWakeup(uint8 Controller)
 {
     #if (CAN_DEV_ERROR_DETECT == STD_ON)
     if (Can_DriverInitialized == FALSE) {
-        Det_ReportError(CAN_MODULE_ID, Controller, CAN_SID_CHECKWAKEUP, CAN_E_UNINIT);
+        (void)Det_ReportError(CAN_MODULE_ID, Controller, CAN_SID_CHECKWAKEUP, CAN_E_UNINIT);
         return E_NOT_OK;
     }
     if (Controller >= CAN_NUM_CONTROLLERS) {
-        Det_ReportError(CAN_MODULE_ID, Controller, CAN_SID_CHECKWAKEUP, CAN_E_PARAM_CONTROLLER);
+        (void)Det_ReportError(CAN_MODULE_ID, Controller, CAN_SID_CHECKWAKEUP, CAN_E_PARAM_CONTROLLER);
         return E_NOT_OK;
     }
     #endif
@@ -630,15 +630,15 @@ Std_ReturnType Can_GetControllerErrorState(uint8 Controller, Can_ErrorStateType*
 {
     #if (CAN_DEV_ERROR_DETECT == STD_ON)
     if (Can_DriverInitialized == FALSE) {
-        Det_ReportError(CAN_MODULE_ID, Controller, CAN_SID_GETCONTROLLERERRORSTATE, CAN_E_UNINIT);
+        (void)Det_ReportError(CAN_MODULE_ID, Controller, CAN_SID_GETCONTROLLERERRORSTATE, CAN_E_UNINIT);
         return E_NOT_OK;
     }
     if (Controller >= CAN_NUM_CONTROLLERS) {
-        Det_ReportError(CAN_MODULE_ID, Controller, CAN_SID_GETCONTROLLERERRORSTATE, CAN_E_PARAM_CONTROLLER);
+        (void)Det_ReportError(CAN_MODULE_ID, Controller, CAN_SID_GETCONTROLLERERRORSTATE, CAN_E_PARAM_CONTROLLER);
         return E_NOT_OK;
     }
     if (ErrorStatePtr == NULL_PTR) {
-        Det_ReportError(CAN_MODULE_ID, Controller, CAN_SID_GETCONTROLLERERRORSTATE, CAN_E_PARAM_POINTER);
+        (void)Det_ReportError(CAN_MODULE_ID, Controller, CAN_SID_GETCONTROLLERERRORSTATE, CAN_E_PARAM_POINTER);
         return E_NOT_OK;
     }
     #endif
@@ -652,15 +652,15 @@ Std_ReturnType Can_GetControllerRxErrorCounter(uint8 Controller, uint8* RxErrorC
 {
     #if (CAN_DEV_ERROR_DETECT == STD_ON)
     if (Can_DriverInitialized == FALSE) {
-        Det_ReportError(CAN_MODULE_ID, Controller, CAN_SID_GETCONTROLLERRXERRORCOUNTER, CAN_E_UNINIT);
+        (void)Det_ReportError(CAN_MODULE_ID, Controller, CAN_SID_GETCONTROLLERRXERRORCOUNTER, CAN_E_UNINIT);
         return E_NOT_OK;
     }
     if (Controller >= CAN_NUM_CONTROLLERS) {
-        Det_ReportError(CAN_MODULE_ID, Controller, CAN_SID_GETCONTROLLERRXERRORCOUNTER, CAN_E_PARAM_CONTROLLER);
+        (void)Det_ReportError(CAN_MODULE_ID, Controller, CAN_SID_GETCONTROLLERRXERRORCOUNTER, CAN_E_PARAM_CONTROLLER);
         return E_NOT_OK;
     }
     if (RxErrorCounterPtr == NULL_PTR) {
-        Det_ReportError(CAN_MODULE_ID, Controller, CAN_SID_GETCONTROLLERRXERRORCOUNTER, CAN_E_PARAM_POINTER);
+        (void)Det_ReportError(CAN_MODULE_ID, Controller, CAN_SID_GETCONTROLLERRXERRORCOUNTER, CAN_E_PARAM_POINTER);
         return E_NOT_OK;
     }
     #endif
@@ -674,15 +674,15 @@ Std_ReturnType Can_GetControllerTxErrorCounter(uint8 Controller, uint8* TxErrorC
 {
     #if (CAN_DEV_ERROR_DETECT == STD_ON)
     if (Can_DriverInitialized == FALSE) {
-        Det_ReportError(CAN_MODULE_ID, Controller, CAN_SID_GETCONTROLLERTXERRORCOUNTER, CAN_E_UNINIT);
+        (void)Det_ReportError(CAN_MODULE_ID, Controller, CAN_SID_GETCONTROLLERTXERRORCOUNTER, CAN_E_UNINIT);
         return E_NOT_OK;
     }
     if (Controller >= CAN_NUM_CONTROLLERS) {
-        Det_ReportError(CAN_MODULE_ID, Controller, CAN_SID_GETCONTROLLERTXERRORCOUNTER, CAN_E_PARAM_CONTROLLER);
+        (void)Det_ReportError(CAN_MODULE_ID, Controller, CAN_SID_GETCONTROLLERTXERRORCOUNTER, CAN_E_PARAM_CONTROLLER);
         return E_NOT_OK;
     }
     if (TxErrorCounterPtr == NULL_PTR) {
-        Det_ReportError(CAN_MODULE_ID, Controller, CAN_SID_GETCONTROLLERTXERRORCOUNTER, CAN_E_PARAM_POINTER);
+        (void)Det_ReportError(CAN_MODULE_ID, Controller, CAN_SID_GETCONTROLLERTXERRORCOUNTER, CAN_E_PARAM_POINTER);
         return E_NOT_OK;
     }
     #endif

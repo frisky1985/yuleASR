@@ -201,11 +201,11 @@ void Wdg_Init(const Wdg_ConfigType* ConfigPtr)
 {
     #if (WDG_DEV_ERROR_DETECT == STD_ON)
     if (ConfigPtr == NULL_PTR) {
-        Det_ReportError(WDG_MODULE_ID, 0U, WDG_SID_INIT, WDG_E_PARAM_CONFIG);
+        (void)Det_ReportError(WDG_MODULE_ID, 0U, WDG_SID_INIT, WDG_E_PARAM_CONFIG);
         return;
     }
     if (Wdg_DriverInitialized == TRUE) {
-        Det_ReportError(WDG_MODULE_ID, 0U, WDG_SID_INIT, WDG_E_ALREADY_INITIALIZED);
+        (void)Det_ReportError(WDG_MODULE_ID, 0U, WDG_SID_INIT, WDG_E_ALREADY_INITIALIZED);
         return;
     }
     #endif
@@ -275,14 +275,14 @@ Std_ReturnType Wdg_SetMode(WdgIf_ModeType Mode)
 {
     #if (WDG_DEV_ERROR_DETECT == STD_ON)
     if (Wdg_DriverInitialized == FALSE) {
-        Det_ReportError(WDG_MODULE_ID, 0U, WDG_SID_SETMODE, WDG_E_UNINIT);
+        (void)Det_ReportError(WDG_MODULE_ID, 0U, WDG_SID_SETMODE, WDG_E_UNINIT);
         return E_NOT_OK;
     }
     
     /* 检查模式转换合法性 */
     if ((Wdg_CurrentMode == WDGIF_OFF_MODE) && 
         (Mode != WDGIF_FAST_MODE) && (Mode != WDGIF_SLOW_MODE)) {
-        Det_ReportError(WDG_MODULE_ID, 0U, WDG_SID_SETMODE, WDG_E_MODE_TRANSITION);
+        (void)Det_ReportError(WDG_MODULE_ID, 0U, WDG_SID_SETMODE, WDG_E_MODE_TRANSITION);
         return E_NOT_OK;
     }
     #endif
@@ -317,7 +317,7 @@ Std_ReturnType Wdg_SetMode(WdgIf_ModeType Mode)
 
         default:
             #if (WDG_DEV_ERROR_DETECT == STD_ON)
-            Det_ReportError(WDG_MODULE_ID, 0U, WDG_SID_SETMODE, WDG_E_PARAM_MODE);
+            (void)Det_ReportError(WDG_MODULE_ID, 0U, WDG_SID_SETMODE, WDG_E_PARAM_MODE);
             #endif
             return E_NOT_OK;
     }
@@ -349,14 +349,14 @@ void Wdg_Trigger(void)
 {
     #if (WDG_DEV_ERROR_DETECT == STD_ON)
     if (Wdg_DriverInitialized == FALSE) {
-        Det_ReportError(WDG_MODULE_ID, 0U, WDG_SID_TRIGGER, WDG_E_UNINIT);
+        (void)Det_ReportError(WDG_MODULE_ID, 0U, WDG_SID_TRIGGER, WDG_E_UNINIT);
         return;
     }
     #endif
 
     if (Wdg_CurrentMode == WDGIF_OFF_MODE) {
         #if (WDG_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(WDG_MODULE_ID, 0U, WDG_SID_TRIGGER, WDG_E_FORBIDDEN_INVOCATION);
+        (void)Det_ReportError(WDG_MODULE_ID, 0U, WDG_SID_TRIGGER, WDG_E_FORBIDDEN_INVOCATION);
         #endif
         return;
     }
@@ -383,9 +383,9 @@ void Wdg_Trigger(void)
         /* 窗口违规 */
         #if (WDG_DEV_ERROR_DETECT == STD_ON)
         if (triggerResult == WDG_TRIGGER_WINDOW_EARLY) {
-            Det_ReportError(WDG_MODULE_ID, 0U, WDG_SID_TRIGGER, WDG_E_WINDOW_VIOLATION);
+            (void)Det_ReportError(WDG_MODULE_ID, 0U, WDG_SID_TRIGGER, WDG_E_WINDOW_VIOLATION);
         } else if (triggerResult == WDG_TRIGGER_WINDOW_LATE) {
-            Det_ReportError(WDG_MODULE_ID, 0U, WDG_SID_TRIGGER, WDG_E_WINDOW_VIOLATION);
+            (void)Det_ReportError(WDG_MODULE_ID, 0U, WDG_SID_TRIGGER, WDG_E_WINDOW_VIOLATION);
         }
         #endif
         
@@ -429,7 +429,7 @@ void Wdg_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
     #if (WDG_DEV_ERROR_DETECT == STD_ON)
     if (versioninfo == NULL_PTR) {
-        Det_ReportError(WDG_MODULE_ID, 0U, WDG_SID_GETVERSIONINFO, WDG_E_PARAM_POINTER);
+        (void)Det_ReportError(WDG_MODULE_ID, 0U, WDG_SID_GETVERSIONINFO, WDG_E_PARAM_POINTER);
         return;
     }
     #endif
@@ -445,7 +445,7 @@ Std_ReturnType Wdg_SetTriggerCondition(uint16 timeout)
 {
     #if (WDG_DEV_ERROR_DETECT == STD_ON)
     if (Wdg_DriverInitialized == FALSE) {
-        Det_ReportError(WDG_MODULE_ID, 0U, WDG_SID_SETTRIGGERCONDITION, WDG_E_UNINIT);
+        (void)Det_ReportError(WDG_MODULE_ID, 0U, WDG_SID_SETTRIGGERCONDITION, WDG_E_UNINIT);
         return E_NOT_OK;
     }
     #endif
@@ -457,13 +457,13 @@ Std_ReturnType Wdg_SetTriggerCondition(uint16 timeout)
     /* Validate timeout */
     if (timeout > WDG_MAX_TIMEOUT) {
         #if (WDG_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(WDG_MODULE_ID, 0U, WDG_SID_SETTRIGGERCONDITION, WDG_E_PARAM_TIMEOUT);
+        (void)Det_ReportError(WDG_MODULE_ID, 0U, WDG_SID_SETTRIGGERCONDITION, WDG_E_PARAM_TIMEOUT);
         #endif
         return E_NOT_OK;
     }
     if (timeout < WDG_MIN_TIMEOUT) {
         #if (WDG_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(WDG_MODULE_ID, 0U, WDG_SID_SETTRIGGERCONDITION, WDG_E_PARAM_TIMEOUT);
+        (void)Det_ReportError(WDG_MODULE_ID, 0U, WDG_SID_SETTRIGGERCONDITION, WDG_E_PARAM_TIMEOUT);
         #endif
         return E_NOT_OK;
     }

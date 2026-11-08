@@ -102,7 +102,7 @@ void LinTp_Init(const LinTp_ConfigType *ConfigPtr)
 #if (LINTP_DEV_ERROR_DETECT == STD_ON)
     if (ConfigPtr == NULL_PTR)
     {
-        Det_ReportError(LINTP_MODULE_ID, 0U, LINTP_SID_INIT, LINTP_E_PARAM_POINTER);
+        (void)Det_ReportError(LINTP_MODULE_ID, 0U, LINTP_SID_INIT, LINTP_E_PARAM_POINTER);
         return;
     }
 #endif
@@ -132,7 +132,7 @@ void LinTp_DeInit(void)
 #if (LINTP_DEV_ERROR_DETECT == STD_ON)
     if (LinTp_Internal.ModuleState != LINTP_STATE_INIT)
     {
-        Det_ReportError(LINTP_MODULE_ID, 0U, LINTP_SID_DEINIT, LINTP_E_UNINIT);
+        (void)Det_ReportError(LINTP_MODULE_ID, 0U, LINTP_SID_DEINIT, LINTP_E_UNINIT);
         return;
     }
 #endif
@@ -162,19 +162,19 @@ Std_ReturnType LinTp_Transmit(PduIdType TxPduId, const PduInfoType *PduInfoPtr)
 #if (LINTP_DEV_ERROR_DETECT == STD_ON)
     if (LinTp_Internal.ModuleState != LINTP_STATE_INIT)
     {
-        Det_ReportError(LINTP_MODULE_ID, 0U, LINTP_SID_TRANSMIT, LINTP_E_UNINIT);
+        (void)Det_ReportError(LINTP_MODULE_ID, 0U, LINTP_SID_TRANSMIT, LINTP_E_UNINIT);
         return E_NOT_OK;
     }
 
     if (PduInfoPtr == NULL_PTR)
     {
-        Det_ReportError(LINTP_MODULE_ID, 0U, LINTP_SID_TRANSMIT, LINTP_E_PARAM_POINTER);
+        (void)Det_ReportError(LINTP_MODULE_ID, 0U, LINTP_SID_TRANSMIT, LINTP_E_PARAM_POINTER);
         return E_NOT_OK;
     }
 
     if (TxPduId >= LINTP_NSDU_COUNT)
     {
-        Det_ReportError(LINTP_MODULE_ID, 0U, LINTP_SID_TRANSMIT, LINTP_E_INVALID_TX_ID);
+        (void)Det_ReportError(LINTP_MODULE_ID, 0U, LINTP_SID_TRANSMIT, LINTP_E_INVALID_TX_ID);
         return E_NOT_OK;
     }
 #endif
@@ -184,7 +184,7 @@ Std_ReturnType LinTp_Transmit(PduIdType TxPduId, const PduInfoType *PduInfoPtr)
     if (channelIdx >= LINTP_MAX_CHANNEL_COUNT)
     {
 #if (LINTP_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(LINTP_MODULE_ID, 0U, LINTP_SID_TRANSMIT, LINTP_E_INVALID_TX_ID);
+        (void)Det_ReportError(LINTP_MODULE_ID, 0U, LINTP_SID_TRANSMIT, LINTP_E_INVALID_TX_ID);
 #endif
         return E_NOT_OK;
     }
@@ -256,13 +256,13 @@ Std_ReturnType LinTp_CancelTransmit(PduIdType TxPduId)
 #if (LINTP_DEV_ERROR_DETECT == STD_ON)
     if (LinTp_Internal.ModuleState != LINTP_STATE_INIT)
     {
-        Det_ReportError(LINTP_MODULE_ID, 0U, LINTP_SID_CANCEL_TRANSMIT, LINTP_E_UNINIT);
+        (void)Det_ReportError(LINTP_MODULE_ID, 0U, LINTP_SID_CANCEL_TRANSMIT, LINTP_E_UNINIT);
         return E_NOT_OK;
     }
 
     if (TxPduId >= LINTP_NSDU_COUNT)
     {
-        Det_ReportError(LINTP_MODULE_ID, 0U, LINTP_SID_CANCEL_TRANSMIT, LINTP_E_INVALID_TX_ID);
+        (void)Det_ReportError(LINTP_MODULE_ID, 0U, LINTP_SID_CANCEL_TRANSMIT, LINTP_E_INVALID_TX_ID);
         return E_NOT_OK;
     }
 #endif
@@ -308,13 +308,13 @@ Std_ReturnType LinTp_CancelReceive(PduIdType RxPduId)
 #if (LINTP_DEV_ERROR_DETECT == STD_ON)
     if (LinTp_Internal.ModuleState != LINTP_STATE_INIT)
     {
-        Det_ReportError(LINTP_MODULE_ID, 0U, LINTP_SID_CANCEL_RECEIVE, LINTP_E_UNINIT);
+        (void)Det_ReportError(LINTP_MODULE_ID, 0U, LINTP_SID_CANCEL_RECEIVE, LINTP_E_UNINIT);
         return E_NOT_OK;
     }
 
     if (RxPduId >= LINTP_NSDU_COUNT)
     {
-        Det_ReportError(LINTP_MODULE_ID, 0U, LINTP_SID_CANCEL_RECEIVE, LINTP_E_INVALID_RX_ID);
+        (void)Det_ReportError(LINTP_MODULE_ID, 0U, LINTP_SID_CANCEL_RECEIVE, LINTP_E_INVALID_RX_ID);
         return E_NOT_OK;
     }
 #endif
@@ -354,19 +354,19 @@ Std_ReturnType LinTp_ChangeParameter(PduIdType PduId, LinTp_ParameterType Parame
 #if (LINTP_DEV_ERROR_DETECT == STD_ON)
     if (LinTp_Internal.ModuleState != LINTP_STATE_INIT)
     {
-        Det_ReportError(LINTP_MODULE_ID, 0U, LINTP_SID_CHANGE_PARAMETER, LINTP_E_UNINIT);
+        (void)Det_ReportError(LINTP_MODULE_ID, 0U, LINTP_SID_CHANGE_PARAMETER, LINTP_E_UNINIT);
         return E_NOT_OK;
     }
 
     if (PduId >= LINTP_NSDU_COUNT)
     {
-        Det_ReportError(LINTP_MODULE_ID, 0U, LINTP_SID_CHANGE_PARAMETER, LINTP_E_INVALD_NSDU_ID);
+        (void)Det_ReportError(LINTP_MODULE_ID, 0U, LINTP_SID_CHANGE_PARAMETER, LINTP_E_INVALD_NSDU_ID);
         return E_NOT_OK;
     }
 
     if ((Parameter != LINTP_PARAMETER_BS) && (Parameter != LINTP_PARAMETER_STMIN))
     {
-        Det_ReportError(LINTP_MODULE_ID, 0U, LINTP_SID_CHANGE_PARAMETER, LINTP_E_INVALID_PARAMETER);
+        (void)Det_ReportError(LINTP_MODULE_ID, 0U, LINTP_SID_CHANGE_PARAMETER, LINTP_E_INVALID_PARAMETER);
         return E_NOT_OK;
     }
 #endif
@@ -418,7 +418,7 @@ void LinTp_GetVersionInfo(Std_VersionInfoType *VersionInfo)
 #if (LINTP_DEV_ERROR_DETECT == STD_ON)
     if (VersionInfo == NULL_PTR)
     {
-        Det_ReportError(LINTP_MODULE_ID, 0U, LINTP_SID_GET_VERSION_INFO, LINTP_E_PARAM_POINTER);
+        (void)Det_ReportError(LINTP_MODULE_ID, 0U, LINTP_SID_GET_VERSION_INFO, LINTP_E_PARAM_POINTER);
         return;
     }
 #endif
@@ -504,19 +504,19 @@ void LinTp_RxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr)
 #if (LINTP_DEV_ERROR_DETECT == STD_ON)
     if (LinTp_Internal.ModuleState != LINTP_STATE_INIT)
     {
-        Det_ReportError(LINTP_MODULE_ID, 0U, LINTP_SID_RX_INDICATION, LINTP_E_UNINIT);
+        (void)Det_ReportError(LINTP_MODULE_ID, 0U, LINTP_SID_RX_INDICATION, LINTP_E_UNINIT);
         return;
     }
 
     if (PduInfoPtr == NULL_PTR)
     {
-        Det_ReportError(LINTP_MODULE_ID, 0U, LINTP_SID_RX_INDICATION, LINTP_E_PARAM_POINTER);
+        (void)Det_ReportError(LINTP_MODULE_ID, 0U, LINTP_SID_RX_INDICATION, LINTP_E_PARAM_POINTER);
         return;
     }
 
     if (PduInfoPtr->SduDataPtr == NULL_PTR)
     {
-        Det_ReportError(LINTP_MODULE_ID, 0U, LINTP_SID_RX_INDICATION, LINTP_E_PARAM_POINTER);
+        (void)Det_ReportError(LINTP_MODULE_ID, 0U, LINTP_SID_RX_INDICATION, LINTP_E_PARAM_POINTER);
         return;
     }
 
@@ -565,7 +565,7 @@ void LinTp_RxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr)
         default:
             /* Unknown PCI type - ignore */
 #if (LINTP_DEV_ERROR_DETECT == STD_ON)
-            Det_ReportRuntimeError(LINTP_MODULE_ID, 0U, LINTP_SID_RX_INDICATION, LINTP_E_INVALID_FRAME);
+            (void)Det_ReportRuntimeError(LINTP_MODULE_ID, 0U, LINTP_SID_RX_INDICATION, LINTP_E_INVALID_FRAME);
 #endif
             break;
     }
@@ -584,7 +584,7 @@ void LinTp_TxConfirmation(PduIdType TxPduId, Std_ReturnType result)
 #if (LINTP_DEV_ERROR_DETECT == STD_ON)
     if (LinTp_Internal.ModuleState != LINTP_STATE_INIT)
     {
-        Det_ReportError(LINTP_MODULE_ID, 0U, LINTP_SID_TX_CONFIRMATION, LINTP_E_UNINIT);
+        (void)Det_ReportError(LINTP_MODULE_ID, 0U, LINTP_SID_TX_CONFIRMATION, LINTP_E_UNINIT);
         return;
     }
 #endif
@@ -684,7 +684,7 @@ Std_ReturnType LinTp_TriggerTransmit(PduIdType TxPduId, PduInfoType *PduInfoPtr)
 #if (LINTP_DEV_ERROR_DETECT == STD_ON)
     if (PduInfoPtr == NULL_PTR)
     {
-        Det_ReportError(LINTP_MODULE_ID, 0U, LINTP_SID_TRIGGER_TRANSMIT, LINTP_E_PARAM_POINTER);
+        (void)Det_ReportError(LINTP_MODULE_ID, 0U, LINTP_SID_TRIGGER_TRANSMIT, LINTP_E_PARAM_POINTER);
         return E_NOT_OK;
     }
 #endif
@@ -935,7 +935,7 @@ void LinTp_ProcessSingleFrame(uint8 ChannelIdx, const PduInfoType *PduInfoPtr)
     {
         /* Invalid SF */
 #if (LINTP_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportRuntimeError(LINTP_MODULE_ID, 0U, LINTP_SID_RX_INDICATION, LINTP_E_INVALID_FRAME);
+        (void)Det_ReportRuntimeError(LINTP_MODULE_ID, 0U, LINTP_SID_RX_INDICATION, LINTP_E_INVALID_FRAME);
 #endif
         return;
     }
@@ -1095,7 +1095,7 @@ void LinTp_ProcessConsecutiveFrame(uint8 ChannelIdx, const PduInfoType *PduInfoP
     {
         /* Unexpected CF */
 #if (LINTP_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportRuntimeError(LINTP_MODULE_ID, 0U, LINTP_SID_RX_INDICATION, LINTP_E_SEQUENCE_ERROR);
+        (void)Det_ReportRuntimeError(LINTP_MODULE_ID, 0U, LINTP_SID_RX_INDICATION, LINTP_E_SEQUENCE_ERROR);
 #endif
         return;
     }
@@ -1108,7 +1108,7 @@ void LinTp_ProcessConsecutiveFrame(uint8 ChannelIdx, const PduInfoType *PduInfoP
     {
         /* Sequence error */
 #if (LINTP_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportRuntimeError(LINTP_MODULE_ID, 0U, LINTP_SID_RX_INDICATION, LINTP_E_SEQUENCE_ERROR);
+        (void)Det_ReportRuntimeError(LINTP_MODULE_ID, 0U, LINTP_SID_RX_INDICATION, LINTP_E_SEQUENCE_ERROR);
 #endif
         PduR_LinTpRxIndication(channelPtr->CurrentNsduId, E_NOT_OK);
         LinTp_ResetChannel(ChannelIdx);
@@ -1182,7 +1182,7 @@ void LinTp_ProcessFlowControl(uint8 ChannelIdx, const PduInfoType *PduInfoPtr)
     {
         /* Unexpected FC */
 #if (LINTP_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportRuntimeError(LINTP_MODULE_ID, 0U, LINTP_SID_RX_INDICATION, LINTP_E_INVALID_FC);
+        (void)Det_ReportRuntimeError(LINTP_MODULE_ID, 0U, LINTP_SID_RX_INDICATION, LINTP_E_INVALID_FC);
 #endif
         return;
     }
@@ -1199,7 +1199,7 @@ void LinTp_ProcessFlowControl(uint8 ChannelIdx, const PduInfoType *PduInfoPtr)
     {
         /* Invalid FC length */
 #if (LINTP_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportRuntimeError(LINTP_MODULE_ID, 0U, LINTP_SID_RX_INDICATION, LINTP_E_INVALID_FC);
+        (void)Det_ReportRuntimeError(LINTP_MODULE_ID, 0U, LINTP_SID_RX_INDICATION, LINTP_E_INVALID_FC);
 #endif
         LinTp_AbortTransmission(ChannelIdx);
         return;
@@ -1239,7 +1239,7 @@ void LinTp_ProcessFlowControl(uint8 ChannelIdx, const PduInfoType *PduInfoPtr)
         default:
             /* Invalid flow status */
 #if (LINTP_DEV_ERROR_DETECT == STD_ON)
-            Det_ReportRuntimeError(LINTP_MODULE_ID, 0U, LINTP_SID_RX_INDICATION, LINTP_E_INVALID_FC);
+            (void)Det_ReportRuntimeError(LINTP_MODULE_ID, 0U, LINTP_SID_RX_INDICATION, LINTP_E_INVALID_FC);
 #endif
             LinTp_AbortTransmission(ChannelIdx);
             break;

@@ -606,4 +606,8 @@ void Com_TpTxConfirmation(PduIdType id, Std_ReturnType result);
 *                                      INLINE FUNCTIONS
 ==================================================================================================*/
 
+Std_ReturnType Com_UpdateShadowSignal(Com_SignalIdType SignalId, const void* SignalDataPtr);
+
+Std_ReturnType Com_TriggerIPDUSendWithMetaData(PduIdType PduId, const uint8* MetaData);
+
 #endif /* COM_H */

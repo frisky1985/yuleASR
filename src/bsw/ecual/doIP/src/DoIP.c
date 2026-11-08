@@ -144,7 +144,7 @@ void DoIP_Init(const DoIP_ConfigType* ConfigPtr)
     #if (DOIP_DEV_ERROR_DETECT == STD_ON)
     if (ConfigPtr == NULL_PTR)
     {
-        Det_ReportError(
+        (void)Det_ReportError(
             DOIP_MODULE_ID,
             0,
             DOIP_SID_INIT,
@@ -206,7 +206,7 @@ void DoIP_DeInit(void)
     #if (DOIP_DEV_ERROR_DETECT == STD_ON)
     if (DoIP_ModuleState != DOIP_STATE_INIT)
     {
-        Det_ReportError(
+        (void)Det_ReportError(
             DOIP_MODULE_ID,
             0,
             DOIP_SID_DEINIT,
@@ -240,7 +240,7 @@ void DoIP_ActivationLineSwitchActive(void)
     #if (DOIP_DEV_ERROR_DETECT == STD_ON)
     if (DoIP_ModuleState != DOIP_STATE_INIT)
     {
-        Det_ReportError(
+        (void)Det_ReportError(
             DOIP_MODULE_ID,
             0,
             DOIP_SID_ACTIVATION_LINE_ACTIVE,
@@ -272,7 +272,7 @@ void DoIP_ActivationLineSwitchInactive(void)
     #if (DOIP_DEV_ERROR_DETECT == STD_ON)
     if (DoIP_ModuleState != DOIP_STATE_INIT)
     {
-        Det_ReportError(
+        (void)Det_ReportError(
             DOIP_MODULE_ID,
             0,
             DOIP_SID_ACTIVATION_LINE_INACTIVE,
@@ -309,7 +309,7 @@ void DoIP_GetVersionInfo(Std_VersionInfoType* versioninfo)
     #if (DOIP_DEV_ERROR_DETECT == STD_ON)
     if (versioninfo == NULL_PTR)
     {
-        Det_ReportError(
+        (void)Det_ReportError(
             DOIP_MODULE_ID,
             0,
             DOIP_SID_GET_VERSION_INFO,
@@ -343,7 +343,7 @@ void DoIP_SoAdIfRxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
     #if (DOIP_DEV_ERROR_DETECT == STD_ON)
     if (DoIP_ModuleState != DOIP_STATE_INIT)
     {
-        Det_ReportError(
+        (void)Det_ReportError(
             DOIP_MODULE_ID,
             0,
             DOIP_SID_SOAD_IF_RX_INDICATION,
@@ -353,7 +353,7 @@ void DoIP_SoAdIfRxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
     }
     if (PduInfoPtr == NULL_PTR)
     {
-        Det_ReportError(
+        (void)Det_ReportError(
             DOIP_MODULE_ID,
             0,
             DOIP_SID_SOAD_IF_RX_INDICATION,
@@ -478,7 +478,7 @@ Std_ReturnType DoIP_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
     #if (DOIP_DEV_ERROR_DETECT == STD_ON)
     if (DoIP_ModuleState != DOIP_STATE_INIT)
     {
-        Det_ReportError(
+        (void)Det_ReportError(
             DOIP_MODULE_ID,
             0,
             DOIP_SID_TRIGGER_TRANSMIT,
@@ -528,7 +528,7 @@ void DoIP_MainFunction(void)
     {
         if (DoIP_AnnouncementTimer == 0U )
         {
-            DoIP_SendVehicleAnnouncement();
+            (void)DoIP_SendVehicleAnnouncement();
             DoIP_AnnouncementCounter++;
             if (DoIP_AnnouncementCounter >= DoIP_ConfigPtr->vehicleAnnouncement->announcementCount)
             {
@@ -563,7 +563,7 @@ void DoIP_MainFunction(void)
                 }
                 else
                 {
-                    DoIP_SendAliveCheckRequest(i);
+                    (void)DoIP_SendAliveCheckRequest(i);
                 }
             }
         }
@@ -841,7 +841,7 @@ static void DoIP_SendRoutingActivationResponse(
     pduInfo.SduLength = idx;
     pduInfo.MetaDataPtr = NULL_PTR;
 
-    SoAd_IfTransmit((PduIdType)socketId, &pduInfo);
+    (void)SoAd_IfTransmit((PduIdType)socketId, &pduInfo);
 }
 
 /** @req SWS_DoIP_00006 */
@@ -996,7 +996,7 @@ Std_ReturnType DoIP_ProcessDiagnosticMessage(
         pduInfo.SduLength = (PduLengthType)messageLength;
         pduInfo.MetaDataPtr = NULL_PTR;
 
-        SoAd_IfTransmit(
+        (void)SoAd_IfTransmit(
             (PduIdType)taConnectionIdx + DOIP_TCP_SOAD_TX_PDU_ID_BASE,
             &pduInfo
         );
@@ -1069,7 +1069,7 @@ static void DoIP_SendDiagnosticAck(
     pduInfo.SduLength = idx;
     pduInfo.MetaDataPtr = NULL_PTR;
 
-    SoAd_IfTransmit((PduIdType)socketId, &pduInfo);
+    (void)SoAd_IfTransmit((PduIdType)socketId, &pduInfo);
 }
 
 /*================================================================================
@@ -1169,7 +1169,7 @@ static void DoIP_CloseSocket(uint16 socketId)
 {
     if (socketId < DOIP_MAX_TESTER_CONNECTIONS)
     {
-        SoAd_CloseConnection((SoAd_SoConIdType)socketId);
+        (void)SoAd_CloseConnection((SoAd_SoConIdType)socketId);
         DoIP_ResetTesterConnection((uint8)socketId);
     }
 }

@@ -734,7 +734,7 @@ static Std_ReturnType I2c_MasterTransferDma(uint8 channel)
                                           chInfo->CurrentAddrMode,
                                           chInfo->TxBuffer.Length > 0U);
     if (result != E_OK) {
-        I2c_SendStop(baseAddr);
+        (void)I2c_SendStop(baseAddr);
         return result;
     }
     
@@ -777,11 +777,11 @@ void I2c_Init(const I2c_ConfigType* Config)
 {
     #if (I2C_DEV_ERROR_DETECT == STD_ON)
     if (Config == NULL_PTR) {
-        Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_INIT, I2C_E_PARAM_CONFIG);
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_INIT, I2C_E_PARAM_CONFIG);
         return;
     }
     if (I2c_DriverInitialized == TRUE) {
-        Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_INIT, I2C_E_ALREADY_INITIALIZED);
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_INIT, I2C_E_ALREADY_INITIALIZED);
         return;
     }
     #endif
@@ -855,7 +855,7 @@ Std_ReturnType I2c_DeInit(void)
 {
     #if (I2C_DEV_ERROR_DETECT == STD_ON)
     if (I2c_DriverInitialized == FALSE) {
-        Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_DEINIT, I2C_E_UNINIT);
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_DEINIT, I2C_E_UNINIT);
         return E_NOT_OK;
     }
     #endif
@@ -895,19 +895,19 @@ Std_ReturnType I2c_WriteBytes(I2c_ChannelType Channel,
 {
     #if (I2C_DEV_ERROR_DETECT == STD_ON)
     if (I2c_DriverInitialized == FALSE) {
-        Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_WRITEBYTES, I2C_E_UNINIT);
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_WRITEBYTES, I2C_E_UNINIT);
         return E_NOT_OK;
     }
     if (Channel >= I2c_ConfigPtr->NumChannels) {
-        Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_WRITEBYTES, I2C_E_PARAM_CHANNEL);
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_WRITEBYTES, I2C_E_PARAM_CHANNEL);
         return E_NOT_OK;
     }
     if ((DataBuffer == NULL_PTR) && (Length > 0U)) {
-        Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_WRITEBYTES, I2C_E_PARAM_POINTER);
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_WRITEBYTES, I2C_E_PARAM_POINTER);
         return E_NOT_OK;
     }
     if (Length > I2C_MAX_BUFFER_SIZE) {
-        Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_WRITEBYTES, I2C_E_PARAM_LENGTH);
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_WRITEBYTES, I2C_E_PARAM_LENGTH);
         return E_NOT_OK;
     }
     #endif
@@ -969,19 +969,19 @@ Std_ReturnType I2c_ReadBytes(I2c_ChannelType Channel,
 {
     #if (I2C_DEV_ERROR_DETECT == STD_ON)
     if (I2c_DriverInitialized == FALSE) {
-        Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_READBYTES, I2C_E_UNINIT);
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_READBYTES, I2C_E_UNINIT);
         return E_NOT_OK;
     }
     if (Channel >= I2c_ConfigPtr->NumChannels) {
-        Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_READBYTES, I2C_E_PARAM_CHANNEL);
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_READBYTES, I2C_E_PARAM_CHANNEL);
         return E_NOT_OK;
     }
     if ((DataBuffer == NULL_PTR) && (Length > 0U)) {
-        Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_READBYTES, I2C_E_PARAM_POINTER);
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_READBYTES, I2C_E_PARAM_POINTER);
         return E_NOT_OK;
     }
     if (Length > I2C_MAX_BUFFER_SIZE) {
-        Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_READBYTES, I2C_E_PARAM_LENGTH);
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_READBYTES, I2C_E_PARAM_LENGTH);
         return E_NOT_OK;
     }
     #endif
@@ -1044,19 +1044,19 @@ Std_ReturnType I2c_WriteRead(I2c_ChannelType Channel,
 {
     #if (I2C_DEV_ERROR_DETECT == STD_ON)
     if (I2c_DriverInitialized == FALSE) {
-        Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_WRITEREAD, I2C_E_UNINIT);
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_WRITEREAD, I2C_E_UNINIT);
         return E_NOT_OK;
     }
     if (Channel >= I2c_ConfigPtr->NumChannels) {
-        Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_WRITEREAD, I2C_E_PARAM_CHANNEL);
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_WRITEREAD, I2C_E_PARAM_CHANNEL);
         return E_NOT_OK;
     }
     if (((TxBuffer == NULL_PTR) && (TxLength > 0U)) || ((RxBuffer == NULL_PTR) && (RxLength > 0U))) {
-        Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_WRITEREAD, I2C_E_PARAM_POINTER);
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_WRITEREAD, I2C_E_PARAM_POINTER);
         return E_NOT_OK;
     }
     if ((TxLength > I2C_MAX_BUFFER_SIZE) || (RxLength > I2C_MAX_BUFFER_SIZE)) {
-        Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_WRITEREAD, I2C_E_PARAM_LENGTH);
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_WRITEREAD, I2C_E_PARAM_LENGTH);
         return E_NOT_OK;
     }
     #endif
@@ -1122,7 +1122,7 @@ void I2c_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
     #if (I2C_DEV_ERROR_DETECT == STD_ON)
     if (versioninfo == NULL_PTR) {
-        Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_GETVERSIONINFO, I2C_E_PARAM_POINTER);
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_GETVERSIONINFO, I2C_E_PARAM_POINTER);
         return;
     }
     #endif
@@ -1140,11 +1140,11 @@ Std_ReturnType I2c_SetClockMode(I2c_ChannelType Channel, I2c_ClockModeType Clock
 {
     #if (I2C_DEV_ERROR_DETECT == STD_ON)
     if (I2c_DriverInitialized == FALSE) {
-        Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_SETCLOCKMODE, I2C_E_UNINIT);
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_SETCLOCKMODE, I2C_E_UNINIT);
         return E_NOT_OK;
     }
     if (Channel >= I2c_ConfigPtr->NumChannels) {
-        Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_SETCLOCKMODE, I2C_E_PARAM_CHANNEL);
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_SETCLOCKMODE, I2C_E_PARAM_CHANNEL);
         return E_NOT_OK;
     }
     #endif
@@ -1182,11 +1182,11 @@ Std_ReturnType I2c_EnableInterrupt(I2c_ChannelType Channel)
     #if (I2C_INTERRUPT_SUPPORTED == STD_ON)
     #if (I2C_DEV_ERROR_DETECT == STD_ON)
     if (I2c_DriverInitialized == FALSE) {
-        Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_ENABLEINTERRUPT, I2C_E_UNINIT);
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_ENABLEINTERRUPT, I2C_E_UNINIT);
         return E_NOT_OK;
     }
     if (Channel >= I2c_ConfigPtr->NumChannels) {
-        Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_ENABLEINTERRUPT, I2C_E_PARAM_CHANNEL);
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_ENABLEINTERRUPT, I2C_E_PARAM_CHANNEL);
         return E_NOT_OK;
     }
     #endif
@@ -1212,11 +1212,11 @@ Std_ReturnType I2c_DisableInterrupt(I2c_ChannelType Channel)
     #if (I2C_INTERRUPT_SUPPORTED == STD_ON)
     #if (I2C_DEV_ERROR_DETECT == STD_ON)
     if (I2c_DriverInitialized == FALSE) {
-        Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_DISABLEINTERRUPT, I2C_E_UNINIT);
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_DISABLEINTERRUPT, I2C_E_UNINIT);
         return E_NOT_OK;
     }
     if (Channel >= I2c_ConfigPtr->NumChannels) {
-        Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_DISABLEINTERRUPT, I2C_E_PARAM_CHANNEL);
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_DISABLEINTERRUPT, I2C_E_PARAM_CHANNEL);
         return E_NOT_OK;
     }
     #endif
@@ -1243,11 +1243,11 @@ Std_ReturnType I2c_SetSlaveAddress(I2c_ChannelType Channel,
 {
     #if (I2C_DEV_ERROR_DETECT == STD_ON)
     if (I2c_DriverInitialized == FALSE) {
-        Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_SETSLAVEADDRESS, I2C_E_UNINIT);
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_SETSLAVEADDRESS, I2C_E_UNINIT);
         return E_NOT_OK;
     }
     if (Channel >= I2c_ConfigPtr->NumChannels) {
-        Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_SETSLAVEADDRESS, I2C_E_PARAM_CHANNEL);
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_SETSLAVEADDRESS, I2C_E_PARAM_CHANNEL);
         return E_NOT_OK;
     }
     #endif
@@ -1274,11 +1274,11 @@ I2c_BusStateType I2c_GetBusState(I2c_ChannelType Channel)
 {
     #if (I2C_DEV_ERROR_DETECT == STD_ON)
     if (I2c_DriverInitialized == FALSE) {
-        Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_GETBUSSTATE, I2C_E_UNINIT);
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_GETBUSSTATE, I2C_E_UNINIT);
         return I2C_BUS_STATE_BUSY;
     }
     if (Channel >= I2c_ConfigPtr->NumChannels) {
-        Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_GETBUSSTATE, I2C_E_PARAM_CHANNEL);
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_GETBUSSTATE, I2C_E_PARAM_CHANNEL);
         return I2C_BUS_STATE_BUSY;
     }
     #endif
@@ -1299,11 +1299,11 @@ Std_ReturnType I2c_ClearBus(I2c_ChannelType Channel)
 {
     #if (I2C_DEV_ERROR_DETECT == STD_ON)
     if (I2c_DriverInitialized == FALSE) {
-        Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_CLEARBUS, I2C_E_UNINIT);
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_CLEARBUS, I2C_E_UNINIT);
         return E_NOT_OK;
     }
     if (Channel >= I2c_ConfigPtr->NumChannels) {
-        Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_CLEARBUS, I2C_E_PARAM_CHANNEL);
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_CLEARBUS, I2C_E_PARAM_CHANNEL);
         return E_NOT_OK;
     }
     #endif
@@ -1337,11 +1337,11 @@ Std_ReturnType I2c_SoftwareReset(I2c_ChannelType Channel)
     #if (I2C_SW_RESET_API == STD_ON)
     #if (I2C_DEV_ERROR_DETECT == STD_ON)
     if (I2c_DriverInitialized == FALSE) {
-        Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_SOFTWARERESET, I2C_E_UNINIT);
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_SOFTWARERESET, I2C_E_UNINIT);
         return E_NOT_OK;
     }
     if (Channel >= I2c_ConfigPtr->NumChannels) {
-        Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_SOFTWARERESET, I2C_E_PARAM_CHANNEL);
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_SOFTWARERESET, I2C_E_PARAM_CHANNEL);
         return E_NOT_OK;
     }
     #endif
@@ -1376,15 +1376,15 @@ Std_ReturnType I2c_SetTransferMode(I2c_ChannelType Channel, I2c_TransferModeType
 {
     #if (I2C_DEV_ERROR_DETECT == STD_ON)
     if (I2c_DriverInitialized == FALSE) {
-        Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_SETTRANSFERMODE, I2C_E_UNINIT);
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_SETTRANSFERMODE, I2C_E_UNINIT);
         return E_NOT_OK;
     }
     if (Channel >= I2c_ConfigPtr->NumChannels) {
-        Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_SETTRANSFERMODE, I2C_E_PARAM_CHANNEL);
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_SETTRANSFERMODE, I2C_E_PARAM_CHANNEL);
         return E_NOT_OK;
     }
     if (TransferMode > I2C_TRANSFER_DMA) {
-        Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_SETTRANSFERMODE, I2C_E_PARAM_MODE);
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_SETTRANSFERMODE, I2C_E_PARAM_MODE);
         return E_NOT_OK;
     }
     #endif
@@ -1407,11 +1407,11 @@ Std_ReturnType I2c_CancelTransfer(I2c_ChannelType Channel)
 {
     #if (I2C_DEV_ERROR_DETECT == STD_ON)
     if (I2c_DriverInitialized == FALSE) {
-        Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_CANCELTRANSFER, I2C_E_UNINIT);
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_CANCELTRANSFER, I2C_E_UNINIT);
         return E_NOT_OK;
     }
     if (Channel >= I2c_ConfigPtr->NumChannels) {
-        Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_CANCELTRANSFER, I2C_E_PARAM_CHANNEL);
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_CANCELTRANSFER, I2C_E_PARAM_CHANNEL);
         return E_NOT_OK;
     }
     #endif
@@ -1447,15 +1447,15 @@ Std_ReturnType I2c_PrepareSlaveBuffer(I2c_ChannelType Channel,
     #if (I2C_SLAVE_MODE_SUPPORTED == STD_ON)
     #if (I2C_DEV_ERROR_DETECT == STD_ON)
     if (I2c_DriverInitialized == FALSE) {
-        Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_PREPARESLAVEBUFFER, I2C_E_UNINIT);
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_PREPARESLAVEBUFFER, I2C_E_UNINIT);
         return E_NOT_OK;
     }
     if (Channel >= I2c_ConfigPtr->NumChannels) {
-        Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_PREPARESLAVEBUFFER, I2C_E_PARAM_CHANNEL);
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_PREPARESLAVEBUFFER, I2C_E_PARAM_CHANNEL);
         return E_NOT_OK;
     }
     if ((Buffer == NULL_PTR) && (Length > 0U)) {
-        Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_PREPARESLAVEBUFFER, I2C_E_PARAM_POINTER);
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_PREPARESLAVEBUFFER, I2C_E_PARAM_POINTER);
         return E_NOT_OK;
     }
     #endif
@@ -1484,15 +1484,15 @@ Std_ReturnType I2c_SlaveWriteBuffer(I2c_ChannelType Channel,
     #if (I2C_SLAVE_MODE_SUPPORTED == STD_ON)
     #if (I2C_DEV_ERROR_DETECT == STD_ON)
     if (I2c_DriverInitialized == FALSE) {
-        Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_SLAVEWRITEBUFFER, I2C_E_UNINIT);
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_SLAVEWRITEBUFFER, I2C_E_UNINIT);
         return E_NOT_OK;
     }
     if (Channel >= I2c_ConfigPtr->NumChannels) {
-        Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_SLAVEWRITEBUFFER, I2C_E_PARAM_CHANNEL);
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_SLAVEWRITEBUFFER, I2C_E_PARAM_CHANNEL);
         return E_NOT_OK;
     }
     if ((Buffer == NULL_PTR) && (Length > 0U)) {
-        Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_SLAVEWRITEBUFFER, I2C_E_PARAM_POINTER);
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_SLAVEWRITEBUFFER, I2C_E_PARAM_POINTER);
         return E_NOT_OK;
     }
     #endif
@@ -1521,15 +1521,15 @@ Std_ReturnType I2c_SlaveReadBuffer(I2c_ChannelType Channel,
     #if (I2C_SLAVE_MODE_SUPPORTED == STD_ON)
     #if (I2C_DEV_ERROR_DETECT == STD_ON)
     if (I2c_DriverInitialized == FALSE) {
-        Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_SLAVEREADBUFFER, I2C_E_UNINIT);
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_SLAVEREADBUFFER, I2C_E_UNINIT);
         return E_NOT_OK;
     }
     if (Channel >= I2c_ConfigPtr->NumChannels) {
-        Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_SLAVEREADBUFFER, I2C_E_PARAM_CHANNEL);
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_SLAVEREADBUFFER, I2C_E_PARAM_CHANNEL);
         return E_NOT_OK;
     }
     if ((Buffer == NULL_PTR) && (Length > 0U)) {
-        Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_SLAVEREADBUFFER, I2C_E_PARAM_POINTER);
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_SLAVEREADBUFFER, I2C_E_PARAM_POINTER);
         return E_NOT_OK;
     }
     #endif

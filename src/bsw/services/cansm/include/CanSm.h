@@ -457,4 +457,6 @@ void CanSM_CheckTransceiverWakeFlagIndication(uint8 TransceiverId);
 #define CANSM_STOP_SEC_CODE
 #include "MemMap.h"
 
+void CanSm_GetVersionInfo(Std_VersionInfoType* versioninfo);
+
 #endif /* CANSM_H */

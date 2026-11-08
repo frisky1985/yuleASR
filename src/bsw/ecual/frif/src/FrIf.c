@@ -65,11 +65,11 @@ void FrIf_Init(const FrIf_ConfigType* ConfigPtr)
 {
     #if (FRIF_DEV_ERROR_DETECT == STD_ON)
     if (ConfigPtr == NULL_PTR) {
-        Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_INIT, FRIF_E_INV_CONFIG);
+        (void)Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_INIT, FRIF_E_INV_CONFIG);
         return;
     }
     if (FrIf_Initialized == TRUE) {
-        Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_INIT, FRIF_E_ALREADY_INITIALIZED);
+        (void)Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_INIT, FRIF_E_ALREADY_INITIALIZED);
         return;
     }
     #endif
@@ -121,11 +121,11 @@ Std_ReturnType FrIf_ControllerInit(uint8 FrIf_CtrlIdx)
 {
     #if (FRIF_DEV_ERROR_DETECT == STD_ON)
     if (FrIf_Initialized == FALSE) {
-        Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_CONTROLLERINIT, FRIF_E_UNINIT);
+        (void)Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_CONTROLLERINIT, FRIF_E_UNINIT);
         return E_NOT_OK;
     }
     if (FrIf_CtrlIdx >= FRIF_NUM_CONTROLLERS) {
-        Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_CONTROLLERINIT, FRIF_E_INV_CTRL_IDX);
+        (void)Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_CONTROLLERINIT, FRIF_E_INV_CTRL_IDX);
         return E_NOT_OK;
     }
     #endif
@@ -146,15 +146,15 @@ Std_ReturnType FrIf_SetAbsoluteTimer(uint8 FrIf_CtrlIdx,
 {
     #if (FRIF_DEV_ERROR_DETECT == STD_ON)
     if (FrIf_Initialized == FALSE) {
-        Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_SETABSOLUTETIMER, FRIF_E_UNINIT);
+        (void)Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_SETABSOLUTETIMER, FRIF_E_UNINIT);
         return E_NOT_OK;
     }
     if (FrIf_CtrlIdx >= FRIF_NUM_CONTROLLERS) {
-        Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_SETABSOLUTETIMER, FRIF_E_INV_CTRL_IDX);
+        (void)Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_SETABSOLUTETIMER, FRIF_E_INV_CTRL_IDX);
         return E_NOT_OK;
     }
     if (FrIf_AbsTimerIdx >= 4U) {
-        Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_SETABSOLUTETIMER, FRIF_E_INV_TIMER_IDX);
+        (void)Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_SETABSOLUTETIMER, FRIF_E_INV_TIMER_IDX);
         return E_NOT_OK;
     }
     #endif
@@ -176,15 +176,15 @@ Std_ReturnType FrIf_SetRelativeTimer(uint8 FrIf_CtrlIdx,
 {
     #if (FRIF_DEV_ERROR_DETECT == STD_ON)
     if (FrIf_Initialized == FALSE) {
-        Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_SETRELATIVETIMER, FRIF_E_UNINIT);
+        (void)Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_SETRELATIVETIMER, FRIF_E_UNINIT);
         return E_NOT_OK;
     }
     if (FrIf_CtrlIdx >= FRIF_NUM_CONTROLLERS) {
-        Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_SETRELATIVETIMER, FRIF_E_INV_CTRL_IDX);
+        (void)Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_SETRELATIVETIMER, FRIF_E_INV_CTRL_IDX);
         return E_NOT_OK;
     }
     if (FrIf_RelTimerIdx >= 4U) {
-        Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_SETRELATIVETIMER, FRIF_E_INV_TIMER_IDX);
+        (void)Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_SETRELATIVETIMER, FRIF_E_INV_TIMER_IDX);
         return E_NOT_OK;
     }
     #endif
@@ -201,15 +201,15 @@ Std_ReturnType FrIf_CancelAbsoluteTimer(uint8 FrIf_CtrlIdx, uint8 FrIf_AbsTimerI
 {
     #if (FRIF_DEV_ERROR_DETECT == STD_ON)
     if (FrIf_Initialized == FALSE) {
-        Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_CANCELABSOLUTETIMER, FRIF_E_UNINIT);
+        (void)Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_CANCELABSOLUTETIMER, FRIF_E_UNINIT);
         return E_NOT_OK;
     }
     if (FrIf_CtrlIdx >= FRIF_NUM_CONTROLLERS) {
-        Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_CANCELABSOLUTETIMER, FRIF_E_INV_CTRL_IDX);
+        (void)Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_CANCELABSOLUTETIMER, FRIF_E_INV_CTRL_IDX);
         return E_NOT_OK;
     }
     if (FrIf_AbsTimerIdx >= 4U) {
-        Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_CANCELABSOLUTETIMER, FRIF_E_INV_TIMER_IDX);
+        (void)Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_CANCELABSOLUTETIMER, FRIF_E_INV_TIMER_IDX);
         return E_NOT_OK;
     }
     #endif
@@ -224,15 +224,15 @@ Std_ReturnType FrIf_CancelRelativeTimer(uint8 FrIf_CtrlIdx, uint8 FrIf_RelTimerI
 {
     #if (FRIF_DEV_ERROR_DETECT == STD_ON)
     if (FrIf_Initialized == FALSE) {
-        Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_CANCELRELATIVETIMER, FRIF_E_UNINIT);
+        (void)Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_CANCELRELATIVETIMER, FRIF_E_UNINIT);
         return E_NOT_OK;
     }
     if (FrIf_CtrlIdx >= FRIF_NUM_CONTROLLERS) {
-        Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_CANCELRELATIVETIMER, FRIF_E_INV_CTRL_IDX);
+        (void)Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_CANCELRELATIVETIMER, FRIF_E_INV_CTRL_IDX);
         return E_NOT_OK;
     }
     if (FrIf_RelTimerIdx >= 4U) {
-        Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_CANCELRELATIVETIMER, FRIF_E_INV_TIMER_IDX);
+        (void)Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_CANCELRELATIVETIMER, FRIF_E_INV_TIMER_IDX);
         return E_NOT_OK;
     }
     #endif
@@ -247,15 +247,15 @@ Std_ReturnType FrIf_Transmit(PduIdType FrIf_TxPduId, const PduInfoType* FrIf_Pdu
 {
     #if (FRIF_DEV_ERROR_DETECT == STD_ON)
     if (FrIf_Initialized == FALSE) {
-        Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_TRANSMIT, FRIF_E_UNINIT);
+        (void)Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_TRANSMIT, FRIF_E_UNINIT);
         return E_NOT_OK;
     }
     if (FrIf_TxPduId >= FRIF_NUM_LPDUS) {
-        Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_TRANSMIT, FRIF_E_INV_LPDU_IDX);
+        (void)Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_TRANSMIT, FRIF_E_INV_LPDU_IDX);
         return E_NOT_OK;
     }
     if (FrIf_PduInfoPtr == NULL_PTR) {
-        Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_TRANSMIT, FRIF_E_INV_POINTER);
+        (void)Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_TRANSMIT, FRIF_E_INV_POINTER);
         return E_NOT_OK;
     }
     #endif
@@ -289,15 +289,15 @@ Std_ReturnType FrIf_GetPOCStatus(uint8 FrIf_CtrlIdx, FrIf_POCStatusType* FrIf_PO
 {
     #if (FRIF_DEV_ERROR_DETECT == STD_ON)
     if (FrIf_Initialized == FALSE) {
-        Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_GETPOCSTATUS, FRIF_E_UNINIT);
+        (void)Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_GETPOCSTATUS, FRIF_E_UNINIT);
         return E_NOT_OK;
     }
     if (FrIf_CtrlIdx >= FRIF_NUM_CONTROLLERS) {
-        Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_GETPOCSTATUS, FRIF_E_INV_CTRL_IDX);
+        (void)Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_GETPOCSTATUS, FRIF_E_INV_CTRL_IDX);
         return E_NOT_OK;
     }
     if (FrIf_POCStatusPtr == NULL_PTR) {
-        Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_GETPOCSTATUS, FRIF_E_INV_POINTER);
+        (void)Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_GETPOCSTATUS, FRIF_E_INV_POINTER);
         return E_NOT_OK;
     }
     #endif
@@ -318,15 +318,15 @@ Std_ReturnType FrIf_GetGlobalTime(uint8 FrIf_CtrlIdx,
 {
     #if (FRIF_DEV_ERROR_DETECT == STD_ON)
     if (FrIf_Initialized == FALSE) {
-        Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_GETGLOBALTIME, FRIF_E_UNINIT);
+        (void)Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_GETGLOBALTIME, FRIF_E_UNINIT);
         return E_NOT_OK;
     }
     if (FrIf_CtrlIdx >= FRIF_NUM_CONTROLLERS) {
-        Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_GETGLOBALTIME, FRIF_E_INV_CTRL_IDX);
+        (void)Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_GETGLOBALTIME, FRIF_E_INV_CTRL_IDX);
         return E_NOT_OK;
     }
     if ((FrIf_CyclePtr == NULL_PTR) || (FrIf_MacrotickPtr == NULL_PTR)) {
-        Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_GETGLOBALTIME, FRIF_E_INV_POINTER);
+        (void)Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_GETGLOBALTIME, FRIF_E_INV_POINTER);
         return E_NOT_OK;
     }
     #endif
@@ -343,11 +343,11 @@ Std_ReturnType FrIf_AllowColdstart(uint8 FrIf_CtrlIdx)
 {
     #if (FRIF_DEV_ERROR_DETECT == STD_ON)
     if (FrIf_Initialized == FALSE) {
-        Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_ALLOWCOLDSTART, FRIF_E_UNINIT);
+        (void)Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_ALLOWCOLDSTART, FRIF_E_UNINIT);
         return E_NOT_OK;
     }
     if (FrIf_CtrlIdx >= FRIF_NUM_CONTROLLERS) {
-        Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_ALLOWCOLDSTART, FRIF_E_INV_CTRL_IDX);
+        (void)Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_ALLOWCOLDSTART, FRIF_E_INV_CTRL_IDX);
         return E_NOT_OK;
     }
     #endif
@@ -371,11 +371,11 @@ Std_ReturnType FrIf_HaltCommunication(uint8 FrIf_CtrlIdx)
 {
     #if (FRIF_DEV_ERROR_DETECT == STD_ON)
     if (FrIf_Initialized == FALSE) {
-        Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_HALTCOMMUNICATION, FRIF_E_UNINIT);
+        (void)Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_HALTCOMMUNICATION, FRIF_E_UNINIT);
         return E_NOT_OK;
     }
     if (FrIf_CtrlIdx >= FRIF_NUM_CONTROLLERS) {
-        Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_HALTCOMMUNICATION, FRIF_E_INV_CTRL_IDX);
+        (void)Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_HALTCOMMUNICATION, FRIF_E_INV_CTRL_IDX);
         return E_NOT_OK;
     }
     #endif
@@ -392,11 +392,11 @@ Std_ReturnType FrIf_AbortCommunication(uint8 FrIf_CtrlIdx)
 {
     #if (FRIF_DEV_ERROR_DETECT == STD_ON)
     if (FrIf_Initialized == FALSE) {
-        Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_ABORTCOMMUNICATION, FRIF_E_UNINIT);
+        (void)Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_ABORTCOMMUNICATION, FRIF_E_UNINIT);
         return E_NOT_OK;
     }
     if (FrIf_CtrlIdx >= FRIF_NUM_CONTROLLERS) {
-        Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_ABORTCOMMUNICATION, FRIF_E_INV_CTRL_IDX);
+        (void)Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_ABORTCOMMUNICATION, FRIF_E_INV_CTRL_IDX);
         return E_NOT_OK;
     }
     #endif
@@ -413,11 +413,11 @@ Std_ReturnType FrIf_SendWUP(uint8 FrIf_CtrlIdx)
 {
     #if (FRIF_DEV_ERROR_DETECT == STD_ON)
     if (FrIf_Initialized == FALSE) {
-        Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_WAKEUPCTRL, FRIF_E_UNINIT);
+        (void)Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_WAKEUPCTRL, FRIF_E_UNINIT);
         return E_NOT_OK;
     }
     if (FrIf_CtrlIdx >= FRIF_NUM_CONTROLLERS) {
-        Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_WAKEUPCTRL, FRIF_E_INV_CTRL_IDX);
+        (void)Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_WAKEUPCTRL, FRIF_E_INV_CTRL_IDX);
         return E_NOT_OK;
     }
     #endif
@@ -439,15 +439,15 @@ Std_ReturnType FrIf_SetWakeupChannel(uint8 FrIf_CtrlIdx, FrIf_ChannelType FrIf_C
 {
     #if (FRIF_DEV_ERROR_DETECT == STD_ON)
     if (FrIf_Initialized == FALSE) {
-        Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_SETWAKEUPCHANNEL, FRIF_E_UNINIT);
+        (void)Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_SETWAKEUPCHANNEL, FRIF_E_UNINIT);
         return E_NOT_OK;
     }
     if (FrIf_CtrlIdx >= FRIF_NUM_CONTROLLERS) {
-        Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_SETWAKEUPCHANNEL, FRIF_E_INV_CTRL_IDX);
+        (void)Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_SETWAKEUPCHANNEL, FRIF_E_INV_CTRL_IDX);
         return E_NOT_OK;
     }
     if (FrIf_ChnlIdx > FRIF_CHANNEL_AB) {
-        Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_SETWAKEUPCHANNEL, FRIF_E_INV_CHNL);
+        (void)Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_SETWAKEUPCHANNEL, FRIF_E_INV_CHNL);
         return E_NOT_OK;
     }
     #endif
@@ -468,7 +468,7 @@ void FrIf_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
     #if (FRIF_DEV_ERROR_DETECT == STD_ON)
     if (versioninfo == NULL_PTR) {
-        Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_GETVERSIONINFO, FRIF_E_INV_POINTER);
+        (void)Det_ReportError(FRIF_MODULE_ID, 0U, FRIF_SID_GETVERSIONINFO, FRIF_E_INV_POINTER);
         return;
     }
     #endif

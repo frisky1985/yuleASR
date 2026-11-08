@@ -178,7 +178,7 @@ void MemIf_Init(const MemIf_ConfigType* ConfigPtr)
 {
 #if (MEMIF_DEV_ERROR_DETECT == STD_ON)
     if (MemIf_ModuleInitialized == TRUE) {
-        Det_ReportError(MEMIF_MODULE_ID, MEMIF_INSTANCE_ID, MEMIF_SID_INIT, MEMIF_E_ALREADY_INITIALIZED);
+        (void)Det_ReportError(MEMIF_MODULE_ID, MEMIF_INSTANCE_ID, MEMIF_SID_INIT, MEMIF_E_ALREADY_INITIALIZED);
         return;
     }
 #endif
@@ -236,7 +236,7 @@ void MemIf_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
 #if (MEMIF_DEV_ERROR_DETECT == STD_ON)
     if (versioninfo == NULL_PTR) {
-        Det_ReportError(MEMIF_MODULE_ID, MEMIF_INSTANCE_ID, MEMIF_SID_GETVERSIONINFO, MEMIF_E_PARAM_POINTER);
+        (void)Det_ReportError(MEMIF_MODULE_ID, MEMIF_INSTANCE_ID, MEMIF_SID_GETVERSIONINFO, MEMIF_E_PARAM_POINTER);
         return;
     }
 #endif
@@ -268,7 +268,7 @@ Std_ReturnType MemIf_Read(uint8 DeviceIndex, uint16 BlockNumber, uint16 BlockOff
     MEMIF_VALIDATE_POINTER(MEMIF_SID_READ, DataBufferPtr);
     
     if (MemIf_IsBlockNumberValid(DeviceIndex, BlockNumber) == FALSE) {
-        Det_ReportError(MEMIF_MODULE_ID, MEMIF_INSTANCE_ID, MEMIF_SID_READ, MEMIF_E_PARAM_BLOCK);
+        (void)Det_ReportError(MEMIF_MODULE_ID, MEMIF_INSTANCE_ID, MEMIF_SID_READ, MEMIF_E_PARAM_BLOCK);
         return E_NOT_OK;
     }
 #endif
@@ -312,7 +312,7 @@ Std_ReturnType MemIf_Write(uint8 DeviceIndex, uint16 BlockNumber, const uint8* D
     MEMIF_VALIDATE_POINTER(MEMIF_SID_WRITE, DataBufferPtr);
     
     if (MemIf_IsBlockNumberValid(DeviceIndex, BlockNumber) == FALSE) {
-        Det_ReportError(MEMIF_MODULE_ID, MEMIF_INSTANCE_ID, MEMIF_SID_WRITE, MEMIF_E_PARAM_BLOCK);
+        (void)Det_ReportError(MEMIF_MODULE_ID, MEMIF_INSTANCE_ID, MEMIF_SID_WRITE, MEMIF_E_PARAM_BLOCK);
         return E_NOT_OK;
     }
 #endif
@@ -382,7 +382,7 @@ MemIf_StatusType MemIf_GetStatus(uint8 DeviceIndex)
     }
     
     if (DeviceIndex >= MEMIF_TOTAL_NUM_DEVICES) {
-        Det_ReportError(MEMIF_MODULE_ID, MEMIF_INSTANCE_ID, MEMIF_SID_GETSTATUS, MEMIF_E_PARAM_DEVICE_INDEX);
+        (void)Det_ReportError(MEMIF_MODULE_ID, MEMIF_INSTANCE_ID, MEMIF_SID_GETSTATUS, MEMIF_E_PARAM_DEVICE_INDEX);
         return MEMIF_UNINIT;
     }
 #endif
@@ -451,7 +451,7 @@ Std_ReturnType MemIf_InvalidateBlock(uint8 DeviceIndex, uint16 BlockNumber)
     MEMIF_VALIDATE_DEVICE_INDEX_RET(MEMIF_SID_INVALIDATEBLOCK, DeviceIndex, E_NOT_OK);
     
     if (MemIf_IsBlockNumberValid(DeviceIndex, BlockNumber) == FALSE) {
-        Det_ReportError(MEMIF_MODULE_ID, MEMIF_INSTANCE_ID, MEMIF_SID_INVALIDATEBLOCK, MEMIF_E_PARAM_BLOCK);
+        (void)Det_ReportError(MEMIF_MODULE_ID, MEMIF_INSTANCE_ID, MEMIF_SID_INVALIDATEBLOCK, MEMIF_E_PARAM_BLOCK);
         return E_NOT_OK;
     }
 #endif
@@ -493,7 +493,7 @@ Std_ReturnType MemIf_EraseBlock(uint8 DeviceIndex, uint16 BlockNumber)
     MEMIF_VALIDATE_DEVICE_INDEX_RET(MEMIF_SID_ERASEBLOCK, DeviceIndex, E_NOT_OK);
     
     if (MemIf_IsBlockNumberValid(DeviceIndex, BlockNumber) == FALSE) {
-        Det_ReportError(MEMIF_MODULE_ID, MEMIF_INSTANCE_ID, MEMIF_SID_ERASEBLOCK, MEMIF_E_PARAM_BLOCK);
+        (void)Det_ReportError(MEMIF_MODULE_ID, MEMIF_INSTANCE_ID, MEMIF_SID_ERASEBLOCK, MEMIF_E_PARAM_BLOCK);
         return E_NOT_OK;
     }
 #endif
@@ -540,7 +540,7 @@ Std_ReturnType MemIf_EraseImmediateBlock(uint8 DeviceIndex, uint16 BlockNumber)
     MEMIF_VALIDATE_DEVICE_INDEX_RET(MEMIF_SID_ERASEIMMEDIATEBLOCK, DeviceIndex, E_NOT_OK);
 
     if (MemIf_IsBlockNumberValid(DeviceIndex, BlockNumber) == FALSE) {
-        Det_ReportError(MEMIF_MODULE_ID, MEMIF_INSTANCE_ID, MEMIF_SID_ERASEIMMEDIATEBLOCK, MEMIF_E_PARAM_BLOCK);
+        (void)Det_ReportError(MEMIF_MODULE_ID, MEMIF_INSTANCE_ID, MEMIF_SID_ERASEIMMEDIATEBLOCK, MEMIF_E_PARAM_BLOCK);
         return E_NOT_OK;
     }
 #endif

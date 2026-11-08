@@ -557,7 +557,7 @@ static Std_ReturnType CanSm_ProcessNoComState(uint8 NetworkIndex)
             if (CanSm_IsTimerExpired(NetworkIndex)) {
                 /* Timeout - retry or error */
 #if (CANSM_DEV_ERROR_DETECT == STD_ON)
-                Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID, 
+                (void)Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID, 
                                CANSM_SID_MAINFUNCTION, CANSM_E_MODE_REQUEST_TIMEOUT);
 #endif
                 result = E_NOT_OK;
@@ -647,7 +647,7 @@ static Std_ReturnType CanSm_ProcessFullComState(uint8 NetworkIndex)
             /* Waiting for controller mode confirmation */
             if (CanSm_IsTimerExpired(NetworkIndex)) {
 #if (CANSM_DEV_ERROR_DETECT == STD_ON)
-                Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+                (void)Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
                                CANSM_SID_MAINFUNCTION, CANSM_E_MODE_REQUEST_TIMEOUT);
 #endif
                 result = E_NOT_OK;
@@ -679,7 +679,7 @@ static Std_ReturnType CanSm_ProcessSilentComBorState(uint8 NetworkIndex)
                 netState->SubState = CANSM_S_BUSOFF_RECOVERY_L1;
             } else if (CanSm_IsTimerExpired(NetworkIndex)) {
 #if (CANSM_DEV_ERROR_DETECT == STD_ON)
-                Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+                (void)Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
                                CANSM_SID_MAINFUNCTION, CANSM_E_MODE_REQUEST_TIMEOUT);
 #endif
                 result = E_NOT_OK;
@@ -719,7 +719,7 @@ static Std_ReturnType CanSm_ProcessSilentComBorState(uint8 NetworkIndex)
             /* STARTED confirmation completes recovery (CanSm_HandleModeConfirmation) */
             if (CanSm_IsTimerExpired(NetworkIndex)) {
 #if (CANSM_DEV_ERROR_DETECT == STD_ON)
-                Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+                (void)Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
                                CANSM_SID_MAINFUNCTION, CANSM_E_MODE_REQUEST_TIMEOUT);
 #endif
                 result = E_NOT_OK;
@@ -758,7 +758,7 @@ static Std_ReturnType CanSm_ProcessCheckWakeupState(uint8 NetworkIndex)
         /* Waiting for controller STOPPED confirmation */
         if (CanSm_IsTimerExpired(NetworkIndex)) {
 #if (CANSM_DEV_ERROR_DETECT == STD_ON)
-            Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+            (void)Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
                            CANSM_SID_MAINFUNCTION, CANSM_E_MODE_REQUEST_TIMEOUT);
 #endif
             result = E_NOT_OK;
@@ -877,7 +877,7 @@ void CanSM_ControllerModeIndication(uint8 ControllerId, CanIf_ControllerModeType
 
     if (CanSm_Global.InitStatus != CANSM_INIT) {
 #if (CANSM_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+        (void)Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
                         CANSM_SID_CONTROLLERMODEINDICATION, CANSM_E_NOT_INITIALIZED);
 #endif
         return;
@@ -891,7 +891,7 @@ void CanSM_ControllerModeIndication(uint8 ControllerId, CanIf_ControllerModeType
     }
 
 #if (CANSM_DEV_ERROR_DETECT == STD_ON)
-    Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+    (void)Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
                     CANSM_SID_CONTROLLERMODEINDICATION, CANSM_E_PARAM_CONTROLLER);
 #endif
 }
@@ -906,7 +906,7 @@ Std_ReturnType CanSM_RequestComMode(ComM_UserHandleType Network, ComM_ModeType C
 
     if (CanSm_Global.InitStatus != CANSM_INIT) {
 #if (CANSM_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+        (void)Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
                         CANSM_SID_REQUESTCOMMODE, CANSM_E_NOT_INITIALIZED);
 #endif
         return E_NOT_OK;
@@ -914,7 +914,7 @@ Std_ReturnType CanSM_RequestComMode(ComM_UserHandleType Network, ComM_ModeType C
 
     if (CanSm_IsNetworkValid(Network) == FALSE) {
 #if (CANSM_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+        (void)Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
                         CANSM_SID_REQUESTCOMMODE, CANSM_E_PARAM_NETWORK);
 #endif
         return E_NOT_OK;
@@ -924,7 +924,7 @@ Std_ReturnType CanSM_RequestComMode(ComM_UserHandleType Network, ComM_ModeType C
         (ComM_Mode != COMM_SILENT_COMMUNICATION) &&
         (ComM_Mode != COMM_FULL_COMMUNICATION)) {
 #if (CANSM_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+        (void)Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
                         CANSM_SID_REQUESTCOMMODE, CANSM_E_INVALID_COMM_REQUEST);
 #endif
         return E_NOT_OK;
@@ -951,7 +951,7 @@ void CanSM_ControllerBusOff(uint8 ControllerId)
 
     if (CanSm_Global.InitStatus != CANSM_INIT) {
 #if (CANSM_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+        (void)Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
                         CANSM_SID_CONTROLLERBUSOFF, CANSM_E_NOT_INITIALIZED);
 #endif
         return;
@@ -965,7 +965,7 @@ void CanSM_ControllerBusOff(uint8 ControllerId)
     }
 
 #if (CANSM_DEV_ERROR_DETECT == STD_ON)
-    Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+    (void)Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
                     CANSM_SID_CONTROLLERBUSOFF, CANSM_E_PARAM_CONTROLLER);
 #endif
 }
@@ -1051,7 +1051,7 @@ Std_ReturnType CanSM_StartWakeupSource(NetworkHandleType Network)
 
     if (CanSm_Global.InitStatus != CANSM_INIT) {
 #if (CANSM_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+        (void)Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
                         CANSM_SID_STARTWAKEUPSOURCE, CANSM_E_NOT_INITIALIZED);
 #endif
         return E_NOT_OK;
@@ -1059,7 +1059,7 @@ Std_ReturnType CanSM_StartWakeupSource(NetworkHandleType Network)
 
     if (CanSm_IsNetworkValid(Network) == FALSE) {
 #if (CANSM_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+        (void)Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
                         CANSM_SID_STARTWAKEUPSOURCE, CANSM_E_PARAM_NETWORK);
 #endif
         return E_NOT_OK;
@@ -1084,7 +1084,7 @@ Std_ReturnType CanSM_StopWakeupSource(NetworkHandleType Network)
 
     if (CanSm_Global.InitStatus != CANSM_INIT) {
 #if (CANSM_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+        (void)Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
                         CANSM_SID_STOPWAKEUPSOURCE, CANSM_E_NOT_INITIALIZED);
 #endif
         return E_NOT_OK;
@@ -1092,7 +1092,7 @@ Std_ReturnType CanSM_StopWakeupSource(NetworkHandleType Network)
 
     if (CanSm_IsNetworkValid(Network) == FALSE) {
 #if (CANSM_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+        (void)Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
                         CANSM_SID_STOPWAKEUPSOURCE, CANSM_E_PARAM_NETWORK);
 #endif
         return E_NOT_OK;
@@ -1133,7 +1133,7 @@ Std_ReturnType CanSM_SetNetworkPassive(NetworkHandleType NetworkHandle, boolean 
 
     if (CanSm_Global.InitStatus != CANSM_INIT) {
 #if (CANSM_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+        (void)Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
                         CANSM_SID_SETNETWORKPASSIVE, CANSM_E_NOT_INITIALIZED);
 #endif
         return E_NOT_OK;
@@ -1141,7 +1141,7 @@ Std_ReturnType CanSM_SetNetworkPassive(NetworkHandleType NetworkHandle, boolean 
 
     if (CanSm_IsNetworkValid(NetworkHandle) == FALSE) {
 #if (CANSM_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+        (void)Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
                         CANSM_SID_SETNETWORKPASSIVE, CANSM_E_PARAM_NETWORK);
 #endif
         return E_NOT_OK;
@@ -1166,7 +1166,7 @@ void CanSM_TxTimeoutException(NetworkHandleType Network)
 
     if (CanSm_Global.InitStatus != CANSM_INIT) {
 #if (CANSM_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+        (void)Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
                         CANSM_SID_TXTIMEOUTEXCEPTION, CANSM_E_NOT_INITIALIZED);
 #endif
         return;
@@ -1174,7 +1174,7 @@ void CanSM_TxTimeoutException(NetworkHandleType Network)
 
     if (CanSm_IsNetworkValid(Network) == FALSE) {
 #if (CANSM_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+        (void)Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
                         CANSM_SID_TXTIMEOUTEXCEPTION, CANSM_E_PARAM_NETWORK);
 #endif
         return;
@@ -1198,7 +1198,7 @@ void CanSM_TransceiverModeIndication(uint8 TransceiverId, CanIf_TransceiverModeT
 
     if (CanSm_Global.InitStatus != CANSM_INIT) {
 #if (CANSM_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+        (void)Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
                         CANSM_SID_TRANSCEIVERMODEINDICATION, CANSM_E_NOT_INITIALIZED);
 #endif
         return;
@@ -1227,7 +1227,7 @@ void CanSM_CheckTransceiverWakeFlagIndication(uint8 TransceiverId)
 
     if (CanSm_Global.InitStatus != CANSM_INIT) {
 #if (CANSM_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+        (void)Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
                         CANSM_SID_CHECKTRCVWAKEFLAGINDICATION, CANSM_E_NOT_INITIALIZED);
 #endif
         return;
@@ -1258,7 +1258,7 @@ Std_ReturnType CanSM_GetCurrentInternalState(uint8 Network, CanSm_BsmStateType* 
 
     if (CanSm_Global.InitStatus != CANSM_INIT) {
 #if (CANSM_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+        (void)Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
                         CANSM_SID_GETCURRENTINTERNALSTATE, CANSM_E_NOT_INITIALIZED);
 #endif
         return E_NOT_OK;
@@ -1266,7 +1266,7 @@ Std_ReturnType CanSM_GetCurrentInternalState(uint8 Network, CanSm_BsmStateType* 
 
     if (NULL_PTR == StatePtr) {
 #if (CANSM_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+        (void)Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
                         CANSM_SID_GETCURRENTINTERNALSTATE, CANSM_E_PARAM_POINTER);
 #endif
         return E_NOT_OK;
@@ -1274,7 +1274,7 @@ Std_ReturnType CanSM_GetCurrentInternalState(uint8 Network, CanSm_BsmStateType* 
 
     if (CanSm_IsNetworkValid(Network) == FALSE) {
 #if (CANSM_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+        (void)Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
                         CANSM_SID_GETCURRENTINTERNALSTATE, CANSM_E_PARAM_NETWORK);
 #endif
         return E_NOT_OK;
@@ -1296,7 +1296,7 @@ Std_ReturnType CanSM_ConfirmPnAvailability(NetworkHandleType NetworkHandle)
 
     if (CanSm_Global.InitStatus != CANSM_INIT) {
 #if (CANSM_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+        (void)Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
                         CANSM_SID_CONFIRMPNAVAILABILITY, CANSM_E_NOT_INITIALIZED);
 #endif
         return E_NOT_OK;
@@ -1304,7 +1304,7 @@ Std_ReturnType CanSM_ConfirmPnAvailability(NetworkHandleType NetworkHandle)
 
     if (CanSm_IsNetworkValid(NetworkHandle) == FALSE) {
 #if (CANSM_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+        (void)Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
                         CANSM_SID_CONFIRMPNAVAILABILITY, CANSM_E_PARAM_NETWORK);
 #endif
         return E_NOT_OK;
@@ -1315,7 +1315,7 @@ Std_ReturnType CanSM_ConfirmPnAvailability(NetworkHandleType NetworkHandle)
     /* Partial networking confirmation is only supported in full communication */
     if (CanSm_Global.Networks[networkIdx].BsmState != CANSM_BSM_S_FULLCOM) {
 #if (CANSM_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+        (void)Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
                         CANSM_SID_CONFIRMPNAVAILABILITY, CANSM_E_PARAM_INVALID_NETWORK_MODE);
 #endif
         return E_NOT_OK;
@@ -1346,7 +1346,7 @@ Std_ReturnType CanSM_SetPnRequest(NetworkHandleType NetworkHandle, boolean PnReq
 
     if (CanSm_Global.InitStatus != CANSM_INIT) {
 #if (CANSM_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+        (void)Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
                         CANSM_SID_SETPNREQUEST, CANSM_E_NOT_INITIALIZED);
 #endif
         return E_NOT_OK;
@@ -1354,7 +1354,7 @@ Std_ReturnType CanSM_SetPnRequest(NetworkHandleType NetworkHandle, boolean PnReq
 
     if (CanSm_IsNetworkValid(NetworkHandle) == FALSE) {
 #if (CANSM_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+        (void)Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
                         CANSM_SID_SETPNREQUEST, CANSM_E_PARAM_NETWORK);
 #endif
         return E_NOT_OK;
@@ -1364,7 +1364,7 @@ Std_ReturnType CanSM_SetPnRequest(NetworkHandleType NetworkHandle, boolean PnReq
 
     if (CanSm_NetworkConfigs[networkIdx].TransceiverSupport != TRUE) {
 #if (CANSM_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+        (void)Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
                         CANSM_SID_SETPNREQUEST, CANSM_E_PARAM_INVALID_NETWORK_MODE);
 #endif
         return E_NOT_OK;
@@ -1385,7 +1385,7 @@ Std_ReturnType CanSM_GetPnState(NetworkHandleType NetworkHandle, CanSm_PnStateTy
 
     if (CanSm_Global.InitStatus != CANSM_INIT) {
 #if (CANSM_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+        (void)Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
                         CANSM_SID_GETPNSTATE, CANSM_E_NOT_INITIALIZED);
 #endif
         return E_NOT_OK;
@@ -1393,7 +1393,7 @@ Std_ReturnType CanSM_GetPnState(NetworkHandleType NetworkHandle, CanSm_PnStateTy
 
     if (NULL_PTR == PnStatePtr) {
 #if (CANSM_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+        (void)Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
                         CANSM_SID_GETPNSTATE, CANSM_E_PARAM_POINTER);
 #endif
         return E_NOT_OK;
@@ -1401,7 +1401,7 @@ Std_ReturnType CanSM_GetPnState(NetworkHandleType NetworkHandle, CanSm_PnStateTy
 
     if (CanSm_IsNetworkValid(NetworkHandle) == FALSE) {
 #if (CANSM_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+        (void)Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
                         CANSM_SID_GETPNSTATE, CANSM_E_PARAM_NETWORK);
 #endif
         return E_NOT_OK;
@@ -1423,7 +1423,7 @@ Std_ReturnType CanSM_ClearTrcvWufFlagIndication(NetworkHandleType NetworkHandle)
 
     if (CanSm_Global.InitStatus != CANSM_INIT) {
 #if (CANSM_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+        (void)Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
                         CANSM_SID_CLEARTRCVWUFFLAGINDICATION, CANSM_E_NOT_INITIALIZED);
 #endif
         return E_NOT_OK;
@@ -1431,7 +1431,7 @@ Std_ReturnType CanSM_ClearTrcvWufFlagIndication(NetworkHandleType NetworkHandle)
 
     if (CanSm_IsNetworkValid(NetworkHandle) == FALSE) {
 #if (CANSM_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+        (void)Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
                         CANSM_SID_CLEARTRCVWUFFLAGINDICATION, CANSM_E_PARAM_NETWORK);
 #endif
         return E_NOT_OK;
@@ -1442,7 +1442,7 @@ Std_ReturnType CanSM_ClearTrcvWufFlagIndication(NetworkHandleType NetworkHandle)
     /* Wakeup-flag handling is only supported in full communication */
     if (CanSm_Global.Networks[networkIdx].BsmState != CANSM_BSM_S_FULLCOM) {
 #if (CANSM_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+        (void)Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
                         CANSM_SID_CLEARTRCVWUFFLAGINDICATION, CANSM_E_PARAM_INVALID_NETWORK_MODE);
 #endif
         return E_NOT_OK;
@@ -1461,7 +1461,7 @@ void CanSm_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
 #if (CANSM_DEV_ERROR_DETECT == STD_ON)
     if (NULL_PTR == versioninfo) {
-        Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID, 0x02U, CANSM_E_PARAM_POINTER);
+        (void)Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID, 0x02U, CANSM_E_PARAM_POINTER);
         return;
     }
 #endif

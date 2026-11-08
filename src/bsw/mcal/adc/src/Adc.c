@@ -125,11 +125,11 @@ void Adc_Init(const Adc_ConfigType* ConfigPtr)
 {
     #if (ADC_DEV_ERROR_DETECT == STD_ON)
     if (ConfigPtr == NULL_PTR) {
-        Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_INIT, ADC_E_PARAM_CONFIG);
+        (void)Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_INIT, ADC_E_PARAM_CONFIG);
         return;
     }
     if (Adc_DriverInitialized == TRUE) {
-        Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_INIT, ADC_E_ALREADY_INITIALIZED);
+        (void)Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_INIT, ADC_E_ALREADY_INITIALIZED);
         return;
     }
     #endif
@@ -183,7 +183,7 @@ void Adc_DeInit(void)
 {
     #if (ADC_DEV_ERROR_DETECT == STD_ON)
     if (Adc_DriverInitialized == FALSE) {
-        Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_DEINIT, ADC_E_UNINIT);
+        (void)Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_DEINIT, ADC_E_UNINIT);
         return;
     }
     #endif
@@ -213,11 +213,11 @@ void Adc_StartGroupConversion(Adc_GroupType Group)
 {
     #if (ADC_DEV_ERROR_DETECT == STD_ON)
     if (Adc_DriverInitialized == FALSE) {
-        Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_STARTGROUPCONVERSION, ADC_E_UNINIT);
+        (void)Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_STARTGROUPCONVERSION, ADC_E_UNINIT);
         return;
     }
     if (Group >= ADC_NUM_GROUPS) {
-        Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_STARTGROUPCONVERSION, ADC_E_PARAM_GROUP);
+        (void)Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_STARTGROUPCONVERSION, ADC_E_PARAM_GROUP);
         return;
     }
     #endif
@@ -289,11 +289,11 @@ void Adc_StopGroupConversion(Adc_GroupType Group)
 {
     #if (ADC_DEV_ERROR_DETECT == STD_ON)
     if (Adc_DriverInitialized == FALSE) {
-        Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_STOPGROUPCONVERSION, ADC_E_UNINIT);
+        (void)Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_STOPGROUPCONVERSION, ADC_E_UNINIT);
         return;
     }
     if (Group >= ADC_NUM_GROUPS) {
-        Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_STOPGROUPCONVERSION, ADC_E_PARAM_GROUP);
+        (void)Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_STOPGROUPCONVERSION, ADC_E_PARAM_GROUP);
         return;
     }
     #endif
@@ -319,15 +319,15 @@ Std_ReturnType Adc_ReadGroup(Adc_GroupType Group, Adc_ValueGroupType* DataBuffer
 {
     #if (ADC_DEV_ERROR_DETECT == STD_ON)
     if (Adc_DriverInitialized == FALSE) {
-        Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_READGROUP, ADC_E_UNINIT);
+        (void)Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_READGROUP, ADC_E_UNINIT);
         return E_NOT_OK;
     }
     if (Group >= ADC_NUM_GROUPS) {
-        Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_READGROUP, ADC_E_PARAM_GROUP);
+        (void)Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_READGROUP, ADC_E_PARAM_GROUP);
         return E_NOT_OK;
     }
     if (DataBufferPtr == NULL_PTR) {
-        Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_READGROUP, ADC_E_PARAM_POINTER);
+        (void)Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_READGROUP, ADC_E_PARAM_POINTER);
         return E_NOT_OK;
     }
     #endif
@@ -347,11 +347,11 @@ void Adc_EnableHardwareTrigger(Adc_GroupType Group)
 {
     #if (ADC_DEV_ERROR_DETECT == STD_ON)
     if (Adc_DriverInitialized == FALSE) {
-        Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_ENABLEHARDWARETRIGGER, ADC_E_UNINIT);
+        (void)Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_ENABLEHARDWARETRIGGER, ADC_E_UNINIT);
         return;
     }
     if (Group >= ADC_NUM_GROUPS) {
-        Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_ENABLEHARDWARETRIGGER, ADC_E_PARAM_GROUP);
+        (void)Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_ENABLEHARDWARETRIGGER, ADC_E_PARAM_GROUP);
         return;
     }
     #endif
@@ -374,11 +374,11 @@ void Adc_DisableHardwareTrigger(Adc_GroupType Group)
 {
     #if (ADC_DEV_ERROR_DETECT == STD_ON)
     if (Adc_DriverInitialized == FALSE) {
-        Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_DISABLEHARDWARETRIGGER, ADC_E_UNINIT);
+        (void)Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_DISABLEHARDWARETRIGGER, ADC_E_UNINIT);
         return;
     }
     if (Group >= ADC_NUM_GROUPS) {
-        Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_DISABLEHARDWARETRIGGER, ADC_E_PARAM_GROUP);
+        (void)Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_DISABLEHARDWARETRIGGER, ADC_E_PARAM_GROUP);
         return;
     }
     #endif
@@ -399,11 +399,11 @@ void Adc_EnableGroupNotification(Adc_GroupType Group)
 {
     #if (ADC_DEV_ERROR_DETECT == STD_ON)
     if (Adc_DriverInitialized == FALSE) {
-        Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_ENABLEGROUPNOTIFICATION, ADC_E_UNINIT);
+        (void)Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_ENABLEGROUPNOTIFICATION, ADC_E_UNINIT);
         return;
     }
     if (Group >= ADC_NUM_GROUPS) {
-        Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_ENABLEGROUPNOTIFICATION, ADC_E_PARAM_GROUP);
+        (void)Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_ENABLEGROUPNOTIFICATION, ADC_E_PARAM_GROUP);
         return;
     }
     #endif
@@ -415,11 +415,11 @@ void Adc_DisableGroupNotification(Adc_GroupType Group)
 {
     #if (ADC_DEV_ERROR_DETECT == STD_ON)
     if (Adc_DriverInitialized == FALSE) {
-        Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_DISABLEGROUPNOTIFICATION, ADC_E_UNINIT);
+        (void)Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_DISABLEGROUPNOTIFICATION, ADC_E_UNINIT);
         return;
     }
     if (Group >= ADC_NUM_GROUPS) {
-        Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_DISABLEGROUPNOTIFICATION, ADC_E_PARAM_GROUP);
+        (void)Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_DISABLEGROUPNOTIFICATION, ADC_E_PARAM_GROUP);
         return;
     }
     #endif
@@ -432,11 +432,11 @@ Adc_StatusType Adc_GetGroupStatus(Adc_GroupType Group)
 {
     #if (ADC_DEV_ERROR_DETECT == STD_ON)
     if (Adc_DriverInitialized == FALSE) {
-        Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_GETGROUPSTATUS, ADC_E_UNINIT);
+        (void)Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_GETGROUPSTATUS, ADC_E_UNINIT);
         return ADC_IDLE;
     }
     if (Group >= ADC_NUM_GROUPS) {
-        Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_GETGROUPSTATUS, ADC_E_PARAM_GROUP);
+        (void)Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_GETGROUPSTATUS, ADC_E_PARAM_GROUP);
         return ADC_IDLE;
     }
     #endif
@@ -450,11 +450,11 @@ Std_ReturnType Adc_SelfGroupCheck(Adc_GroupType Group)
 
     #if (ADC_DEV_ERROR_DETECT == STD_ON)
     if (Adc_DriverInitialized == FALSE) {
-        Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_SELFGROUPCHECK, ADC_E_UNINIT);
+        (void)Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_SELFGROUPCHECK, ADC_E_UNINIT);
         return E_NOT_OK;
     }
     if (Group >= ADC_NUM_GROUPS) {
-        Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_SELFGROUPCHECK, ADC_E_PARAM_GROUP);
+        (void)Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_SELFGROUPCHECK, ADC_E_PARAM_GROUP);
         return E_NOT_OK;
     }
     #endif
@@ -514,7 +514,7 @@ void Adc_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
     #if (ADC_DEV_ERROR_DETECT == STD_ON)
     if (versioninfo == NULL_PTR) {
-        Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_GETVERSIONINFO, ADC_E_PARAM_POINTER);
+        (void)Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_GETVERSIONINFO, ADC_E_PARAM_POINTER);
         return;
     }
     #endif
@@ -531,15 +531,15 @@ Adc_StreamNumSampleType Adc_GetStreamLastPointer(Adc_GroupType Group, Adc_ValueG
 {
     #if (ADC_DEV_ERROR_DETECT == STD_ON)
     if (Adc_DriverInitialized == FALSE) {
-        Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_GETSTREAMLASTPOINTER, ADC_E_UNINIT);
+        (void)Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_GETSTREAMLASTPOINTER, ADC_E_UNINIT);
         return 0U;
     }
     if (Group >= ADC_NUM_GROUPS) {
-        Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_GETSTREAMLASTPOINTER, ADC_E_PARAM_GROUP);
+        (void)Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_GETSTREAMLASTPOINTER, ADC_E_PARAM_GROUP);
         return 0U;
     }
     if (PtrToSamplePtr == NULL_PTR) {
-        Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_GETSTREAMLASTPOINTER, ADC_E_PARAM_POINTER);
+        (void)Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_GETSTREAMLASTPOINTER, ADC_E_PARAM_POINTER);
         return 0U;
     }
     #endif
@@ -555,15 +555,15 @@ Std_ReturnType Adc_SetupResultBuffer(Adc_GroupType Group, Adc_ValueGroupType* Da
 {
     #if (ADC_DEV_ERROR_DETECT == STD_ON)
     if (Adc_DriverInitialized == FALSE) {
-        Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_SETUPRESULTBUFFER, ADC_E_UNINIT);
+        (void)Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_SETUPRESULTBUFFER, ADC_E_UNINIT);
         return E_NOT_OK;
     }
     if (Group >= ADC_NUM_GROUPS) {
-        Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_SETUPRESULTBUFFER, ADC_E_PARAM_GROUP);
+        (void)Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_SETUPRESULTBUFFER, ADC_E_PARAM_GROUP);
         return E_NOT_OK;
     }
     if (DataBufferPtr == NULL_PTR) {
-        Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_SETUPRESULTBUFFER, ADC_E_PARAM_POINTER);
+        (void)Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_SETUPRESULTBUFFER, ADC_E_PARAM_POINTER);
         return E_NOT_OK;
     }
     #endif

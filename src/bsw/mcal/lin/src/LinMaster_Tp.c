@@ -71,10 +71,10 @@ static LinMaster_Tp_StatusType LinMaster_Tp_SendSingleFrame(uint16 Length, const
     /* 复制数据 */
     for (i = 0U; i < Length; i++)
     {
-        SfFrame[i + 1] = DataPtr[i];
+        SfFrame[i + (uint8)1] = DataPtr[i];
     }
     /* 通过HAL发送 */
-    LinSlave_Hal_UartSendBuffer(SfFrame, (uint8)(Length + 1));
+    LinSlave_Hal_UartSendBuffer(SfFrame, (uint8)(Length + (uint16)1));
     /* 更新状态 */
     TpChannel.State = LINMASTER_TP_STATE_TX_SF;
     TpChannel.LastFrameTime = LinSlave_Hal_GetTimestampMs();
@@ -100,9 +100,9 @@ static LinMaster_Tp_StatusType LinMaster_Tp_SendFirstFrame(uint16 Length, const 
     FfFrame[0] = LINMASTER_TP_PCI_FF | ((Length >> 8) & LINMASTER_TP_PCI_FF_LEN_MASK);
     FfFrame[1] = Length & 0xFF;
     /* 复制前5个字节数据 */
-    for (i = 0U; i < 5 && i < Length; i++)
+    for (i = 0U; i < (uint8)5 && i < Length; i++)
     {
-        FfFrame[i + 2] = DataPtr[i];
+        FfFrame[i + (uint8)2] = DataPtr[i];
     }
     /* 通过HAL发送 */
     LinSlave_Hal_UartSendBuffer(FfFrame, 7);
@@ -138,10 +138,10 @@ static LinMaster_Tp_StatusType LinMaster_Tp_SendConsecutiveFrame(void)
     CfFrame[0] = LINMASTER_TP_PCI_CF | (TpChannel.SeqNumber & LINMASTER_TP_PCI_CF_SN_MASK);
     for (i = 0U; i < FrameLength; i++)
     {
-        CfFrame[i + 1] = TpChannel.TxBuffer[TpChannel.TxOffset + i];
+        CfFrame[i + (uint8)1] = TpChannel.TxBuffer[TpChannel.TxOffset + i];
     }
     /* 通过HAL发送 */
-    LinSlave_Hal_UartSendBuffer(CfFrame, FrameLength + 1);
+    LinSlave_Hal_UartSendBuffer(CfFrame, FrameLength + (uint8)1);
     /* 更新偏移和序列号 */
     TpChannel.TxOffset += FrameLength;
     TpChannel.SeqNumber = (TpChannel.SeqNumber + 1) & 0x0F;
@@ -171,7 +171,7 @@ static LinMaster_Tp_StatusType LinMaster_Tp_SendConsecutiveFrame(void)
 static LinMaster_Tp_StatusType LinMaster_Tp_ProcessFlowControl(const uint8* DataPtr, uint8 Length)
 {
     uint8 FlowStatus;
-    if (Length < 3)
+    if (Length < (uint8)3)
     {
         return LINMASTER_TP_E_INVALID_PCI;
     }
@@ -228,7 +228,7 @@ LinMaster_Tp_StatusType LinMaster_Tp_Transmit(uint16 Length, const uint8* DataPt
         return LINMASTER_TP_E_BUSY;
     }
     /* 根据数据长度选择发送方式 */
-    if (Length <= 6)
+    if (Length <= (uint16)6)
     {
         /* 发送单帧 */
         return LinMaster_Tp_SendSingleFrame(Length, DataPtr);

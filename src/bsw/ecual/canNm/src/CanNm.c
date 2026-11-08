@@ -121,7 +121,7 @@ static boolean CanNm_ValidateChannel(uint8 ChannelIndex, uint8 ApiId)
     if (ChannelIndex >= CANNM_NUMBER_OF_CHANNELS)
     {
 #if (CANNM_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(CANNM_MODULE_ID, 0U, ApiId, CANNM_E_INVALID_CHANNEL);
+        (void)Det_ReportError(CANNM_MODULE_ID, 0U, ApiId, CANNM_E_INVALID_CHANNEL);
 #endif
         return FALSE;
     }
@@ -584,14 +584,14 @@ void CanNm_Init(const CanNm_ConfigType* ConfigPtr)
     /* Check if already initialized */
     if (CanNm_ModuleInitialized == CANNM_MODULE_INITIALIZED)
     {
-        Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_INIT, CANNM_E_ALREADY_INITIALIZED);
+        (void)Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_INIT, CANNM_E_ALREADY_INITIALIZED);
         return;
     }
 
     /* Check NULL_PTR pointer if configuration is required */
     if (ConfigPtr == NULL_PTR)
     {
-        Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_INIT, CANNM_E_PARAM_POINTER);
+        (void)Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_INIT, CANNM_E_PARAM_POINTER);
         return;
     }
 #else
@@ -632,7 +632,7 @@ void CanNm_DeInit(void)
 #if (CANNM_DEV_ERROR_DETECT == STD_ON)
     if (CanNm_ModuleInitialized != CANNM_MODULE_INITIALIZED)
     {
-        Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_DEINIT, CANNM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_DEINIT, CANNM_E_NOT_INITIALIZED);
         return;
     }
 #endif
@@ -662,7 +662,7 @@ Std_ReturnType CanNm_PassiveStartUp(NetworkHandleType nmChannelHandle)
 #if (CANNM_DEV_ERROR_DETECT == STD_ON)
     if (CanNm_ModuleInitialized != CANNM_MODULE_INITIALIZED)
     {
-        Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_PASSIVE_STARTUP, CANNM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_PASSIVE_STARTUP, CANNM_E_NOT_INITIALIZED);
         return E_NOT_OK;
     }
 #endif
@@ -702,7 +702,7 @@ Std_ReturnType CanNm_NetworkRequest(NetworkHandleType nmChannelHandle)
 #if (CANNM_DEV_ERROR_DETECT == STD_ON)
     if (CanNm_ModuleInitialized != CANNM_MODULE_INITIALIZED)
     {
-        Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_NETWORK_REQUEST, CANNM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_NETWORK_REQUEST, CANNM_E_NOT_INITIALIZED);
         return E_NOT_OK;
     }
 #endif
@@ -760,7 +760,7 @@ Std_ReturnType CanNm_NetworkRelease(NetworkHandleType nmChannelHandle)
 #if (CANNM_DEV_ERROR_DETECT == STD_ON)
     if (CanNm_ModuleInitialized != CANNM_MODULE_INITIALIZED)
     {
-        Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_NETWORK_RELEASE, CANNM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_NETWORK_RELEASE, CANNM_E_NOT_INITIALIZED);
         return E_NOT_OK;
     }
 #endif
@@ -816,7 +816,7 @@ void CanNm_MainFunction(void)
 #if (CANNM_DEV_ERROR_DETECT == STD_ON)
     if (CanNm_ModuleInitialized != CANNM_MODULE_INITIALIZED)
     {
-        Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_MAIN_FUNCTION, CANNM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_MAIN_FUNCTION, CANNM_E_NOT_INITIALIZED);
         return;
     }
 #endif
@@ -840,13 +840,13 @@ Std_ReturnType CanNm_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
 #if (CANNM_DEV_ERROR_DETECT == STD_ON)
     if (CanNm_ModuleInitialized != CANNM_MODULE_INITIALIZED)
     {
-        Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_TRANSMIT, CANNM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_TRANSMIT, CANNM_E_NOT_INITIALIZED);
         return E_NOT_OK;
     }
 
     if (PduInfoPtr == NULL_PTR)
     {
-        Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_TRANSMIT, CANNM_E_PARAM_POINTER);
+        (void)Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_TRANSMIT, CANNM_E_PARAM_POINTER);
         return E_NOT_OK;
     }
 #endif
@@ -876,13 +876,13 @@ void CanNm_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
 #if (CANNM_DEV_ERROR_DETECT == STD_ON)
     if (CanNm_ModuleInitialized != CANNM_MODULE_INITIALIZED)
     {
-        Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_RX_INDICATION, CANNM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_RX_INDICATION, CANNM_E_NOT_INITIALIZED);
         return;
     }
 
     if (PduInfoPtr == NULL_PTR)
     {
-        Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_RX_INDICATION, CANNM_E_PARAM_POINTER);
+        (void)Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_RX_INDICATION, CANNM_E_PARAM_POINTER);
         return;
     }
 #endif
@@ -899,7 +899,7 @@ void CanNm_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
 
     if (ChannelFound == 0U)     {
 #if (CANNM_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_RX_INDICATION, CANNM_E_INVALID_PDUID);
+        (void)Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_RX_INDICATION, CANNM_E_INVALID_PDUID);
 #endif
         return;
     }
@@ -981,7 +981,7 @@ void CanNm_TxConfirmation(PduIdType TxPduId, Std_ReturnType result)
 #if (CANNM_DEV_ERROR_DETECT == STD_ON)
     if (CanNm_ModuleInitialized != CANNM_MODULE_INITIALIZED)
     {
-        Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_TX_CONFIRMATION, CANNM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_TX_CONFIRMATION, CANNM_E_NOT_INITIALIZED);
         return;
     }
 #endif
@@ -998,7 +998,7 @@ void CanNm_TxConfirmation(PduIdType TxPduId, Std_ReturnType result)
 
     if (ChannelFound == 0U)     {
 #if (CANNM_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_TX_CONFIRMATION, CANNM_E_INVALID_PDUID);
+        (void)Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_TX_CONFIRMATION, CANNM_E_INVALID_PDUID);
 #endif
         return;
     }
@@ -1027,13 +1027,13 @@ Std_ReturnType CanNm_TriggerTransmit(PduIdType TxPduId, PduInfoType* PduInfoPtr)
 #if (CANNM_DEV_ERROR_DETECT == STD_ON)
     if (CanNm_ModuleInitialized != CANNM_MODULE_INITIALIZED)
     {
-        Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_GET_PDUDATA, CANNM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_GET_PDUDATA, CANNM_E_NOT_INITIALIZED);
         return E_NOT_OK;
     }
 
     if (PduInfoPtr == NULL_PTR)
     {
-        Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_GET_PDUDATA, CANNM_E_PARAM_POINTER);
+        (void)Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_GET_PDUDATA, CANNM_E_PARAM_POINTER);
         return E_NOT_OK;
     }
 #endif
@@ -1070,7 +1070,7 @@ void CanNm_ConfirmPnAvailability(NetworkHandleType nmChannelHandle)
 #if (CANNM_DEV_ERROR_DETECT == STD_ON)
     if (CanNm_ModuleInitialized != CANNM_MODULE_INITIALIZED)
     {
-        Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_CONFIRM_PN_AVAILABILITY, CANNM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_CONFIRM_PN_AVAILABILITY, CANNM_E_NOT_INITIALIZED);
         return;
     }
 #endif
@@ -1100,13 +1100,13 @@ Std_ReturnType CanNm_GetState(NetworkHandleType nmChannelHandle,
 #if (CANNM_DEV_ERROR_DETECT == STD_ON)
     if (CanNm_ModuleInitialized != CANNM_MODULE_INITIALIZED)
     {
-        Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_GET_STATE, CANNM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_GET_STATE, CANNM_E_NOT_INITIALIZED);
         return E_NOT_OK;
     }
 
     if ((nmStatePtr == NULL_PTR) || (nmModePtr == NULL_PTR))
     {
-        Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_GET_STATE, CANNM_E_PARAM_POINTER);
+        (void)Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_GET_STATE, CANNM_E_PARAM_POINTER);
         return E_NOT_OK;
     }
 #endif
@@ -1167,7 +1167,7 @@ void CanNm_GetVersionInfo(Std_VersionInfoType* versioninfo)
 #if (CANNM_DEV_ERROR_DETECT == STD_ON)
     if (versioninfo == NULL_PTR)
     {
-        Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_GET_VERSION_INFO, CANNM_E_PARAM_POINTER);
+        (void)Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_GET_VERSION_INFO, CANNM_E_PARAM_POINTER);
         return;
     }
 #endif
@@ -1192,13 +1192,13 @@ Std_ReturnType CanNm_SetUserData(NetworkHandleType nmChannelHandle, const uint8*
 #if (CANNM_DEV_ERROR_DETECT == STD_ON)
     if (CanNm_ModuleInitialized != CANNM_MODULE_INITIALIZED)
     {
-        Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_SET_USER_DATA, CANNM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_SET_USER_DATA, CANNM_E_NOT_INITIALIZED);
         return E_NOT_OK;
     }
 
     if (nmUserDataPtr == NULL_PTR)
     {
-        Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_SET_USER_DATA, CANNM_E_PARAM_POINTER);
+        (void)Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_SET_USER_DATA, CANNM_E_PARAM_POINTER);
         return E_NOT_OK;
     }
 #endif
@@ -1245,13 +1245,13 @@ Std_ReturnType CanNm_GetUserData(NetworkHandleType nmChannelHandle, uint8* nmUse
 #if (CANNM_DEV_ERROR_DETECT == STD_ON)
     if (CanNm_ModuleInitialized != CANNM_MODULE_INITIALIZED)
     {
-        Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_GET_USER_DATA, CANNM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_GET_USER_DATA, CANNM_E_NOT_INITIALIZED);
         return E_NOT_OK;
     }
 
     if (nmUserDataPtr == NULL_PTR)
     {
-        Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_GET_USER_DATA, CANNM_E_PARAM_POINTER);
+        (void)Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_GET_USER_DATA, CANNM_E_PARAM_POINTER);
         return E_NOT_OK;
     }
 #endif
@@ -1298,7 +1298,7 @@ Std_ReturnType CanNm_SetSleepReadyBit(NetworkHandleType nmChannelHandle, boolean
 #if (CANNM_DEV_ERROR_DETECT == STD_ON)
     if (CanNm_ModuleInitialized != CANNM_MODULE_INITIALIZED)
     {
-        Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_SET_SLEEP_READY_BIT, CANNM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_SET_SLEEP_READY_BIT, CANNM_E_NOT_INITIALIZED);
         return E_NOT_OK;
     }
 #endif
@@ -1346,7 +1346,7 @@ Std_ReturnType CanNm_DisableCommunication(NetworkHandleType nmChannelHandle)
 #if (CANNM_DEV_ERROR_DETECT == STD_ON)
     if (CanNm_ModuleInitialized != CANNM_MODULE_INITIALIZED)
     {
-        Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_DISABLE_COMMUNICATION, CANNM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_DISABLE_COMMUNICATION, CANNM_E_NOT_INITIALIZED);
         return E_NOT_OK;
     }
 #endif
@@ -1381,7 +1381,7 @@ Std_ReturnType CanNm_EnableCommunication(NetworkHandleType nmChannelHandle)
 #if (CANNM_DEV_ERROR_DETECT == STD_ON)
     if (CanNm_ModuleInitialized != CANNM_MODULE_INITIALIZED)
     {
-        Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_ENABLE_COMMUNICATION, CANNM_E_NOT_INITIALIZED);
+        (void)Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_ENABLE_COMMUNICATION, CANNM_E_NOT_INITIALIZED);
         return E_NOT_OK;
     }
 #endif

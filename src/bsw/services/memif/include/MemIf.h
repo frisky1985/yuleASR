@@ -387,4 +387,6 @@ extern void MemIf_SetMode(uint8 DeviceIndex, MemIf_ModeType Mode);
 
 void MemIf_DeInit(void);
 uint8 MemIf_GetNumberOfDevices(void);
+Std_ReturnType MemIf_EraseBlock(uint8 DeviceIndex, uint16 BlockNumber);
+
 #endif /* MEMIF_H */

@@ -162,7 +162,9 @@ endif()
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/bsw/ecual/cantp)
     add_subdirectory(bsw/ecual/cantp)
 endif()
-# @ANCHOR3:cantrcv
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/bsw/ecual/cantrcv)
+    add_subdirectory(bsw/ecual/cantrcv)
+endif()
 # @ANCHOR3:cryif
 # @ANCHOR3:docan
 # @ANCHOR3:doip

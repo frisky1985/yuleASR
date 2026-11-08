@@ -178,7 +178,7 @@ STATIC void Swc_EngineControl_UpdateStateMachine(void)
         case ENGINE_STATE_CRANKING:
             if (swcEngineControl.parameters.engineSpeed > ENG_MIN_IDLE_SPEED) {
                 nextState = ENGINE_STATE_RUNNING;
-            } else if (swcEngineControl.faultCounter > 10) {
+            } else if (swcEngineControl.faultCounter > (uint32)10) {
                 nextState = ENGINE_STATE_FAULT;
             }
             break;
@@ -186,7 +186,7 @@ STATIC void Swc_EngineControl_UpdateStateMachine(void)
         case ENGINE_STATE_RUNNING:
             if (Swc_EngineControl_CheckStopConditions()) {
                 nextState = ENGINE_STATE_STOPPING;
-            } else if (swcEngineControl.faultCounter > 5) {
+            } else if (swcEngineControl.faultCounter > (uint32)5) {
                 nextState = ENGINE_STATE_FAULT;
             }
             break;
@@ -302,7 +302,7 @@ STATIC boolean Swc_EngineControl_CheckStartConditions(void)
     }
 
     /* Check no critical faults */
-    if (swcEngineControl.faultCounter > 5) {
+    if (swcEngineControl.faultCounter > (uint32)5) {
         return FALSE;
     }
 

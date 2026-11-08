@@ -210,11 +210,11 @@ void CanIf_Init(const CanIf_ConfigType* ConfigPtr)
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
     if (ConfigPtr == NULL_PTR) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_INIT, CANIF_E_PARAM_POINTER);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_INIT, CANIF_E_PARAM_POINTER);
         return;
     }
     if (CanIf_DriverInitialized == TRUE) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_INIT, CANIF_E_ALREADY_INITIALIZED);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_INIT, CANIF_E_ALREADY_INITIALIZED);
         return;
     }
     #endif
@@ -285,7 +285,7 @@ void CanIf_DeInit(void)
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
     if (CanIf_DriverInitialized == FALSE) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_DEINIT, CANIF_E_UNINIT);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_DEINIT, CANIF_E_UNINIT);
         return;
     }
     #endif
@@ -337,11 +337,11 @@ Std_ReturnType CanIf_SetControllerMode(uint8 ControllerId, CanIf_ControllerModeT
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
     if (CanIf_DriverInitialized == FALSE) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_SETCONTROLLERMODE, CANIF_E_UNINIT);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_SETCONTROLLERMODE, CANIF_E_UNINIT);
         return E_NOT_OK;
     }
     if (ControllerId >= CANIF_NUM_CONTROLLERS) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_SETCONTROLLERMODE, CANIF_E_PARAM_CONTROLLER);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_SETCONTROLLERMODE, CANIF_E_PARAM_CONTROLLER);
         return E_NOT_OK;
     }
     #endif
@@ -395,15 +395,15 @@ Std_ReturnType CanIf_GetControllerMode(uint8 ControllerId, CanIf_ControllerModeT
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
     if (CanIf_DriverInitialized == FALSE) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETCONTROLLERMODE, CANIF_E_UNINIT);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETCONTROLLERMODE, CANIF_E_UNINIT);
         return E_NOT_OK;
     }
     if (ControllerId >= CANIF_NUM_CONTROLLERS) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETCONTROLLERMODE, CANIF_E_PARAM_CONTROLLER);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETCONTROLLERMODE, CANIF_E_PARAM_CONTROLLER);
         return E_NOT_OK;
     }
     if (ControllerModePtr == NULL_PTR) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETCONTROLLERMODE, CANIF_E_PARAM_POINTER);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETCONTROLLERMODE, CANIF_E_PARAM_POINTER);
         return E_NOT_OK;
     }
     #endif
@@ -422,15 +422,15 @@ Std_ReturnType CanIf_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
     if (CanIf_DriverInitialized == FALSE) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_TRANSMIT, CANIF_E_UNINIT);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_TRANSMIT, CANIF_E_UNINIT);
         return E_NOT_OK;
     }
     if (TxPduId >= CANIF_NUM_TX_PDUS) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_TRANSMIT, CANIF_E_INVALID_TXPDUID);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_TRANSMIT, CANIF_E_INVALID_TXPDUID);
         return E_NOT_OK;
     }
     if (PduInfoPtr == NULL_PTR) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_TRANSMIT, CANIF_E_PARAM_POINTER);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_TRANSMIT, CANIF_E_PARAM_POINTER);
         return E_NOT_OK;
     }
     #endif
@@ -483,11 +483,11 @@ Std_ReturnType CanIf_CancelTransmit(PduIdType TxPduId)
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
     if (CanIf_DriverInitialized == FALSE) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_TRANSMIT, CANIF_E_UNINIT);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_TRANSMIT, CANIF_E_UNINIT);
         return E_NOT_OK;
     }
     if (TxPduId >= CANIF_NUM_TX_PDUS) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_TRANSMIT, CANIF_E_INVALID_TXPDUID);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_TRANSMIT, CANIF_E_INVALID_TXPDUID);
         return E_NOT_OK;
     }
     #endif
@@ -508,11 +508,11 @@ Std_ReturnType CanIf_SetPduMode(uint8 ControllerId, CanIf_PduModeType PduModeReq
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
     if (CanIf_DriverInitialized == FALSE) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_SETPDUMODE, CANIF_E_UNINIT);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_SETPDUMODE, CANIF_E_UNINIT);
         return E_NOT_OK;
     }
     if (ControllerId >= CANIF_NUM_CONTROLLERS) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_SETPDUMODE, CANIF_E_PARAM_CONTROLLER);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_SETPDUMODE, CANIF_E_PARAM_CONTROLLER);
         return E_NOT_OK;
     }
     #endif
@@ -531,15 +531,15 @@ Std_ReturnType CanIf_GetPduMode(uint8 ControllerId, CanIf_PduModeType* PduModePt
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
     if (CanIf_DriverInitialized == FALSE) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETPDUMODE, CANIF_E_UNINIT);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETPDUMODE, CANIF_E_UNINIT);
         return E_NOT_OK;
     }
     if (ControllerId >= CANIF_NUM_CONTROLLERS) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETPDUMODE, CANIF_E_PARAM_CONTROLLER);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETPDUMODE, CANIF_E_PARAM_CONTROLLER);
         return E_NOT_OK;
     }
     if (PduModePtr == NULL_PTR) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETPDUMODE, CANIF_E_PARAM_POINTER);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETPDUMODE, CANIF_E_PARAM_POINTER);
         return E_NOT_OK;
     }
     #endif
@@ -558,7 +558,7 @@ void CanIf_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
     if (versioninfo == NULL_PTR) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETVERSIONINFO, CANIF_E_PARAM_POINTER);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETVERSIONINFO, CANIF_E_PARAM_POINTER);
         return;
     }
     #endif
@@ -603,11 +603,11 @@ CanIf_TxConfirmationStateType CanIf_GetTxConfirmationState(PduIdType CanTxPduId)
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
     if (CanIf_DriverInitialized == FALSE) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETTXCONFIRMATIONSTATE, CANIF_E_UNINIT);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETTXCONFIRMATIONSTATE, CANIF_E_UNINIT);
         return CANIF_TXCONF_NONE;
     }
     if (CanTxPduId >= CANIF_NUM_TX_PDUS) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETTXCONFIRMATIONSTATE, CANIF_E_INVALID_TXPDUID);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETTXCONFIRMATIONSTATE, CANIF_E_INVALID_TXPDUID);
         return CANIF_TXCONF_NONE;
     }
     #endif
@@ -719,11 +719,11 @@ Std_ReturnType CanIf_SetDynamicTxId(PduIdType CanTxPduId, CanIf_CanIdType CanId)
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
     if (CanIf_DriverInitialized == FALSE) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_SETDYNAMICTXID, CANIF_E_UNINIT);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_SETDYNAMICTXID, CANIF_E_UNINIT);
         return E_NOT_OK;
     }
     if (CanTxPduId >= CANIF_NUM_TX_PDUS) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_SETDYNAMICTXID, CANIF_E_INVALID_TXPDUID);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_SETDYNAMICTXID, CANIF_E_INVALID_TXPDUID);
         return E_NOT_OK;
     }
     #endif
@@ -746,7 +746,7 @@ Std_ReturnType CanIf_CheckWakeup(EcuM_WakeupSourceType WakeupSource)
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
     if (CanIf_DriverInitialized == FALSE) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_CHECKWAKEUP, CANIF_E_UNINIT);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_CHECKWAKEUP, CANIF_E_UNINIT);
         return E_NOT_OK;
     }
     #endif
@@ -773,7 +773,7 @@ Std_ReturnType CanIf_CheckValidation(EcuM_WakeupSourceType WakeupSource)
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
     if (CanIf_DriverInitialized == FALSE) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_CHECKVALIDATION, CANIF_E_UNINIT);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_CHECKVALIDATION, CANIF_E_UNINIT);
         return E_NOT_OK;
     }
     #endif
@@ -798,11 +798,11 @@ Std_ReturnType CanIf_SetTrcvMode(uint8 TransceiverId, CanIf_TransceiverModeType 
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
     if (CanIf_DriverInitialized == FALSE) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_SETTRCVMODE, CANIF_E_UNINIT);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_SETTRCVMODE, CANIF_E_UNINIT);
         return E_NOT_OK;
     }
     if (TransceiverId >= CANIF_NUM_TRANSCEIVERS) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_SETTRCVMODE, CANIF_E_PARAM_TRCV);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_SETTRCVMODE, CANIF_E_PARAM_TRCV);
         return E_NOT_OK;
     }
     #endif
@@ -844,15 +844,15 @@ Std_ReturnType CanIf_GetTrcvMode(uint8 TransceiverId, CanIf_TransceiverModeType*
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
     if (CanIf_DriverInitialized == FALSE) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETTRCVMODE, CANIF_E_UNINIT);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETTRCVMODE, CANIF_E_UNINIT);
         return E_NOT_OK;
     }
     if (TransceiverId >= CANIF_NUM_TRANSCEIVERS) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETTRCVMODE, CANIF_E_PARAM_TRCV);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETTRCVMODE, CANIF_E_PARAM_TRCV);
         return E_NOT_OK;
     }
     if (TransceiverModePtr == NULL_PTR) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETTRCVMODE, CANIF_E_PARAM_POINTER);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETTRCVMODE, CANIF_E_PARAM_POINTER);
         return E_NOT_OK;
     }
     #endif
@@ -871,15 +871,15 @@ Std_ReturnType CanIf_GetTrcvWakeupReason(uint8 TransceiverId, CanIf_TrcvWakeupRe
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
     if (CanIf_DriverInitialized == FALSE) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETTRCVWAKEUPREASON, CANIF_E_UNINIT);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETTRCVWAKEUPREASON, CANIF_E_UNINIT);
         return E_NOT_OK;
     }
     if (TransceiverId >= CANIF_NUM_TRANSCEIVERS) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETTRCVWAKEUPREASON, CANIF_E_PARAM_TRCV);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETTRCVWAKEUPREASON, CANIF_E_PARAM_TRCV);
         return E_NOT_OK;
     }
     if (TrcvWuReasonPtr == NULL_PTR) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETTRCVWAKEUPREASON, CANIF_E_PARAM_POINTER);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETTRCVWAKEUPREASON, CANIF_E_PARAM_POINTER);
         return E_NOT_OK;
     }
     #endif
@@ -898,11 +898,11 @@ Std_ReturnType CanIf_SetTrcvWakeupMode(uint8 TransceiverId, CanIf_TrcvWakeupMode
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
     if (CanIf_DriverInitialized == FALSE) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_SETTRCVWAKEUPMODE, CANIF_E_UNINIT);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_SETTRCVWAKEUPMODE, CANIF_E_UNINIT);
         return E_NOT_OK;
     }
     if (TransceiverId >= CANIF_NUM_TRANSCEIVERS) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_SETTRCVWAKEUPMODE, CANIF_E_PARAM_TRCV);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_SETTRCVWAKEUPMODE, CANIF_E_PARAM_TRCV);
         return E_NOT_OK;
     }
     #endif
@@ -922,11 +922,11 @@ Std_ReturnType CanIf_SetBaudrate(uint8 ControllerId, uint16 BaudRate)
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
     if (CanIf_DriverInitialized == FALSE) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_SETBAUDRATE, CANIF_E_UNINIT);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_SETBAUDRATE, CANIF_E_UNINIT);
         return E_NOT_OK;
     }
     if (ControllerId >= CANIF_NUM_CONTROLLERS) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_SETBAUDRATE, CANIF_E_PARAM_CONTROLLER);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_SETBAUDRATE, CANIF_E_PARAM_CONTROLLER);
         return E_NOT_OK;
     }
     #endif
@@ -946,15 +946,15 @@ Std_ReturnType CanIf_GetBaudrate(uint8 ControllerId, uint16* BaudRatePtr)
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
     if (CanIf_DriverInitialized == FALSE) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETBAUDRATE, CANIF_E_UNINIT);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETBAUDRATE, CANIF_E_UNINIT);
         return E_NOT_OK;
     }
     if (ControllerId >= CANIF_NUM_CONTROLLERS) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETBAUDRATE, CANIF_E_PARAM_CONTROLLER);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETBAUDRATE, CANIF_E_PARAM_CONTROLLER);
         return E_NOT_OK;
     }
     if (BaudRatePtr == NULL_PTR) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETBAUDRATE, CANIF_E_PARAM_POINTER);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETBAUDRATE, CANIF_E_PARAM_POINTER);
         return E_NOT_OK;
     }
     #endif
@@ -972,15 +972,15 @@ Std_ReturnType CanIf_GetControllerErrorState(uint8 ControllerId, Can_ErrorStateT
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
     if (CanIf_DriverInitialized == FALSE) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETCONTROLLERERRORSTATE, CANIF_E_UNINIT);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETCONTROLLERERRORSTATE, CANIF_E_UNINIT);
         return E_NOT_OK;
     }
     if (ControllerId >= CANIF_NUM_CONTROLLERS) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETCONTROLLERERRORSTATE, CANIF_E_PARAM_CONTROLLER);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETCONTROLLERERRORSTATE, CANIF_E_PARAM_CONTROLLER);
         return E_NOT_OK;
     }
     if (ErrorStatePtr == NULL_PTR) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETCONTROLLERERRORSTATE, CANIF_E_PARAM_POINTER);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETCONTROLLERERRORSTATE, CANIF_E_PARAM_POINTER);
         return E_NOT_OK;
     }
     #endif
@@ -996,15 +996,15 @@ Std_ReturnType CanIf_GetControllerRxErrorCounter(uint8 ControllerId, uint8* RxEr
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
     if (CanIf_DriverInitialized == FALSE) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETCONTROLLERRXERRORCOUNTER, CANIF_E_UNINIT);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETCONTROLLERRXERRORCOUNTER, CANIF_E_UNINIT);
         return E_NOT_OK;
     }
     if (ControllerId >= CANIF_NUM_CONTROLLERS) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETCONTROLLERRXERRORCOUNTER, CANIF_E_PARAM_CONTROLLER);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETCONTROLLERRXERRORCOUNTER, CANIF_E_PARAM_CONTROLLER);
         return E_NOT_OK;
     }
     if (RxErrorCounterPtr == NULL_PTR) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETCONTROLLERRXERRORCOUNTER, CANIF_E_PARAM_POINTER);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETCONTROLLERRXERRORCOUNTER, CANIF_E_PARAM_POINTER);
         return E_NOT_OK;
     }
     #endif
@@ -1020,15 +1020,15 @@ Std_ReturnType CanIf_GetControllerTxErrorCounter(uint8 ControllerId, uint8* TxEr
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
     if (CanIf_DriverInitialized == FALSE) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETCONTROLLERTXERRORCOUNTER, CANIF_E_UNINIT);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETCONTROLLERTXERRORCOUNTER, CANIF_E_UNINIT);
         return E_NOT_OK;
     }
     if (ControllerId >= CANIF_NUM_CONTROLLERS) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETCONTROLLERTXERRORCOUNTER, CANIF_E_PARAM_CONTROLLER);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETCONTROLLERTXERRORCOUNTER, CANIF_E_PARAM_CONTROLLER);
         return E_NOT_OK;
     }
     if (TxErrorCounterPtr == NULL_PTR) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETCONTROLLERTXERRORCOUNTER, CANIF_E_PARAM_POINTER);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETCONTROLLERTXERRORCOUNTER, CANIF_E_PARAM_POINTER);
         return E_NOT_OK;
     }
     #endif
@@ -1047,18 +1047,18 @@ CanIf_NotifStatusType CanIf_ReadTxNotifStatus(PduIdType CanTxPduId)
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
     if (CanIf_DriverInitialized == FALSE) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_READTXNOTIFSTATUS, CANIF_E_UNINIT);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_READTXNOTIFSTATUS, CANIF_E_UNINIT);
         return CANIF_NO_NOTIFICATION;
     }
     if (CanTxPduId >= CANIF_NUM_TX_PDUS) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_READTXNOTIFSTATUS, CANIF_E_INVALID_TXPDUID);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_READTXNOTIFSTATUS, CANIF_E_INVALID_TXPDUID);
         return CANIF_NO_NOTIFICATION;
     }
     if ((CanIf_ConfigPtr->ReadTxPduNotifyStatusApi) == FALSE) {
         /* Recorded choice: CANIF_E_INVALID_TXPDUID covers "PDU not usable with
          * this API" per the file's existing error-code family (no dedicated
          * OPER_NOT_SUPPORTED code exists in this implementation). */
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_READTXNOTIFSTATUS, CANIF_E_INVALID_TXPDUID);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_READTXNOTIFSTATUS, CANIF_E_INVALID_TXPDUID);
         return CANIF_NO_NOTIFICATION;
     }
     #endif
@@ -1076,16 +1076,16 @@ CanIf_NotifStatusType CanIf_ReadRxNotifStatus(PduIdType CanRxPduId)
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
     if (CanIf_DriverInitialized == FALSE) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_READRXNOTIFSTATUS, CANIF_E_UNINIT);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_READRXNOTIFSTATUS, CANIF_E_UNINIT);
         return CANIF_NO_NOTIFICATION;
     }
     if (CanRxPduId >= CANIF_NUM_RX_PDUS) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_READRXNOTIFSTATUS, CANIF_E_INVALID_RXPDUID);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_READRXNOTIFSTATUS, CANIF_E_INVALID_RXPDUID);
         return CANIF_NO_NOTIFICATION;
     }
     if ((CanIf_ConfigPtr->ReadRxPduNotifyStatusApi) == FALSE) {
         /* Recorded choice: CANIF_E_INVALID_RXPDUID, same rationale as the Tx variant. */
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_READRXNOTIFSTATUS, CANIF_E_INVALID_RXPDUID);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_READRXNOTIFSTATUS, CANIF_E_INVALID_RXPDUID);
         return CANIF_NO_NOTIFICATION;
     }
     #endif
@@ -1107,15 +1107,15 @@ Std_ReturnType CanIf_TriggerTransmit(PduIdType TxPduId, PduInfoType* PduInfoPtr)
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
     if (CanIf_DriverInitialized == FALSE) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_TRANSMIT, CANIF_E_UNINIT);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_TRANSMIT, CANIF_E_UNINIT);
         return E_NOT_OK;
     }
     if (TxPduId >= CANIF_NUM_TX_PDUS) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_TRANSMIT, CANIF_E_INVALID_TXPDUID);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_TRANSMIT, CANIF_E_INVALID_TXPDUID);
         return E_NOT_OK;
     }
     if ((PduInfoPtr == NULL_PTR) || (PduInfoPtr->SduDataPtr == NULL_PTR)) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_TRANSMIT, CANIF_E_PARAM_POINTER);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_TRANSMIT, CANIF_E_PARAM_POINTER);
         return E_NOT_OK;
     }
     #endif
@@ -1152,11 +1152,11 @@ Std_ReturnType CanIf_ConfirmPnAvailability(uint8 TransceiverId)
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
     if (CanIf_DriverInitialized == FALSE) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_CONFIRMPNAVAILABILITY, CANIF_E_UNINIT);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_CONFIRMPNAVAILABILITY, CANIF_E_UNINIT);
         return E_NOT_OK;
     }
     if (TransceiverId >= CANIF_NUM_TRANSCEIVERS) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_CONFIRMPNAVAILABILITY, CANIF_E_PARAM_TRCV);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_CONFIRMPNAVAILABILITY, CANIF_E_PARAM_TRCV);
         return E_NOT_OK;
     }
     #endif
@@ -1175,11 +1175,11 @@ Std_ReturnType CanIf_CheckTrcvWakeFlag(uint8 TransceiverId)
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
     if (CanIf_DriverInitialized == FALSE) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_CHECKTRCVWAKEFLAG, CANIF_E_UNINIT);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_CHECKTRCVWAKEFLAG, CANIF_E_UNINIT);
         return E_NOT_OK;
     }
     if (TransceiverId >= CANIF_NUM_TRANSCEIVERS) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_CHECKTRCVWAKEFLAG, CANIF_E_PARAM_TRCV);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_CHECKTRCVWAKEFLAG, CANIF_E_PARAM_TRCV);
         return E_NOT_OK;
     }
     #endif
@@ -1197,11 +1197,11 @@ Std_ReturnType CanIf_ClearTrcvWufFlag(uint8 TransceiverId)
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
     if (CanIf_DriverInitialized == FALSE) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_CLEARTRCVWUFFLAG, CANIF_E_UNINIT);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_CLEARTRCVWUFFLAG, CANIF_E_UNINIT);
         return E_NOT_OK;
     }
     if (TransceiverId >= CANIF_NUM_TRANSCEIVERS) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_CLEARTRCVWUFFLAG, CANIF_E_PARAM_TRCV);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_CLEARTRCVWUFFLAG, CANIF_E_PARAM_TRCV);
         return E_NOT_OK;
     }
     #endif
@@ -1278,19 +1278,19 @@ Std_ReturnType CanIf_SetPnWakeupFilter(uint8 TransceiverId, const CanIf_PnWakeup
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
     if (CanIf_DriverInitialized == FALSE) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_SETPNWAKEUPFILTER, CANIF_E_UNINIT);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_SETPNWAKEUPFILTER, CANIF_E_UNINIT);
         return E_NOT_OK;
     }
     if (TransceiverId >= CANIF_NUM_TRANSCEIVERS) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_SETPNWAKEUPFILTER, CANIF_E_PARAM_TRCV);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_SETPNWAKEUPFILTER, CANIF_E_PARAM_TRCV);
         return E_NOT_OK;
     }
     if (PnFilter == NULL_PTR) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_SETPNWAKEUPFILTER, CANIF_E_PARAM_POINTER);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_SETPNWAKEUPFILTER, CANIF_E_PARAM_POINTER);
         return E_NOT_OK;
     }
     if (PnFilter->CanIdRangeLower > PnFilter->CanIdRangeUpper) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_SETPNWAKEUPFILTER, CANIF_E_PARAM_CANID);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_SETPNWAKEUPFILTER, CANIF_E_PARAM_CANID);
         return E_NOT_OK;
     }
     #endif
@@ -1310,7 +1310,7 @@ void CanIf_TxQueueMainFunction(void)
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
     if (CanIf_DriverInitialized == FALSE) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_TXQUEUEMAINFUNCTION, CANIF_E_UNINIT);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_TXQUEUEMAINFUNCTION, CANIF_E_UNINIT);
         return;
     }
     #endif
@@ -1347,7 +1347,7 @@ Std_ReturnType CanIf_CanIdToMetaData(uint32 CanId, uint8* MetaDataPtr)
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
     if (MetaDataPtr == NULL_PTR) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_CANIDTOMETADATA, CANIF_E_PARAM_POINTER);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_CANIDTOMETADATA, CANIF_E_PARAM_POINTER);
         return E_NOT_OK;
     }
     #endif
@@ -1368,7 +1368,7 @@ Std_ReturnType CanIf_MetaDataToCanId(const uint8* MetaDataPtr, uint32* CanIdPtr)
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
     if ((MetaDataPtr == NULL_PTR) || (CanIdPtr == NULL_PTR)) {
-        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_METADATATOCANID, CANIF_E_PARAM_POINTER);
+        (void)Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_METADATATOCANID, CANIF_E_PARAM_POINTER);
         return E_NOT_OK;
     }
     #endif

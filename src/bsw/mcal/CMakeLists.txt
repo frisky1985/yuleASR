@@ -131,4 +131,11 @@ if(ENABLE_ECUC_GENERATED)
     endif()
 endif()
 
+# ── Module-level host unit tests ─────────────────────────────────────────────
+# Modules that keep their tests next to the sources mount them via their own
+# CMakeLists.txt (gated on BUILD_TESTING). Currently only crypto does.
+if(BUILD_TESTING AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/crypto/CMakeLists.txt)
+    add_subdirectory(crypto)
+endif()
+
 message(STATUS "MCAL layer configured")

@@ -241,12 +241,12 @@ void Uart_Init(const Uart_ConfigType* Config)
     
     #if (UART_DEV_ERROR_DETECT == STD_ON)
     if (Config == NULL_PTR) {
-        Det_ReportError(UART_MODULE_ID, UART_INSTANCE_ID, 
+        (void)Det_ReportError(UART_MODULE_ID, UART_INSTANCE_ID, 
                         UART_SERVICE_ID_INIT, UART_E_PARAM_POINTER);
         return;
     }
     if (Uart_Initialized == TRUE) {
-        Det_ReportError(UART_MODULE_ID, UART_INSTANCE_ID, 
+        (void)Det_ReportError(UART_MODULE_ID, UART_INSTANCE_ID, 
                         UART_SERVICE_ID_INIT, UART_E_ALREADY_INITIALIZED);
         return;
     }
@@ -437,7 +437,7 @@ Std_ReturnType Uart_Send(
      * contract — reject before touching channel state). */
     if (Length == 0U) {
         #if (UART_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(UART_MODULE_ID, UART_INSTANCE_ID,
+        (void)Det_ReportError(UART_MODULE_ID, UART_INSTANCE_ID,
                         UART_SERVICE_ID_SEND, UART_E_PARAM_LENGTH);
         #endif
         return E_NOT_OK;
@@ -451,7 +451,7 @@ Std_ReturnType Uart_Send(
     /* 检查通道状态 */
     if ((state->Status == UART_STATE_TX_BUSY) || (state->Status == UART_STATE_TX_RX_BUSY)) {
         #if (UART_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(UART_MODULE_ID, UART_INSTANCE_ID, 
+        (void)Det_ReportError(UART_MODULE_ID, UART_INSTANCE_ID, 
                         UART_SERVICE_ID_SEND, UART_E_TX_BUSY);
         #endif
         return E_NOT_OK;
@@ -647,7 +647,7 @@ Std_ReturnType Uart_Receive(
     /* 检查通道状态 */
     if ((state->Status == UART_STATE_RX_BUSY) || (state->Status == UART_STATE_TX_RX_BUSY)) {
         #if (UART_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(UART_MODULE_ID, UART_INSTANCE_ID, 
+        (void)Det_ReportError(UART_MODULE_ID, UART_INSTANCE_ID, 
                         UART_SERVICE_ID_RECEIVE, UART_E_RX_BUSY);
         #endif
         return E_NOT_OK;
@@ -875,7 +875,7 @@ Std_ReturnType Uart_SetBaudRate(Uart_ChannelType Channel, uint32 BaudRate)
     
     if (BaudRate == 0U ) {
         #if (UART_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(UART_MODULE_ID, UART_INSTANCE_ID, 
+        (void)Det_ReportError(UART_MODULE_ID, UART_INSTANCE_ID, 
                         UART_SERVICE_ID_SETBAUDRATE, UART_E_PARAM_BAUDRATE);
         #endif
         return E_NOT_OK;
@@ -1044,7 +1044,7 @@ void Uart_GetVersionInfo(Std_VersionInfoType* VersionInfo)
 {
     if (VersionInfo == NULL_PTR) {
         #if (UART_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(UART_MODULE_ID, UART_INSTANCE_ID, 
+        (void)Det_ReportError(UART_MODULE_ID, UART_INSTANCE_ID, 
                         UART_SERVICE_ID_GETVERSIONINFO, UART_E_PARAM_POINTER);
         #endif
         return;

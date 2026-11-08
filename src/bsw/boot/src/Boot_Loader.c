@@ -243,7 +243,7 @@ void Boot_Loader_Jump(uint32_t target_addr)
     uint32_t pc  = *(volatile uint32_t *)(uintptr_t)(target_addr + 4U);  /* PC from vector[1] */
 
     /* De-init peripherals (minimal) */
-    Boot_Flash_Init();  /* flush pending operations */
+    (void)Boot_Flash_Init();  /* flush pending operations */
 
     /* Set main stack pointer */
 #if defined(__aarch64__) || defined(__x86_64__)

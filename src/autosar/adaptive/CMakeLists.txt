@@ -65,6 +65,10 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     target_compile_options(eth_adaptive_sm PRIVATE -Wall -Wextra)
 endif()
 
+if(BUILD_TESTING)
+    add_subdirectory(tests)
+endif()
+
 # Install headers
 install(FILES
     ara_com_dds.h

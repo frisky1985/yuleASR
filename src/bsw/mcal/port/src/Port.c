@@ -296,12 +296,12 @@ void Port_Init(const Port_ConfigType* ConfigPtr)
 {
     #if (PORT_DEV_ERROR_DETECT == STD_ON)
     if (ConfigPtr == NULL_PTR) {
-        Det_ReportError(PORT_MODULE_ID, 0U, PORT_SID_INIT, PORT_E_PARAM_CONFIG);
+        (void)Det_ReportError(PORT_MODULE_ID, 0U, PORT_SID_INIT, PORT_E_PARAM_CONFIG);
         return;
     }
 
     if (Port_DriverState.initialized == TRUE) {
-        Det_ReportError(PORT_MODULE_ID, 0U, PORT_SID_INIT, PORT_E_ALREADY_INITIALIZED);
+        (void)Det_ReportError(PORT_MODULE_ID, 0U, PORT_SID_INIT, PORT_E_ALREADY_INITIALIZED);
         return;
     }
     #endif
@@ -358,7 +358,7 @@ void Port_DeInit(void)
 {
     #if (PORT_DEV_ERROR_DETECT == STD_ON)
     if (Port_DriverState.initialized == FALSE) {
-        Det_ReportError(PORT_MODULE_ID, 0U, PORT_SID_DEINIT, PORT_E_UNINIT);
+        (void)Det_ReportError(PORT_MODULE_ID, 0U, PORT_SID_DEINIT, PORT_E_UNINIT);
         return;
     }
     #endif
@@ -378,12 +378,12 @@ void Port_SetPinDirection(Port_PinType Pin, Port_PinDirectionType Direction)
 {
     #if (PORT_DEV_ERROR_DETECT == STD_ON)
     if (Port_DriverState.initialized == FALSE) {
-        Det_ReportError(PORT_MODULE_ID, 0U, PORT_SID_SET_PIN_DIRECTION, PORT_E_UNINIT);
+        (void)Det_ReportError(PORT_MODULE_ID, 0U, PORT_SID_SET_PIN_DIRECTION, PORT_E_UNINIT);
         return;
     }
 
     if (Pin >= PORT_TOTAL_NUM_PINS) {
-        Det_ReportError(PORT_MODULE_ID, 0U, PORT_SID_SET_PIN_DIRECTION, PORT_E_PARAM_PIN);
+        (void)Det_ReportError(PORT_MODULE_ID, 0U, PORT_SID_SET_PIN_DIRECTION, PORT_E_PARAM_PIN);
         return;
     }
     #endif
@@ -399,7 +399,7 @@ void Port_SetPinDirection(Port_PinType Pin, Port_PinDirectionType Direction)
 
     #if (PORT_DEV_ERROR_DETECT == STD_ON)
     if (directionChangeable == FALSE) {
-        Det_ReportError(PORT_MODULE_ID, 0U, PORT_SID_SET_PIN_DIRECTION, PORT_E_DIRECTION_UNCHANGEABLE);
+        (void)Det_ReportError(PORT_MODULE_ID, 0U, PORT_SID_SET_PIN_DIRECTION, PORT_E_DIRECTION_UNCHANGEABLE);
         return;
     }
     #endif
@@ -430,7 +430,7 @@ void Port_RefreshPortDirection(void)
 {
     #if (PORT_DEV_ERROR_DETECT == STD_ON)
     if (Port_DriverState.initialized == FALSE) {
-        Det_ReportError(PORT_MODULE_ID, 0U, PORT_SID_REFRESH_PORT_DIRECTION, PORT_E_UNINIT);
+        (void)Det_ReportError(PORT_MODULE_ID, 0U, PORT_SID_REFRESH_PORT_DIRECTION, PORT_E_UNINIT);
         return;
     }
     #endif
@@ -468,7 +468,7 @@ void Port_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
     #if (PORT_DEV_ERROR_DETECT == STD_ON)
     if (versioninfo == NULL_PTR) {
-        Det_ReportError(PORT_MODULE_ID, 0U, PORT_SID_GET_VERSION_INFO, PORT_E_PARAM_POINTER);
+        (void)Det_ReportError(PORT_MODULE_ID, 0U, PORT_SID_GET_VERSION_INFO, PORT_E_PARAM_POINTER);
         return;
     }
     #endif
@@ -491,17 +491,17 @@ void Port_SetPinMode(Port_PinType Pin, Port_PinModeType Mode)
 {
     #if (PORT_DEV_ERROR_DETECT == STD_ON)
     if (Port_DriverState.initialized == FALSE) {
-        Det_ReportError(PORT_MODULE_ID, 0U, PORT_SID_SET_PIN_MODE, PORT_E_UNINIT);
+        (void)Det_ReportError(PORT_MODULE_ID, 0U, PORT_SID_SET_PIN_MODE, PORT_E_UNINIT);
         return;
     }
 
     if (Pin >= PORT_TOTAL_NUM_PINS) {
-        Det_ReportError(PORT_MODULE_ID, 0U, PORT_SID_SET_PIN_MODE, PORT_E_PARAM_PIN);
+        (void)Det_ReportError(PORT_MODULE_ID, 0U, PORT_SID_SET_PIN_MODE, PORT_E_PARAM_PIN);
         return;
     }
 
     if (Mode > PORT_PIN_MODE_DISABLED) {
-        Det_ReportError(PORT_MODULE_ID, 0U, PORT_SID_SET_PIN_MODE, PORT_E_PARAM_INVALID_MODE);
+        (void)Det_ReportError(PORT_MODULE_ID, 0U, PORT_SID_SET_PIN_MODE, PORT_E_PARAM_INVALID_MODE);
         return;
     }
     #endif
@@ -517,7 +517,7 @@ void Port_SetPinMode(Port_PinType Pin, Port_PinModeType Mode)
 
     #if (PORT_DEV_ERROR_DETECT == STD_ON)
     if (modeChangeable == FALSE) {
-        Det_ReportError(PORT_MODULE_ID, 0U, PORT_SID_SET_PIN_MODE, PORT_E_MODE_UNCHANGEABLE);
+        (void)Det_ReportError(PORT_MODULE_ID, 0U, PORT_SID_SET_PIN_MODE, PORT_E_MODE_UNCHANGEABLE);
         return;
     }
     #endif

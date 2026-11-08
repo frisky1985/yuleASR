@@ -708,7 +708,7 @@ Rte_StatusType Swc_DiagnosticManager_ClearDtc(uint32 dtcCode)
     for (i = 0; i < swcDiagManager.numDtcs; i++) {
         if (swcDiagManager.dtcList[i].dtcCode == dtcCode) {
             /* Shift remaining DTCs */
-            for (j = i; j < (swcDiagManager.numDtcs - 1); j++) {
+            for (j = i; j < (swcDiagManager.numDtcs - (uint8)1); j++) {
                 swcDiagManager.dtcList[j] = swcDiagManager.dtcList[j + 1U];
             }
             swcDiagManager.numDtcs--;

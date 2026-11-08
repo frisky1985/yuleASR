@@ -261,4 +261,6 @@ void Dio_Init(const Dio_ConfigType* ConfigPtr);
 *                                      INLINE FUNCTIONS
 ==================================================================================================*/
 
+void Dio_MaskedWritePort(Dio_PortType PortId, Dio_PortLevelType Level, Dio_PortLevelType Mask);
+
 #endif /* DIO_H */

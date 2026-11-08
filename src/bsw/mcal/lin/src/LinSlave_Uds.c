@@ -83,9 +83,9 @@ LinSlave_Uds_StatusType LinSlave_Uds_ProcessRequest(const uint8* DataPtr, uint16
     }
     /* 解析请求 */
     Request.Sid = DataPtr[0];
-    Request.SubFunction = (Length > 1) ? DataPtr[1] : 0;
-    Request.DataPtr = (Length > 1) ? &DataPtr[1] : NULL_PTR;
-    Request.DataLength = (Length > 1) ? Length - 1 : 0;
+    Request.SubFunction = (Length > (uint16)1) ? DataPtr[1] : 0;
+    Request.DataPtr = (Length > (uint16)1) ? &DataPtr[1] : NULL_PTR;
+    Request.DataLength = (Length > (uint16)1) ? Length - 1 : 0;
     /* 重置S3计时器 */
     UdsRuntime.S3ServerTimer = 0;
     /* 检查TesterPresent */

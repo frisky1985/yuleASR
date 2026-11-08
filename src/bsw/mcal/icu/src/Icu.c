@@ -295,11 +295,11 @@ void Icu_Init(const Icu_ConfigType* ConfigPtr)
 {
     #if (ICU_DEV_ERROR_DETECT == STD_ON)
     if (ConfigPtr == NULL_PTR) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_INIT, ICU_E_PARAM_POINTER);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_INIT, ICU_E_PARAM_POINTER);
         return;
     }
     if (Icu_DriverInitialized == TRUE) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_INIT, ICU_E_ALREADY_INITIALIZED);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_INIT, ICU_E_ALREADY_INITIALIZED);
         return;
     }
     #endif
@@ -419,7 +419,7 @@ void Icu_DeInit(void)
 {
     #if (ICU_DEV_ERROR_DETECT == STD_ON)
     if (Icu_DriverInitialized == FALSE) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_DEINIT, ICU_E_UNINIT);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_DEINIT, ICU_E_UNINIT);
         return;
     }
     #endif
@@ -460,11 +460,11 @@ void Icu_SetMode(Icu_ModeType Mode)
 {
     #if (ICU_DEV_ERROR_DETECT == STD_ON)
     if (Icu_DriverInitialized == FALSE) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_SETMODE, ICU_E_UNINIT);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_SETMODE, ICU_E_UNINIT);
         return;
     }
     if ((Mode != ICU_MODE_NORMAL) && (Mode != ICU_MODE_SLEEP)) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_SETMODE, ICU_E_PARAM_POINTER);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_SETMODE, ICU_E_PARAM_POINTER);
         return;
     }
     #endif
@@ -498,11 +498,11 @@ void Icu_DisableWakeup(Icu_ChannelType Channel)
 {
     #if (ICU_DEV_ERROR_DETECT == STD_ON)
     if (Icu_DriverInitialized == FALSE) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_DISABLEWAKEUP, ICU_E_UNINIT);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_DISABLEWAKEUP, ICU_E_UNINIT);
         return;
     }
     if (Channel >= ICU_NUM_CHANNELS) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_DISABLEWAKEUP, ICU_E_PARAM_CHANNEL);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_DISABLEWAKEUP, ICU_E_PARAM_CHANNEL);
         return;
     }
     #endif
@@ -523,11 +523,11 @@ void Icu_EnableWakeup(Icu_ChannelType Channel)
 {
     #if (ICU_DEV_ERROR_DETECT == STD_ON)
     if (Icu_DriverInitialized == FALSE) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_ENABLEWAKEUP, ICU_E_UNINIT);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_ENABLEWAKEUP, ICU_E_UNINIT);
         return;
     }
     if (Channel >= ICU_NUM_CHANNELS) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_ENABLEWAKEUP, ICU_E_PARAM_CHANNEL);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_ENABLEWAKEUP, ICU_E_PARAM_CHANNEL);
         return;
     }
     #endif
@@ -548,7 +548,7 @@ Std_ReturnType Icu_CheckWakeup(uint32 WakeupSource)
 {
     #if (ICU_DEV_ERROR_DETECT == STD_ON)
     if (Icu_DriverInitialized == FALSE) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_CHECKWAKEUP, ICU_E_UNINIT);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_CHECKWAKEUP, ICU_E_UNINIT);
         return E_NOT_OK;
     }
     #endif
@@ -580,17 +580,17 @@ void Icu_SetActivationCondition(Icu_ChannelType Channel, Icu_ActivationType Acti
 {
     #if (ICU_DEV_ERROR_DETECT == STD_ON)
     if (Icu_DriverInitialized == FALSE) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_SETACTIVATIONCONDITION, ICU_E_UNINIT);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_SETACTIVATIONCONDITION, ICU_E_UNINIT);
         return;
     }
     if (Channel >= ICU_NUM_CHANNELS) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_SETACTIVATIONCONDITION, ICU_E_PARAM_CHANNEL);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_SETACTIVATIONCONDITION, ICU_E_PARAM_CHANNEL);
         return;
     }
     if ((Activation != ICU_FALLING_EDGE) && 
         (Activation != ICU_RISING_EDGE) && 
         (Activation != ICU_BOTH_EDGES)) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_SETACTIVATIONCONDITION, ICU_E_PARAM_ACTIVATION);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_SETACTIVATIONCONDITION, ICU_E_PARAM_ACTIVATION);
         return;
     }
     #endif
@@ -627,11 +627,11 @@ void Icu_DisableNotification(Icu_ChannelType Channel)
 {
     #if (ICU_DEV_ERROR_DETECT == STD_ON)
     if (Icu_DriverInitialized == FALSE) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_DISABLENOTIFICATION, ICU_E_UNINIT);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_DISABLENOTIFICATION, ICU_E_UNINIT);
         return;
     }
     if (Channel >= ICU_NUM_CHANNELS) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_DISABLENOTIFICATION, ICU_E_PARAM_CHANNEL);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_DISABLENOTIFICATION, ICU_E_PARAM_CHANNEL);
         return;
     }
     #endif
@@ -645,11 +645,11 @@ void Icu_EnableNotification(Icu_ChannelType Channel)
 {
     #if (ICU_DEV_ERROR_DETECT == STD_ON)
     if (Icu_DriverInitialized == FALSE) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_ENABLENOTIFICATION, ICU_E_UNINIT);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_ENABLENOTIFICATION, ICU_E_UNINIT);
         return;
     }
     if (Channel >= ICU_NUM_CHANNELS) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_ENABLENOTIFICATION, ICU_E_PARAM_CHANNEL);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_ENABLENOTIFICATION, ICU_E_PARAM_CHANNEL);
         return;
     }
     #endif
@@ -663,11 +663,11 @@ Icu_InputStateType Icu_GetInputState(Icu_ChannelType Channel)
 {
     #if (ICU_DEV_ERROR_DETECT == STD_ON)
     if (Icu_DriverInitialized == FALSE) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_GETINPUTSTATE, ICU_E_UNINIT);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_GETINPUTSTATE, ICU_E_UNINIT);
         return ICU_IDLE;
     }
     if (Channel >= ICU_NUM_CHANNELS) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_GETINPUTSTATE, ICU_E_PARAM_CHANNEL);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_GETINPUTSTATE, ICU_E_PARAM_CHANNEL);
         return ICU_IDLE;
     }
     #endif
@@ -693,23 +693,23 @@ void Icu_StartTimestamp(Icu_ChannelType Channel, uint32* BufferPtr, uint16 Buffe
 {
     #if (ICU_DEV_ERROR_DETECT == STD_ON)
     if (Icu_DriverInitialized == FALSE) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_STARTTIMESTAMP, ICU_E_UNINIT);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_STARTTIMESTAMP, ICU_E_UNINIT);
         return;
     }
     if (Channel >= ICU_NUM_CHANNELS) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_STARTTIMESTAMP, ICU_E_PARAM_CHANNEL);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_STARTTIMESTAMP, ICU_E_PARAM_CHANNEL);
         return;
     }
     if (BufferPtr == NULL_PTR) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_STARTTIMESTAMP, ICU_E_PARAM_POINTER);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_STARTTIMESTAMP, ICU_E_PARAM_POINTER);
         return;
     }
     if (BufferSize == 0U) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_STARTTIMESTAMP, ICU_E_PARAM_BUFFER_SIZE);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_STARTTIMESTAMP, ICU_E_PARAM_BUFFER_SIZE);
         return;
     }
     if ((Icu_ChannelRunning[Channel]) != 0U) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_STARTTIMESTAMP, ICU_E_BUSY);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_STARTTIMESTAMP, ICU_E_BUSY);
         return;
     }
     #endif
@@ -740,11 +740,11 @@ void Icu_StopTimestamp(Icu_ChannelType Channel)
 {
     #if (ICU_DEV_ERROR_DETECT == STD_ON)
     if (Icu_DriverInitialized == FALSE) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_STOPTIMESTAMP, ICU_E_UNINIT);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_STOPTIMESTAMP, ICU_E_UNINIT);
         return;
     }
     if (Channel >= ICU_NUM_CHANNELS) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_STOPTIMESTAMP, ICU_E_PARAM_CHANNEL);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_STOPTIMESTAMP, ICU_E_PARAM_CHANNEL);
         return;
     }
     #endif
@@ -759,15 +759,15 @@ Icu_IndexType Icu_GetTimestampIndex(Icu_ChannelType Channel)
 {
     #if (ICU_DEV_ERROR_DETECT == STD_ON)
     if (Icu_DriverInitialized == FALSE) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_GETTIMESTAMPINDEX, ICU_E_UNINIT);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_GETTIMESTAMPINDEX, ICU_E_UNINIT);
         return 0U;
     }
     if (Channel >= ICU_NUM_CHANNELS) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_GETTIMESTAMPINDEX, ICU_E_PARAM_CHANNEL);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_GETTIMESTAMPINDEX, ICU_E_PARAM_CHANNEL);
         return 0U;
     }
     if (Icu_ChannelRunning[Channel] == FALSE) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_GETTIMESTAMPINDEX, ICU_E_STAMP_NOT_RUNNING);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_GETTIMESTAMPINDEX, ICU_E_STAMP_NOT_RUNNING);
         return 0U;
     }
     #endif
@@ -782,11 +782,11 @@ void Icu_ResetEdgeCount(Icu_ChannelType Channel)
 {
     #if (ICU_DEV_ERROR_DETECT == STD_ON)
     if (Icu_DriverInitialized == FALSE) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_RESETEDGECOUNT, ICU_E_UNINIT);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_RESETEDGECOUNT, ICU_E_UNINIT);
         return;
     }
     if (Channel >= ICU_NUM_CHANNELS) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_RESETEDGECOUNT, ICU_E_PARAM_CHANNEL);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_RESETEDGECOUNT, ICU_E_PARAM_CHANNEL);
         return;
     }
     #endif
@@ -805,11 +805,11 @@ void Icu_EnableEdgeCount(Icu_ChannelType Channel)
 {
     #if (ICU_DEV_ERROR_DETECT == STD_ON)
     if (Icu_DriverInitialized == FALSE) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_ENABLEEDGECOUNT, ICU_E_UNINIT);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_ENABLEEDGECOUNT, ICU_E_UNINIT);
         return;
     }
     if (Channel >= ICU_NUM_CHANNELS) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_ENABLEEDGECOUNT, ICU_E_PARAM_CHANNEL);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_ENABLEEDGECOUNT, ICU_E_PARAM_CHANNEL);
         return;
     }
     #endif
@@ -829,11 +829,11 @@ void Icu_DisableEdgeCount(Icu_ChannelType Channel)
 {
     #if (ICU_DEV_ERROR_DETECT == STD_ON)
     if (Icu_DriverInitialized == FALSE) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_DISABLEEDGECOUNT, ICU_E_UNINIT);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_DISABLEEDGECOUNT, ICU_E_UNINIT);
         return;
     }
     if (Channel >= ICU_NUM_CHANNELS) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_DISABLEEDGECOUNT, ICU_E_PARAM_CHANNEL);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_DISABLEEDGECOUNT, ICU_E_PARAM_CHANNEL);
         return;
     }
     #endif
@@ -848,15 +848,15 @@ uint16 Icu_GetEdgeNumbers(Icu_ChannelType Channel)
 {
     #if (ICU_DEV_ERROR_DETECT == STD_ON)
     if (Icu_DriverInitialized == FALSE) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_GETEDGENUMBERS, ICU_E_UNINIT);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_GETEDGENUMBERS, ICU_E_UNINIT);
         return 0U;
     }
     if (Channel >= ICU_NUM_CHANNELS) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_GETEDGENUMBERS, ICU_E_PARAM_CHANNEL);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_GETEDGENUMBERS, ICU_E_PARAM_CHANNEL);
         return 0U;
     }
     if (Icu_EdgeCountEnabled[Channel] == FALSE) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_GETEDGENUMBERS, ICU_E_EDGE_COUNTING_NOT_RUNNING);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_GETEDGENUMBERS, ICU_E_EDGE_COUNTING_NOT_RUNNING);
         return 0U;
     }
     #endif
@@ -879,15 +879,15 @@ void Icu_StartSignalMeasurement(Icu_ChannelType Channel, Icu_SignalMeasurementPr
 {
     #if (ICU_DEV_ERROR_DETECT == STD_ON)
     if (Icu_DriverInitialized == FALSE) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_STARTSIGNALMEASUREMENT, ICU_E_UNINIT);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_STARTSIGNALMEASUREMENT, ICU_E_UNINIT);
         return;
     }
     if (Channel >= ICU_NUM_CHANNELS) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_STARTSIGNALMEASUREMENT, ICU_E_PARAM_CHANNEL);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_STARTSIGNALMEASUREMENT, ICU_E_PARAM_CHANNEL);
         return;
     }
     if ((Icu_SignalMeasurementRunning[Channel]) != 0U) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_STARTSIGNALMEASUREMENT, ICU_E_MEASUREMENT_RUNNING);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_STARTSIGNALMEASUREMENT, ICU_E_MEASUREMENT_RUNNING);
         return;
     }
     #endif
@@ -917,11 +917,11 @@ void Icu_StopSignalMeasurement(Icu_ChannelType Channel)
 {
     #if (ICU_DEV_ERROR_DETECT == STD_ON)
     if (Icu_DriverInitialized == FALSE) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_STOPSIGNALMEASUREMENT, ICU_E_UNINIT);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_STOPSIGNALMEASUREMENT, ICU_E_UNINIT);
         return;
     }
     if (Channel >= ICU_NUM_CHANNELS) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_STOPSIGNALMEASUREMENT, ICU_E_PARAM_CHANNEL);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_STOPSIGNALMEASUREMENT, ICU_E_PARAM_CHANNEL);
         return;
     }
     #endif
@@ -936,11 +936,11 @@ uint16 Icu_GetTimeElapsed(Icu_ChannelType Channel)
 {
     #if (ICU_DEV_ERROR_DETECT == STD_ON)
     if (Icu_DriverInitialized == FALSE) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_GETTIMEELAPSED, ICU_E_UNINIT);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_GETTIMEELAPSED, ICU_E_UNINIT);
         return 0U;
     }
     if (Channel >= ICU_NUM_CHANNELS) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_GETTIMEELAPSED, ICU_E_PARAM_CHANNEL);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_GETTIMEELAPSED, ICU_E_PARAM_CHANNEL);
         return 0U;
     }
     #endif
@@ -953,15 +953,15 @@ void Icu_GetDutyCycleValues(Icu_ChannelType Channel, Icu_DutyCycleType* DutyCycl
 {
     #if (ICU_DEV_ERROR_DETECT == STD_ON)
     if (Icu_DriverInitialized == FALSE) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_GETDUTYCYCLEVALUES, ICU_E_UNINIT);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_GETDUTYCYCLEVALUES, ICU_E_UNINIT);
         return;
     }
     if (Channel >= ICU_NUM_CHANNELS) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_GETDUTYCYCLEVALUES, ICU_E_PARAM_CHANNEL);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_GETDUTYCYCLEVALUES, ICU_E_PARAM_CHANNEL);
         return;
     }
     if (DutyCycleValues == NULL_PTR) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_GETDUTYCYCLEVALUES, ICU_E_PARAM_POINTER);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_GETDUTYCYCLEVALUES, ICU_E_PARAM_POINTER);
         return;
     }
     #endif
@@ -976,7 +976,7 @@ void Icu_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
     #if (ICU_DEV_ERROR_DETECT == STD_ON)
     if (versioninfo == NULL_PTR) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_GETVERSIONINFO, ICU_E_PARAM_POINTER);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_GETVERSIONINFO, ICU_E_PARAM_POINTER);
         return;
     }
     #endif
@@ -993,11 +993,11 @@ uint8 Icu_GetInputLevel(Icu_ChannelType Channel)
 {
     #if (ICU_DEV_ERROR_DETECT == STD_ON)
     if (Icu_DriverInitialized == FALSE) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_GETINPUTLEVEL, ICU_E_UNINIT);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_GETINPUTLEVEL, ICU_E_UNINIT);
         return 0U;
     }
     if (Channel >= ICU_NUM_CHANNELS) {
-        Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_GETINPUTLEVEL, ICU_E_PARAM_CHANNEL);
+        (void)Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_GETINPUTLEVEL, ICU_E_PARAM_CHANNEL);
         return 0U;
     }
     #endif

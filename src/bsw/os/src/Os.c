@@ -1488,7 +1488,7 @@ static void Os_InitTasks(AppModeType Mode)
 
         if (task->IsAutoStart)
         {
-            Os_Internal_ActivateTask(task->TaskID);
+            (void)Os_Internal_ActivateTask(task->TaskID);
         }
     }
 }
@@ -1544,7 +1544,7 @@ void Os_TaskWrapper(void* pvParameters)
     }
 
     /* Task should not return in AutoSAR - if it does, suspend it */
-    Os_Internal_TerminateTask();
+    (void)Os_Internal_TerminateTask();
 }
 
 #define OS_STOP_SEC_CODE

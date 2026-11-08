@@ -297,7 +297,7 @@ void Eep_Init(const Eep_ConfigType* ConfigPtr)
 {
 #if (EEP_DEV_ERROR_DETECT == STD_ON)
     if (NULL_PTR == ConfigPtr) {
-        Det_ReportError(EEP_MODULE_ID, 0U, EEP_SID_INIT, EEP_E_PARAM_POINTER);
+        (void)Det_ReportError(EEP_MODULE_ID, 0U, EEP_SID_INIT, EEP_E_PARAM_POINTER);
         return;
     }
 #endif
@@ -344,22 +344,22 @@ Std_ReturnType Eep_Read(Eep_AddressType Address, uint8* DataPtr, Eep_LengthType 
 {
 #if (EEP_DEV_ERROR_DETECT == STD_ON)
     if (Eep_State.Status == EEP_UNINIT) {
-        Det_ReportError(EEP_MODULE_ID, 0U, EEP_SID_READ, EEP_E_UNINIT);
+        (void)Det_ReportError(EEP_MODULE_ID, 0U, EEP_SID_READ, EEP_E_UNINIT);
         return E_NOT_OK;
     }
     if (NULL_PTR == DataPtr) {
-        Det_ReportError(EEP_MODULE_ID, 0U, EEP_SID_READ, EEP_E_PARAM_POINTER);
+        (void)Det_ReportError(EEP_MODULE_ID, 0U, EEP_SID_READ, EEP_E_PARAM_POINTER);
         return E_NOT_OK;
     }
     if (Length == 0U) {
-        Det_ReportError(EEP_MODULE_ID, 0U, EEP_SID_READ, EEP_E_PARAM_LENGTH);
+        (void)Det_ReportError(EEP_MODULE_ID, 0U, EEP_SID_READ, EEP_E_PARAM_LENGTH);
         return E_NOT_OK;
     }
 #endif
 
     if (Eep_ValidateAddress(Address, Length) == FALSE) {
 #if (EEP_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(EEP_MODULE_ID, 0U, EEP_SID_READ, EEP_E_PARAM_ADDRESS);
+        (void)Det_ReportError(EEP_MODULE_ID, 0U, EEP_SID_READ, EEP_E_PARAM_ADDRESS);
 #endif
         return E_NOT_OK;
     }
@@ -399,22 +399,22 @@ Std_ReturnType Eep_Write(Eep_AddressType Address, const uint8* DataPtr, Eep_Leng
 {
 #if (EEP_DEV_ERROR_DETECT == STD_ON)
     if (Eep_State.Status == EEP_UNINIT) {
-        Det_ReportError(EEP_MODULE_ID, 0U, EEP_SID_WRITE, EEP_E_UNINIT);
+        (void)Det_ReportError(EEP_MODULE_ID, 0U, EEP_SID_WRITE, EEP_E_UNINIT);
         return E_NOT_OK;
     }
     if (NULL_PTR == DataPtr) {
-        Det_ReportError(EEP_MODULE_ID, 0U, EEP_SID_WRITE, EEP_E_PARAM_POINTER);
+        (void)Det_ReportError(EEP_MODULE_ID, 0U, EEP_SID_WRITE, EEP_E_PARAM_POINTER);
         return E_NOT_OK;
     }
     if (Length == 0U) {
-        Det_ReportError(EEP_MODULE_ID, 0U, EEP_SID_WRITE, EEP_E_PARAM_LENGTH);
+        (void)Det_ReportError(EEP_MODULE_ID, 0U, EEP_SID_WRITE, EEP_E_PARAM_LENGTH);
         return E_NOT_OK;
     }
 #endif
 
     if (Eep_ValidateAddress(Address, Length) == FALSE) {
 #if (EEP_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(EEP_MODULE_ID, 0U, EEP_SID_WRITE, EEP_E_PARAM_ADDRESS);
+        (void)Det_ReportError(EEP_MODULE_ID, 0U, EEP_SID_WRITE, EEP_E_PARAM_ADDRESS);
 #endif
         return E_NOT_OK;
     }
@@ -453,14 +453,14 @@ Std_ReturnType Eep_Erase(Eep_AddressType Address, Eep_LengthType Length)
 {
 #if (EEP_DEV_ERROR_DETECT == STD_ON)
     if (Eep_State.Status == EEP_UNINIT) {
-        Det_ReportError(EEP_MODULE_ID, 0U, EEP_SID_ERASE, EEP_E_UNINIT);
+        (void)Det_ReportError(EEP_MODULE_ID, 0U, EEP_SID_ERASE, EEP_E_UNINIT);
         return E_NOT_OK;
     }
 #endif
 
     if (Eep_ValidateAddress(Address, Length) == FALSE) {
 #if (EEP_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(EEP_MODULE_ID, 0U, EEP_SID_ERASE, EEP_E_PARAM_ADDRESS);
+        (void)Det_ReportError(EEP_MODULE_ID, 0U, EEP_SID_ERASE, EEP_E_PARAM_ADDRESS);
 #endif
         return E_NOT_OK;
     }
@@ -576,7 +576,7 @@ void Eep_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
 #if (EEP_DEV_ERROR_DETECT == STD_ON)
     if (NULL_PTR == versioninfo) {
-        Det_ReportError(EEP_MODULE_ID, 0U, EEP_SID_GET_VERSION_INFO, EEP_E_PARAM_POINTER);
+        (void)Det_ReportError(EEP_MODULE_ID, 0U, EEP_SID_GET_VERSION_INFO, EEP_E_PARAM_POINTER);
         return;
     }
 #endif

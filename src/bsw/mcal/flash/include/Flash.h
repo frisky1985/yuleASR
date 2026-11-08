@@ -338,4 +338,8 @@ extern const Fls_ConfigType Fls_Config;
 }
 #endif
 
+void Flash_SetMode(Flash_OpModeType Mode);
+
+void Flash_GetVersionInfo(Std_VersionInfoType* VersionInfoPtr);
+
 #endif /* FLASH_H */

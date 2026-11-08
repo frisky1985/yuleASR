@@ -85,7 +85,7 @@ void Ea_Init(const Ea_ConfigType* ConfigPtr)
 {
     #if (EA_DEV_ERROR_DETECT == STD_ON)
     if (ConfigPtr == NULL_PTR) {
-        Det_ReportError(EA_MODULE_ID, 0U, EA_SID_INIT, EA_E_INVALID_CFG);
+        (void)Det_ReportError(EA_MODULE_ID, 0U, EA_SID_INIT, EA_E_INVALID_CFG);
         return;
     }
     #endif
@@ -125,12 +125,12 @@ void Ea_SetMode(Ea_ModeType Mode)
 {
     #if (EA_DEV_ERROR_DETECT == STD_ON)
     if (Ea_Initialized == FALSE) {
-        Det_ReportError(EA_MODULE_ID, 0U, EA_SID_SETMODE, EA_E_UNINIT);
+        (void)Det_ReportError(EA_MODULE_ID, 0U, EA_SID_SETMODE, EA_E_UNINIT);
         return;
     }
     #if (EA_SET_MODE_SUPPORTED == STD_ON)
     if ((Mode != EA_MODE_SLOW) && (Mode != EA_MODE_FAST)) {
-        Det_ReportError(EA_MODULE_ID, 0U, EA_SID_SETMODE, EA_E_INVALID_MODE);
+        (void)Det_ReportError(EA_MODULE_ID, 0U, EA_SID_SETMODE, EA_E_INVALID_MODE);
         return;
     }
     #endif
@@ -153,23 +153,23 @@ Std_ReturnType Ea_Read(Ea_BlockIdType BlockNumber,
 {
     #if (EA_DEV_ERROR_DETECT == STD_ON)
     if (Ea_Initialized == FALSE) {
-        Det_ReportError(EA_MODULE_ID, 0U, EA_SID_READ, EA_E_UNINIT);
+        (void)Det_ReportError(EA_MODULE_ID, 0U, EA_SID_READ, EA_E_UNINIT);
         return E_NOT_OK;
     }
     if (BlockNumber >= EA_NUM_BLOCKS) {
-        Det_ReportError(EA_MODULE_ID, 0U, EA_SID_READ, EA_E_INVALID_BLOCK_NO);
+        (void)Det_ReportError(EA_MODULE_ID, 0U, EA_SID_READ, EA_E_INVALID_BLOCK_NO);
         return E_NOT_OK;
     }
     if (BlockOffset >= EA_MAX_BLOCK_SIZE) {
-        Det_ReportError(EA_MODULE_ID, 0U, EA_SID_READ, EA_E_INVALID_BLOCK_OFS);
+        (void)Det_ReportError(EA_MODULE_ID, 0U, EA_SID_READ, EA_E_INVALID_BLOCK_OFS);
         return E_NOT_OK;
     }
     if (DataBufferPtr == NULL_PTR) {
-        Det_ReportError(EA_MODULE_ID, 0U, EA_SID_READ, EA_E_INVALID_DATA_PTR);
+        (void)Det_ReportError(EA_MODULE_ID, 0U, EA_SID_READ, EA_E_INVALID_DATA_PTR);
         return E_NOT_OK;
     }
     if ((Length == 0U) || (Length > EA_MAX_BLOCK_SIZE)) {
-        Det_ReportError(EA_MODULE_ID, 0U, EA_SID_READ, EA_E_INVALID_BLOCK_LEN);
+        (void)Det_ReportError(EA_MODULE_ID, 0U, EA_SID_READ, EA_E_INVALID_BLOCK_LEN);
         return E_NOT_OK;
     }
     #endif
@@ -218,15 +218,15 @@ Std_ReturnType Ea_Write(Ea_BlockIdType BlockNumber, const uint8* DataBufferPtr)
 {
     #if (EA_DEV_ERROR_DETECT == STD_ON)
     if (Ea_Initialized == FALSE) {
-        Det_ReportError(EA_MODULE_ID, 0U, EA_SID_WRITE, EA_E_UNINIT);
+        (void)Det_ReportError(EA_MODULE_ID, 0U, EA_SID_WRITE, EA_E_UNINIT);
         return E_NOT_OK;
     }
     if (BlockNumber >= EA_NUM_BLOCKS) {
-        Det_ReportError(EA_MODULE_ID, 0U, EA_SID_WRITE, EA_E_INVALID_BLOCK_NO);
+        (void)Det_ReportError(EA_MODULE_ID, 0U, EA_SID_WRITE, EA_E_INVALID_BLOCK_NO);
         return E_NOT_OK;
     }
     if (DataBufferPtr == NULL_PTR) {
-        Det_ReportError(EA_MODULE_ID, 0U, EA_SID_WRITE, EA_E_INVALID_DATA_PTR);
+        (void)Det_ReportError(EA_MODULE_ID, 0U, EA_SID_WRITE, EA_E_INVALID_DATA_PTR);
         return E_NOT_OK;
     }
     #endif
@@ -269,7 +269,7 @@ void Ea_Cancel(void)
 {
     #if (EA_DEV_ERROR_DETECT == STD_ON)
     if (Ea_Initialized == FALSE) {
-        Det_ReportError(EA_MODULE_ID, 0U, EA_SID_CANCEL, EA_E_UNINIT);
+        (void)Det_ReportError(EA_MODULE_ID, 0U, EA_SID_CANCEL, EA_E_UNINIT);
         return;
     }
     #endif
@@ -287,7 +287,7 @@ Ea_StatusType Ea_GetStatus(void)
 {
     #if (EA_DEV_ERROR_DETECT == STD_ON)
     if (Ea_Initialized == FALSE) {
-        Det_ReportError(EA_MODULE_ID, 0U, EA_SID_GETSTATUS, EA_E_UNINIT);
+        (void)Det_ReportError(EA_MODULE_ID, 0U, EA_SID_GETSTATUS, EA_E_UNINIT);
         return EA_IDLE;
     }
     #endif
@@ -299,7 +299,7 @@ Ea_JobResultType Ea_GetJobResult(void)
 {
     #if (EA_DEV_ERROR_DETECT == STD_ON)
     if (Ea_Initialized == FALSE) {
-        Det_ReportError(EA_MODULE_ID, 0U, EA_SID_GETJOBRESULT, EA_E_UNINIT);
+        (void)Det_ReportError(EA_MODULE_ID, 0U, EA_SID_GETJOBRESULT, EA_E_UNINIT);
         return EA_JOB_FAILED;
     }
     #endif
@@ -312,11 +312,11 @@ Std_ReturnType Ea_InvalidateBlock(Ea_BlockIdType BlockNumber)
 {
     #if (EA_DEV_ERROR_DETECT == STD_ON)
     if (Ea_Initialized == FALSE) {
-        Det_ReportError(EA_MODULE_ID, 0U, EA_SID_INVALIDATEBLOCK, EA_E_UNINIT);
+        (void)Det_ReportError(EA_MODULE_ID, 0U, EA_SID_INVALIDATEBLOCK, EA_E_UNINIT);
         return E_NOT_OK;
     }
     if (BlockNumber >= EA_NUM_BLOCKS) {
-        Det_ReportError(EA_MODULE_ID, 0U, EA_SID_INVALIDATEBLOCK, EA_E_INVALID_BLOCK_NO);
+        (void)Det_ReportError(EA_MODULE_ID, 0U, EA_SID_INVALIDATEBLOCK, EA_E_INVALID_BLOCK_NO);
         return E_NOT_OK;
     }
     #endif
@@ -352,11 +352,11 @@ Std_ReturnType Ea_EraseImmediateBlock(Ea_BlockIdType BlockNumber)
 {
     #if (EA_DEV_ERROR_DETECT == STD_ON)
     if (Ea_Initialized == FALSE) {
-        Det_ReportError(EA_MODULE_ID, 0U, EA_SID_ERASEIMMEDIATEBLOCK, EA_E_UNINIT);
+        (void)Det_ReportError(EA_MODULE_ID, 0U, EA_SID_ERASEIMMEDIATEBLOCK, EA_E_UNINIT);
         return E_NOT_OK;
     }
     if (BlockNumber >= EA_NUM_BLOCKS) {
-        Det_ReportError(EA_MODULE_ID, 0U, EA_SID_ERASEIMMEDIATEBLOCK, EA_E_INVALID_BLOCK_NO);
+        (void)Det_ReportError(EA_MODULE_ID, 0U, EA_SID_ERASEIMMEDIATEBLOCK, EA_E_INVALID_BLOCK_NO);
         return E_NOT_OK;
     }
     #endif
@@ -413,7 +413,7 @@ void Ea_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
     #if (EA_DEV_ERROR_DETECT == STD_ON)
     if (versioninfo == NULL_PTR) {
-        Det_ReportError(EA_MODULE_ID, 0U, EA_SID_GETVERSIONINFO, EA_E_INVALID_DATA_PTR);
+        (void)Det_ReportError(EA_MODULE_ID, 0U, EA_SID_GETVERSIONINFO, EA_E_INVALID_DATA_PTR);
         return;
     }
     #endif
@@ -430,7 +430,7 @@ uint32 Ea_GetEraseCycleCount(void)
 {
     #if (EA_DEV_ERROR_DETECT == STD_ON)
     if (Ea_Initialized == FALSE) {
-        Det_ReportError(EA_MODULE_ID, 0U, EA_SID_GETERASECYCLECOUNT, EA_E_UNINIT);
+        (void)Det_ReportError(EA_MODULE_ID, 0U, EA_SID_GETERASECYCLECOUNT, EA_E_UNINIT);
         return 0U;
     }
     #endif

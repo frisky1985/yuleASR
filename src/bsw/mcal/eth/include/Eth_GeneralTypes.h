@@ -50,4 +50,12 @@ typedef uint8 Eth_MacAddrType[6U];
 }
 #endif
 
+void Eth_IsrCtrl0(void);
+
+void Eth_IsrCtrl0Tx(void);
+
+void Eth_IsrCtrl0Rx(void);
+
+void Eth_IsrCtrl0Error(void);
+
 #endif /* ETH_GENERALTYPES_H */

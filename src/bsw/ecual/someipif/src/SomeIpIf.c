@@ -81,7 +81,7 @@ void SomeIpIf_Init(const SomeIpIf_ConfigType* ConfigPtr)
 {
 #if (SOMEIPIF_DEV_ERROR_DETECT == STD_ON)
     if (NULL_PTR == ConfigPtr) {
-        Det_ReportError(SOMEIPIF_MODULE_ID, 0U, SOMEIPIF_SID_INIT, SOMEIPIF_E_PARAM_POINTER);
+        (void)Det_ReportError(SOMEIPIF_MODULE_ID, 0U, SOMEIPIF_SID_INIT, SOMEIPIF_E_PARAM_POINTER);
         return;
     }
 #endif
@@ -104,11 +104,11 @@ Std_ReturnType SomeIpIf_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPt
 {
 #if (SOMEIPIF_DEV_ERROR_DETECT == STD_ON)
     if (SomeIpIf_State.state < SOMEIPIF_INIT) {
-        Det_ReportError(SOMEIPIF_MODULE_ID, 0U, SOMEIPIF_SID_TRANSMIT, SOMEIPIF_E_UNINIT);
+        (void)Det_ReportError(SOMEIPIF_MODULE_ID, 0U, SOMEIPIF_SID_TRANSMIT, SOMEIPIF_E_UNINIT);
         return E_NOT_OK;
     }
     if ((NULL_PTR == PduInfoPtr) || (NULL_PTR == PduInfoPtr->SduDataPtr)) {
-        Det_ReportError(SOMEIPIF_MODULE_ID, 0U, SOMEIPIF_SID_TRANSMIT, SOMEIPIF_E_PARAM_POINTER);
+        (void)Det_ReportError(SOMEIPIF_MODULE_ID, 0U, SOMEIPIF_SID_TRANSMIT, SOMEIPIF_E_PARAM_POINTER);
         return E_NOT_OK;
     }
 #endif

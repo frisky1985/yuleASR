@@ -59,7 +59,7 @@ void IoHwAb_Init(const IoHwAb_ConfigType* ConfigPtr)
 {
 #if (IOHWAB_DEV_ERROR_DETECT == STD_ON)
     if (NULL_PTR == ConfigPtr) {
-        Det_ReportError(IOHWAB_MODULE_ID, 0U, IOHWAB_SID_INIT, IOHWAB_E_PARAM_POINTER);
+        (void)Det_ReportError(IOHWAB_MODULE_ID, 0U, IOHWAB_SID_INIT, IOHWAB_E_PARAM_POINTER);
         return;
     }
 #endif

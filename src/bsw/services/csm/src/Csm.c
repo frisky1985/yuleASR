@@ -193,7 +193,7 @@ STATIC Std_ReturnType Csm_LoadKeyElement(uint32 keyId, uint32 elementId);
 STATIC void Csm_ReportError(uint8 apiId, uint8 errorId)
 {
 #if (CSM_CFG_DEV_ERROR_DETECT == STD_ON)
-    Det_ReportError(CSM_MODULE_ID, 0, apiId, errorId);
+    (void)Det_ReportError(CSM_MODULE_ID, 0, apiId, errorId);
 #else
     (void)apiId;
     (void)errorId;
@@ -333,7 +333,7 @@ STATIC Std_ReturnType Csm_QueueJob(uint32 jobId, Csm_JobPriorityType priority)
     
     /* 按优先级插入作业 (高优先级在前) */
     insertPos = Csm_JobQueue.tail;
-    for (i = Csm_JobQueue.head; i != Csm_JobQueue.tail; i = (i + 1) % CSM_CFG_QUEUE_SIZE)
+    for (i = Csm_JobQueue.head; i != Csm_JobQueue.tail; i = (i + (uint8)1) % CSM_CFG_QUEUE_SIZE)
     {
         if (Csm_JobQueue.items[i].priority < priority)
         {
@@ -343,9 +343,9 @@ STATIC Std_ReturnType Csm_QueueJob(uint32 jobId, Csm_JobPriorityType priority)
     }
     
     /* 移动元素以插入新作业 */
-    for (i = Csm_JobQueue.tail; i != insertPos; i = (i - 1 + CSM_CFG_QUEUE_SIZE) % CSM_CFG_QUEUE_SIZE)
+    for (i = Csm_JobQueue.tail; i != insertPos; i = (i - (uint8)1 + CSM_CFG_QUEUE_SIZE) % CSM_CFG_QUEUE_SIZE)
     {
-        uint8 prev = (i - 1 + CSM_CFG_QUEUE_SIZE) % CSM_CFG_QUEUE_SIZE;
+        uint8 prev = (i - (uint8)1 + CSM_CFG_QUEUE_SIZE) % CSM_CFG_QUEUE_SIZE;
         Csm_JobQueue.items[i] = Csm_JobQueue.items[prev];
     }
     

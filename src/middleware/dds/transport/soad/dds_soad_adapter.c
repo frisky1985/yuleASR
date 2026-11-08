@@ -430,7 +430,7 @@ eth_status_t dds_soad_send_data(const char *topic_name,
     if (!g_adapter_ctx.initialized) {
         status = ETH_NOT_INIT;
     }
-    else if ((topic_name == NULL) || (data == NULL) || (len == 0)) {
+    else if ((topic_name == NULL) || (data == NULL) || (len == (uint32_t)0)) {
         status = ETH_INVALID_PARAM;
     }
     else {

@@ -179,7 +179,7 @@ Std_ReturnType NvM_RedundantRead(NvM_BlockIdType BlockId, uint8* DestPtr)
     {
         /* Primary valid, mirror corrupt - recover mirror */
         (void)memcpy(DestPtr, PrimaryBuffer, BlockLength);
-        NvM_RedundantWriteBlock(BlockId, NVM_RED_INSTANCE_MIRROR, PrimaryBuffer);
+        (void)NvM_RedundantWriteBlock(BlockId, NVM_RED_INSTANCE_MIRROR, PrimaryBuffer);
         NvM_RedundantBlockInfo[BlockId].State = NVM_REDUNDANT_BLOCK_STATE_INCONSISTENT;
         return E_OK;
     }
@@ -187,7 +187,7 @@ Std_ReturnType NvM_RedundantRead(NvM_BlockIdType BlockId, uint8* DestPtr)
     {
         /* Mirror valid, primary corrupt - recover primary */
         (void)memcpy(DestPtr, MirrorBuffer, BlockLength);
-        NvM_RedundantWriteBlock(BlockId, NVM_RED_INSTANCE_PRIMARY, MirrorBuffer);
+        (void)NvM_RedundantWriteBlock(BlockId, NVM_RED_INSTANCE_PRIMARY, MirrorBuffer);
         NvM_RedundantBlockInfo[BlockId].State = NVM_REDUNDANT_BLOCK_STATE_INCONSISTENT;
         return E_OK;
     }
@@ -272,8 +272,8 @@ Std_ReturnType NvM_RedundantRepair(NvM_BlockIdType BlockId)
     BlockLength = BlockDesc->NvBlockLength;
     
     /* Read both instances */
-    NvM_RedundantReadBlock(BlockId, NVM_RED_INSTANCE_PRIMARY, PrimaryBuffer);
-    NvM_RedundantReadBlock(BlockId, NVM_RED_INSTANCE_MIRROR, MirrorBuffer);
+    (void)NvM_RedundantReadBlock(BlockId, NVM_RED_INSTANCE_PRIMARY, PrimaryBuffer);
+    (void)NvM_RedundantReadBlock(BlockId, NVM_RED_INSTANCE_MIRROR, MirrorBuffer);
     
     /* Calculate CRCs */
     PrimaryCrc = NvM_CalculateCRC16(PrimaryBuffer, BlockLength);

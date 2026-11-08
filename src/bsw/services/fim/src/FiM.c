@@ -516,13 +516,13 @@ Std_ReturnType FiM_GetInhibitionStatus(FiM_FunctionIdType FID, FiM_InhibitionSta
 #if (FIM_DEV_ERROR_DETECT == STD_ON)
     if (NULL_PTR == InhibitionStatus)
     {
-        Det_ReportError(FIM_MODULE_ID, FIM_INSTANCE_ID, FIM_SID_GETINHIBITIONSTATUS, FIM_E_PARAM_POINTER);
+        (void)Det_ReportError(FIM_MODULE_ID, FIM_INSTANCE_ID, FIM_SID_GETINHIBITIONSTATUS, FIM_E_PARAM_POINTER);
         return E_NOT_OK;
     }
 
     if (FIM_MAX_FUNCTIONS <= FID)
     {
-        Det_ReportError(FIM_MODULE_ID, FIM_INSTANCE_ID, FIM_SID_GETINHIBITIONSTATUS, FIM_E_PARAM_FID);
+        (void)Det_ReportError(FIM_MODULE_ID, FIM_INSTANCE_ID, FIM_SID_GETINHIBITIONSTATUS, FIM_E_PARAM_FID);
         return E_NOT_OK;
     }
 #endif

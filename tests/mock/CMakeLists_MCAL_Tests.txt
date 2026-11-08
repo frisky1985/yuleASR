@@ -512,6 +512,47 @@ if(EXISTS ${MCAL_TEST_SRC_DIR}/i2c/test_i2c.c)
 endif()
 
 #----------------------------------------------------------------------
+# I2C behavioural (register model) test
+# Drives the polling / interrupt / DMA / ISR paths through a stateful
+# register model instead of the static mock register table.
+#----------------------------------------------------------------------
+if(EXISTS ${MCAL_TEST_SRC_DIR}/i2c/test_i2c_full.c)
+    add_executable(mcal_i2c_full_test
+        ${MCAL_TEST_SRC_DIR}/i2c/test_i2c_full.c
+        ${MCAL_TEST_SRC_DIR}/i2c/i2c_reg_mock.c
+        ${MOCK_DIR}/stubs/Det_stub.c
+    )
+    target_compile_options(mcal_i2c_full_test PRIVATE
+        -include ${MCAL_TEST_SRC_DIR}/i2c/i2c_reg_mock.h
+        -US32K312
+        -US32K3XX
+        -Wall
+        -Wextra
+        -Wno-unused-parameter
+        -Wno-unused-variable
+        -Wno-unused-function
+        -Wno-int-conversion
+        -Wno-implicit-int
+        -Wno-implicit-function-declaration
+        -Wno-excess-initializers
+        -g
+        -O0
+    )
+    target_include_directories(mcal_i2c_full_test PRIVATE
+        ${MCAL_TEST_INCLUDES}
+        ${CMAKE_CURRENT_BINARY_DIR}
+    )
+    if(ENABLE_COVERAGE)
+        target_compile_options(mcal_i2c_full_test PRIVATE --coverage)
+        if(NOT APPLE)
+            target_link_libraries(mcal_i2c_full_test PRIVATE gcov)
+        endif()
+    endif()
+    add_test(NAME mcal_i2c_full_test COMMAND mcal_i2c_full_test)
+    message(STATUS "  BSW MCAL test: mcal_i2c_full_test")
+endif()
+
+#----------------------------------------------------------------------
 # LIN test
 #----------------------------------------------------------------------
 if(EXISTS ${MCAL_TEST_SRC_DIR}/lin/test_lin.c)
@@ -635,6 +676,26 @@ if(EXISTS ${CMAKE_SOURCE_DIR}/tests/unit/autosar/mcal/test_linslave.c)
             ${SRC_MCAL}/lin/src/LinSlave_CfgTable.c
         MOCK_SRCS
             ${MOCK_DIR}/stubs/Det_stub.c
+    )
+endif()
+
+#----------------------------------------------------------------------
+# LinSlave full protocol stack test
+# Core (LinSlave.c) is included white-box by the test; the remaining
+# modules are linked normally.  Drives the state machine, config table,
+# TP and UDS layers through their public entry points.
+#----------------------------------------------------------------------
+if(EXISTS ${MCAL_TEST_SRC_DIR}/lin/test_linslave_stack.c)
+    add_bsw_mcal_test(
+        NAME        mcal_linslave_stack_test
+        TEST_FILE   ${MCAL_TEST_SRC_DIR}/lin/test_linslave_stack.c
+        MCAL_SRCS
+            ${SRC_MCAL}/lin/src/LinSlave_CfgTable.c
+            ${SRC_MCAL}/lin/src/LinSlave_Tp.c
+            ${SRC_MCAL}/lin/src/LinSlave_Uds.c
+            ${SRC_MCAL}/lin/src/LinSlave_Pid.c
+            ${SRC_MCAL}/lin/src/LinSlave_Checksum.c
+            ${SRC_MCAL}/lin/src/LinSlave_Hal.c
     )
 endif()
 

@@ -155,7 +155,7 @@ Std_ReturnType FaultInjection_InjectBitFlip(
     uint32_t flipped_value;
     uint8_t i;
     
-    if (!g_initialized || result == NULL || addr == 0) {
+    if (!g_initialized || result == NULL || addr == (uint32_t)0) {
         return E_NOT_OK;
     }
     
@@ -205,8 +205,8 @@ Std_ReturnType FaultInjection_InjectMultiBitFlip(
     uint32_t mask = 0;
     uint8_t i;
     
-    if (!g_initialized || result == NULL || addr == 0 || bit_count == 0 ||
-        bit_count > 32 || bit_positions == NULL) {
+    if (!g_initialized || result == NULL || addr == (uint32_t)0 || bit_count == 0 ||
+        bit_count > (uint8_t)32 || bit_positions == NULL) {
         return E_NOT_OK;
     }
     
@@ -247,7 +247,7 @@ Std_ReturnType FaultInjection_InjectStuckAt(
     volatile uint32_t *ptr;
     uint32_t original_value;
     
-    if (!g_initialized || result == NULL || addr == 0) {
+    if (!g_initialized || result == NULL || addr == (uint32_t)0) {
         return E_NOT_OK;
     }
     
@@ -283,7 +283,7 @@ Std_ReturnType FaultInjection_InjectByteCorrupt(
     volatile uint8_t *ptr;
     uint8_t original_value;
     
-    if (!g_initialized || result == NULL || addr == 0) {
+    if (!g_initialized || result == NULL || addr == (uint32_t)0) {
         return E_NOT_OK;
     }
     
@@ -319,7 +319,7 @@ Std_ReturnType FaultInjection_InjectWordCorrupt(
     volatile uint32_t *ptr;
     uint32_t original_value;
     
-    if (!g_initialized || result == NULL || addr == 0) {
+    if (!g_initialized || result == NULL || addr == (uint32_t)0) {
         return E_NOT_OK;
     }
     
@@ -422,7 +422,7 @@ Std_ReturnType FaultInjection_InjectEccAddressError(
     /* Inject an address line fault */
     /* This is typically done by manipulating the address decoder or bus */
     
-    if (!g_initialized || result == NULL || data_addr == 0) {
+    if (!g_initialized || result == NULL || data_addr == (uint32_t)0) {
         return E_NOT_OK;
     }
     
@@ -616,7 +616,7 @@ Std_ReturnType FaultInjection_CheckDrift(DriftDetectionResultType *result)
     result->actual_pattern = g_drift_pattern;
     result->drift_amount = 0;
     
-    if (g_drift_config.base_addr == 0 || g_drift_config.size == 0) {
+    if (g_drift_config.base_addr == (uint32_t)0 || g_drift_config.size == 0) {
         return E_OK;
     }
     
@@ -642,7 +642,7 @@ Std_ReturnType FaultInjection_InjectDrift(uint32_t addr, uint8_t drift_amount)
     volatile uint32_t *ptr;
     uint32_t original_value;
     
-    if (!g_initialized || addr == 0) {
+    if (!g_initialized || addr == (uint32_t)0) {
         return E_NOT_OK;
     }
     
@@ -668,7 +668,7 @@ Std_ReturnType FaultInjection_WritePattern(
     uint32_t i;
     uint32_t word_count;
     
-    if (!g_initialized || addr == 0 || size == 0) {
+    if (!g_initialized || addr == (uint32_t)0 || size == 0) {
         return E_NOT_OK;
     }
     
@@ -693,7 +693,7 @@ Std_ReturnType FaultInjection_VerifyPattern(
     uint32_t word_count;
     uint32_t mismatches = 0;
     
-    if (!g_initialized || addr == 0 || size == 0 || mismatch_count == NULL) {
+    if (!g_initialized || addr == (uint32_t)0 || size == 0 || mismatch_count == NULL) {
         return E_NOT_OK;
     }
     
@@ -724,7 +724,7 @@ Std_ReturnType FaultInjection_WalkingBitTest(
     uint32_t pattern;
     uint32_t read_value;
     
-    if (!g_initialized || addr == 0 || size == 0 || error_count == NULL) {
+    if (!g_initialized || addr == (uint32_t)0 || size == 0 || error_count == NULL) {
         return E_NOT_OK;
     }
     
@@ -733,7 +733,7 @@ Std_ReturnType FaultInjection_WalkingBitTest(
     
     /* Walking 1s test */
     for (i = 0; i < word_count; i++) {
-        for (bit = 0; bit < 32; bit++) {
+        for (bit = 0; bit < (uint32_t)32; bit++) {
             pattern = (uint32_t)(1U << bit);
             ptr[i] = pattern;
             read_value = ptr[i];
@@ -746,7 +746,7 @@ Std_ReturnType FaultInjection_WalkingBitTest(
     
     /* Walking 0s test */
     for (i = 0; i < word_count; i++) {
-        for (bit = 0; bit < 32; bit++) {
+        for (bit = 0; bit < (uint32_t)32; bit++) {
             pattern = ~(uint32_t)(1U << bit);
             ptr[i] = pattern;
             read_value = ptr[i];

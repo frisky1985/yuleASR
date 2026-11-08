@@ -695,7 +695,7 @@ void CanTp_Init(const CanTp_ConfigType* CfgPtr)
 {
     #if (CANTP_DEV_ERROR_DETECT == STD_ON)
     if (CfgPtr == NULL_PTR) {
-        Det_ReportError(CANTP_MODULE_ID, 0U, CANTP_SID_INIT, CANTP_E_PARAM_CONFIG);
+        (void)Det_ReportError(CANTP_MODULE_ID, 0U, CANTP_SID_INIT, CANTP_E_PARAM_CONFIG);
         return;
     }
     #endif
@@ -727,7 +727,7 @@ void CanTp_Shutdown(void)
 {
     #if (CANTP_DEV_ERROR_DETECT == STD_ON)
     if (CanTp_Initialized == FALSE) {
-        Det_ReportError(CANTP_MODULE_ID, 0U, CANTP_SID_SHUTDOWN, CANTP_E_UNINIT);
+        (void)Det_ReportError(CANTP_MODULE_ID, 0U, CANTP_SID_SHUTDOWN, CANTP_E_UNINIT);
         return;
     }
     #endif
@@ -758,15 +758,15 @@ Std_ReturnType CanTp_Transmit(PduIdType CanTpTxSduId, const PduInfoType* CanTpTx
 {
     #if (CANTP_DEV_ERROR_DETECT == STD_ON)
     if (CanTp_Initialized == FALSE) {
-        Det_ReportError(CANTP_MODULE_ID, 0U, CANTP_SID_TRANSMIT, CANTP_E_UNINIT);
+        (void)Det_ReportError(CANTP_MODULE_ID, 0U, CANTP_SID_TRANSMIT, CANTP_E_UNINIT);
         return E_NOT_OK;
     }
     if (CanTpTxSduId >= CANTP_NUM_TX_NSDU) {
-        Det_ReportError(CANTP_MODULE_ID, 0U, CANTP_SID_TRANSMIT, CANTP_E_INVALID_TX_ID);
+        (void)Det_ReportError(CANTP_MODULE_ID, 0U, CANTP_SID_TRANSMIT, CANTP_E_INVALID_TX_ID);
         return E_NOT_OK;
     }
     if (CanTpTxInfoPtr == NULL_PTR) {
-        Det_ReportError(CANTP_MODULE_ID, 0U, CANTP_SID_TRANSMIT, CANTP_E_PARAM_POINTER);
+        (void)Det_ReportError(CANTP_MODULE_ID, 0U, CANTP_SID_TRANSMIT, CANTP_E_PARAM_POINTER);
         return E_NOT_OK;
     }
     #endif
@@ -779,7 +779,7 @@ Std_ReturnType CanTp_Transmit(PduIdType CanTpTxSduId, const PduInfoType* CanTpTx
 
     if (dataLength > CANTP_CANFD_MAX_MESSAGE_LENGTH) {
         #if (CANTP_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(CANTP_MODULE_ID, 0U, CANTP_SID_TRANSMIT, CANTP_E_INVALID_TX_LENGTH);
+        (void)Det_ReportError(CANTP_MODULE_ID, 0U, CANTP_SID_TRANSMIT, CANTP_E_INVALID_TX_LENGTH);
         #endif
         return E_NOT_OK;  /* Message exceeds the maximum TP message length */
     }
@@ -849,7 +849,7 @@ Std_ReturnType CanTp_CancelTransmit(PduIdType CanTpTxSduId)
 {
     #if (CANTP_DEV_ERROR_DETECT == STD_ON)
     if (CanTp_Initialized == FALSE) {
-        Det_ReportError(CANTP_MODULE_ID, 0U, CANTP_SID_CANCELTRANSMIT, CANTP_E_UNINIT);
+        (void)Det_ReportError(CANTP_MODULE_ID, 0U, CANTP_SID_CANCELTRANSMIT, CANTP_E_UNINIT);
         return E_NOT_OK;
     }
     #endif
@@ -880,7 +880,7 @@ Std_ReturnType CanTp_CancelReceive(PduIdType CanTpRxSduId)
 {
     #if (CANTP_DEV_ERROR_DETECT == STD_ON)
     if (CanTp_Initialized == FALSE) {
-        Det_ReportError(CANTP_MODULE_ID, 0U, CANTP_SID_CANCELRECEIVE, CANTP_E_UNINIT);
+        (void)Det_ReportError(CANTP_MODULE_ID, 0U, CANTP_SID_CANCELRECEIVE, CANTP_E_UNINIT);
         return E_NOT_OK;
     }
     #endif
@@ -910,7 +910,7 @@ Std_ReturnType CanTp_ChangeParameter(PduIdType id, TPParameterType parameter, ui
 {
     #if (CANTP_DEV_ERROR_DETECT == STD_ON)
     if (CanTp_Initialized == FALSE) {
-        Det_ReportError(CANTP_MODULE_ID, 0U, CANTP_SID_CHANGEPARAMETER, CANTP_E_UNINIT);
+        (void)Det_ReportError(CANTP_MODULE_ID, 0U, CANTP_SID_CHANGEPARAMETER, CANTP_E_UNINIT);
         return E_NOT_OK;
     }
     #endif
@@ -947,11 +947,11 @@ Std_ReturnType CanTp_ReadParameter(PduIdType id, TPParameterType parameter, uint
 {
     #if (CANTP_DEV_ERROR_DETECT == STD_ON)
     if (CanTp_Initialized == FALSE) {
-        Det_ReportError(CANTP_MODULE_ID, 0U, CANTP_SID_READPARAMETER, CANTP_E_UNINIT);
+        (void)Det_ReportError(CANTP_MODULE_ID, 0U, CANTP_SID_READPARAMETER, CANTP_E_UNINIT);
         return E_NOT_OK;
     }
     if (value == NULL_PTR) {
-        Det_ReportError(CANTP_MODULE_ID, 0U, CANTP_SID_READPARAMETER, CANTP_E_PARAM_POINTER);
+        (void)Det_ReportError(CANTP_MODULE_ID, 0U, CANTP_SID_READPARAMETER, CANTP_E_PARAM_POINTER);
         return E_NOT_OK;
     }
     #endif
@@ -988,7 +988,7 @@ void CanTp_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
     #if (CANTP_DEV_ERROR_DETECT == STD_ON)
     if (versioninfo == NULL_PTR) {
-        Det_ReportError(CANTP_MODULE_ID, 0U, CANTP_SID_GETVERSIONINFO, CANTP_E_PARAM_POINTER);
+        (void)Det_ReportError(CANTP_MODULE_ID, 0U, CANTP_SID_GETVERSIONINFO, CANTP_E_PARAM_POINTER);
         return;
     }
     #endif

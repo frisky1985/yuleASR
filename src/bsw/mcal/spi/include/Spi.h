@@ -198,4 +198,6 @@ extern void Spi_MainFunction(void);
  */
 extern void Spi_IsrHandler(uint8 Channel);
 
+void Spi_GetVersionInfo(Std_VersionInfoType* versioninfo);
+
 #endif /* SPI_H */

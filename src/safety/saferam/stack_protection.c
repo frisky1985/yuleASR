@@ -172,7 +172,7 @@ Std_ReturnType StackProtection_RegisterStack(
     /* Stack grows downward: base is high address */
     stack->base_addr = config->base_addr;
     stack->size = config->size;
-    stack->end_addr = config->base_addr - config->size + 1;
+    stack->end_addr = config->base_addr - config->size + (uint32_t)1;
     
     /* Initialize with empty state */
     stack->current_sp = config->base_addr;
@@ -832,11 +832,11 @@ Std_ReturnType StackProtection_ResetStats(uint8_t stack_id)
 
 uint8_t StackProtection_CalcUsagePercent(uint32_t used, uint32_t total)
 {
-    if (total == 0) {
+    if (total == (uint32_t)0) {
         return 0;
     }
     
-    return (uint8_t)((used * 100) / total);
+    return (uint8_t)((used * (uint32_t)100) / total);
 }
 
 const char* StackProtection_GetStateString(uint8_t state)

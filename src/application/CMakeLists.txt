@@ -40,6 +40,11 @@ foreach(component ${ASW_COMPONENTS})
             ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib/asw
         )
         
+        # Host-side unit tests for this component (only with BUILD_TESTING)
+        if(BUILD_TESTING AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${component}/tests/CMakeLists.txt)
+            add_subdirectory(${component}/tests)
+        endif()
+        
         message(STATUS "  ASW component: ${component}")
     endif()
 endforeach()

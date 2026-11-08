@@ -180,7 +180,7 @@ Mqtt_ReturnType Mqtt_Init(const Mqtt_ConfigType* config)
     
 #if (MQTT_SUPPORT_TLS == STD_ON)
     /* 初始化TLS子系统 */
-    Mqtt_Tls_Init();
+    (void)Mqtt_Tls_Init();
 #endif
     
     Mqtt_ConfigPtr = config;
@@ -202,7 +202,7 @@ Mqtt_ReturnType Mqtt_DeInit(void)
     /* 断开所有连接 */
     for (i = 0; i < MQTT_MAX_CONNECTIONS; i++) {
         if (Mqtt_Connections[i].state == MQTT_STATE_CONNECTED) {
-            Mqtt_Disconnect(i);
+            (void)Mqtt_Disconnect(i);
         }
     }
     
@@ -316,8 +316,8 @@ Mqtt_ReturnType Mqtt_Disconnect(Mqtt_ConnectionIdType connectionId)
     
     if (conn->state == MQTT_STATE_CONNECTED) {
         /* 发送DISCONNECT报文 */
-        Mqtt_EncodeDisconnect(conn);
-        Mqtt_SendPacket(conn, conn->sendBuffer, conn->sendLength);
+        (void)Mqtt_EncodeDisconnect(conn);
+        (void)Mqtt_SendPacket(conn, conn->sendBuffer, conn->sendLength);
     }
     
     /* 关闭TCP连接 */
@@ -600,7 +600,7 @@ void Mqtt_MainFunction(void)
     Mqtt_TickCount++;
     
     for (i = 0; i < MQTT_MAX_CONNECTIONS; i++) {
-        Mqtt_ProcessStateMachine(&Mqtt_Connections[i]);
+        (void)Mqtt_ProcessStateMachine(&Mqtt_Connections[i]);
     }
 }
 
@@ -677,7 +677,7 @@ Mqtt_ReturnType Mqtt_ProcessStateMachine(Mqtt_InternalConnectionType* conn)
             /* 关闭TLS连接 */
 #if (MQTT_SUPPORT_TLS == STD_ON)
             if (conn->useTls && (conn->tlsContext != NULL_PTR)) {
-                Mqtt_Tls_Close(conn->tlsContext);
+                (void)Mqtt_Tls_Close(conn->tlsContext);
                 Mqtt_Tls_DestroyContext(conn->tlsContext);
                 conn->tlsContext = NULL_PTR;
             }

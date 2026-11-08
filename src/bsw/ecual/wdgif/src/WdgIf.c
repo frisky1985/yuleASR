@@ -39,7 +39,7 @@ void WdgIf_Init(const WdgIf_ConfigType* ConfigPtr)
 {
 #if (WDGIF_DEV_ERROR_DETECT == STD_ON)
     if (NULL_PTR == ConfigPtr) {
-        Det_ReportError(WDGIF_MODULE_ID, 0U, WDGIF_SID_INIT, WDGIF_E_INV_POINTER);
+        (void)Det_ReportError(WDGIF_MODULE_ID, 0U, WDGIF_SID_INIT, WDGIF_E_INV_POINTER);
         return;
     }
 #endif
@@ -61,15 +61,15 @@ Std_ReturnType WdgIf_SetMode(WdgIf_DeviceType Device, WdgIf_ModeType WdgMode)
 {
 #if (WDGIF_DEV_ERROR_DETECT == STD_ON)
     if (WdgIf_State.internalState < WDGIF_INTERNAL_INIT) {
-        Det_ReportError(WDGIF_MODULE_ID, 0U, WDGIF_SID_SETMODE, WDGIF_E_DRIVER_UNINIT);
+        (void)Det_ReportError(WDGIF_MODULE_ID, 0U, WDGIF_SID_SETMODE, WDGIF_E_DRIVER_UNINIT);
         return E_NOT_OK;
     }
     if (Device >= WdgIf_State.deviceCount) {
-        Det_ReportError(WDGIF_MODULE_ID, 0U, WDGIF_SID_SETMODE, WDGIF_E_PARAM_DEVICE);
+        (void)Det_ReportError(WDGIF_MODULE_ID, 0U, WDGIF_SID_SETMODE, WDGIF_E_PARAM_DEVICE);
         return E_NOT_OK;
     }
     if (WdgMode > WDGIF_FAST_MODE) {
-        Det_ReportError(WDGIF_MODULE_ID, 0U, WDGIF_SID_SETMODE, WDGIF_E_PARAM_MODE);
+        (void)Det_ReportError(WDGIF_MODULE_ID, 0U, WDGIF_SID_SETMODE, WDGIF_E_PARAM_MODE);
         return E_NOT_OK;
     }
 #endif
@@ -82,11 +82,11 @@ Std_ReturnType WdgIf_Trigger(WdgIf_DeviceType Device)
 {
 #if (WDGIF_DEV_ERROR_DETECT == STD_ON)
     if (WdgIf_State.internalState < WDGIF_INTERNAL_INIT) {
-        Det_ReportError(WDGIF_MODULE_ID, 0U, WDGIF_SID_TRIGGER, WDGIF_E_DRIVER_UNINIT);
+        (void)Det_ReportError(WDGIF_MODULE_ID, 0U, WDGIF_SID_TRIGGER, WDGIF_E_DRIVER_UNINIT);
         return E_NOT_OK;
     }
     if (Device >= WdgIf_State.deviceCount) {
-        Det_ReportError(WDGIF_MODULE_ID, 0U, WDGIF_SID_TRIGGER, WDGIF_E_PARAM_DEVICE);
+        (void)Det_ReportError(WDGIF_MODULE_ID, 0U, WDGIF_SID_TRIGGER, WDGIF_E_PARAM_DEVICE);
         return E_NOT_OK;
     }
 #endif
@@ -98,11 +98,11 @@ Std_ReturnType WdgIf_SetTriggerCondition(WdgIf_DeviceType Device, WdgIf_TimeoutT
 {
 #if (WDGIF_DEV_ERROR_DETECT == STD_ON)
     if (WdgIf_State.internalState < WDGIF_INTERNAL_INIT) {
-        Det_ReportError(WDGIF_MODULE_ID, 0U, WDGIF_SID_SETTRIGGERCONDITION, WDGIF_E_DRIVER_UNINIT);
+        (void)Det_ReportError(WDGIF_MODULE_ID, 0U, WDGIF_SID_SETTRIGGERCONDITION, WDGIF_E_DRIVER_UNINIT);
         return E_NOT_OK;
     }
     if (Device >= WdgIf_State.deviceCount) {
-        Det_ReportError(WDGIF_MODULE_ID, 0U, WDGIF_SID_SETTRIGGERCONDITION, WDGIF_E_PARAM_DEVICE);
+        (void)Det_ReportError(WDGIF_MODULE_ID, 0U, WDGIF_SID_SETTRIGGERCONDITION, WDGIF_E_PARAM_DEVICE);
         return E_NOT_OK;
     }
 #endif
@@ -116,7 +116,7 @@ void WdgIf_GetVersionInfo(Std_VersionInfoType* VersionInfo)
 {
 #if (WDGIF_DEV_ERROR_DETECT == STD_ON)
     if (NULL_PTR == VersionInfo) {
-        Det_ReportError(WDGIF_MODULE_ID, 0U, WDGIF_SID_GETVERSIONINFO, WDGIF_E_INV_POINTER);
+        (void)Det_ReportError(WDGIF_MODULE_ID, 0U, WDGIF_SID_GETVERSIONINFO, WDGIF_E_INV_POINTER);
         return;
     }
 #endif

@@ -110,7 +110,7 @@ void Dio_Init(const Dio_ConfigType* ConfigPtr)
 {
     #if (DIO_DEV_ERROR_DETECT == STD_ON)
     if (ConfigPtr == NULL_PTR) {
-        Det_ReportError(DIO_MODULE_ID, 0U, DIO_SID_INIT, DIO_E_PARAM_CONFIG);
+        (void)Det_ReportError(DIO_MODULE_ID, 0U, DIO_SID_INIT, DIO_E_PARAM_CONFIG);
         return;
     }
     #endif
@@ -124,11 +124,11 @@ Dio_LevelType Dio_ReadChannel(Dio_ChannelType ChannelId)
     Dio_LevelType level;
     #if (DIO_DEV_ERROR_DETECT == STD_ON)
     if (Dio_DriverInitialized == FALSE) {
-        Det_ReportError(DIO_MODULE_ID, 0U, DIO_SID_READ_CHANNEL, DIO_E_UNINIT);
+        (void)Det_ReportError(DIO_MODULE_ID, 0U, DIO_SID_READ_CHANNEL, DIO_E_UNINIT);
         return STD_LOW;
     }
     if (ChannelId >= (DIO_NUM_PORTS * DIO_NUM_CHANNELS_PER_PORT)) {
-        Det_ReportError(DIO_MODULE_ID, 0U, DIO_SID_READ_CHANNEL, DIO_E_PARAM_INVALID_CHANNEL_ID);
+        (void)Det_ReportError(DIO_MODULE_ID, 0U, DIO_SID_READ_CHANNEL, DIO_E_PARAM_INVALID_CHANNEL_ID);
         return STD_LOW;
     }
     #endif
@@ -147,11 +147,11 @@ void Dio_WriteChannel(Dio_ChannelType ChannelId, Dio_LevelType Level)
 {
     #if (DIO_DEV_ERROR_DETECT == STD_ON)
     if (Dio_DriverInitialized == FALSE) {
-        Det_ReportError(DIO_MODULE_ID, 0U, DIO_SID_WRITE_CHANNEL, DIO_E_UNINIT);
+        (void)Det_ReportError(DIO_MODULE_ID, 0U, DIO_SID_WRITE_CHANNEL, DIO_E_UNINIT);
         return;
     }
     if (ChannelId >= (DIO_NUM_PORTS * DIO_NUM_CHANNELS_PER_PORT)) {
-        Det_ReportError(DIO_MODULE_ID, 0U, DIO_SID_WRITE_CHANNEL, DIO_E_PARAM_INVALID_CHANNEL_ID);
+        (void)Det_ReportError(DIO_MODULE_ID, 0U, DIO_SID_WRITE_CHANNEL, DIO_E_PARAM_INVALID_CHANNEL_ID);
         return;
     }
     #endif
@@ -173,11 +173,11 @@ Dio_PortLevelType Dio_ReadPort(Dio_PortType PortId)
     Dio_PortLevelType level;
     #if (DIO_DEV_ERROR_DETECT == STD_ON)
     if (Dio_DriverInitialized == FALSE) {
-        Det_ReportError(DIO_MODULE_ID, 0U, DIO_SID_READ_PORT, DIO_E_UNINIT);
+        (void)Det_ReportError(DIO_MODULE_ID, 0U, DIO_SID_READ_PORT, DIO_E_UNINIT);
         return 0U;
     }
     if (PortId >= DIO_NUM_PORTS) {
-        Det_ReportError(DIO_MODULE_ID, 0U, DIO_SID_READ_PORT, DIO_E_PARAM_INVALID_PORT_ID);
+        (void)Det_ReportError(DIO_MODULE_ID, 0U, DIO_SID_READ_PORT, DIO_E_PARAM_INVALID_PORT_ID);
         return 0U;
     }
     #endif
@@ -192,11 +192,11 @@ void Dio_WritePort(Dio_PortType PortId, Dio_PortLevelType Level)
 {
     #if (DIO_DEV_ERROR_DETECT == STD_ON)
     if (Dio_DriverInitialized == FALSE) {
-        Det_ReportError(DIO_MODULE_ID, 0U, DIO_SID_WRITE_PORT, DIO_E_UNINIT);
+        (void)Det_ReportError(DIO_MODULE_ID, 0U, DIO_SID_WRITE_PORT, DIO_E_UNINIT);
         return;
     }
     if (PortId >= DIO_NUM_PORTS) {
-        Det_ReportError(DIO_MODULE_ID, 0U, DIO_SID_WRITE_PORT, DIO_E_PARAM_INVALID_PORT_ID);
+        (void)Det_ReportError(DIO_MODULE_ID, 0U, DIO_SID_WRITE_PORT, DIO_E_PARAM_INVALID_PORT_ID);
         return;
     }
     #endif
@@ -211,11 +211,11 @@ Dio_PortLevelType Dio_ReadChannelGroup(const Dio_ChannelGroupType* ChannelGroupI
     Dio_PortLevelType level;
     #if (DIO_DEV_ERROR_DETECT == STD_ON)
     if (Dio_DriverInitialized == FALSE) {
-        Det_ReportError(DIO_MODULE_ID, 0U, DIO_SID_READ_CHANNEL_GROUP, DIO_E_UNINIT);
+        (void)Det_ReportError(DIO_MODULE_ID, 0U, DIO_SID_READ_CHANNEL_GROUP, DIO_E_UNINIT);
         return 0U;
     }
     if (ChannelGroupIdPtr == NULL_PTR) {
-        Det_ReportError(DIO_MODULE_ID, 0U, DIO_SID_READ_CHANNEL_GROUP, DIO_E_PARAM_POINTER);
+        (void)Det_ReportError(DIO_MODULE_ID, 0U, DIO_SID_READ_CHANNEL_GROUP, DIO_E_PARAM_POINTER);
         return 0U;
     }
     #endif
@@ -231,11 +231,11 @@ void Dio_WriteChannelGroup(const Dio_ChannelGroupType* ChannelGroupIdPtr, Dio_Po
 {
     #if (DIO_DEV_ERROR_DETECT == STD_ON)
     if (Dio_DriverInitialized == FALSE) {
-        Det_ReportError(DIO_MODULE_ID, 0U, DIO_SID_WRITE_CHANNEL_GROUP, DIO_E_UNINIT);
+        (void)Det_ReportError(DIO_MODULE_ID, 0U, DIO_SID_WRITE_CHANNEL_GROUP, DIO_E_UNINIT);
         return;
     }
     if (ChannelGroupIdPtr == NULL_PTR) {
-        Det_ReportError(DIO_MODULE_ID, 0U, DIO_SID_WRITE_CHANNEL_GROUP, DIO_E_PARAM_POINTER);
+        (void)Det_ReportError(DIO_MODULE_ID, 0U, DIO_SID_WRITE_CHANNEL_GROUP, DIO_E_PARAM_POINTER);
         return;
     }
     #endif
@@ -256,7 +256,7 @@ void Dio_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
     #if (DIO_DEV_ERROR_DETECT == STD_ON)
     if (versioninfo == NULL_PTR) {
-        Det_ReportError(DIO_MODULE_ID, 0U, DIO_SID_GET_VERSION_INFO, DIO_E_PARAM_POINTER);
+        (void)Det_ReportError(DIO_MODULE_ID, 0U, DIO_SID_GET_VERSION_INFO, DIO_E_PARAM_POINTER);
         return;
     }
     #endif
@@ -275,11 +275,11 @@ Dio_LevelType Dio_FlipChannel(Dio_ChannelType ChannelId)
     Dio_LevelType newLevel;
     #if (DIO_DEV_ERROR_DETECT == STD_ON)
     if (Dio_DriverInitialized == FALSE) {
-        Det_ReportError(DIO_MODULE_ID, 0U, DIO_SID_FLIP_CHANNEL, DIO_E_UNINIT);
+        (void)Det_ReportError(DIO_MODULE_ID, 0U, DIO_SID_FLIP_CHANNEL, DIO_E_UNINIT);
         return STD_LOW;
     }
     if (ChannelId >= (DIO_NUM_PORTS * DIO_NUM_CHANNELS_PER_PORT)) {
-        Det_ReportError(DIO_MODULE_ID, 0U, DIO_SID_FLIP_CHANNEL, DIO_E_PARAM_INVALID_CHANNEL_ID);
+        (void)Det_ReportError(DIO_MODULE_ID, 0U, DIO_SID_FLIP_CHANNEL, DIO_E_PARAM_INVALID_CHANNEL_ID);
         return STD_LOW;
     }
     #endif
@@ -301,11 +301,11 @@ void Dio_MaskedWritePort(Dio_PortType PortId, Dio_PortLevelType Level, Dio_PortL
 {
     #if (DIO_DEV_ERROR_DETECT == STD_ON)
     if (Dio_DriverInitialized == FALSE) {
-        Det_ReportError(DIO_MODULE_ID, 0U, DIO_SID_MASKED_WRITE_PORT, DIO_E_UNINIT);
+        (void)Det_ReportError(DIO_MODULE_ID, 0U, DIO_SID_MASKED_WRITE_PORT, DIO_E_UNINIT);
         return;
     }
     if (PortId >= DIO_NUM_PORTS) {
-        Det_ReportError(DIO_MODULE_ID, 0U, DIO_SID_MASKED_WRITE_PORT, DIO_E_PARAM_INVALID_PORT_ID);
+        (void)Det_ReportError(DIO_MODULE_ID, 0U, DIO_SID_MASKED_WRITE_PORT, DIO_E_PARAM_INVALID_PORT_ID);
         return;
     }
     #endif

@@ -144,11 +144,11 @@ void Gpt_Init(const Gpt_ConfigType* ConfigPtr)
 {
     #if (GPT_DEV_ERROR_DETECT == STD_ON)
     if (ConfigPtr == NULL_PTR) {
-        Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_INIT, GPT_E_PARAM_POINTER);
+        (void)Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_INIT, GPT_E_PARAM_POINTER);
         return;
     }
     if (Gpt_DriverInitialized == TRUE) {
-        Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_INIT, GPT_E_ALREADY_INITIALIZED);
+        (void)Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_INIT, GPT_E_ALREADY_INITIALIZED);
         return;
     }
     #endif
@@ -204,7 +204,7 @@ void Gpt_DeInit(void)
 {
     #if (GPT_DEV_ERROR_DETECT == STD_ON)
     if (Gpt_DriverInitialized == FALSE) {
-        Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_DEINIT, GPT_E_UNINIT);
+        (void)Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_DEINIT, GPT_E_UNINIT);
         return;
     }
     #endif
@@ -238,11 +238,11 @@ Gpt_ValueType Gpt_GetTimeElapsed(Gpt_ChannelType Channel)
 {
     #if (GPT_DEV_ERROR_DETECT == STD_ON)
     if (Gpt_DriverInitialized == FALSE) {
-        Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_GETTIMEELAPSED, GPT_E_UNINIT);
+        (void)Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_GETTIMEELAPSED, GPT_E_UNINIT);
         return 0U;
     }
     if (Channel >= GPT_NUM_CHANNELS) {
-        Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_GETTIMEELAPSED, GPT_E_PARAM_CHANNEL);
+        (void)Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_GETTIMEELAPSED, GPT_E_PARAM_CHANNEL);
         return 0U;
     }
     #endif
@@ -261,11 +261,11 @@ Gpt_ValueType Gpt_GetTimeRemaining(Gpt_ChannelType Channel)
 {
     #if (GPT_DEV_ERROR_DETECT == STD_ON)
     if (Gpt_DriverInitialized == FALSE) {
-        Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_GETTIMEREMAINING, GPT_E_UNINIT);
+        (void)Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_GETTIMEREMAINING, GPT_E_UNINIT);
         return 0U;
     }
     if (Channel >= GPT_NUM_CHANNELS) {
-        Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_GETTIMEREMAINING, GPT_E_PARAM_CHANNEL);
+        (void)Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_GETTIMEREMAINING, GPT_E_PARAM_CHANNEL);
         return 0U;
     }
     #endif
@@ -290,19 +290,19 @@ void Gpt_StartTimer(Gpt_ChannelType Channel, Gpt_ValueType Value)
 {
     #if (GPT_DEV_ERROR_DETECT == STD_ON)
     if (Gpt_DriverInitialized == FALSE) {
-        Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_STARTTIMER, GPT_E_UNINIT);
+        (void)Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_STARTTIMER, GPT_E_UNINIT);
         return;
     }
     if (Channel >= GPT_NUM_CHANNELS) {
-        Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_STARTTIMER, GPT_E_PARAM_CHANNEL);
+        (void)Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_STARTTIMER, GPT_E_PARAM_CHANNEL);
         return;
     }
     if ((Value == 0U) || (Value > Gpt_ConfigPtr->Channels[Channel].MaxTickValue)) {
-        Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_STARTTIMER, GPT_E_PARAM_VALUE);
+        (void)Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_STARTTIMER, GPT_E_PARAM_VALUE);
         return;
     }
     if ((Gpt_ChannelRunning[Channel]) != 0U) {
-        Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_STARTTIMER, GPT_E_CHANNEL_BUSY);
+        (void)Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_STARTTIMER, GPT_E_CHANNEL_BUSY);
         return;
     }
     #endif
@@ -335,11 +335,11 @@ void Gpt_StopTimer(Gpt_ChannelType Channel)
 {
     #if (GPT_DEV_ERROR_DETECT == STD_ON)
     if (Gpt_DriverInitialized == FALSE) {
-        Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_STOPTIMER, GPT_E_UNINIT);
+        (void)Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_STOPTIMER, GPT_E_UNINIT);
         return;
     }
     if (Channel >= GPT_NUM_CHANNELS) {
-        Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_STOPTIMER, GPT_E_PARAM_CHANNEL);
+        (void)Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_STOPTIMER, GPT_E_PARAM_CHANNEL);
         return;
     }
     #endif
@@ -366,11 +366,11 @@ void Gpt_EnableNotification(Gpt_ChannelType Channel)
 {
     #if (GPT_DEV_ERROR_DETECT == STD_ON)
     if (Gpt_DriverInitialized == FALSE) {
-        Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_ENABLEINTERRUPT, GPT_E_UNINIT);
+        (void)Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_ENABLEINTERRUPT, GPT_E_UNINIT);
         return;
     }
     if (Channel >= GPT_NUM_CHANNELS) {
-        Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_ENABLEINTERRUPT, GPT_E_PARAM_CHANNEL);
+        (void)Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_ENABLEINTERRUPT, GPT_E_PARAM_CHANNEL);
         return;
     }
     #endif
@@ -391,11 +391,11 @@ void Gpt_DisableNotification(Gpt_ChannelType Channel)
 {
     #if (GPT_DEV_ERROR_DETECT == STD_ON)
     if (Gpt_DriverInitialized == FALSE) {
-        Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_DISABLEINTERRUPT, GPT_E_UNINIT);
+        (void)Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_DISABLEINTERRUPT, GPT_E_UNINIT);
         return;
     }
     if (Channel >= GPT_NUM_CHANNELS) {
-        Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_DISABLEINTERRUPT, GPT_E_PARAM_CHANNEL);
+        (void)Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_DISABLEINTERRUPT, GPT_E_PARAM_CHANNEL);
         return;
     }
     #endif
@@ -415,7 +415,7 @@ void Gpt_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
     #if (GPT_DEV_ERROR_DETECT == STD_ON)
     if (versioninfo == NULL_PTR) {
-        Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_GETVERSIONINFO, GPT_E_PARAM_POINTER);
+        (void)Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_GETVERSIONINFO, GPT_E_PARAM_POINTER);
         return;
     }
     #endif
@@ -432,7 +432,7 @@ void Gpt_SetMode(Gpt_ModeType Mode)
 {
     #if (GPT_DEV_ERROR_DETECT == STD_ON)
     if (Gpt_DriverInitialized == FALSE) {
-        Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_SETMODE, GPT_E_UNINIT);
+        (void)Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_SETMODE, GPT_E_UNINIT);
         return;
     }
     #endif
@@ -537,11 +537,11 @@ Std_ReturnType Gpt_GetPredefTimerValue(Gpt_PredefTimerType PredefTimer, uint32* 
 {
     #if (GPT_DEV_ERROR_DETECT == STD_ON)
     if (Gpt_DriverInitialized == FALSE) {
-        Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_GETPREDEFTIMERVALUE, GPT_E_UNINIT);
+        (void)Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_GETPREDEFTIMERVALUE, GPT_E_UNINIT);
         return E_NOT_OK;
     }
     if (TimeValuePtr == NULL_PTR) {
-        Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_GETPREDEFTIMERVALUE, GPT_E_PARAM_POINTER);
+        (void)Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_GETPREDEFTIMERVALUE, GPT_E_PARAM_POINTER);
         return E_NOT_OK;
     }
     #endif

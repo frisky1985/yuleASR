@@ -899,7 +899,7 @@ Std_ReturnType Fls_Hw_WriteWord(uint32 Address, uint32 Data)
         uint32 i;
         /* Read existing data for upper bytes if phrase programming */
         for (i = 0u; i < 8u; i++) {
-            data[i] = ((uint8*)&Data)[i % 4];
+            data[i] = ((uint8*)&Data)[i % (uint32)4];
         }
         result = Fls_Hw_ProgramPhraseS32K(Address, data);
     }

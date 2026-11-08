@@ -698,4 +698,6 @@ void Dlt_ComRxIndication(const uint8* data, uint16 length);
 }
 #endif
 
+extern const uint16 Dlt_ContextGroupCount;
+
 #endif /* DLT_H */

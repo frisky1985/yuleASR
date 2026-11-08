@@ -313,7 +313,7 @@ void Mqtt_Tls_DestroyContext(Mqtt_TlsContextType context)
     
     /* 关闭TLS连接 */
     if (ctx->handshakeComplete) {
-        Mqtt_Tls_Close(context);
+        (void)Mqtt_Tls_Close(context);
     }
     
     /* 释放mbedTLS上下文 */
@@ -690,8 +690,8 @@ Mqtt_ReturnType Mqtt_Tls_GetCipherSuite(
     
     suite = mbedtls_ssl_get_ciphersuite(&ctx->ssl);
     if (suite != NULL_PTR) {
-        (void)strncpy(name, suite, nameSize - 1);
-        name[nameSize - 1] = '\0';
+        (void)strncpy(name, suite, nameSize - (uint32)1);
+        name[nameSize - (uint32)1] = '\0';
     } else {
         name[0] = '\0';
     }

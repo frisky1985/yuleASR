@@ -381,7 +381,7 @@ Std_ReturnType SafeRam_UnregisterErrorCallback(SafeRamErrorCallbackType callback
             found = TRUE;
         }
         if (found && i < g_context.callback_count - 1) {
-            g_context.error_callbacks[i] = g_context.error_callbacks[i + 1];
+            g_context.error_callbacks[i] = g_context.error_callbacks[i + (uint8_t)1];
         }
     }
     

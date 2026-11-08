@@ -520,7 +520,7 @@ void LinNm_GetVersionInfo(Std_VersionInfoType* versioninfo)
 #    if (LINNM_DEV_ERROR_DETECT == STD_ON)
     if (versioninfo == NULL_PTR)
     {
-        Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_GETVERSIONINFO, LINNM_E_INVALID_POINTER);
+        (void)Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_GETVERSIONINFO, LINNM_E_INVALID_POINTER);
         return;
     }
 #    endif
@@ -540,12 +540,12 @@ void LinNm_Init(const LinNm_ConfigType* config)
 #if (LINNM_DEV_ERROR_DETECT == STD_ON)
     if (config == NULL_PTR)
     {
-        Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_INIT, LINNM_E_INVALID_POINTER);
+        (void)Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_INIT, LINNM_E_INVALID_POINTER);
         return;
     }
     if (LinNm_ModuleState == LINNM_INITIALIZED)
     {
-        Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_INIT, LINNM_E_ALREADY_INITIALIZED);
+        (void)Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_INIT, LINNM_E_ALREADY_INITIALIZED);
         return;
     }
 #endif
@@ -569,7 +569,7 @@ void LinNm_Init(const LinNm_ConfigType* config)
         LinNm_ConfigPtr->ChannelRuntime[i].RepeatMessageCounter = 0U;
         LinNm_ConfigPtr->ChannelRuntime[i].UserDataLength = LinNm_ConfigPtr->ChannelConfig[i].UserDataLength;
         /* Clear user data */
-        for (j = 0; j < 8; j++)
+        for (j = 0; j < (uint8)8; j++)
         {
             LinNm_ConfigPtr->ChannelRuntime[i].UserData[j] = 0U;
         }
@@ -584,7 +584,7 @@ void LinNm_DeInit(void)
 #if (LINNM_DEV_ERROR_DETECT == STD_ON)
     if (LinNm_ModuleState == LINNM_UNINITIALIZED)
     {
-        Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_DEINIT, LINNM_E_UNINIT);
+        (void)Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_DEINIT, LINNM_E_UNINIT);
         return;
     }
 #endif
@@ -605,7 +605,7 @@ Std_ReturnType LinNm_PassiveStartUp(NetworkHandleType nmChannelHandle)
 #if (LINNM_DEV_ERROR_DETECT == STD_ON)
     if (LinNm_ModuleState == LINNM_UNINITIALIZED)
     {
-        Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_PASSIVESTARTUP, LINNM_E_UNINIT);
+        (void)Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_PASSIVESTARTUP, LINNM_E_UNINIT);
         return E_NOT_OK;
     }
 #endif
@@ -613,7 +613,7 @@ Std_ReturnType LinNm_PassiveStartUp(NetworkHandleType nmChannelHandle)
 #if (LINNM_DEV_ERROR_DETECT == STD_ON)
     if (channelIndex == LINNM_INVALID_CHANNEL)
     {
-        Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_PASSIVESTARTUP, LINNM_E_INVALID_CHANNEL);
+        (void)Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_PASSIVESTARTUP, LINNM_E_INVALID_CHANNEL);
         return E_NOT_OK;
     }
 #endif
@@ -643,7 +643,7 @@ Std_ReturnType LinNm_NetworkRequest(NetworkHandleType nmChannelHandle)
 #    if (LINNM_DEV_ERROR_DETECT == STD_ON)
     if (LinNm_ModuleState == LINNM_UNINITIALIZED)
     {
-        Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_NETWORKREQUEST, LINNM_E_UNINIT);
+        (void)Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_NETWORKREQUEST, LINNM_E_UNINIT);
         return E_NOT_OK;
     }
 #    endif
@@ -651,7 +651,7 @@ Std_ReturnType LinNm_NetworkRequest(NetworkHandleType nmChannelHandle)
 #    if (LINNM_DEV_ERROR_DETECT == STD_ON)
     if (channelIndex == LINNM_INVALID_CHANNEL)
     {
-        Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_NETWORKREQUEST, LINNM_E_INVALID_CHANNEL);
+        (void)Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_NETWORKREQUEST, LINNM_E_INVALID_CHANNEL);
         return E_NOT_OK;
     }
 #    endif
@@ -690,7 +690,7 @@ Std_ReturnType LinNm_NetworkRelease(NetworkHandleType nmChannelHandle)
 #        if (LINNM_DEV_ERROR_DETECT == STD_ON)
     if (LinNm_ModuleState == LINNM_UNINITIALIZED)
     {
-        Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_NETWORKRELEASE, LINNM_E_UNINIT);
+        (void)Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_NETWORKRELEASE, LINNM_E_UNINIT);
         return E_NOT_OK;
     }
 #        endif
@@ -698,7 +698,7 @@ Std_ReturnType LinNm_NetworkRelease(NetworkHandleType nmChannelHandle)
 #        if (LINNM_DEV_ERROR_DETECT == STD_ON)
     if (channelIndex == LINNM_INVALID_CHANNEL)
     {
-        Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_NETWORKRELEASE, LINNM_E_INVALID_CHANNEL);
+        (void)Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_NETWORKRELEASE, LINNM_E_INVALID_CHANNEL);
         return E_NOT_OK;
     }
 #        endif
@@ -714,12 +714,12 @@ Std_ReturnType LinNm_GetState(NetworkHandleType nmChannelHandle, Nm_StateType* n
 #        if (LINNM_DEV_ERROR_DETECT == STD_ON)
     if (LinNm_ModuleState == LINNM_UNINITIALIZED)
     {
-        Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_GETSTATE, LINNM_E_UNINIT);
+        (void)Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_GETSTATE, LINNM_E_UNINIT);
         return E_NOT_OK;
     }
     if ((nmStatePtr == NULL_PTR) && (nmModePtr == NULL_PTR))
     {
-        Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_GETSTATE, LINNM_E_INVALID_POINTER);
+        (void)Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_GETSTATE, LINNM_E_INVALID_POINTER);
         return E_NOT_OK;
     }
 #        endif
@@ -727,7 +727,7 @@ Std_ReturnType LinNm_GetState(NetworkHandleType nmChannelHandle, Nm_StateType* n
 #        if (LINNM_DEV_ERROR_DETECT == STD_ON)
     if (channelIndex == LINNM_INVALID_CHANNEL)
     {
-        Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_GETSTATE, LINNM_E_INVALID_CHANNEL);
+        (void)Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_GETSTATE, LINNM_E_INVALID_CHANNEL);
         return E_NOT_OK;
     }
 #        endif
@@ -749,7 +749,7 @@ Std_ReturnType LinNm_RequestBusSynchronization(NetworkHandleType nmChannelHandle
 #        if (LINNM_DEV_ERROR_DETECT == STD_ON)
     if (LinNm_ModuleState == LINNM_UNINITIALIZED)
     {
-        Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_REQUESTBUSSYNCHRONIZATION, LINNM_E_UNINIT);
+        (void)Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_REQUESTBUSSYNCHRONIZATION, LINNM_E_UNINIT);
         return E_NOT_OK;
     }
 #        endif
@@ -757,7 +757,7 @@ Std_ReturnType LinNm_RequestBusSynchronization(NetworkHandleType nmChannelHandle
 #        if (LINNM_DEV_ERROR_DETECT == STD_ON)
     if (channelIndex == LINNM_INVALID_CHANNEL)
     {
-        Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_REQUESTBUSSYNCHRONIZATION, LINNM_E_INVALID_CHANNEL);
+        (void)Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_REQUESTBUSSYNCHRONIZATION, LINNM_E_INVALID_CHANNEL);
         return E_NOT_OK;
     }
 #        endif
@@ -789,12 +789,12 @@ Std_ReturnType LinNm_CheckRemoteSleepIndication(NetworkHandleType nmChannelHandl
 #        if (LINNM_DEV_ERROR_DETECT == STD_ON)
     if (LinNm_ModuleState == LINNM_UNINITIALIZED)
     {
-        Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_CHECKREMOTESLEEPINDICATION, LINNM_E_UNINIT);
+        (void)Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_CHECKREMOTESLEEPINDICATION, LINNM_E_UNINIT);
         return E_NOT_OK;
     }
     if (nmRemoteSleepIndPtr == NULL_PTR)
     {
-        Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_CHECKREMOTESLEEPINDICATION, LINNM_E_INVALID_POINTER);
+        (void)Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_CHECKREMOTESLEEPINDICATION, LINNM_E_INVALID_POINTER);
         return E_NOT_OK;
     }
 #        endif
@@ -802,7 +802,7 @@ Std_ReturnType LinNm_CheckRemoteSleepIndication(NetworkHandleType nmChannelHandl
 #        if (LINNM_DEV_ERROR_DETECT == STD_ON)
     if (channelIndex == LINNM_INVALID_CHANNEL)
     {
-        Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_CHECKREMOTESLEEPINDICATION, LINNM_E_INVALID_CHANNEL);
+        (void)Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_CHECKREMOTESLEEPINDICATION, LINNM_E_INVALID_CHANNEL);
         return E_NOT_OK;
     }
 #        endif
@@ -891,7 +891,7 @@ Std_ReturnType LinNm_RequestComMode(NetworkHandleType nmChannelHandle, ComM_Mode
 #            if (LINNM_DEV_ERROR_DETECT == STD_ON)
     if (LinNm_ModuleState == LINNM_UNINITIALIZED)
     {
-        Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_COMCONTROL, LINNM_E_UNINIT);
+        (void)Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_COMCONTROL, LINNM_E_UNINIT);
         return E_NOT_OK;
     }
 #            endif
@@ -899,7 +899,7 @@ Std_ReturnType LinNm_RequestComMode(NetworkHandleType nmChannelHandle, ComM_Mode
 #            if (LINNM_DEV_ERROR_DETECT == STD_ON)
     if (channelIndex == LINNM_INVALID_CHANNEL)
     {
-        Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_COMCONTROL, LINNM_E_INVALID_CHANNEL);
+        (void)Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_COMCONTROL, LINNM_E_INVALID_CHANNEL);
         return E_NOT_OK;
     }
 #            endif
@@ -931,12 +931,12 @@ Std_ReturnType LinNm_GetCurrentComMode(NetworkHandleType nmChannelHandle, ComM_M
 #            if (LINNM_DEV_ERROR_DETECT == STD_ON)
     if (LinNm_ModuleState == LINNM_UNINITIALIZED)
     {
-        Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_COMCONTROL, LINNM_E_UNINIT);
+        (void)Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_COMCONTROL, LINNM_E_UNINIT);
         return E_NOT_OK;
     }
     if (nmComModePtr == NULL_PTR)
     {
-        Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_COMCONTROL, LINNM_E_INVALID_POINTER);
+        (void)Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_COMCONTROL, LINNM_E_INVALID_POINTER);
         return E_NOT_OK;
     }
 #            endif
@@ -944,7 +944,7 @@ Std_ReturnType LinNm_GetCurrentComMode(NetworkHandleType nmChannelHandle, ComM_M
 #            if (LINNM_DEV_ERROR_DETECT == STD_ON)
     if (channelIndex == LINNM_INVALID_CHANNEL)
     {
-        Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_COMCONTROL, LINNM_E_INVALID_CHANNEL);
+        (void)Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_COMCONTROL, LINNM_E_INVALID_CHANNEL);
         return E_NOT_OK;
     }
 #            endif
@@ -967,12 +967,12 @@ Std_ReturnType LinNm_SetUserData(NetworkHandleType nmChannelHandle, const uint8*
 #        if (LINNM_DEV_ERROR_DETECT == STD_ON)
     if (LinNm_ModuleState == LINNM_UNINITIALIZED)
     {
-        Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_SETUSERDATA, LINNM_E_UNINIT);
+        (void)Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_SETUSERDATA, LINNM_E_UNINIT);
         return E_NOT_OK;
     }
     if (nmUserDataPtr == NULL_PTR)
     {
-        Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_SETUSERDATA, LINNM_E_INVALID_POINTER);
+        (void)Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_SETUSERDATA, LINNM_E_INVALID_POINTER);
         return E_NOT_OK;
     }
 #        endif
@@ -980,7 +980,7 @@ Std_ReturnType LinNm_SetUserData(NetworkHandleType nmChannelHandle, const uint8*
 #        if (LINNM_DEV_ERROR_DETECT == STD_ON)
     if (channelIndex == LINNM_INVALID_CHANNEL)
     {
-        Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_SETUSERDATA, LINNM_E_INVALID_CHANNEL);
+        (void)Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_SETUSERDATA, LINNM_E_INVALID_CHANNEL);
         return E_NOT_OK;
     }
 #        endif
@@ -1004,12 +1004,12 @@ Std_ReturnType LinNm_GetUserData(NetworkHandleType nmChannelHandle, uint8* nmUse
 #        if (LINNM_DEV_ERROR_DETECT == STD_ON)
     if (LinNm_ModuleState == LINNM_UNINITIALIZED)
     {
-        Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_GETUSERDATA, LINNM_E_UNINIT);
+        (void)Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_GETUSERDATA, LINNM_E_UNINIT);
         return E_NOT_OK;
     }
     if (nmUserDataPtr == NULL_PTR)
     {
-        Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_GETUSERDATA, LINNM_E_INVALID_POINTER);
+        (void)Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_GETUSERDATA, LINNM_E_INVALID_POINTER);
         return E_NOT_OK;
     }
 #        endif
@@ -1017,7 +1017,7 @@ Std_ReturnType LinNm_GetUserData(NetworkHandleType nmChannelHandle, uint8* nmUse
 #        if (LINNM_DEV_ERROR_DETECT == STD_ON)
     if (channelIndex == LINNM_INVALID_CHANNEL)
     {
-        Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_GETUSERDATA, LINNM_E_INVALID_CHANNEL);
+        (void)Det_ReportError(LINNM_MODULE_ID, 0U, LINNM_SID_GETUSERDATA, LINNM_E_INVALID_CHANNEL);
         return E_NOT_OK;
     }
 #        endif
