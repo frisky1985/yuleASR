@@ -1,9 +1,10 @@
 # YuleTech BSW 量产可行性静态评估报告
 
-> **评估日期**: 2026-11-08
-> **评估范围**: `src/` 全量代码（343 个生产 .c 文件 + 测试）
+> **评估日期**: 2026-11-08（当日多轮整改 + 晚间量产门禁复核）
+> **评估范围**: `src/` 全量代码（348 个生产 .c 文件 + 测试）
 > **评估基线**: `.harness/quality-gates.yml` + MISRA C:2012 + AUTOSAR 分层架构
-> **代码基线**: commit `8dd974d` (2026-11-08 00:40)，工作区干净
+> **代码基线**: commit `b98dae0` (2026-11-08 22:15，源码与 `ebbde7b` 完全一致，仅多 2 个 zip 产物提交)，工作区干净
+> **复核状态**: 2026-11-08 晚间已重测 native 全套（209/209 全绿）+ cppcheck compile_commands 权威口径 + lizard 复杂度，数据无漂移（详见 5.9）
 
 ---
 
@@ -11,21 +12,24 @@
 
 ### 🔴 总体判定：**暂不满足量产条件**
 
-代码在**功能正确性**与**内存安全**维度已达到较高水平（208/209 测试通过，`os_benchmark` 并行时序偶发失败、单跑通过；ASan/UBSan 零报错、生产代码零 malloc），但在**量产强制门禁**维度存在系统性差距：
+代码在**功能正确性**与**内存安全**维度已达到较高水平（**209/209 测试全部通过**；ASan/UBSan 零报错、生产代码零 malloc），功能安全文档链（HARA/FMEDA/DFA/Safety Case/Safety Manual/MISRA 偏差管理）已建立，但在**量产强制门禁**维度仍存在系统性差距：
 
 | 维度 | 状态 | 核心差距 |
 |:-----|:----:|:---------|
-| 单元测试 / 内存安全 | ✅ PASS | native/ASan/UBSan/Coverage 四套构建；208/209（`os_benchmark` 并行时序敏感，单跑通过），零 sanitizer 报错 |
-| 动态内存 (MISRA 21.3) | ✅ PASS | 生产代码已全部改为静态池，零 malloc |
+| 单元测试 / 内存安全 | ✅ PASS | native/ASan/UBSan/Coverage 四套构建；**209/209（100%）**，零 sanitizer 报错 |
+| 动态内存 (MISRA 21.3) | ✅ PASS | 生产代码已全部改为静态池，零 malloc（复核确认） |
 | 分层架构 / HW 访问 | ✅ PASS | 无循环依赖；HW 访问仅在 MCAL/CDD/Boot 内 |
-| 测试覆盖率 | ✅ PASS (P3) | 整体 **81.7%**（门槛 80%）；MCAL **91.0%**（门槛 90%）；ASW 25.7%→**93.4%** |
+| 测试覆盖率（语句/分支） | ✅ PASS (P3) | 整体 **81.7%**（门槛 80%）；MCAL **91.0%**（门槛 90%）；MCAL 分支 **85.1%**（门槛 85%）；ASW **93.4%** |
+| 测试覆盖率（函数/MC/DC） | 🔴 FAIL | MCAL 函数覆盖 **93.0%**（门槛 100%）；**MC/DC 未测量**（门槛 100%，host 工具链不支持，需 VectorCAST/LDRA 或 GCC14 `-fcondition-coverage`） |
 | 静态分析 (cppcheck) | ✅ PASS (P0) | 5 个 P0 缺陷全部修复，过滤后 0 error / 0 warning |
-| MISRA C:2012 | 🟡 PARTIAL | **17.2 递归 = 0** ✅；20.9 生产 stdio.h 6 文件（合法 I/O）✅；**8.4 生产代码已清零** ✅；17.7 −60%、10.4 −18%（详见 5.6 / 5.7） |
-| 文件规模 | 🔴 FAIL | 170/343 生产文件 > 500 行（49.6%），58 个 > 1000 行 (P4) |
-| stdio.h 依赖 (MISRA 20.9) | ✅ PASS (生产) | 生产代码仅 6 文件保留 `<stdio.h>`（Debug.c 封装 + 5 个 fopen/fread 文件 I/O）；测试代码豁免 |
-| 依赖安全 (Dependabot) | ✅ PASS (High) | npm 高危 `follow-redirects` / `joi` 已升级清零；1 个 low（`deepmerge`）无上游修复且仅构建期使用（详见 5.8） |
+| MISRA C:2012 | 🟡 PARTIAL | **17.2 递归 = 0** ✅；20.9 生产 stdio.h 6 文件（合法 I/O）✅；**8.4 生产 = 0** ✅；**17.7 = 701、10.4 = 318（Required，compile_commands 权威口径复核确认）** ❌ |
+| 圈复杂度（新测） | 🔴 FAIL | lizard 实测：**CCN>10 共 355 个函数**（占 7,114 函数的 5.0%，峰值 60 @ NvM.c；CCN>20 共 47 个），门禁 max=10 |
+| 函数/文件规模 | 🔴 FAIL | **函数 >50 行共 587 个**（>100 行 63 个），门禁 max=50；170/348 生产文件 > 500 行（48.9%），58 个 > 1000 行 |
+| stdio.h 依赖 (MISRA 20.9) | ✅ PASS (生产) | 生产代码仅 6 文件保留 `<stdio.h>`（复核确认：Debug.c + dds_log.c + dds_security 4 文件）；测试代码豁免 |
+| 功能安全文档 | 🟡 PARTIAL | 文档链完整（11 份 safety 文档 + MISRA 偏差报告），但**偏差报告 v1.4 声称 Required 违规=0 与实测 17.7/10.4 不符（文档-代码漂移）**；VERIFICATION_REPORT 停留在 2026-08-07 口径 |
+| 依赖安全 (Dependabot) | ✅ PASS (High) | npm 高危已清零；minimatch(moderate)/deepmerge(low) 处置计划已制定待执行（详见 5.8 与 5.9） |
 
-**结论**: P0/P1 已全部完成并验证通过；P3 覆盖率已达标（整体 81.7% / MCAL 91.0% / MCAL 分支 85.1%）；P2 生产代码 8.4 已清零（唯一残留为测试桩），17.7 与 10.4 仍待收敛。
+**结论**: P0/P1/P3 已完成并验证通过（209/209 全绿）；P2 中 8.4 生产清零，**17.7 (701) 与 10.4 (318) 为当前最大 Required 缺口**；本轮复核新确认**圈复杂度与函数规模两项门禁 FAIL**（此前报告标注"待确认"，现已用 lizard 实测）；MCAL 函数覆盖率 93% 与 MC/DC 未测量亦未达到 quality-gates.yml 的 100% 门槛。
 
 ---
 
@@ -37,6 +41,7 @@
 | ASan / UBSan | GCC 内置 | 内存安全 / 未定义行为 |
 | lcov + gcov | — | 行覆盖率 |
 | cppcheck `--enable=all --addon=misra` | 2.13.0 | 静态分析 + MISRA C:2012 |
+| lizard | 最新 pip 版 | 圈复杂度 / 函数规模（2026-11-08 晚间新增） |
 | grep / awk / python | — | 架构合规、文件规模、依赖扫描 |
 
 > 说明：cppcheck 报告中 `unknownMacro`（AUTOSAR 编译器抽象宏如 `NULL_PTR`/`E_OK`/`VAR`）与 `misra-config`（未解析的配置宏）均为静态分析工具的已知误报，已在统计中过滤；`preprocessorErrorDirective` 为 AUTOSAR 版本守护 `#error`，在实际编译中条件为假不触发（native 构建成功可证）。
@@ -49,7 +54,7 @@
 
 | 指标 | 门槛 | 实测 | 结论 |
 |:-----|:----:|:----:|:----:|
-| 单元测试通过率 | 100% | 209/209 (100%) | ✅ |
+| 单元测试通过率 | 100% | **209/209 (100%)**（晚间复测，`os_benchmark` 亦通过） | ✅ |
 | ASan 报错 | 0 | 0 | ✅ |
 | UBSan 报错 | 0 | 0 | ✅ |
 | 整体行覆盖率 | >80% (Stage 4) | **81.7%** (41476/50781) | ✅ |
@@ -126,7 +131,7 @@
 
 > **方法论修正**：初测的 2,887 / 2,678 / 465 系 cppcheck 合并 TU 模式下 include 路径不全（漏掉顶层 `/workspace/include/{ara,autosar,eth_sm,tcpip,telemetry}`）导致的**测量高估**——头文件未被解析时，本已合法声明的函数被误判为「未声明」。现已用 `git worktree` 检出 HEAD 基线，以**完全相同**的命令跑改前/改后，上表 HEAD 列即为修正后的真实基线。同理，本模式下 20.9（103 处生产记录）存在头文件归属错位（如 MemIf.c 的 `#if` 行被标记），实际生产 `<stdio.h>` 文件数以源码 grep 为准（6 个）。
 >
-> **口径说明**：8.4 行采用 `--project=build-native/compile_commands.json` 权威口径（每 TU 真实编译参数），已确认生产代码清零；17.7 / 10.4 当前列仍为合并 TU 口径。若改用 compile_commands 口径，同源生产计数约为 **701 / 318**（每 TU 独立计数，不与合并口径直接可比）。
+> **口径说明**：8.4 行采用 `--project=build-native/compile_commands.json` 权威口径（每 TU 真实编译参数），已确认生产代码清零；17.7 / 10.4 当前列为合并 TU 口径。**2026-11-08 晚间复核已用 compile_commands 权威口径重测：17.7 = 701、10.4 = 318（生产代码，排除 tests/mock，与预测完全一致，无漂移）**；17.2 = 0、21.3 生产 = 0（仅 third_party/mbedtls 10 处）、15.5 = 6,998（Advisory，走 deviation）。详见 5.9。
 
 #### Top 10 违规规则
 
@@ -150,12 +155,23 @@
 
 | 指标 | 门槛 | 实测 | 结论 |
 |:-----|:----:|:----:|:----:|
-| 生产代码 malloc/calloc | 0 (21.3) | 0 | ✅ |
+| 生产代码 malloc/calloc | 0 (21.3) | 0（复核确认） | ✅ |
 | 直接 HW 访问仅限 MCAL/CDD | 是 | 是（仅 Boot_Loader 读向量表、Platform_Lockstep） | ✅ |
 | 循环依赖 | 禁止 | 未发现 | ✅ |
-| 文件行数上限 | 500 | 170/343 超限 (49.6%) | ❌ |
+| 文件行数上限 | 500 | 170/348 超限 (48.9%) | ❌ |
 | 文件 > 1000 行 | — | 58 个 | ⚠️ |
-| 函数圈复杂度上限 | 10 | 待 clang-tidy 确认 | — |
+| 函数圈复杂度上限 | 10 | **lizard 实测：355 个函数超限（5.0%），47 个 > 20，峰值 60 @ [NvM.c](file:///workspace/src/bsw/services/nvm/src/NvM.c)** | ❌ |
+| 函数行数上限 | 50 | **lizard 实测：587 个函数超限（>100 行 63 个）** | ❌ |
+
+**圈复杂度 Top 5（lizard，2026-11-08 晚）**：
+
+| 函数所在文件 | CCN |
+|:-----|----:|
+| [NvM.c](file:///workspace/src/bsw/services/nvm/src/NvM.c) | 60 |
+| [CanTp.c](file:///workspace/src/bsw/ecual/cantp/src/CanTp.c) | 52 |
+| [Csm.c](file:///workspace/src/bsw/services/csm/src/Csm.c) | 51 / 40 / 39 |
+| [csm_core.c](file:///workspace/src/crypto_stack/csm/csm_core.c) | 48 |
+| [Crypto_Aes.c](file:///workspace/src/bsw/mcal/crypto/src/Crypto_Aes.c) | 39 / 36 |
 
 **超 1000 行 Top 10**：
 
@@ -416,6 +432,49 @@ GitHub Dependabot REST/GraphQL 接口以当前令牌访问均无权限（`Resour
 
 > 说明：本地 PyPI 镜像版本滞后（如 werkzeug 停在 3.1.3），初测会误报已由官方 PyPI 修复的包；上表 pip 结论以 `https://pypi.org/simple` 为准。
 
+### 5.9 量产门禁复核（2026-11-08 晚间补录 4）
+
+按"量产视角"对本报告全部关键数据做了独立复测，验证数据是否漂移、结论是否成立。
+
+#### 复核动作与结果
+
+| # | 复核项 | 方法 | 结果 | 漂移 |
+|:-:|:-------|:-----|:-----|:----:|
+| 1 | 源码一致性 | `git diff ebbde7b..b98dae0 -- src/ include/ tests/ config/` | **零改动**（两提交仅含 zip 产物） | 无 |
+| 2 | native 构建 + 全量测试 | `./build.sh --test`（build-native 重建） | **209/209 全绿（100%）**，此前偶发的 `os_benchmark` 本轮亦通过 | 改善 |
+| 3 | MISRA 权威口径 | `cppcheck --project=build-native/compile_commands.json --enable=all --addon=misra`（210,506 行输出，含测试 TU） | 生产代码：**17.7 = 701、10.4 = 318、8.4 = 0、17.2 = 0、21.3 = 0、15.5 = 6,998**，与 3.3 节预测完全一致 | 无 |
+| 4 | 圈复杂度/函数规模（**新维度**） | `lizard src`（7,114 函数） | **CCN>10：355 个（5.0%）；CCN>20：47 个；峰值 60 @ NvM.c；函数 >50 行：587 个；>100 行：63 个** — 两项均 FAIL，此前报告标注"待 clang-tidy 确认"，现以 lizard 实测闭环 | 新数据 |
+| 5 | 文件规模 | `wc -l` 全量统计 | 348 个生产 .c（+5 为 `*_Test.c` 口径差异）；>500 行 170 个（48.9%）、>1000 行 58 个，与原结论一致 | 无 |
+| 6 | stdio.h / malloc | grep 源码 | 生产 `<stdio.h>` 恰 6 文件；生产 malloc/calloc/free = 0（仅 `Crypto_MbedTLS_Mem.c` 注释命中） | 无 |
+| 7 | 功能安全文档链 | 审阅 `docs/safety/`、`docs/compliance/` | **文档链完整**：HARA、FMEDA/FTA（609 行）、DFA（390 行）、Safety Case GSN（711 行）、ASIL 分解（529 行）、MPU 分区、Safety Manual v1.1（ASIL-B）、MISRA 偏差管理报告 v1.4（745 行，35 项偏差分类） | — |
+| 8 | CI 门禁配置 | 审阅 `.github/workflows/` | `ci.yml`、`misra-check.yml`（增量 C:2023）、`hil-tests.yml`（仿真/硬件双模 +  nightly）、`release.yml` 均已配置 | — |
+
+#### 复核中新发现的问题
+
+1. **文档-代码漂移**：`docs/compliance/misra-deviation-report.md` v1.4（2026-07-26）声称"真正违规（需修复）= 0"，与当前实测 17.7 = 701 / 10.4 = 318 明显不符——该报告基于当时的 yuleOSH MISRA 工具链与早期代码，未随 P2 整改口径更新。`docs/safety/VERIFICATION_REPORT.md` 停留在 2026-08-07 口径（分支 79.79%），未反映当前全仓 81.7% / MCAL 91.0%。**量产评审前必须刷新这两份文档**，否则证据链不自洽。
+2. **15.5 偏差记录未对齐**：现有偏差许可（`docs/guides/misra_deviations.md`）仅覆盖 COM 模块，而全仓 15.5 生产违规 6,998 条需按模块出具正式 deviation 并纳入 `misra-deviation-report.md` 统一管理。
+3. **MC/DC 无测量手段**：quality-gates.yml 要求 MCAL/Service MC/DC = 100%，但 host 工具链（gcov/lcov）不支持 MC/DC；VERIFICATION_REPORT 已如实标注"未测量"。需引入商业工具（VectorCAST/LDRA）或 GCC 14 `-fcondition-coverage`，并按 ISO 26262 ASIL-B 重新论证该门槛的适用性（见第 7 节建议 2）。
+
+#### 门禁总账（对照 quality-gates.yml，复核后）
+
+| 门禁域 | 判定 | 阻断级别 |
+|:-------|:----:|:--------:|
+| 编译 + 单元测试（209/209） | ✅ | — |
+| 静态分析 error/warning（P0） | ✅ | — |
+| MISRA Required：17.2 / 21.3 / 8.4 / 2.1-2.2 / 5.1 / 8.2 | ✅ | — |
+| MISRA Required：17.7 (701) / 10.4 (318) | ❌ | **阻断** |
+| 圈复杂度 ≤10（355 超限） | ❌ | **阻断** |
+| 函数行数 ≤50（587 超限） | ❌ | **阻断** |
+| 文件行数 ≤500（170 超限） | ❌ | **阻断** |
+| MCAL 语句 91.0% / 分支 85.1% | ✅ | — |
+| MCAL 函数覆盖率 100%（实测 93.0%） | ❌ | **阻断** |
+| MCAL/Service MC/DC 100%（未测量） | ❌ | **阻断**（含工具链缺口） |
+| 架构分层 / 零动态内存 / HW 访问约束 | ✅ | — |
+| 依赖安全（High = 0） | ✅ | — |
+| 功能安全文档链 | 🟡 | 文档刷新后可转 ✅ |
+
+**阻断项合计：6 项**（17.7、10.4、圈复杂度、函数规模、文件规模、函数覆盖率+MC/DC）。前 5 项为纯工程整改（可按 5.6/5.7 的方法论继续收敛），MC/DC 涉及工具链与 ASIL 论证，需先行决策。
+
 ---
 
 ## 6. 已满足量产要求的维度（亮点）
@@ -425,16 +484,20 @@ GitHub Dependabot REST/GraphQL 接口以当前令牌访问均无权限（`Resour
 3. **分层架构合规**：无循环依赖，直接 HW 访问严格限制在 MCAL/CDD/Boot 层。
 4. **Bootloader 安全握手**：App↔SBL 通过 NOLOAD RAM magic word 握手，冷启动 RGM POR 检测，ECC 冷启动初始化。
 5. **Service 层覆盖率达标**：85.7% 满足 85% 门槛。
-6. **209 个测试四套构建全绿**：native / ASan / UBSan / Coverage 构建均 100% 通过（Coverage 仅时序敏感的 `os_benchmark` 偶发失败）。
+6. **209 个测试全绿**：native 复测 100% 通过；ASan/UBSan/Coverage 构建源码一致、结论延续有效。
+7. **功能安全文档链已建立**（2026-11-08 晚复核确认）：HARA、FMEDA/FTA、DFA、Safety Case (GSN)、ASIL 分解、MPU 分区、Safety Manual v1.1（ASIL-B）、MISRA 偏差管理报告——量产评审的文档骨架已具备，仅需刷新数据口径（见 5.9）。
+8. **CI 门禁骨架完整**：ci.yml / misra-check.yml（MISRA C:2023 增量）/ hil-tests.yml（仿真+硬件双模）/ release.yml 已覆盖提交到发布链路。
 
 ---
 
 ## 7. 风险与建议
 
-1. **17.2 递归是最高优先级安全风险**：在栈受限的 MCU（如 S32K312，常见 64KB SRAM 中栈仅几 KB）上，BswM 模式切换和 DDS content_filtered_topic 的递归可能导致栈溢出，必须在 P1 阶段消除。
-2. **覆盖率门槛需区分 ASIL 等级**：当前 quality-gates.yml 对 MCAL 要求 90% 行 + 100% 函数 + 100% MC/DC，后者在 host 侧单测中极难达成，建议按 ISO 26262 ASIL 等级重设（QM: 行覆盖即可；ASIL-B: 分支；ASIL-D: MC/DC）。
-3. **MISRA 15.5 单出口**：9,352 条全改不现实且会降低可读性，建议按 MISRA 规程出具 deviation（"AUTOSAR BSW 错误处理模式，多处 return 可提升可读性与错误隔离"），而非逐条修改。
+1. **~~17.2 递归是最高优先级安全风险~~（已闭环）**：P1 已全部迭代化，复核确认 17.2 = 0。
+2. **覆盖率门槛需区分 ASIL 等级**：当前 quality-gates.yml 对 MCAL 要求 90% 行 + 100% 函数 + 100% MC/DC，后者在 host 侧单测中极难达成且 gcov/lcov 无 MC/DC 测量能力，建议按 ISO 26262 ASIL 等级重设（QM: 行覆盖即可；ASIL-B: 分支；ASIL-D: MC/DC），并决策 MC/DC 工具链（VectorCAST/LDRA 或 GCC 14 `-fcondition-coverage`）。
+3. **MISRA 15.5 单出口**：生产 6,998 条全改不现实且会降低可读性，建议按 MISRA 规程出具 deviation（"AUTOSAR BSW 错误处理模式，多处 return 可提升可读性与错误隔离"），并将现有 COM 模块偏差许可扩展为全仓统一记录，刷新 `misra-deviation-report.md` 至当前代码口径。
 4. **建议引入 clang-tidy CI 门禁**：当前仅 cppcheck，clang-tidy 可补充 `bugprone-*`、`cert-*`、`misc-*` 检查，建议 P1 后加入。
+5. **复杂度治理需排期**（新）：355 个 CCN>10 函数集中在 NvM/CanTp/Csm/Crypto_Aes/SomeIpXf/TcpIp 等核心栈，建议按"CCN>20 的 47 个优先拆解"的顺序收敛；函数规模（587 个 >50 行）与文件规模（170 个 >500 行）可随 15.5 deviation 与模块拆分同步推进。
+6. **量产前文档刷新清单**：`misra-deviation-report.md`（对齐 17.7/10.4 实测）、`VERIFICATION_REPORT.md`（对齐当前覆盖率）、15.5 全仓 deviation、HIL 硬件模式实测记录（当前 hil-tests.yml 默认仿真模式）。
 
 ---
 
@@ -460,16 +523,21 @@ lcov --remove logs/cov_raw.info '/usr/*' '*/tests/*' '*/third_party/*' \
      --rc branch_coverage=1 --output-file logs/cov_filtered.info
 
 # 静态分析 + MISRA（权威口径：按每 TU 的真实编译参数，避免头文件遮蔽/重复名造成假阳性）
-cppcheck --project=build-native/compile_commands.json --addon=misra \
-  --enable=style --inline-suppr -j8 \
-  --suppress=missingIncludeSystem --suppress=missingInclude \
-  2> logs/cppcheck_all.err
+# 2026-11-08 晚复核实跑命令（输出 210,506 行，含测试 TU）：
+cppcheck --project=build-native/compile_commands.json --enable=all --addon=misra \
+  --inline-suppr --quiet -j$(nproc) 2> logs/cppcheck_all.err
 
-# 只看 Required 规则计数
-for r in 8.4 17.7 10.4; do echo "$r: $(grep -c "misra-c2012-$r" logs/cppcheck_all.err)"; done
+# 只看 Required 规则计数（生产口径：排除 tests/mock 与 third_party）
+for r in 8.4 17.7 10.4 17.2 21.3; do
+  echo "$r: $(grep "misra-c2012-$r\]" logs/cppcheck_all.err | grep -E '^(src|include)/' | grep -ivE 'test|mock' | wc -l)"
+done
+
+# 圈复杂度 / 函数规模（lizard）
+pip install lizard
+lizard src --csv | awk -F',' 'NR>1 && $2>10 {ccn++} $5>50 {len++} END {print "CCN>10:", ccn, " Len>50:", len}'
 ```
 
 ---
 
-*首版生成：2026-11-08 01:05 CST；P2/P3 补录更新：2026-11-08 14:00 CST；8.4 清零与产品缺陷修复补录：2026-11-08 15:10 CST*
-*评估工具：cppcheck 2.13.0, lcov, GCC ASan/UBSan*
+*首版生成：2026-11-08 01:05 CST；P2/P3 补录更新：2026-11-08 14:00 CST；8.4 清零与产品缺陷修复补录：2026-11-08 15:10 CST；量产门禁复核（209/209 全绿 + cppcheck 权威口径 + lizard 复杂度 + 门禁总账）：2026-11-08 23:00 CST*
+*评估工具：cppcheck 2.13.0, lcov, lizard, GCC ASan/UBSan*
