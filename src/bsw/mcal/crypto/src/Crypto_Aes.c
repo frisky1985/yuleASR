@@ -178,20 +178,11 @@ boolean Crypto_AesIsModeSupported(Crypto_AlgorithmModeType mode)
 }
 
 /**
- * @brief 处理AES加密作业
+ * @brief 校验 AES 作业的公共输入（job/io/初始化/缓冲指针）
  */
-/** @req SWS_Crypto_00004 */
-Std_ReturnType Crypto_AesProcessEncrypt(Crypto_JobType* job)
+STATIC Std_ReturnType Crypto_AesValidateJobIo(const Crypto_JobType* job)
 {
-    Crypto_AesJobContextType* ctx;
-    Crypto_JobPrimitiveInputOutputType* io;
-    uint8 key[AES_MAX_KEY_SIZE];
-    uint32 keyLen = AES_MAX_KEY_SIZE;
-    uint8 iv[AES_BLOCK_SIZE];
-    uint32 ivLen = AES_BLOCK_SIZE;
-    uint8 result;
-    uint32 outputLen;
-    boolean isNewJob = FALSE;
+    const Crypto_JobPrimitiveInputOutputType* io;
 
     if ((job == NULL_PTR) || (job->jobPrimitiveInputOutput == NULL_PTR)) {
         return E_NOT_OK;
@@ -202,48 +193,335 @@ Std_ReturnType Crypto_AesProcessEncrypt(Crypto_JobType* job)
     }
 
     io = job->jobPrimitiveInputOutput;
-
-    /* 检查输入输出参数 */
     if (((const uint8*)io->inputPtr == NULL_PTR) || ((uint8*)io->outputPtr == NULL_PTR) ||
         (io->outputLengthPtr == NULL_PTR)) {
         return E_NOT_OK;
     }
 
-    /* 获取或创建上下文 */
-    ctx = Crypto_AesFindContext(job->jobId);
-    if (ctx == NULL_PTR) {
-        ctx = Crypto_AesGetFreeContext();
-        if (ctx == NULL_PTR) {
-            return E_NOT_OK;
-        }
-        ctx->jobId = job->jobId;
-        ctx->mode = Crypto_AesConvertMode(job->jobPrimitiveInfo->algorithm->mode);
-        ctx->inUse = TRUE;
-        isNewJob = TRUE;
+    return E_OK;
+}
 
-        /* 获取并初始化密钥 */
-        if (Crypto_AesGetKeyElement(job->cryptoKeyId, key, &keyLen) == E_OK) {
-            result = Aes_Init(&ctx->aesCtx, key, keyLen);
-            if (result != AES_ERR_NONE) {
-                ctx->inUse = FALSE;
-                return E_NOT_OK;
-            }
-        } else {
+/**
+ * @brief 获取或创建作业上下文并初始化密钥（加解密共用）
+ */
+STATIC Std_ReturnType Crypto_AesPrepareContext(const Crypto_JobType* job,
+                                               Crypto_AesJobContextType** ctxOut,
+                                               boolean* isNewOut)
+{
+    Crypto_AesJobContextType* ctx = Crypto_AesFindContext(job->jobId);
+    uint8 key[AES_MAX_KEY_SIZE];
+    uint32 keyLen = AES_MAX_KEY_SIZE;
+    uint8 result;
+
+    if (ctx != NULL_PTR) {
+        *ctxOut = ctx;
+        return E_OK;
+    }
+
+    ctx = Crypto_AesGetFreeContext();
+    if (ctx == NULL_PTR) {
+        return E_NOT_OK;
+    }
+
+    ctx->jobId = job->jobId;
+    ctx->mode = Crypto_AesConvertMode(job->jobPrimitiveInfo->algorithm->mode);
+    ctx->inUse = TRUE;
+    *isNewOut = TRUE;
+
+    /* 获取并初始化密钥 */
+    if (Crypto_AesGetKeyElement(job->cryptoKeyId, key, &keyLen) == E_OK) {
+        result = Aes_Init(&ctx->aesCtx, key, keyLen);
+        if (result != AES_ERR_NONE) {
             ctx->inUse = FALSE;
             return E_NOT_OK;
         }
+    } else {
+        ctx->inUse = FALSE;
+        return E_NOT_OK;
+    }
+
+    *ctxOut = ctx;
+    return E_OK;
+}
+
+/**
+ * @brief 为新作业装载 IV（输入参数 -> 密钥元素 -> 零IV后备）
+ */
+STATIC void Crypto_AesLoadIv(const Crypto_JobType* job,
+                             const Crypto_JobPrimitiveInputOutputType* io,
+                             boolean isNewJob, uint8* iv)
+{
+    uint32 ivLen = AES_BLOCK_SIZE;
+
+    if ((isNewJob) == 0U) {
+        return;
+    }
+
+    if ((io->secondaryInputPtr != NULL_PTR) && (io->secondaryInputLength == AES_BLOCK_SIZE)) {
+        (void)memcpy(iv, io->secondaryInputPtr, AES_BLOCK_SIZE);
+    } else if (Crypto_AesGetIvElement(job->cryptoKeyId, iv, &ivLen) == E_OK) {
+        /* IV从密钥元素获取 */
+    } else {
+        (void)memset(iv, 0, AES_BLOCK_SIZE);  /* 零IV作为后备 */
+    }
+}
+
+/**
+ * @brief 流式 UPDATE/STREAMSTART 处理（encrypt=TRUE 加密，FALSE 解密）
+ * @return TRUE 已处理；FALSE 模式不支持流式更新
+ */
+STATIC boolean Crypto_AesUpdateStreamJob(Crypto_AesJobContextType* ctx,
+                                      const Crypto_JobPrimitiveInputOutputType* io,
+                                      const uint8* iv, boolean isNewJob, boolean encrypt,
+                                      uint8* resultOut, uint32* outputLenOut)
+{
+    switch (ctx->mode) {
+        case AES_MODE_CBC:
+            if ((isNewJob) != 0U) {
+                *resultOut = (encrypt == TRUE) ?
+                             Aes_CbcEncryptStart(&ctx->aesCtx, iv) :
+                             Aes_CbcDecryptStart(&ctx->aesCtx, iv);
+            }
+            if ((io->inputLength % AES_BLOCK_SIZE) == 0U) {
+                *resultOut = (encrypt == TRUE) ?
+                             Aes_CbcEncryptUpdate(&ctx->aesCtx, (const uint8*)io->inputPtr,
+                                                  io->inputLength,
+                                                  (uint8*)io->outputPtr, outputLenOut) :
+                             Aes_CbcDecryptUpdate(&ctx->aesCtx, (const uint8*)io->inputPtr,
+                                                  io->inputLength,
+                                                  (uint8*)io->outputPtr, outputLenOut);
+            }
+            return TRUE;
+
+        case AES_MODE_CTR:
+            if ((isNewJob) != 0U) {
+                *resultOut = Aes_CtrEncryptStart(&ctx->aesCtx, iv);
+            }
+            *resultOut = Aes_CtrEncryptUpdate(&ctx->aesCtx, (const uint8*)io->inputPtr,
+                                              io->inputLength, (uint8*)io->outputPtr);
+            *outputLenOut = io->inputLength;
+            return TRUE;
+
+        default:
+            /* 其他模式不支持流式UPDATE模式 */
+            return FALSE;
+    }
+}
+
+/**
+ * @brief GCM AEAD 加密
+ */
+STATIC void Crypto_AesGcmEncryptJob(Crypto_AesJobContextType* ctx,
+                                    const Crypto_JobPrimitiveInputOutputType* io,
+                                    const uint8* iv, uint8* resultOut, uint32* outputLenOut)
+{
+    uint32 tagLen = AES_GCM_TAG_SIZE;
+
+    if (io->secondaryOutputLengthPtr != NULL_PTR) {
+        tagLen = *io->secondaryOutputLengthPtr;
+    }
+    *resultOut = Aes_GcmEncrypt(&ctx->aesCtx, iv, AES_GCM_IV_SIZE,
+                                (const uint8*)io->tertiaryInputPtr, io->tertiaryInputLength,
+                                (const uint8*)io->inputPtr, io->inputLength,
+                                (uint8*)io->outputPtr,
+                                (uint8*)io->secondaryOutputPtr, tagLen);
+    *outputLenOut = io->inputLength;
+    if (io->secondaryOutputLengthPtr != NULL_PTR) {
+        *io->secondaryOutputLengthPtr = tagLen;
+    }
+}
+
+/**
+ * @brief CCM AEAD 加密
+ */
+STATIC void Crypto_AesCcmEncryptJob(Crypto_AesJobContextType* ctx,
+                                    const Crypto_JobPrimitiveInputOutputType* io,
+                                    const uint8* iv, uint8* resultOut, uint32* outputLenOut)
+{
+    uint32 tagLen = AES_CCM_TAG_SIZE;
+
+    *resultOut = Aes_CcmEncrypt(&ctx->aesCtx, iv, AES_BLOCK_SIZE,
+                                (const uint8*)io->tertiaryInputPtr, io->tertiaryInputLength,
+                                (const uint8*)io->inputPtr, io->inputLength,
+                                (uint8*)io->outputPtr, tagLen,
+                                (uint8*)io->secondaryOutputPtr);
+    *outputLenOut = io->inputLength;
+    if (io->secondaryOutputLengthPtr != NULL_PTR) {
+        *io->secondaryOutputLengthPtr = tagLen;
+    }
+}
+
+/**
+ * @brief GCM AEAD 解密（含 verifyPtr 验证结果回写）
+ */
+STATIC void Crypto_AesGcmDecryptJob(Crypto_AesJobContextType* ctx,
+                                    const Crypto_JobPrimitiveInputOutputType* io,
+                                    const uint8* iv, uint8* resultOut, uint32* outputLenOut)
+{
+    uint32 tagLen = AES_GCM_TAG_SIZE;
+
+    if (io->tertiaryInputLength > 0U) {
+        tagLen = io->tertiaryInputLength;
+    }
+    *resultOut = Aes_GcmDecrypt(&ctx->aesCtx, iv, AES_GCM_IV_SIZE,
+                                (const uint8*)io->tertiaryInputPtr, io->tertiaryInputLength,
+                                (const uint8*)io->inputPtr, io->inputLength,
+                                (const uint8*)io->secondaryInputPtr, tagLen,
+                                (uint8*)io->outputPtr, outputLenOut);
+
+    /* 验证结果 */
+    if (io->verifyPtr != NULL_PTR) {
+        *io->verifyPtr = (*resultOut == AES_ERR_NONE) ?
+                         CRYPTO_VERIFY_PASSED : CRYPTO_VERIFY_FAILED;
+    }
+}
+
+/**
+ * @brief CCM AEAD 解密（含 verifyPtr 验证结果回写）
+ */
+STATIC void Crypto_AesCcmDecryptJob(Crypto_AesJobContextType* ctx,
+                                    const Crypto_JobPrimitiveInputOutputType* io,
+                                    const uint8* iv, uint8* resultOut, uint32* outputLenOut)
+{
+    uint32 tagLen = AES_CCM_TAG_SIZE;
+
+    if (io->tertiaryInputLength > 0U) {
+        tagLen = io->tertiaryInputLength;
+    }
+    *resultOut = Aes_CcmDecrypt(&ctx->aesCtx, iv, AES_BLOCK_SIZE,
+                                (const uint8*)io->tertiaryInputPtr, io->tertiaryInputLength,
+                                (const uint8*)io->inputPtr, io->inputLength,
+                                (const uint8*)io->secondaryInputPtr, tagLen,
+                                (uint8*)io->outputPtr, outputLenOut);
+
+    if (io->verifyPtr != NULL_PTR) {
+        *io->verifyPtr = (*resultOut == AES_ERR_NONE) ?
+                         CRYPTO_VERIFY_PASSED : CRYPTO_VERIFY_FAILED;
+    }
+}
+
+/**
+ * @brief FINISH/SINGLECALL 单次加密
+ * @return TRUE 已处理；FALSE 模式不支持
+ */
+STATIC boolean Crypto_AesFinishEncrypt(Crypto_AesJobContextType* ctx,
+                                       const Crypto_JobPrimitiveInputOutputType* io,
+                                       const uint8* iv, uint8* resultOut, uint32* outputLenOut)
+{
+    switch (ctx->mode) {
+        case AES_MODE_ECB:
+            *resultOut = Aes_EcbEncrypt(&ctx->aesCtx, (const uint8*)io->inputPtr, io->inputLength,
+                                        (uint8*)io->outputPtr, outputLenOut);
+            return TRUE;
+
+        case AES_MODE_CBC:
+            *resultOut = Aes_CbcEncrypt(&ctx->aesCtx, iv, (const uint8*)io->inputPtr,
+                                        io->inputLength, (uint8*)io->outputPtr, outputLenOut);
+            return TRUE;
+
+        case AES_MODE_CFB:
+            *resultOut = Aes_CfbEncrypt(&ctx->aesCtx, iv, (const uint8*)io->inputPtr,
+                                        io->inputLength, (uint8*)io->outputPtr, outputLenOut);
+            return TRUE;
+
+        case AES_MODE_OFB:
+            *resultOut = Aes_OfbEncrypt(&ctx->aesCtx, iv, (const uint8*)io->inputPtr,
+                                        io->inputLength, (uint8*)io->outputPtr, outputLenOut);
+            return TRUE;
+
+        case AES_MODE_CTR:
+            *resultOut = Aes_CtrEncrypt(&ctx->aesCtx, iv, (const uint8*)io->inputPtr,
+                                        io->inputLength, (uint8*)io->outputPtr);
+            *outputLenOut = io->inputLength;
+            return TRUE;
+
+        case AES_MODE_GCM:
+            Crypto_AesGcmEncryptJob(ctx, io, iv, resultOut, outputLenOut);
+            return TRUE;
+
+        case AES_MODE_CCM:
+            Crypto_AesCcmEncryptJob(ctx, io, iv, resultOut, outputLenOut);
+            return TRUE;
+
+        default:
+            return FALSE;
+    }
+}
+
+/**
+ * @brief FINISH/SINGLECALL 单次解密
+ * @return TRUE 已处理；FALSE 模式不支持
+ */
+STATIC boolean Crypto_AesFinishDecrypt(Crypto_AesJobContextType* ctx,
+                                       const Crypto_JobPrimitiveInputOutputType* io,
+                                       const uint8* iv, uint8* resultOut, uint32* outputLenOut)
+{
+    switch (ctx->mode) {
+        case AES_MODE_ECB:
+            *resultOut = Aes_EcbDecrypt(&ctx->aesCtx, (const uint8*)io->inputPtr, io->inputLength,
+                                        (uint8*)io->outputPtr, outputLenOut);
+            return TRUE;
+
+        case AES_MODE_CBC:
+            *resultOut = Aes_CbcDecrypt(&ctx->aesCtx, iv, (const uint8*)io->inputPtr,
+                                        io->inputLength, (uint8*)io->outputPtr, outputLenOut);
+            return TRUE;
+
+        case AES_MODE_CFB:
+            *resultOut = Aes_CfbDecrypt(&ctx->aesCtx, iv, (const uint8*)io->inputPtr,
+                                        io->inputLength, (uint8*)io->outputPtr, outputLenOut);
+            return TRUE;
+
+        case AES_MODE_OFB:
+            *resultOut = Aes_OfbEncrypt(&ctx->aesCtx, iv, (const uint8*)io->inputPtr,
+                                        io->inputLength, (uint8*)io->outputPtr, outputLenOut);
+            return TRUE;
+
+        case AES_MODE_CTR:
+            *resultOut = Aes_CtrEncrypt(&ctx->aesCtx, iv, (const uint8*)io->inputPtr,
+                                        io->inputLength, (uint8*)io->outputPtr);
+            *outputLenOut = io->inputLength;
+            return TRUE;
+
+        case AES_MODE_GCM:
+            Crypto_AesGcmDecryptJob(ctx, io, iv, resultOut, outputLenOut);
+            return TRUE;
+
+        case AES_MODE_CCM:
+            Crypto_AesCcmDecryptJob(ctx, io, iv, resultOut, outputLenOut);
+            return TRUE;
+
+        default:
+            return FALSE;
+    }
+}
+
+/**
+ * @brief 处理AES加密作业
+ */
+/** @req SWS_Crypto_00004 */
+Std_ReturnType Crypto_AesProcessEncrypt(Crypto_JobType* job)
+{
+    Crypto_AesJobContextType* ctx;
+    Crypto_JobPrimitiveInputOutputType* io;
+    uint8 iv[AES_BLOCK_SIZE];
+    uint8 result = AES_ERR_NONE;
+    uint32 outputLen;
+    boolean isNewJob = FALSE;
+
+    if (Crypto_AesValidateJobIo(job) != E_OK) {
+        return E_NOT_OK;
+    }
+
+    io = job->jobPrimitiveInputOutput;
+
+    /* 获取或创建上下文并初始化密钥 */
+    if (Crypto_AesPrepareContext(job, &ctx, &isNewJob) != E_OK) {
+        return E_NOT_OK;
     }
 
     /* 获取IV */
-    if ((isNewJob) != 0U) {
-        if ((io->secondaryInputPtr != NULL_PTR) && (io->secondaryInputLength == AES_BLOCK_SIZE)) {
-            (void)memcpy(iv, io->secondaryInputPtr, AES_BLOCK_SIZE);
-        } else if (Crypto_AesGetIvElement(job->cryptoKeyId, iv, &ivLen) == E_OK) {
-            /* IV从密钥元素获取 */
-        } else {
-            (void)memset(iv, 0, AES_BLOCK_SIZE);  /* 零IV作为后备 */
-        }
-    }
+    Crypto_AesLoadIv(job, io, isNewJob, iv);
 
     outputLen = *io->outputLengthPtr;
 
@@ -257,100 +535,16 @@ Std_ReturnType Crypto_AesProcessEncrypt(Crypto_JobType* job)
         case CRYPTO_OPERATIONMODE_UPDATE:
         case CRYPTO_OPERATIONMODE_STREAMSTART:
             /* 流式更新 - 处理完整块 */
-            switch (ctx->mode) {
-                case AES_MODE_CBC:
-                    if ((isNewJob) != 0U) {
-                        result = Aes_CbcEncryptStart(&ctx->aesCtx, iv);
-                    }
-                    if ((io->inputLength % AES_BLOCK_SIZE) == 0U) {
-                        result = Aes_CbcEncryptUpdate(&ctx->aesCtx, (const uint8*)io->inputPtr,
-                                                      io->inputLength,
-                                                      (uint8*)io->outputPtr, &outputLen);
-                    }
-                    break;
-
-                case AES_MODE_CTR:
-                    if ((isNewJob) != 0U) {
-                        result = Aes_CtrEncryptStart(&ctx->aesCtx, iv);
-                    }
-result = Aes_CtrEncryptUpdate(&ctx->aesCtx, (const uint8*)io->inputPtr,
-                                                  io->inputLength, (uint8*)io->outputPtr);
-                    outputLen = io->inputLength;
-                    break;
-
-                default:
-                    /* 其他模式不支持流式UPDATE模式 */
-                    return E_NOT_OK;
+            if (Crypto_AesUpdateStreamJob(ctx, io, iv, isNewJob, TRUE, &result, &outputLen) == FALSE) {
+                return E_NOT_OK;
             }
             break;
 
         case CRYPTO_OPERATIONMODE_FINISH:
         case CRYPTO_OPERATIONMODE_SINGLECALL:
             /* 单次调用或完成 */
-            switch (ctx->mode) {
-                case AES_MODE_ECB:
-                    result = Aes_EcbEncrypt(&ctx->aesCtx, (const uint8*)io->inputPtr, io->inputLength,
-                                           (uint8*)io->outputPtr, &outputLen);
-                    break;
-
-                case AES_MODE_CBC:
-                    result = Aes_CbcEncrypt(&ctx->aesCtx, iv, (const uint8*)io->inputPtr,
-                                           io->inputLength, (uint8*)io->outputPtr, &outputLen);
-                    break;
-
-                case AES_MODE_CFB:
-                    result = Aes_CfbEncrypt(&ctx->aesCtx, iv, (const uint8*)io->inputPtr,
-                                           io->inputLength, (uint8*)io->outputPtr, &outputLen);
-                    break;
-
-                case AES_MODE_OFB:
-                    result = Aes_OfbEncrypt(&ctx->aesCtx, iv, (const uint8*)io->inputPtr,
-                                           io->inputLength, (uint8*)io->outputPtr, &outputLen);
-                    break;
-
-                case AES_MODE_CTR:
-                    result = Aes_CtrEncrypt(&ctx->aesCtx, iv, (const uint8*)io->inputPtr,
-                                           io->inputLength, (uint8*)io->outputPtr);
-                    outputLen = io->inputLength;
-                    break;
-
-                case AES_MODE_GCM:
-                    /* AEAD加密 */
-                    {
-                        uint32 tagLen = AES_GCM_TAG_SIZE;
-                        if (io->secondaryOutputLengthPtr != NULL_PTR) {
-                            tagLen = *io->secondaryOutputLengthPtr;
-                        }
-                        result = Aes_GcmEncrypt(&ctx->aesCtx, iv, AES_GCM_IV_SIZE,
-                                               (const uint8*)io->tertiaryInputPtr, io->tertiaryInputLength,
-                                               (const uint8*)io->inputPtr, io->inputLength,
-                                               (uint8*)io->outputPtr,
-                                               (uint8*)io->secondaryOutputPtr, tagLen);
-                        outputLen = io->inputLength;
-                        if (io->secondaryOutputLengthPtr != NULL_PTR) {
-                            *io->secondaryOutputLengthPtr = tagLen;
-                        }
-                    }
-                    break;
-
-                case AES_MODE_CCM:
-                    /* AEAD加密 */
-                    {
-                        uint32 tagLen = AES_CCM_TAG_SIZE;
-                        result = Aes_CcmEncrypt(&ctx->aesCtx, iv, AES_BLOCK_SIZE,
-                                               (const uint8*)io->tertiaryInputPtr, io->tertiaryInputLength,
-                                               (const uint8*)io->inputPtr, io->inputLength,
-                                               (uint8*)io->outputPtr, tagLen,
-                                               (uint8*)io->secondaryOutputPtr);
-                        outputLen = io->inputLength;
-                        if (io->secondaryOutputLengthPtr != NULL_PTR) {
-                            *io->secondaryOutputLengthPtr = tagLen;
-                        }
-                    }
-                    break;
-
-                default:
-                    return E_NOT_OK;
+            if (Crypto_AesFinishEncrypt(ctx, io, iv, &result, &outputLen) == FALSE) {
+                return E_NOT_OK;
             }
 
             /* 清理上下文 */
@@ -378,65 +572,24 @@ Std_ReturnType Crypto_AesProcessDecrypt(Crypto_JobType* job)
 {
     Crypto_AesJobContextType* ctx;
     Crypto_JobPrimitiveInputOutputType* io;
-    uint8 key[AES_MAX_KEY_SIZE];
-    uint32 keyLen = AES_MAX_KEY_SIZE;
     uint8 iv[AES_BLOCK_SIZE];
-    uint32 ivLen = AES_BLOCK_SIZE;
-    uint8 result;
+    uint8 result = AES_ERR_NONE;
     uint32 outputLen;
     boolean isNewJob = FALSE;
 
-    if ((job == NULL_PTR) || (job->jobPrimitiveInputOutput == NULL_PTR)) {
-        return E_NOT_OK;
-    }
-
-    if (gCryptoAesInitialized == 0U) {
+    if (Crypto_AesValidateJobIo(job) != E_OK) {
         return E_NOT_OK;
     }
 
     io = job->jobPrimitiveInputOutput;
 
-    /* 检查输入输出参数 */
-    if (((const uint8*)io->inputPtr == NULL_PTR) || ((uint8*)io->outputPtr == NULL_PTR) ||
-        (io->outputLengthPtr == NULL_PTR)) {
+    /* 获取或创建上下文并初始化密钥 */
+    if (Crypto_AesPrepareContext(job, &ctx, &isNewJob) != E_OK) {
         return E_NOT_OK;
     }
 
-    /* 获取或创建上下文 */
-    ctx = Crypto_AesFindContext(job->jobId);
-    if (ctx == NULL_PTR) {
-        ctx = Crypto_AesGetFreeContext();
-        if (ctx == NULL_PTR) {
-            return E_NOT_OK;
-        }
-        ctx->jobId = job->jobId;
-        ctx->mode = Crypto_AesConvertMode(job->jobPrimitiveInfo->algorithm->mode);
-        ctx->inUse = TRUE;
-        isNewJob = TRUE;
-
-        /* 获取并初始化密钥 */
-        if (Crypto_AesGetKeyElement(job->cryptoKeyId, key, &keyLen) == E_OK) {
-            result = Aes_Init(&ctx->aesCtx, key, keyLen);
-            if (result != AES_ERR_NONE) {
-                ctx->inUse = FALSE;
-                return E_NOT_OK;
-            }
-        } else {
-            ctx->inUse = FALSE;
-            return E_NOT_OK;
-        }
-    }
-
     /* 获取IV */
-    if ((isNewJob) != 0U) {
-        if ((io->secondaryInputPtr != NULL_PTR) && (io->secondaryInputLength == AES_BLOCK_SIZE)) {
-            (void)memcpy(iv, io->secondaryInputPtr, AES_BLOCK_SIZE);
-        } else if (Crypto_AesGetIvElement(job->cryptoKeyId, iv, &ivLen) == E_OK) {
-            /* IV从密钥元素获取 */
-        } else {
-            (void)memset(iv, 0, AES_BLOCK_SIZE);
-        }
-    }
+    Crypto_AesLoadIv(job, io, isNewJob, iv);
 
     outputLen = *io->outputLengthPtr;
 
@@ -449,105 +602,16 @@ Std_ReturnType Crypto_AesProcessDecrypt(Crypto_JobType* job)
         case CRYPTO_OPERATIONMODE_UPDATE:
         case CRYPTO_OPERATIONMODE_STREAMSTART:
             /* 流式更新 */
-            switch (ctx->mode) {
-                case AES_MODE_CBC:
-                    if ((isNewJob) != 0U) {
-                        result = Aes_CbcDecryptStart(&ctx->aesCtx, iv);
-                    }
-                    if ((io->inputLength % AES_BLOCK_SIZE) == 0U) {
-                        result = Aes_CbcDecryptUpdate(&ctx->aesCtx, (const uint8*)io->inputPtr,
-                                                      io->inputLength,
-                                                      (uint8*)io->outputPtr, &outputLen);
-                    }
-                    break;
-
-                case AES_MODE_CTR:
-                    if ((isNewJob) != 0U) {
-                        result = Aes_CtrEncryptStart(&ctx->aesCtx, iv);
-                    }
-result = Aes_CtrEncryptUpdate(&ctx->aesCtx, (const uint8*)io->inputPtr,
-                                                  io->inputLength, (uint8*)io->outputPtr);
-                    outputLen = io->inputLength;
-                    break;
-
-                default:
-                    return E_NOT_OK;
+            if (Crypto_AesUpdateStreamJob(ctx, io, iv, isNewJob, FALSE, &result, &outputLen) == FALSE) {
+                return E_NOT_OK;
             }
             break;
 
         case CRYPTO_OPERATIONMODE_FINISH:
         case CRYPTO_OPERATIONMODE_SINGLECALL:
             /* 单次调用或完成 */
-            switch (ctx->mode) {
-                case AES_MODE_ECB:
-                    result = Aes_EcbDecrypt(&ctx->aesCtx, (const uint8*)io->inputPtr, io->inputLength,
-                                           (uint8*)io->outputPtr, &outputLen);
-                    break;
-
-                case AES_MODE_CBC:
-                    result = Aes_CbcDecrypt(&ctx->aesCtx, iv, (const uint8*)io->inputPtr,
-                                           io->inputLength, (uint8*)io->outputPtr, &outputLen);
-                    break;
-
-                case AES_MODE_CFB:
-                    result = Aes_CfbDecrypt(&ctx->aesCtx, iv, (const uint8*)io->inputPtr,
-                                           io->inputLength, (uint8*)io->outputPtr, &outputLen);
-                    break;
-
-                case AES_MODE_OFB:
-                    result = Aes_OfbEncrypt(&ctx->aesCtx, iv, (const uint8*)io->inputPtr,
-                                           io->inputLength, (uint8*)io->outputPtr, &outputLen);
-                    break;
-
-                case AES_MODE_CTR:
-                    result = Aes_CtrEncrypt(&ctx->aesCtx, iv, (const uint8*)io->inputPtr,
-                                           io->inputLength, (uint8*)io->outputPtr);
-                    outputLen = io->inputLength;
-                    break;
-
-                case AES_MODE_GCM:
-                    /* AEAD解密 */
-                    {
-                        uint32 tagLen = AES_GCM_TAG_SIZE;
-                        if (io->tertiaryInputLength > 0U) {
-                            tagLen = io->tertiaryInputLength;
-                        }
-                        result = Aes_GcmDecrypt(&ctx->aesCtx, iv, AES_GCM_IV_SIZE,
-                                               (const uint8*)io->tertiaryInputPtr, io->tertiaryInputLength,
-                                               (const uint8*)io->inputPtr, io->inputLength,
-                                               (const uint8*)io->secondaryInputPtr, tagLen,
-                                               (uint8*)io->outputPtr, &outputLen);
-
-                        /* 验证结果 */
-                        if (io->verifyPtr != NULL_PTR) {
-                            *io->verifyPtr = (result == AES_ERR_NONE) ?
-                                            CRYPTO_VERIFY_PASSED : CRYPTO_VERIFY_FAILED;
-                        }
-                    }
-                    break;
-
-                case AES_MODE_CCM:
-                    /* AEAD解密 */
-                    {
-                        uint32 tagLen = AES_CCM_TAG_SIZE;
-                        if (io->tertiaryInputLength > 0U) {
-                            tagLen = io->tertiaryInputLength;
-                        }
-                        result = Aes_CcmDecrypt(&ctx->aesCtx, iv, AES_BLOCK_SIZE,
-                                               (const uint8*)io->tertiaryInputPtr, io->tertiaryInputLength,
-                                               (const uint8*)io->inputPtr, io->inputLength,
-                                               (const uint8*)io->secondaryInputPtr, tagLen,
-                                               (uint8*)io->outputPtr, &outputLen);
-
-                        if (io->verifyPtr != NULL_PTR) {
-                            *io->verifyPtr = (result == AES_ERR_NONE) ?
-                                            CRYPTO_VERIFY_PASSED : CRYPTO_VERIFY_FAILED;
-                        }
-                    }
-                    break;
-
-                default:
-                    return E_NOT_OK;
+            if (Crypto_AesFinishDecrypt(ctx, io, iv, &result, &outputLen) == FALSE) {
+                return E_NOT_OK;
             }
 
             /* 清理上下文 */
