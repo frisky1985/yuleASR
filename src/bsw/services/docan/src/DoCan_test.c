@@ -82,7 +82,7 @@ Std_ReturnType Det_ReportError(uint16 ModuleId, uint8 InstanceId, uint8 ApiId, u
 /*==================================================================================================
 *                                  TEST HELPER FUNCTIONS
 ==================================================================================================*/
-static void reset_mocks(void)
+void reset_mocks(void)
 {
     mock_cantp_transmit_result = E_OK;
     mock_cantp_transmit_id = 0xFFFFU;

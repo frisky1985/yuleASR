@@ -84,23 +84,23 @@ static uint32 Wdg_LastTriggerTime = 0U;  /* 上次触发时间戳 */
 #include "MemMap.h"
 
 /** @req SWS_Wdg_00101 */
-static uint32 Wdg_GetBaseAddr(void)
+uint32 Wdg_GetBaseAddr(void)
 {
     return WDG_WDOG1_BASE_ADDR;
 }
 
 /** @req SWS_Wdg_00102 */
-static void Wdg_EnableClock(void)
+void Wdg_EnableClock(void)
 {
 }
 
 /** @req SWS_Wdg_00103 */
-static void Wdg_DisableClock(void)
+void Wdg_DisableClock(void)
 {
 }
 
 /** @req SWS_Wdg_00104 */
-static uint16 Wdg_CalculateTimeoutValue(Wdg_TimeoutType timeoutMs)
+uint16 Wdg_CalculateTimeoutValue(Wdg_TimeoutType timeoutMs)
 {
     /* WDOG timeout = (WCR[WT] + 1) * 2 / WDOG clock frequency */
     /* WCR[WT] = (timeoutMs * clockFreq / 2000) - 1 */
@@ -135,7 +135,7 @@ static uint16 Wdg_CalculateTimeoutValue(Wdg_TimeoutType timeoutMs)
  * @return Wdg_TriggerResultType 触发结果
  */
 /** @req SWS_Wdg_00105 */
-static Wdg_TriggerResultType Wdg_ValidateWindowTrigger(
+Wdg_TriggerResultType Wdg_ValidateWindowTrigger(
     uint32 currentTime,
     const Wdg_ModeSettingsType* modeSettings)
 {
@@ -163,7 +163,7 @@ static Wdg_TriggerResultType Wdg_ValidateWindowTrigger(
  * @return 当前时间戳(ms)
  */
 /** @req SWS_Wdg_00106 */
-static uint32 Wdg_GetCurrentTimeMs(void)
+uint32 Wdg_GetCurrentTimeMs(void)
 {
     /* 时间戳获取 - 依赖系统定时器集成 (可用 GPT 定时器或系统计数器) */
     return 0U;
@@ -173,7 +173,7 @@ static uint32 Wdg_GetCurrentTimeMs(void)
  * @brief 调用超时前预警回调
  */
 /** @req SWS_Wdg_00107 */
-static void Wdg_InvokePreWarningCallback(uint32 TimeRemainingUs)
+void Wdg_InvokePreWarningCallback(uint32 TimeRemainingUs)
 {
     if ((Wdg_ConfigPtr != NULL_PTR) && 
         (Wdg_ConfigPtr->PreWarningCallback != NULL_PTR)) {
@@ -185,7 +185,7 @@ static void Wdg_InvokePreWarningCallback(uint32 TimeRemainingUs)
  * @brief 调用窗口违规回调
  */
 /** @req SWS_Wdg_00108 */
-static void Wdg_InvokeWindowViolationCallback(void)
+void Wdg_InvokeWindowViolationCallback(void)
 {
     if ((Wdg_ConfigPtr != NULL_PTR) && 
         (Wdg_ConfigPtr->WindowViolationCallback != NULL_PTR)) {
@@ -289,7 +289,7 @@ Std_ReturnType Wdg_SetMode(WdgIf_ModeType Mode)
 
     #if (WDG_DISABLE_ALLOWED == STD_OFF)
     if (Mode == WDGIF_OFF_MODE) {
-        Det_ReportError(WDG_MODULE_ID, 0U, WDG_SID_SETMODE, WDG_E_DISABLE_NOT_ALLOWED);
+        (void)Det_ReportError(WDG_MODULE_ID, 0U, WDG_SID_SETMODE, WDG_E_DISABLE_NOT_ALLOWED);
         return E_NOT_OK;
     }
     #endif
@@ -517,8 +517,7 @@ uint32 Wdg_GetLastTriggerTime(void)
 }
 
 #ifdef WDG_ENABLE_TEST_HOOKS
-void Wdg_TestReset(void) {
-    Wdg_DriverInitialized = FALSE;
+static void Wdg_TestReset(void) {    Wdg_DriverInitialized = FALSE;
     Wdg_CurrentMode = WDGIF_OFF_MODE;
     Wdg_CurrentTimeout = 0U;
     Wdg_ConfigPtr = NULL_PTR;

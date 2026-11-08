@@ -41,7 +41,7 @@
 #define MODE_MAX_COMPONENTS                 16U
 
 /* Mode transition timeout */
-#define MODE_TRANSITION_TIMEOUT_MS          5000
+#define MODE_TRANSITION_TIMEOUT_MS          5000U
 
 /*==================================================================================================
 *                                    LOCAL TYPES
@@ -152,7 +152,7 @@ STATIC void Swc_ModeManager_ExecuteModeTransition(void)
         /* Transition timeout - force completion */
         swcModeManager.status.transitionInProgress = FALSE;
         swcModeManager.status.systemState = SYSTEM_STATE_ERROR;
-        Det_ReportError(SWC_MODEMANAGER_MODULE_ID, SWC_MODEMANAGER_INSTANCE_ID,
+        (void)Det_ReportError(SWC_MODEMANAGER_MODULE_ID, SWC_MODEMANAGER_INSTANCE_ID,
                         0x50, RTE_E_NOT_OK);
         return;
     }
@@ -322,7 +322,7 @@ void Swc_ModeManager_Init(void)
 
     swcModeManager.isInitialized = TRUE;
 
-    Det_ReportError(SWC_MODEMANAGER_MODULE_ID, SWC_MODEMANAGER_INSTANCE_ID,
+    (void)Det_ReportError(SWC_MODEMANAGER_MODULE_ID, SWC_MODEMANAGER_INSTANCE_ID,
                     0x01, RTE_E_OK);
 }
 

@@ -214,7 +214,7 @@ static const Fls_SectorInfoType Fls_SectorInfoTable[FLS_NUM_OF_CONFIGURED_SECTOR
 
 /* Job End Notification Callback */
 /** @req SWS_Fls_00031 */
-static void Fls_JobEndNotification(void)
+void Fls_JobEndNotification(void)
 {
     /* User-defined notification function */
     /* Called when a flash operation completes successfully */
@@ -223,7 +223,7 @@ static void Fls_JobEndNotification(void)
 
 /* Job Error Notification Callback */
 /** @req SWS_Fls_00032 */
-static void Fls_JobErrorNotification(void)
+void Fls_JobErrorNotification(void)
 {
     /* User-defined error notification function */
     /* Called when a flash operation fails */

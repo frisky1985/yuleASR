@@ -174,7 +174,7 @@ static void sha256_transform(uint32_t state[8], const uint8_t data[64]) {
 }
 
 static void sha256_init(uint32_t state[8]) {
-    memcpy(state, sha256_h, sizeof(sha256_h));
+    (void)memcpy(state, sha256_h, sizeof(sha256_h));
 }
 
 static void sha256_update(uint32_t state[8], const uint8_t *data, uint32_t len, uint8_t *buffer, uint32_t *buf_len, uint64_t *bit_len) {
@@ -244,8 +244,8 @@ static void hmac_sha256(const uint8_t *key, uint32_t key_len,
     }
     
     /* 创建ipad和opad */
-    memcpy(k_ipad, key, key_len);
-    memcpy(k_opad, key, key_len);
+    (void)memcpy(k_ipad, key, key_len);
+    (void)memcpy(k_opad, key, key_len);
     for (uint32_t i = 0U; i < SHA256_BLOCK_SIZE; i++) {
         k_ipad[i] ^= 0x36;
         k_opad[i] ^= 0x5c;
@@ -266,7 +266,7 @@ static void hmac_sha256(const uint8_t *key, uint32_t key_len,
     sha256_final(state, buffer, &buf_len, &bit_len, tk);
     
     /* 输出 */
-    memcpy(mac, tk, (mac_len < SHA256_DIGEST_SIZE) ? mac_len : SHA256_DIGEST_SIZE);
+    (void)memcpy(mac, tk, (mac_len < SHA256_DIGEST_SIZE) ? mac_len : SHA256_DIGEST_SIZE);
 }
 
 /* ============================================================================
@@ -323,7 +323,7 @@ static void aes_cmac(const uint8_t *key, uint32_t key_len,
     }
     aes_encrypt_block(y, x, key, key_len * 8U);
     
-    memcpy(mac, x, (mac_len < AES_BLOCK_SIZE) ? mac_len : AES_BLOCK_SIZE);
+    (void)memcpy(mac, x, (mac_len < AES_BLOCK_SIZE) ? mac_len : AES_BLOCK_SIZE);
 }
 
 /* ============================================================================
@@ -364,7 +364,7 @@ void secoc_deinit(secoc_context_t *ctx) {
     
     /* 清除所有密钥 */
     for (uint32_t i = 0U; i < SECOC_MAX_KEY_SLOTS; i++) {
-        memset(ctx->key_slots[i].key, 0, sizeof(ctx->key_slots[i].key));
+        (void)memset(ctx->key_slots[i].key, 0, sizeof(ctx->key_slots[i].key));
         ctx->key_slots[i].is_valid = false;
     }
     
@@ -397,7 +397,7 @@ secoc_status_t secoc_add_pdu_config(secoc_context_t *ctx, const secoc_pdu_config
     }
     
     /* 添加配置 */
-    memcpy(&ctx->pdu_configs[ctx->num_pdu_configs], config, sizeof(secoc_pdu_config_t));
+    (void)memcpy(&ctx->pdu_configs[ctx->num_pdu_configs], config, sizeof(secoc_pdu_config_t));
     ctx->num_pdu_configs++;
     
     return SECOC_OK;
@@ -425,7 +425,7 @@ secoc_status_t secoc_remove_pdu_config(secoc_context_t *ctx, uint32_t pdu_id) {
     for (uint32_t i = 0; i < ctx->num_pdu_configs; i++) {
         if (ctx->pdu_configs[i].pdu_id == pdu_id) {
             /* 移除配置 */
-            memmove(&ctx->pdu_configs[i], &ctx->pdu_configs[i + 1U],
+            (void)memmove(&ctx->pdu_configs[i], &ctx->pdu_configs[i + 1U],
                     (ctx->num_pdu_configs - i - 1U) * sizeof(secoc_pdu_config_t));
             ctx->num_pdu_configs--;
             return SECOC_OK;
@@ -454,7 +454,7 @@ secoc_status_t secoc_import_key(secoc_context_t *ctx, uint8_t slot_id,
     }
     
     secoc_key_slot_t *slot = &ctx->key_slots[slot_id];
-    memcpy(slot->key, key, key_len);
+    (void)memcpy(slot->key, key, key_len);
     slot->key_len = key_len;
     slot->is_valid = true;
     slot->key_version++;
@@ -477,7 +477,7 @@ secoc_status_t secoc_get_key(secoc_context_t *ctx, uint8_t slot_id,
         return SECOC_ERROR_KEY_NOT_FOUND;
     }
     
-    memcpy(key, slot->key, slot->key_len);
+    (void)memcpy(key, slot->key, slot->key_len);
     *key_len = slot->key_len;
     
     return SECOC_OK;
@@ -493,7 +493,7 @@ secoc_status_t secoc_clear_key(secoc_context_t *ctx, uint8_t slot_id) {
     }
     
     secoc_key_slot_t *slot = &ctx->key_slots[slot_id];
-    memset(slot->key, 0, sizeof(slot->key));
+    (void)memset(slot->key, 0, sizeof(slot->key));
     slot->key_len = 0;
     slot->is_valid = false;
     
@@ -523,14 +523,14 @@ secoc_status_t secoc_compute_mac(secoc_context_t *ctx, const secoc_pdu_config_t 
     
     /* 添加数据 */
     if (auth_pdu->data && (auth_pdu->data_len > 0U)) {
-        memcpy(auth_data, auth_pdu->data, auth_pdu->data_len);
+        (void)memcpy(auth_data, auth_pdu->data, auth_pdu->data_len);
         auth_len += auth_pdu->data_len;
     }
     
     /* 添加Freshness值 */
     uint8_t fv_len = config->freshness_value_len / 8U;
     if ((fv_len > 0U) && (fv_len <= SECOC_MAX_FRESHNESS_LENGTH)) {
-        memcpy(&auth_data[auth_len], auth_pdu->freshness_value, fv_len);
+        (void)memcpy(&auth_data[auth_len], auth_pdu->freshness_value, fv_len);
         auth_len += fv_len;
     }
     
@@ -586,7 +586,7 @@ secoc_status_t secoc_authenticate_tx_pdu(secoc_context_t *ctx, uint32_t pdu_id,
     }
     
     /* 初始化认证PDU结构 */
-    memset(auth_pdu, 0, sizeof(secoc_authenticated_pdu_t));
+    (void)memset(auth_pdu, 0, sizeof(secoc_authenticated_pdu_t));
     auth_pdu->pdu_id = pdu_id;
     
     /* 复制数据 */
@@ -595,7 +595,7 @@ secoc_status_t secoc_authenticate_tx_pdu(secoc_context_t *ctx, uint32_t pdu_id,
     }
     /* 复制数据到静态缓冲 (替代 malloc; data_len <= SECOC_MAX_PDU_LENGTH 已校验) */
     auth_pdu->data = s_secoc_tx_data;
-    memcpy(auth_pdu->data, data, data_len);
+    (void)memcpy(auth_pdu->data, data, data_len);
     auth_pdu->data_len = data_len;
     
     /* 设置freshness值长度 */
@@ -642,19 +642,19 @@ secoc_status_t secoc_build_secured_pdu(const secoc_authenticated_pdu_t *auth_pdu
     
     /* 序列化数据 */
     if (auth_pdu->data && (auth_pdu->data_len > 0U)) {
-        memcpy(&secured_pdu[offset], auth_pdu->data, auth_pdu->data_len);
+        (void)memcpy(&secured_pdu[offset], auth_pdu->data, auth_pdu->data_len);
         offset += auth_pdu->data_len;
     }
     
     /* 序列化Freshness值 */
     if (auth_pdu->freshness_len > 0U) {
-        memcpy(&secured_pdu[offset], auth_pdu->freshness_value, auth_pdu->freshness_len);
+        (void)memcpy(&secured_pdu[offset], auth_pdu->freshness_value, auth_pdu->freshness_len);
         offset += auth_pdu->freshness_len;
     }
     
     /* 序列化Authenticator */
     if (auth_pdu->auth_len > 0U) {
-        memcpy(&secured_pdu[offset], auth_pdu->authenticator, auth_pdu->auth_len);
+        (void)memcpy(&secured_pdu[offset], auth_pdu->authenticator, auth_pdu->auth_len);
         offset += auth_pdu->auth_len;
     }
     
@@ -686,7 +686,7 @@ secoc_status_t secoc_parse_secured_pdu(const uint8_t *secured_pdu, uint32_t secu
     uint32_t data_len = secured_len - fv_len - auth_len;
     
     /* 初始化认证PDU结构 */
-    memset(auth_pdu, 0, sizeof(secoc_authenticated_pdu_t));
+    (void)memset(auth_pdu, 0, sizeof(secoc_authenticated_pdu_t));
     auth_pdu->pdu_id = pdu_config->pdu_id;
     auth_pdu->freshness_len = fv_len;
     auth_pdu->auth_len = auth_len;
@@ -697,18 +697,18 @@ secoc_status_t secoc_parse_secured_pdu(const uint8_t *secured_pdu, uint32_t secu
             return SECOC_ERROR_PDU_TOO_LARGE;
         }
         auth_pdu->data = s_secoc_rx_data;
-        memcpy(auth_pdu->data, secured_pdu, data_len);
+        (void)memcpy(auth_pdu->data, secured_pdu, data_len);
         auth_pdu->data_len = data_len;
     }
     
     /* 解析Freshness值 */
     if (fv_len > 0U) {
-        memcpy(auth_pdu->freshness_value, &secured_pdu[data_len], fv_len);
+        (void)memcpy(auth_pdu->freshness_value, &secured_pdu[data_len], fv_len);
     }
     
     /* 解析Authenticator */
     if (auth_len > 0U) {
-        memcpy(auth_pdu->authenticator, &secured_pdu[data_len + fv_len], auth_len);
+        (void)memcpy(auth_pdu->authenticator, &secured_pdu[data_len + fv_len], auth_len);
     }
     
     return SECOC_OK;
@@ -768,7 +768,7 @@ secoc_status_t secoc_verify_rx_pdu(secoc_context_t *ctx, uint32_t pdu_id,
     
     /* 输出原始数据 (静态缓冲, 无需释放) */
     if ((auth_pdu.data_len > 0U) && auth_pdu.data) {
-        memcpy(original_data, auth_pdu.data, auth_pdu.data_len);
+        (void)memcpy(original_data, auth_pdu.data, auth_pdu.data_len);
         *original_len = auth_pdu.data_len;
     } else {
         *original_len = 0;

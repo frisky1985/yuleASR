@@ -66,8 +66,8 @@ extern void Dma_DisableChannel(uint8 Channel);
 #define CONREG_XCH          (1u << 2)
 #define CONREG_SMC          (1u << 3)
 #define CONREG_BURST_EN     (1u << 4)
-#define CONREG_CHANNEL_SHIFT 18
-#define CONREG_DRCTL_SHIFT  16
+#define CONREG_CHANNEL_SHIFT 18U
+#define CONREG_DRCTL_SHIFT  16U
 
 /* STATREG位 */
 #define STATREG_RR          (1u << 3)   /* RX FIFO就绪 */
@@ -90,8 +90,8 @@ extern void Dma_DisableChannel(uint8 Channel);
 /* DMAREG位 */
 #define DMAREG_RXDEN        (1u << 0)   /* RX DMA使能 */
 #define DMAREG_TXDEN        (1u << 1)   /* TX DMA使能 */
-#define DMAREG_RX_THRESHOLD_SHIFT 16
-#define DMAREG_TX_THRESHOLD_SHIFT 24
+#define DMAREG_RX_THRESHOLD_SHIFT 16U
+#define DMAREG_TX_THRESHOLD_SHIFT 24U
 
 /* 全局变量 */
 static boolean Spi_Initialized = FALSE;

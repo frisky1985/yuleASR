@@ -298,4 +298,5 @@ extern void LinSM_WakeUpConfirmation(uint8 Channel, boolean Success);
  */
 extern void LinSM_GoToSleepConfirmation(uint8 Channel, boolean Success);
 
+
 #endif /* LINSM_H */

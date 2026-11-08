@@ -290,6 +290,8 @@ Std_ReturnType SomeIpTp_ParseTpHeader(const uint8* Buffer, uint32* Offset, boole
  */
 Std_ReturnType SomeIpTp_GetRxBufferStatus(PduIdType RxPduId, PduLengthType* BufferSizePtr);
 
+
+Std_ReturnType SoAd_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr);
 #define SOMEIPTP_STOP_SEC_CODE
 #include "MemMap.h"
 

@@ -147,7 +147,7 @@ static bool lexer_read_token(cft_lexer_t *lexer) {
     // 标识符或关键字
     if (isalpha((unsigned char)lexer->input[lexer->pos]) || (lexer->input[lexer->pos] == '_')) {
         while ((lexer->pos < lexer->len) && 
-               (isalnum((unsigned char)lexer->input[lexer->pos]) || (lexer->input[lexer->pos] == '_'))) {
+                              (isalnum((unsigned char)lexer->input[lexer->pos]) || (lexer->input[lexer->pos] == '_'))) {
             if (lexer->token_len < sizeof(lexer->token) - 1U) {
                 lexer->token[lexer->token_len] = lexer->input[lexer->pos];
                 lexer->token_len++;
@@ -256,7 +256,7 @@ static cft_ast_node_t* create_ast_node(void) {
         }
     }
     if ((node) != 0U) {
-        memset(node, 0, sizeof(cft_ast_node_t));
+        (void)memset(node, 0, sizeof(cft_ast_node_t));
         node->is_leaf = false;
     }
     return node;
@@ -286,7 +286,7 @@ static cft_ast_node_t* parse_primary(cft_lexer_t *lexer) {
     if (strcmp(lexer->token, "(") == 0) {
         /* cppcheck-suppress misra-c2012-17.2 */
         cft_ast_node_t *node = parse_expression(lexer);
-        lexer_read_token(lexer); // 消耗右括号
+        (void)lexer_read_token(lexer); // 消耗右括号
         return node;
     }
     
@@ -315,7 +315,7 @@ static cft_ast_node_t* parse_predicate(cft_lexer_t *lexer) {
         release_ast_node(node);
         return NULL;
     }
-    strncpy(node->data.predicate.field_name, lexer->token, sizeof(node->data.predicate.field_name) - 1U);
+    (void)strncpy(node->data.predicate.field_name, lexer->token, sizeof(node->data.predicate.field_name) - 1U);
     
     // 读取操作符
     if (!lexer_read_token(lexer)) {
@@ -335,7 +335,7 @@ static cft_ast_node_t* parse_predicate(cft_lexer_t *lexer) {
         node->data.predicate.param_index = atoi(lexer->token + 1);
     } else {
         node->data.predicate.is_param = false;
-        strncpy(node->data.predicate.value.str_val, lexer->token, 
+        (void)strncpy(node->data.predicate.value.str_val, lexer->token, 
                 sizeof(node->data.predicate.value.str_val) - 1U);
         // 判断值类型
         if (isdigit((unsigned char)lexer->token[0]) || (lexer->token[0] == '-')) {
@@ -511,26 +511,26 @@ static bool evaluate_predicate(const cft_predicate_t *pred,
         case CFT_TYPE_INT16:
         case CFT_TYPE_INT32:
         case CFT_TYPE_INT64:
-            cft_get_field_value(sample, accessor, &field_i64);
+            (void)cft_get_field_value(sample, accessor, &field_i64);
             field_f64 = (double)field_i64;
             break;
         case CFT_TYPE_UINT8:
         case CFT_TYPE_UINT16:
         case CFT_TYPE_UINT32:
         case CFT_TYPE_UINT64:
-            cft_get_field_value(sample, accessor, &field_i64);
+            (void)cft_get_field_value(sample, accessor, &field_i64);
             field_f64 = (double)(uint64_t)field_i64;
             break;
         case CFT_TYPE_FLOAT32:
         case CFT_TYPE_FLOAT64:
-            cft_get_field_value(sample, accessor, &field_f64);
+            (void)cft_get_field_value(sample, accessor, &field_f64);
             field_i64 = (int64_t)field_f64;
             break;
         case CFT_TYPE_BOOLEAN:
-            cft_get_field_value(sample, accessor, &field_bool);
+            (void)cft_get_field_value(sample, accessor, &field_bool);
             break;
         case CFT_TYPE_STRING:
-            cft_get_field_value(sample, accessor, field_str);
+            (void)cft_get_field_value(sample, accessor, field_str);
             break;
         default:
             return false;
@@ -696,18 +696,18 @@ cft_handle_t* cft_create(dds_topic_t *related_topic,
         return NULL;
     }
     
-    memset(cft, 0, sizeof(cft_handle_t));
+    (void)memset(cft, 0, sizeof(cft_handle_t));
     cft->related_topic = related_topic;
-    strncpy(cft->name, name, sizeof(cft->name) - 1U);
-    memcpy(&cft->config, config, sizeof(cft_config_t));
+    (void)strncpy(cft->name, name, sizeof(cft->name) - 1U);
+    (void)memcpy(&cft->config, config, sizeof(cft_config_t));
     
     if ((type_desc) != 0U) {
-        memcpy(&cft->type_desc, type_desc, sizeof(cft_type_descriptor_t));
+        (void)memcpy(&cft->type_desc, type_desc, sizeof(cft_type_descriptor_t));
     }
     
     // 解析表达式
     if (config->filter_expression[0] != '\0') {
-        cft_parse_expression(config->filter_expression, &cft->ast_root);
+        (void)cft_parse_expression(config->filter_expression, &cft->ast_root);
     }
     
     DDS_LOG_INFO(DDS_LOG_MODULE_CORE, "CFT", "Created ContentFilteredTopic: %s", name);
@@ -866,7 +866,7 @@ eth_status_t cft_set_parameters(cft_handle_t *cft,
     }
     
     for (uint8_t i = 0; (i < param_count) && (i < CFT_MAX_PREDICATES); i++) {
-        strncpy(cft->config.expression_params[i], params[i], CFT_MAX_PARAM_LENGTH - 1);
+        (void)strncpy(cft->config.expression_params[i], params[i], CFT_MAX_PARAM_LENGTH - 1);
     }
     cft->config.param_count = param_count;
     
@@ -885,7 +885,7 @@ eth_status_t cft_update_expression(cft_handle_t *cft, const char *expression) {
     }
     
     // 更新表达式
-    strncpy(cft->config.filter_expression, expression, CFT_MAX_FILTER_LENGTH - 1);
+    (void)strncpy(cft->config.filter_expression, expression, CFT_MAX_FILTER_LENGTH - 1);
     
     // 解析新表达式
     return cft_parse_expression(expression, &cft->ast_root);
@@ -903,7 +903,7 @@ eth_status_t cft_evaluate_parallel(cft_handle_t **cfts,
     // 序列执行(实际系统可用多线程并行)
     for (uint8_t i = 0; i < cft_count; i++) {
         if ((cfts[i]) != 0U) {
-            cft_evaluate(cfts[i], sample, sample_size, &match_results[i]);
+            (void)cft_evaluate(cfts[i], sample, sample_size, &match_results[i]);
         }
     }
     
@@ -915,7 +915,7 @@ eth_status_t cft_get_stats(cft_handle_t *cft, cft_stats_t *stats) {
         return ETH_INVALID_PARAM;
     }
     
-    memcpy(stats, &cft->stats, sizeof(cft_stats_t));
+    (void)memcpy(stats, &cft->stats, sizeof(cft_stats_t));
     return ETH_OK;
 }
 
@@ -924,7 +924,7 @@ eth_status_t cft_reset_stats(cft_handle_t *cft) {
         return ETH_INVALID_PARAM;
     }
     
-    memset(&cft->stats, 0, sizeof(cft_stats_t));
+    (void)memset(&cft->stats, 0, sizeof(cft_stats_t));
     return ETH_OK;
 }
 

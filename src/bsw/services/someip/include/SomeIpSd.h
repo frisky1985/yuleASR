@@ -220,4 +220,5 @@ extern void SomeIpSd_EventSubscriptionCallback(
     boolean IsSubscribed
 );
 
+
 #endif /* SOMEIP_SD_H */

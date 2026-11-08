@@ -172,13 +172,13 @@ Std_ReturnType NvM_RedundantRead(NvM_BlockIdType BlockId, uint8* DestPtr)
     if (PrimaryValid && MirrorValid)
     {
         /* Both valid - use primary, check sequence numbers */
-        memcpy(DestPtr, PrimaryBuffer, BlockLength);
+        (void)memcpy(DestPtr, PrimaryBuffer, BlockLength);
         return E_OK;
     }
     else if (PrimaryValid)
     {
         /* Primary valid, mirror corrupt - recover mirror */
-        memcpy(DestPtr, PrimaryBuffer, BlockLength);
+        (void)memcpy(DestPtr, PrimaryBuffer, BlockLength);
         NvM_RedundantWriteBlock(BlockId, NVM_RED_INSTANCE_MIRROR, PrimaryBuffer);
         NvM_RedundantBlockInfo[BlockId].State = NVM_REDUNDANT_BLOCK_STATE_INCONSISTENT;
         return E_OK;
@@ -186,7 +186,7 @@ Std_ReturnType NvM_RedundantRead(NvM_BlockIdType BlockId, uint8* DestPtr)
     else if (MirrorValid)
     {
         /* Mirror valid, primary corrupt - recover primary */
-        memcpy(DestPtr, MirrorBuffer, BlockLength);
+        (void)memcpy(DestPtr, MirrorBuffer, BlockLength);
         NvM_RedundantWriteBlock(BlockId, NVM_RED_INSTANCE_PRIMARY, MirrorBuffer);
         NvM_RedundantBlockInfo[BlockId].State = NVM_REDUNDANT_BLOCK_STATE_INCONSISTENT;
         return E_OK;

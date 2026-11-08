@@ -113,7 +113,7 @@ secoc_fv_entry_t* secoc_freshness_register(secoc_freshness_manager_t *mgr,
     }
     
     secoc_fv_entry_t *entry = &mgr->entries[mgr->num_entries];
-    memset(entry, 0, sizeof(secoc_fv_entry_t));
+    (void)memset(entry, 0, sizeof(secoc_fv_entry_t));
     
     entry->pdu_id = pdu_id;
     entry->type = type;
@@ -141,7 +141,7 @@ secoc_status_t secoc_freshness_unregister(secoc_freshness_manager_t *mgr, uint32
     
     for (uint32_t i = 0; i < mgr->num_entries; i++) {
         if (mgr->entries[i].pdu_id == pdu_id) {
-            memmove(&mgr->entries[i], &mgr->entries[i + 1U],
+            (void)memmove(&mgr->entries[i], &mgr->entries[i + 1U],
                     (mgr->num_entries - i - 1U) * sizeof(secoc_fv_entry_t));
             mgr->num_entries--;
             return SECOC_OK;
@@ -498,7 +498,7 @@ secoc_status_t secoc_freshness_create_sync_request(secoc_freshness_manager_t *mg
         return SECOC_ERROR_INVALID_PARAM;
     }
     
-    memset(request, 0, sizeof(secoc_sync_request_t));
+    (void)memset(request, 0, sizeof(secoc_sync_request_t));
     request->header.msg_type = SECOC_SYNC_REQ;
     request->header.pdu_id_high = (pdu_id >> 8) & 0xFFU;
     request->header.pdu_id_low = pdu_id & 0xFFU;
@@ -534,7 +534,7 @@ secoc_status_t secoc_freshness_handle_sync_request(secoc_freshness_manager_t *mg
     }
     
     /* 构建响应 */
-    memset(response, 0, sizeof(secoc_sync_response_t));
+    (void)memset(response, 0, sizeof(secoc_sync_response_t));
     response->header.msg_type = SECOC_SYNC_RES;
     response->header.pdu_id_high = (pdu_id >> 8) & 0xFFU;
     response->header.pdu_id_low = pdu_id & 0xFFU;
@@ -570,7 +570,7 @@ secoc_status_t secoc_freshness_create_sync_broadcast(secoc_freshness_manager_t *
         return SECOC_ERROR_INVALID_PARAM;
     }
     
-    memset(broadcast, 0, sizeof(secoc_sync_response_t));
+    (void)memset(broadcast, 0, sizeof(secoc_sync_response_t));
     broadcast->header.msg_type = SECOC_SYNC_BROADCAST;
     broadcast->header.pdu_id_high = (pdu_id >> 8) & 0xFFU;
     broadcast->header.pdu_id_low = pdu_id & 0xFFU;
@@ -678,7 +678,7 @@ secoc_status_t secoc_freshness_force_sync(secoc_freshness_manager_t *mgr, uint32
     /* 触发同步请求回调 */
     if ((mgr->on_sync_request) != 0U) {
         secoc_sync_request_t request;
-        secoc_freshness_create_sync_request(mgr, pdu_id, &request);
+        (void)secoc_freshness_create_sync_request(mgr, pdu_id, &request);
         mgr->on_sync_request(pdu_id, &request);
     }
     

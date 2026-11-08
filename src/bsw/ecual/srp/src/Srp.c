@@ -74,7 +74,7 @@ void Srp_Init(const void* ConfigPtr)
     Srp_Internal.state = SRP_INTERNAL_UNINIT;
     Srp_Internal.streamCount = 0U;
     Srp_Internal.configPtr = (const Srp_ConfigType*)ConfigPtr;
-    memset(Srp_Internal.streams, 0, sizeof(Srp_Internal.streams));
+    (void)memset(Srp_Internal.streams, 0, sizeof(Srp_Internal.streams));
     Srp_Internal.state = SRP_INTERNAL_INIT;
 }
 
@@ -101,7 +101,7 @@ Std_ReturnType Srp_RegisterTalker(const Srp_TalkerAdvertiseType* TalkerInfo)
     if (Srp_Internal.streamCount >= SRP_MAX_STREAMS) { return E_NOT_OK; }
 
     Srp_StreamEntryType* entry = &Srp_Internal.streams[Srp_Internal.streamCount];
-    memcpy(entry->StreamId, TalkerInfo->StreamId, SRP_STREAM_ID_SIZE);
+    (void)memcpy(entry->StreamId, TalkerInfo->StreamId, SRP_STREAM_ID_SIZE);
     entry->State = SRP_STATE_REGISTERED;
     entry->Role = SRP_RESERVE_TALKER;
     entry->AccumulatedLatency = TalkerInfo->AccumulatedLatency;
@@ -121,7 +121,7 @@ Std_ReturnType Srp_RegisterListener(const Srp_StreamIdType StreamId)
     }
     if (Srp_Internal.streamCount >= SRP_MAX_STREAMS) { return E_NOT_OK; }
     entry = &Srp_Internal.streams[Srp_Internal.streamCount];
-    memcpy(entry->StreamId, StreamId, SRP_STREAM_ID_SIZE);
+    (void)memcpy(entry->StreamId, StreamId, SRP_STREAM_ID_SIZE);
     entry->State = SRP_STATE_REGISTERED;
     entry->Role = SRP_RESERVE_LISTENER;
     Srp_Internal.streamCount++;

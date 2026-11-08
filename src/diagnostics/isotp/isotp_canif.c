@@ -151,9 +151,9 @@ CanIf_Isotp_ReturnType CanIf_Isotp_Init(
     }
     
     /* Clear context */
-    memset(&g_canifContext, 0, sizeof(g_canifContext));
-    memset(g_isotpChannelMap, 0, sizeof(g_isotpChannelMap));
-    memset(g_rxCallbacks, 0, sizeof(g_rxCallbacks));
+    (void)memset(&g_canifContext, 0, sizeof(g_canifContext));
+    (void)memset(g_isotpChannelMap, 0, sizeof(g_isotpChannelMap));
+    (void)memset(g_rxCallbacks, 0, sizeof(g_rxCallbacks));
     
     g_canifContext.controllers = controllers;
     g_canifContext.numControllers = numControllers;
@@ -186,9 +186,9 @@ void CanIf_Isotp_DeInit(void)
         }
     }
     
-    memset(&g_canifContext, 0, sizeof(g_canifContext));
-    memset(g_isotpChannelMap, 0, sizeof(g_isotpChannelMap));
-    memset(g_rxCallbacks, 0, sizeof(g_rxCallbacks));
+    (void)memset(&g_canifContext, 0, sizeof(g_canifContext));
+    (void)memset(g_isotpChannelMap, 0, sizeof(g_isotpChannelMap));
+    (void)memset(g_rxCallbacks, 0, sizeof(g_rxCallbacks));
 }
 
 /******************************************************************************
@@ -460,7 +460,7 @@ Isotp_ReturnType CanIf_IsotpTransmitWrapper(
     
     /* Build CAN frame */
     CanIf_Isotp_FrameType frame;
-    memset(&frame, 0, sizeof(frame));
+    (void)memset(&frame, 0, sizeof(frame));
     
     frame.canId = canId;
     frame.idType = (canId > 0x7FFU) ? CAN_ID_TYPE_EXTENDED : CAN_ID_TYPE_STANDARD;
@@ -468,7 +468,7 @@ Isotp_ReturnType CanIf_IsotpTransmitWrapper(
     frame.isFd = isFd;
     frame.isBrs = isFd;  /* Enable BRS for FD frames */
     
-    memcpy(frame.data, data, length);
+    (void)memcpy(frame.data, data, length);
     
     /* Pad remaining bytes */
     uint8_t actualLength = CanIf_Isotp_DlcToLength(frame.dlc);

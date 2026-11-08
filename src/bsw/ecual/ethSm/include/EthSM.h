@@ -337,4 +337,5 @@ extern void EthSM_MainFunction(void);
  */
 extern EthSM_StateType EthSM_GetInternalState(EthSM_NetworkHandleType NetworkHandle);
 
+
 #endif /* ETHSM_H */

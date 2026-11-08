@@ -45,7 +45,7 @@ Std_ReturnType SafeRam_Init(const SafeRamConfigType *config)
     }
     
     /* Clear context */
-    memset(&g_context, 0, sizeof(SafeRamContextType));
+    (void)memset(&g_context, 0, sizeof(SafeRamContextType));
     
     /* Set default configuration if not provided */
     if (config == NULL) {
@@ -61,7 +61,7 @@ Std_ReturnType SafeRam_Init(const SafeRamConfigType *config)
         g_context.config.response_critical = SAFERAM_RESPONSE_SAFE_STATE;
         g_context.config.max_errors_before_reset = 10;
     } else {
-        memcpy(&g_context.config, config, sizeof(SafeRamConfigType));
+        (void)memcpy(&g_context.config, config, sizeof(SafeRamConfigType));
     }
     
     /* Initialize health */
@@ -89,13 +89,13 @@ Std_ReturnType SafeRam_DeInit(void)
     }
     
     /* Stop periodic checks */
-    SafeRam_Stop();
+    (void)SafeRam_Stop();
     
     /* Deinitialize sub-modules */
-    SafeRam_DeInitSubModules();
+    (void)SafeRam_DeInitSubModules();
     
     /* Clear context */
-    memset(&g_context, 0, sizeof(SafeRamContextType));
+    (void)memset(&g_context, 0, sizeof(SafeRamContextType));
     g_initialized = FALSE;
     
     return E_OK;
@@ -134,7 +134,7 @@ Std_ReturnType SafeRam_Configure(const SafeRamConfigType *config)
         return E_NOT_OK;
     }
     
-    memcpy(&g_context.config, config, sizeof(SafeRamConfigType));
+    (void)memcpy(&g_context.config, config, sizeof(SafeRamConfigType));
     
     return E_OK;
 }
@@ -145,7 +145,7 @@ Std_ReturnType SafeRam_GetConfig(SafeRamConfigType *config)
         return E_NOT_OK;
     }
     
-    memcpy(config, &g_context.config, sizeof(SafeRamConfigType));
+    (void)memcpy(config, &g_context.config, sizeof(SafeRamConfigType));
     
     return E_OK;
 }
@@ -316,7 +316,7 @@ Std_ReturnType SafeRam_PeriodicTask(void)
     g_context.last_periodic_time = current_time;
     
     /* Perform periodic checks */
-    SafeRam_PerformCheck(SAFERAM_CHECK_ALL, &error_count);
+    (void)SafeRam_PerformCheck(SAFERAM_CHECK_ALL, &error_count);
     
     /* Feed watchdog */
     SafeRam_FeedWatchdog();
@@ -343,7 +343,7 @@ uint32_t SafeRam_ExecuteChecks(void)
         return 0;
     }
     
-    SafeRam_PerformCheck(SAFERAM_CHECK_ALL, &error_count);
+    (void)SafeRam_PerformCheck(SAFERAM_CHECK_ALL, &error_count);
     
     return error_count;
 }
@@ -451,7 +451,7 @@ Std_ReturnType SafeRam_ClearErrors(void)
         return E_NOT_OK;
     }
     
-    memset(g_context.error_records, 0, sizeof(g_context.error_records));
+    (void)memset(g_context.error_records, 0, sizeof(g_context.error_records));
     g_context.error_record_count = 0;
     g_context.error_record_index = 0;
     
@@ -468,7 +468,7 @@ Std_ReturnType SafeRam_GetCounters(SafeRamCountersType *counters)
         return E_NOT_OK;
     }
     
-    memcpy(counters, &g_context.counters, sizeof(SafeRamCountersType));
+    (void)memcpy(counters, &g_context.counters, sizeof(SafeRamCountersType));
     
     return E_OK;
 }
@@ -479,7 +479,7 @@ Std_ReturnType SafeRam_ResetCounters(void)
         return E_NOT_OK;
     }
     
-    memset(&g_context.counters, 0, sizeof(SafeRamCountersType));
+    (void)memset(&g_context.counters, 0, sizeof(SafeRamCountersType));
     
     return E_OK;
 }
@@ -510,7 +510,7 @@ Std_ReturnType SafeRam_GetDiagnostics(SafeRamDiagnosticsType *diagnostics)
         return E_NOT_OK;
     }
     
-    memcpy(diagnostics, &g_context.diagnostics, sizeof(SafeRamDiagnosticsType));
+    (void)memcpy(diagnostics, &g_context.diagnostics, sizeof(SafeRamDiagnosticsType));
     
     return E_OK;
 }
@@ -521,7 +521,7 @@ Std_ReturnType SafeRam_ResetDiagnostics(void)
         return E_NOT_OK;
     }
     
-    memset(&g_context.diagnostics, 0, sizeof(SafeRamDiagnosticsType));
+    (void)memset(&g_context.diagnostics, 0, sizeof(SafeRamDiagnosticsType));
     
     return E_OK;
 }
@@ -587,7 +587,7 @@ Std_ReturnType SafeRam_GetErrorRecords(
     for (i = 0; i < count; i++) {
         idx = (g_context.error_record_index + SAFERAM_MAX_ERROR_RECORDS - count + i) %
               SAFERAM_MAX_ERROR_RECORDS;
-        memcpy(&records[i], &g_context.error_records[idx], sizeof(SafeRamErrorRecordType));
+        (void)memcpy(&records[i], &g_context.error_records[idx], sizeof(SafeRamErrorRecordType));
     }
     
     *actual_count = count;
@@ -605,7 +605,7 @@ Std_ReturnType SafeRam_GetHealth(SafeRamHealthType *health)
         return E_NOT_OK;
     }
     
-    memcpy(health, &g_context.health, sizeof(SafeRamHealthType));
+    (void)memcpy(health, &g_context.health, sizeof(SafeRamHealthType));
     
     return E_OK;
 }
@@ -763,7 +763,7 @@ Std_ReturnType SafeRam_InitSubModules(void)
     /* Initialize stack protection */
     if (g_context.config.enable_stack) {
         StackMonitorConfigType stack_config;
-        memset(&stack_config, 0, sizeof(StackMonitorConfigType));
+        (void)memset(&stack_config, 0, sizeof(StackMonitorConfigType));
         stack_config.enable_monitoring = TRUE;
         stack_config.check_interval_ms = 100;
         
@@ -791,19 +791,19 @@ Std_ReturnType SafeRam_DeInitSubModules(void)
 {
     /* Deinitialize in reverse order */
     if (g_context.config.enable_safedata) {
-        SafeData_DeInit();
+        (void)SafeData_DeInit();
     }
     
     if (g_context.config.enable_heap) {
-        HeapProtection_DeInit();
+        (void)HeapProtection_DeInit();
     }
     
     if (g_context.config.enable_stack) {
-        StackProtection_DeInit();
+        (void)StackProtection_DeInit();
     }
     
     if (g_context.config.enable_partitions) {
-        RamPartition_DeInit();
+        (void)RamPartition_DeInit();
     }
     
     return E_OK;
@@ -906,7 +906,7 @@ static void AddErrorRecord(const SafeRamErrorRecordType *record)
     }
     
     /* Add to circular buffer */
-    memcpy(&g_context.error_records[g_context.error_record_index], 
+    (void)memcpy(&g_context.error_records[g_context.error_record_index], 
            record, sizeof(SafeRamErrorRecordType));
     
     g_context.error_record_index = 
@@ -952,11 +952,11 @@ static void ExecuteErrorResponse(uint8_t severity, const SafeRamErrorRecordType 
     }
     
     if (response & SAFERAM_RESPONSE_RECOVER) {
-        SafeRam_Recover(record->error_code);
+        (void)SafeRam_Recover(record->error_code);
     }
     
     if (response & SAFERAM_RESPONSE_SAFE_STATE) {
-        SafeRam_EnterSafeState(record->error_code);
+        (void)SafeRam_EnterSafeState(record->error_code);
     }
     
     if (response & SAFERAM_RESPONSE_RESET) {

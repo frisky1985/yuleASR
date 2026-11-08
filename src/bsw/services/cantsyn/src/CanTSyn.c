@@ -138,7 +138,7 @@ static void CanTSyn_ProcessOfsMessage(
     uint8 TimeDomainId,
     const PduInfoType* PduInfoPtr);
 
-static Std_ReturnType CanTSyn_GetCurrentTime(
+Std_ReturnType CanTSyn_GetCurrentTime(
     uint8 TimeBaseId,
     StbM_TimeStampType* TimeStampPtr,
     StbM_UserDataType* UserDataPtr);
@@ -455,7 +455,7 @@ static void CanTSyn_ProcessOfsMessage(
     #endif
 }
 
-static Std_ReturnType CanTSyn_GetCurrentTime(
+Std_ReturnType CanTSyn_GetCurrentTime(
     uint8 TimeBaseId,
     StbM_TimeStampType* TimeStampPtr,
     StbM_UserDataType* UserDataPtr)

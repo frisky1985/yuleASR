@@ -150,4 +150,5 @@ Boot_Result Boot_Update_ConfirmBusinessHealth(boolean ok);
  */
 void Boot_Update_SetAntiRollbackStorage(const bl_rollback_storage_api_t *api, void *ctx);
 
+
 #endif /* BOOT_UPDATE_H */

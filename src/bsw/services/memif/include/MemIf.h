@@ -384,4 +384,7 @@ extern void MemIf_SetMode(uint8 DeviceIndex, MemIf_ModeType Mode);
     #include "Rte_MemIf.h"
 #endif
 
+
+void MemIf_DeInit(void);
+uint8 MemIf_GetNumberOfDevices(void);
 #endif /* MEMIF_H */

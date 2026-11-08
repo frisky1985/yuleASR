@@ -20,4 +20,5 @@ Boot_Result Boot_Flash_SetProtection(uint32_t  address,
                                      uint32_t  size,
                                      boolean   protect);
 
+
 #endif /* BOOT_FLASH_H */

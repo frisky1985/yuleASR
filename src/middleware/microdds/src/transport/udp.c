@@ -195,8 +195,8 @@ static UDP_Transport g_udp_transport;
 static uint32_t g_system_time_ms = 0U;
 
 /* 平台抽象函数指针 (可在初始化时覆盖) */
-static uint32_t (*platform_get_time_ms)(void) = NULL_PTR;
-static void (*platform_sleep_ms)(uint32_t ms) = NULL_PTR;
+uint32_t (*platform_get_time_ms)(void) = NULL_PTR;
+void (*platform_sleep_ms)(uint32_t ms) = NULL_PTR;
 
 /* ============================================================================
  * 字节序转换函数
@@ -419,7 +419,7 @@ static int socket_create(void) {
  */
 static bool socket_bind(int sock, uint16_t port) {
     struct sockaddr_in addr;
-    memset(&addr, 0, sizeof(addr));
+    (void)memset(&addr, 0, sizeof(addr));
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = INADDR_ANY;
     addr.sin_port = host_to_network_16(port);
@@ -534,7 +534,7 @@ static bool socket_set_multicast_loop(int sock, bool enable) {
 static int socket_sendto(int sock, const uint8_t* data, uint16_t length,
                          uint32_t dest_addr, uint16_t dest_port) {
     struct sockaddr_in addr;
-    memset(&addr, 0, sizeof(addr));
+    (void)memset(&addr, 0, sizeof(addr));
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = dest_addr;
     addr.sin_port = host_to_network_16(dest_port);
@@ -796,7 +796,7 @@ bool MicroDDS_UDP_Init(uint32_t domain_id) {
         return true;
     }
     
-    memset(&g_udp_transport, 0, sizeof(g_udp_transport));
+    (void)memset(&g_udp_transport, 0, sizeof(g_udp_transport));
     
     /* 计算端口号 */
     g_udp_transport.domain_id = domain_id;
@@ -868,7 +868,7 @@ void MicroDDS_UDP_Shutdown(void) {
     socket_close(g_udp_transport.discovery_socket);
     socket_close(g_udp_transport.user_socket);
     
-    memset(&g_udp_transport, 0, sizeof(g_udp_transport));
+    (void)memset(&g_udp_transport, 0, sizeof(g_udp_transport));
 }
 
 /**
@@ -965,7 +965,7 @@ bool MicroDDS_UDP_AddPeer(uint32_t address, uint16_t port) {
     /* 检查是否已存在 */
     for (uint32_t i = 0U; i < g_udp_transport.peer_count; i++) {
         if ((network_to_host_32(g_udp_transport.peers[i].address) == address) &&
-            (network_to_host_16(g_udp_transport.peers[i].port) == port)) {
+                        (network_to_host_16(g_udp_transport.peers[i].port) == port)) {
             return true;  /* 已存在 */
         }
     }
@@ -991,7 +991,7 @@ bool MicroDDS_UDP_RemovePeer(uint32_t address, uint16_t port) {
     
     for (uint32_t i = 0U; i < g_udp_transport.peer_count; i++) {
         if ((network_to_host_32(g_udp_transport.peers[i].address) == address) &&
-            (network_to_host_16(g_udp_transport.peers[i].port) == port)) {
+                        (network_to_host_16(g_udp_transport.peers[i].port) == port)) {
             /* 从列表中移除 */
             for (uint32_t j = i; j < (g_udp_transport.peer_count - 1U); j++) {
                 g_udp_transport.peers[j] = g_udp_transport.peers[j + 1U];

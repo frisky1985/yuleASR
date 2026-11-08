@@ -1050,7 +1050,7 @@ void Wdg_Hw_IRQHandler(void)
             WDG_HW_WDOG_WICR(baseAddr) = wicr | WDG_HW_WICR_WTIS;
 
             /* Trigger watchdog to prevent reset */
-            Wdg_Hw_Trigger();
+            (void)Wdg_Hw_Trigger();
         }
     }
 #endif

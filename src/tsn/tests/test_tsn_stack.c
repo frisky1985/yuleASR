@@ -31,7 +31,7 @@ static int tests_failed = 0;
 /* ============================================================================
  * gPTP测试
  * ============================================================================ */
-void test_gptp(void) {
+static void test_gptp(void) {
     printf("\n=== Testing gPTP (IEEE 802.1AS) ===\n");
     
     gptp_config_t config = {
@@ -103,7 +103,7 @@ void test_gptp(void) {
 /* ============================================================================
  * TAS测试
  * ============================================================================ */
-void test_tas(void) {
+static void test_tas(void) {
     printf("\n=== Testing TAS (IEEE 802.1Qbv) ===\n");
     
     eth_status_t status = tas_init();
@@ -176,7 +176,7 @@ void test_tas(void) {
 /* ============================================================================
  * CBS测试
  * ============================================================================ */
-void test_cbs(void) {
+static void test_cbs(void) {
     printf("\n=== Testing CBS (IEEE 802.1Qav) ===\n");
     
     eth_status_t status = cbs_init();
@@ -241,7 +241,7 @@ void test_cbs(void) {
 /* ============================================================================
  * 帧抢占测试
  * ============================================================================ */
-void test_frame_preemption(void) {
+static void test_frame_preemption(void) {
     printf("\n=== Testing Frame Preemption (IEEE 802.1Qbu) ===\n");
     
     eth_status_t status = fp_init();
@@ -316,7 +316,7 @@ void test_frame_preemption(void) {
 /* ============================================================================
  * 流预留测试
  * ============================================================================ */
-void test_stream_reservation(void) {
+static void test_stream_reservation(void) {
     printf("\n=== Testing Stream Reservation (IEEE 802.1Qcc) ===\n");
     
     eth_status_t status = srp_init();
@@ -398,7 +398,7 @@ void test_stream_reservation(void) {
 /* ============================================================================
  * TSN整合测试
  * ============================================================================ */
-void test_tsn_stack_integration(void) {
+static void test_tsn_stack_integration(void) {
     printf("\n=== Testing TSN Stack Integration ===\n");
     
     /* 创建配置 */

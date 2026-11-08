@@ -35,7 +35,7 @@ eth_status_t dds_reader_deliver_sample(dds_data_reader_t *reader,
         return ETH_NO_MEMORY;
     }
 
-    memcpy(reader->receive_buffer, data, len);
+    (void)memcpy(reader->receive_buffer, data, len);
     reader->samples_received++;
     reader->last_read_time = dds_get_time();
 

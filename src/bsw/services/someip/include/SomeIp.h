@@ -303,4 +303,5 @@ typedef void (*SomeIp_NotificationCallbackType)(
     SomeIp_LengthType Length
 );
 
+
 #endif /* SOMEIP_H */

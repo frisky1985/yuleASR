@@ -169,8 +169,8 @@ Mqtt_ReturnType Mqtt_Init(const Mqtt_ConfigType* config)
         Mqtt_Connections[i].tlsContext = NULL_PTR;
 #endif
         
-        memset(&Mqtt_Connections[i].info, 0, sizeof(Mqtt_ConnectionInfoType));
-        memset(&Mqtt_Connections[i].config, 0, sizeof(Mqtt_ConnectionConfigType));
+        (void)memset(&Mqtt_Connections[i].info, 0, sizeof(Mqtt_ConnectionInfoType));
+        (void)memset(&Mqtt_Connections[i].config, 0, sizeof(Mqtt_ConnectionConfigType));
         
         for (j = 0; j < MQTT_MAX_SUBSCRIPTIONS_PER_CONN; j++) {
             Mqtt_Connections[i].subscriptions[j].state = SUB_STATE_INACTIVE;
@@ -248,7 +248,7 @@ Mqtt_ReturnType Mqtt_Connect(Mqtt_ConnectionIdType connectionId,
     }
     
     /* 保存配置 */
-    memcpy(&conn->config, connConfig, sizeof(Mqtt_ConnectionConfigType));
+    (void)memcpy(&conn->config, connConfig, sizeof(Mqtt_ConnectionConfigType));
     
 #if (MQTT_SUPPORT_TLS == STD_ON)
     /* 初始化TLS配置 */
@@ -262,7 +262,7 @@ Mqtt_ReturnType Mqtt_Connect(Mqtt_ConnectionIdType connectionId,
         }
         
         /* 复制TLS配置 */
-        memcpy(&conn->tlsConfig, connConfig->tlsConfig, sizeof(Mqtt_TlsConfigType));
+        (void)memcpy(&conn->tlsConfig, connConfig->tlsConfig, sizeof(Mqtt_TlsConfigType));
         
         /* 创建TLS上下文 */
         tlsResult = Mqtt_Tls_CreateContext(&conn->tlsConfig, &conn->tlsContext);
@@ -440,7 +440,7 @@ Mqtt_ReturnType Mqtt_Subscribe(Mqtt_ConnectionIdType connectionId,
     }
     
     /* 填充订阅信息 */
-    strncpy(internalSub->topicFilter, subscription->topicFilter, 
+    (void)strncpy(internalSub->topicFilter, subscription->topicFilter, 
             MQTT_MAX_TOPIC_LENGTH - 1U);
     internalSub->topicFilter[MQTT_MAX_TOPIC_LENGTH - 1U] = '\0';
     internalSub->maxQoS = subscription->maxQoS;
@@ -571,7 +571,7 @@ Mqtt_ReturnType Mqtt_GetConnectionInfo(Mqtt_ConnectionIdType connectionId,
         return MQTT_E_NOT_OK;
     }
     
-    memcpy(info, &Mqtt_Connections[connectionId].info, sizeof(Mqtt_ConnectionInfoType));
+    (void)memcpy(info, &Mqtt_Connections[connectionId].info, sizeof(Mqtt_ConnectionInfoType));
     
     return MQTT_OK;
 }
@@ -901,7 +901,7 @@ static Mqtt_ReturnType Mqtt_EncodeConnect(Mqtt_InternalConnectionType* conn)
     idx++;
     conn->sendBuffer[idx] = clientIdLen & 0xFFU;
     idx++;
-    memcpy(&conn->sendBuffer[idx], conn->config.clientId, clientIdLen);
+    (void)memcpy(&conn->sendBuffer[idx], conn->config.clientId, clientIdLen);
     idx += clientIdLen;
     
     /* 用户名 */
@@ -911,7 +911,7 @@ static Mqtt_ReturnType Mqtt_EncodeConnect(Mqtt_InternalConnectionType* conn)
         idx++;
         conn->sendBuffer[idx] = usernameLen & 0xFFU;
         idx++;
-        memcpy(&conn->sendBuffer[idx], conn->config.username, usernameLen);
+        (void)memcpy(&conn->sendBuffer[idx], conn->config.username, usernameLen);
         idx += usernameLen;
     }
     
@@ -922,7 +922,7 @@ static Mqtt_ReturnType Mqtt_EncodeConnect(Mqtt_InternalConnectionType* conn)
         idx++;
         conn->sendBuffer[idx] = passwordLen & 0xFFU;
         idx++;
-        memcpy(&conn->sendBuffer[idx], conn->config.password, passwordLen);
+        (void)memcpy(&conn->sendBuffer[idx], conn->config.password, passwordLen);
         idx += passwordLen;
     }
     
@@ -977,7 +977,7 @@ static Mqtt_ReturnType Mqtt_EncodePublish(Mqtt_InternalConnectionType* conn,
     idx++;
     conn->sendBuffer[idx] = topicLen & 0xFFU;
     idx++;
-    memcpy(&conn->sendBuffer[idx], msg->topic, topicLen);
+    (void)memcpy(&conn->sendBuffer[idx], msg->topic, topicLen);
     idx += topicLen;
     
     /* 包ID (QoS > 0U ) */
@@ -989,7 +989,7 @@ static Mqtt_ReturnType Mqtt_EncodePublish(Mqtt_InternalConnectionType* conn,
     }
     
     /* 负载 */
-    memcpy(&conn->sendBuffer[idx], msg->payload, msg->payloadLength);
+    (void)memcpy(&conn->sendBuffer[idx], msg->payload, msg->payloadLength);
     idx += msg->payloadLength;
     
     conn->sendLength = idx;
@@ -1032,7 +1032,7 @@ static Mqtt_ReturnType Mqtt_EncodeSubscribe(Mqtt_InternalConnectionType* conn,
     idx++;
     conn->sendBuffer[idx] = topicLen & 0xFFU;
     idx++;
-    memcpy(&conn->sendBuffer[idx], sub->topicFilter, topicLen);
+    (void)memcpy(&conn->sendBuffer[idx], sub->topicFilter, topicLen);
     idx += topicLen;
     
     /* 最大QoS */

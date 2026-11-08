@@ -25,14 +25,14 @@ void tearDown(void) {
 }
 
 /* 测试初始化 */
-void test_freshness_init_should_return_valid_manager(void) {
+static void test_freshness_init_should_return_valid_manager(void) {
     TEST_ASSERT_NOT_NULL(test_mgr);
     TEST_ASSERT_TRUE(test_mgr->initialized);
     TEST_ASSERT_EQUAL(0, test_mgr->num_entries);
 }
 
 /* 测试注册计数器Freshness值 */
-void test_freshness_register_counter_should_succeed(void) {
+static void test_freshness_register_counter_should_succeed(void) {
     secoc_fv_entry_t *entry = secoc_freshness_register(
         test_mgr, 0x100, SECOC_FRESHNESS_COUNTER, 
         SECOC_SYNC_MASTER, 0xFFFFFFFF, 100
@@ -48,7 +48,7 @@ void test_freshness_register_counter_should_succeed(void) {
 }
 
 /* 测试重复注册 */
-void test_freshness_register_duplicate_should_fail(void) {
+static void test_freshness_register_duplicate_should_fail(void) {
     secoc_freshness_register(test_mgr, 0x100, SECOC_FRESHNESS_COUNTER, 
                             SECOC_SYNC_MASTER, 0xFFFFFFFF, 100);
     
@@ -61,7 +61,7 @@ void test_freshness_register_duplicate_should_fail(void) {
 }
 
 /* 测试查找Freshness条目 */
-void test_freshness_find_should_return_entry(void) {
+static void test_freshness_find_should_return_entry(void) {
     secoc_freshness_register(test_mgr, 0x200, SECOC_FRESHNESS_COUNTER, 
                             SECOC_SYNC_MASTER, 0xFFFFFFFF, 100);
     
@@ -74,7 +74,7 @@ void test_freshness_find_should_return_entry(void) {
 }
 
 /* 测试注销Freshness值 */
-void test_freshness_unregister_should_succeed(void) {
+static void test_freshness_unregister_should_succeed(void) {
     secoc_freshness_register(test_mgr, 0x300, SECOC_FRESHNESS_COUNTER, 
                             SECOC_SYNC_MASTER, 0xFFFFFFFF, 100);
     
@@ -86,7 +86,7 @@ void test_freshness_unregister_should_succeed(void) {
 }
 
 /* 测试Master模式的计数器获取 */
-void test_freshness_get_tx_counter_master_should_succeed(void) {
+static void test_freshness_get_tx_counter_master_should_succeed(void) {
     secoc_freshness_register(test_mgr, 0x400, SECOC_FRESHNESS_COUNTER, 
                             SECOC_SYNC_MASTER, 0xFFFFFFFF, 100);
     
@@ -102,7 +102,7 @@ void test_freshness_get_tx_counter_master_should_succeed(void) {
 }
 
 /* 测试Slave模式未同步时应失败 */
-void test_freshness_get_tx_counter_slave_not_synced_should_fail(void) {
+static void test_freshness_get_tx_counter_slave_not_synced_should_fail(void) {
     secoc_freshness_register(test_mgr, 0x500, SECOC_FRESHNESS_COUNTER, 
                             SECOC_SYNC_SLAVE, 0xFFFFFFFF, 100);
     
@@ -116,7 +116,7 @@ void test_freshness_get_tx_counter_slave_not_synced_should_fail(void) {
 }
 
 /* 测试计数器递增 */
-void test_freshness_increment_counter_should_work(void) {
+static void test_freshness_increment_counter_should_work(void) {
     secoc_fv_entry_t *entry = secoc_freshness_register(
         test_mgr, 0x600, SECOC_FRESHNESS_COUNTER, 
         SECOC_SYNC_MASTER, 0xFFFFFFFF, 100
@@ -133,7 +133,7 @@ void test_freshness_increment_counter_should_work(void) {
 }
 
 /* 测试计数器溢出检测 */
-void test_freshness_counter_overflow_should_fail(void) {
+static void test_freshness_counter_overflow_should_fail(void) {
     secoc_fv_entry_t *entry = secoc_freshness_register(
         test_mgr, 0x700, SECOC_FRESHNESS_COUNTER, 
         SECOC_SYNC_MASTER, 10, 5
@@ -153,7 +153,7 @@ void test_freshness_counter_overflow_should_fail(void) {
 }
 
 /* 测试验证计数器Freshness值 */
-void test_freshness_verify_counter_should_succeed(void) {
+static void test_freshness_verify_counter_should_succeed(void) {
     secoc_freshness_register(test_mgr, 0x800, SECOC_FRESHNESS_COUNTER, 
                             SECOC_SYNC_MASTER, 0xFFFFFFFF, 100);
     
@@ -169,7 +169,7 @@ void test_freshness_verify_counter_should_succeed(void) {
 }
 
 /* 测试重放攻击检测 */
-void test_freshness_verify_replay_should_detect(void) {
+static void test_freshness_verify_replay_should_detect(void) {
     secoc_freshness_register(test_mgr, 0x900, SECOC_FRESHNESS_COUNTER, 
                             SECOC_SYNC_MASTER, 0xFFFFFFFF, 100);
     
@@ -185,7 +185,7 @@ void test_freshness_verify_replay_should_detect(void) {
 }
 
 /* 测试时间戳模式 */
-void test_freshness_timestamp_mode_should_work(void) {
+static void test_freshness_timestamp_mode_should_work(void) {
     secoc_freshness_register(test_mgr, 0xA00, SECOC_FRESHNESS_TIMESTAMP, 
                             SECOC_SYNC_MASTER, 0, 0);
     
@@ -201,7 +201,7 @@ void test_freshness_timestamp_mode_should_work(void) {
 }
 
 /* 测试行程计数器模式 */
-void test_freshness_trip_mode_should_work(void) {
+static void test_freshness_trip_mode_should_work(void) {
     secoc_fv_entry_t *entry = secoc_freshness_register(
         test_mgr, 0xB00, SECOC_FRESHNESS_TRIP_COUNTER, 
         SECOC_SYNC_MASTER, 0, 0
@@ -232,7 +232,7 @@ void test_freshness_trip_mode_should_work(void) {
 }
 
 /* 测试同步请求创建 */
-void test_freshness_create_sync_request_should_succeed(void) {
+static void test_freshness_create_sync_request_should_succeed(void) {
     secoc_freshness_register(test_mgr, 0xC00, SECOC_FRESHNESS_COUNTER, 
                             SECOC_SYNC_SLAVE, 0xFFFFFFFF, 100);
     
@@ -248,7 +248,7 @@ void test_freshness_create_sync_request_should_succeed(void) {
 }
 
 /* 测试同步响应处理 */
-void test_freshness_handle_sync_response_should_succeed(void) {
+static void test_freshness_handle_sync_response_should_succeed(void) {
     secoc_freshness_register(test_mgr, 0xD00, SECOC_FRESHNESS_COUNTER, 
                             SECOC_SYNC_SLAVE, 0xFFFFFFFF, 100);
     
@@ -283,7 +283,7 @@ void test_freshness_handle_sync_response_should_succeed(void) {
 }
 
 /* 测试Master处理同步请求 */
-void test_freshness_handle_sync_request_should_succeed(void) {
+static void test_freshness_handle_sync_request_should_succeed(void) {
     secoc_fv_entry_t *entry = secoc_freshness_register(
         test_mgr, 0xE00, SECOC_FRESHNESS_COUNTER, 
         SECOC_SYNC_MASTER, 0xFFFFFFFF, 100
@@ -315,7 +315,7 @@ void test_freshness_handle_sync_request_should_succeed(void) {
 }
 
 /* 测试同步广播 */
-void test_freshness_create_sync_broadcast_should_succeed(void) {
+static void test_freshness_create_sync_broadcast_should_succeed(void) {
     secoc_fv_entry_t *entry = secoc_freshness_register(
         test_mgr, 0xF00, SECOC_FRESHNESS_COUNTER, 
         SECOC_SYNC_MASTER, 0xFFFFFFFF, 100
@@ -333,7 +333,7 @@ void test_freshness_create_sync_broadcast_should_succeed(void) {
 }
 
 /* 测试通用接口 */
-void test_freshness_get_tx_value_should_dispatch_correctly(void) {
+static void test_freshness_get_tx_value_should_dispatch_correctly(void) {
     /* 计数器模式 */
     secoc_freshness_register(test_mgr, 0x1000, SECOC_FRESHNESS_COUNTER, 
                             SECOC_SYNC_MASTER, 0xFFFFFFFF, 100);
@@ -356,7 +356,7 @@ void test_freshness_get_tx_value_should_dispatch_correctly(void) {
 }
 
 /* 测试通用验证接口 */
-void test_freshness_verify_should_dispatch_correctly(void) {
+static void test_freshness_verify_should_dispatch_correctly(void) {
     secoc_freshness_register(test_mgr, 0x1100, SECOC_FRESHNESS_COUNTER, 
                             SECOC_SYNC_MASTER, 0xFFFFFFFF, 100);
     
@@ -370,7 +370,7 @@ void test_freshness_verify_should_dispatch_correctly(void) {
 }
 
 /* 测试需要同步检查 */
-void test_freshness_need_sync_should_return_true_for_master(void) {
+static void test_freshness_need_sync_should_return_true_for_master(void) {
     secoc_fv_entry_t *entry = secoc_freshness_register(
         test_mgr, 0x1200, SECOC_FRESHNESS_COUNTER, 
         SECOC_SYNC_MASTER, 0xFFFFFFFF, 100
@@ -384,7 +384,7 @@ void test_freshness_need_sync_should_return_true_for_master(void) {
 }
 
 /* 测试强制同步 */
-void test_freshness_force_sync_should_succeed(void) {
+static void test_freshness_force_sync_should_succeed(void) {
     secoc_freshness_register(test_mgr, 0x1300, SECOC_FRESHNESS_COUNTER, 
                             SECOC_SYNC_SLAVE, 0xFFFFFFFF, 100);
     
@@ -399,7 +399,7 @@ void test_freshness_force_sync_should_succeed(void) {
 }
 
 /* 测试状态字符串转换 */
-void test_freshness_state_str_should_return_valid_strings(void) {
+static void test_freshness_state_str_should_return_valid_strings(void) {
     TEST_ASSERT_EQUAL_STRING("OK", 
                              secoc_freshness_state_str(SECOC_FV_STATE_OK));
     TEST_ASSERT_EQUAL_STRING("NOT_SYNC", 

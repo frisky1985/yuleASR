@@ -542,6 +542,7 @@ extern Std_ReturnType Dem_GetCycleCounter(Dem_OperationCycleType OperationCycleT
  */
 extern void Dem_MainFunction(void);
 
+
 #define DEM_STOP_SEC_CODE
 #include "MemMap.h"
 

@@ -196,4 +196,5 @@ boolean LinSlave_Tp_IsBusy(uint8 ChannelId);
  */
 void LinSlave_Tp_Cancel(uint8 ChannelId);
 
+
 #endif /* LINSLAVE_TP_H */

@@ -102,7 +102,7 @@ Crypto_HsmStateType Crypto_Hsm_GetState(void)
     return crypto_stub_hsm_enabled ? CRYPTO_HSM_IDLE : CRYPTO_HSM_UNINIT;
 }
 
-Std_ReturnType Crypto_Hsm_ProcessJob(Crypto_JobType* job)
+Std_ReturnType Crypto_Hsm_ProcessJob(const Crypto_JobType* job)
 {
     (void)job;
     return crypto_stub_hsm_process_ret;

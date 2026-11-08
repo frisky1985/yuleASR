@@ -78,7 +78,7 @@ extern Std_ReturnType Crypto_Hsm_Init(const Crypto_HsmConfigType* config);
 extern void Crypto_Hsm_DeInit(void);
 extern boolean Crypto_Hsm_IsAvailable(void);
 extern Crypto_HsmStateType Crypto_Hsm_GetState(void);
-extern Std_ReturnType Crypto_Hsm_ProcessJob(Crypto_JobType* job);
+extern Std_ReturnType Crypto_Hsm_ProcessJob(const Crypto_JobType* job);
 extern Std_ReturnType Crypto_Hsm_LoadKey(Crypto_KeyIdType keyId);
 extern Std_ReturnType Crypto_Hsm_SelfTest(void);
 #endif
@@ -1069,8 +1069,7 @@ STATIC Std_ReturnType Crypto_ProcessJobInternal(Crypto_JobType* job)
  * * Crypto_MainFunction
  * **********************************************************************************************************************/
 /** @req SWS_Crypto_00031 */
-void Crypto_MainFunction(void)
-{
+void Crypto_MainFunction(void){
     Crypto_JobType* job;
     if (Crypto_DriverState != CRYPTO_DRIVER_INIT)
     {

@@ -98,7 +98,7 @@ sbl_main_error_t sbl_main_init(sbl_main_context_t *ctx, const sbl_main_config_t 
         return SBL_MAIN_ERROR_NO_APP;
     }
 
-    memset(ctx, 0, sizeof(*ctx));
+    (void)memset(ctx, 0, sizeof(*ctx));
     ctx->config = *cfg;   /* 固化配置副本 */
 
     /* ① 初始化抗回滚计数器: 扫描槽位, 从 NVM 恢复计数器/待确认状态 */
@@ -116,7 +116,7 @@ sbl_main_error_t sbl_main_init(sbl_main_context_t *ctx, const sbl_main_config_t 
     }
 
     bl_secure_boot_config_t *sb = &ctx->sb_config;
-    memset(sb, 0, sizeof(*sb));
+    (void)memset(sb, 0, sizeof(*sb));
     sb->verify_signature    = cfg->verify_signature;
     sb->verify_hash         = cfg->verify_hash;
     sb->verify_version      = cfg->verify_version;
@@ -140,7 +140,7 @@ sbl_main_error_t sbl_main_init(sbl_main_context_t *ctx, const sbl_main_config_t 
     /* ④ 回滚管理器初始化 (生产替换点: 注入真实分区管理器,
      * 此处骨架传 NULL — 回滚仅记录/切换意图, 分区切换由平台接管) */
     bl_rollback_config_t rb_cfg;
-    memset(&rb_cfg, 0, sizeof(rb_cfg));
+    (void)memset(&rb_cfg, 0, sizeof(rb_cfg));
     rb_cfg.max_boot_attempts         = (cfg->rollback_max_boot_attempts != 0U)
                                            ? cfg->rollback_max_boot_attempts
                                            : SBL_MAIN_DEFAULT_MAX_ATTEMPTS;

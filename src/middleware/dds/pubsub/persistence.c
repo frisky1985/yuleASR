@@ -169,7 +169,7 @@ static per_record_t* create_record(uint32_t data_size) {
     }
     if (!record) return NULL;
     
-    memset(record, 0, sizeof(per_record_t));
+    (void)memset(record, 0, sizeof(per_record_t));
     
     if (data_size > 0) {
         record->data = s_per_data_pool[slot];
@@ -347,7 +347,7 @@ per_handle_t* per_create(const char *topic_name, const per_config_t *config) {
     (void)memset(per, 0, sizeof(per_handle_t));
     
     strncpy(per->topic_name, topic_name, sizeof(per->topic_name) - 1);
-    memcpy(&per->config, config, sizeof(per_config_t));
+    (void)memcpy(&per->config, config, sizeof(per_config_t));
     
     per->state = PER_STATE_IDLE;
     per->next_sequence = 1;
@@ -358,7 +358,7 @@ per_handle_t* per_create(const char *topic_name, const per_config_t *config) {
     
     // 设置默认存储路径
     if (per->config.storage_path[0] == '\0') {
-        strncpy(per->config.storage_path, PER_DEFAULT_STORAGE_DIR, 
+        (void)strncpy(per->config.storage_path, PER_DEFAULT_STORAGE_DIR, 
                 sizeof(per->config.storage_path) - 1);
     }
     
@@ -452,11 +452,11 @@ eth_status_t per_write_sample(per_handle_t *per,
     record->header.data_size = size;
     record->header.level = per->config.level;
     if (writer_guid) {
-        memcpy(&record->header.writer_guid, writer_guid, sizeof(dds_guid_t));
+        (void)memcpy(&record->header.writer_guid, writer_guid, sizeof(dds_guid_t));
     }
     
     // 复制数据
-    memcpy(record->data, data, size);
+    (void)memcpy(record->data, data, size);
     
     // 计算校验和
     if (per->config.enable_checksum) {
@@ -514,11 +514,11 @@ eth_status_t per_read_samples(per_handle_t *per,
             }
             
             // 复制记录
-            memcpy(ptr, &record->header, sizeof(per_record_header_t));
+            (void)memcpy(ptr, &record->header, sizeof(per_record_header_t));
             ptr += sizeof(per_record_header_t);
             
             if (record->header.data_size > 0 && record->data) {
-                memcpy(ptr, record->data, record->header.data_size);
+                (void)memcpy(ptr, record->data, record->header.data_size);
                 ptr += record->header.data_size;
             }
             
@@ -562,7 +562,7 @@ eth_status_t per_recover(per_handle_t *per,
                           per_recovery_status_t *status) {
     if (!per || !status) return ETH_INVALID_PARAM;
     
-    memset(status, 0, sizeof(per_recovery_status_t));
+    (void)memset(status, 0, sizeof(per_recovery_status_t));
     per->state = PER_STATE_RECOVERING;
     
     uint64_t start_time = get_time_ms();
@@ -657,14 +657,14 @@ eth_status_t per_set_history_policy(per_handle_t *per,
 eth_status_t per_get_stats(per_handle_t *per, per_stats_t *stats) {
     if (!per || !stats) return ETH_INVALID_PARAM;
     
-    memcpy(stats, &per->stats, sizeof(per_stats_t));
+    (void)memcpy(stats, &per->stats, sizeof(per_stats_t));
     return ETH_OK;
 }
 
 eth_status_t per_reset_stats(per_handle_t *per) {
     if (!per) return ETH_INVALID_PARAM;
     
-    memset(&per->stats, 0, sizeof(per_stats_t));
+    (void)memset(&per->stats, 0, sizeof(per_stats_t));
     return ETH_OK;
 }
 

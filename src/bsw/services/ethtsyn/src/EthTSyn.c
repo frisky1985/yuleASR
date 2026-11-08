@@ -31,14 +31,14 @@ Std_ReturnType EthTSyn_Init(const EthTSyn_ConfigType* Config)
 {
 #if (ETHTSYN_DEV_ERROR_DETECT == STD_ON)
     if (Config == NULL_PTR) {
-        Det_ReportError(ETHTSYN_MODULE_ID, 0U, 0U, DET_E_PARAM_POINTER);
+        (void)Det_ReportError(ETHTSYN_MODULE_ID, 0U, 0U, DET_E_PARAM_POINTER);
         return E_NOT_OK;
     }
 #endif
 
     if ((EthTSyn_Initialized) != 0U) {
 #if (ETHTSYN_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(ETHTSYN_MODULE_ID, 0U, 0U, DET_E_ALREADY_INITIALIZED);
+        (void)Det_ReportError(ETHTSYN_MODULE_ID, 0U, 0U, DET_E_ALREADY_INITIALIZED);
 #endif
         return E_NOT_OK;
     }
@@ -85,11 +85,11 @@ Std_ReturnType EthTSyn_GetTime(EthTSyn_TimestampType* Timestamp)
 {
 #if (ETHTSYN_DEV_ERROR_DETECT == STD_ON)
     if (EthTSyn_Initialized != TRUE) {
-        Det_ReportError(ETHTSYN_MODULE_ID, 0U, 1U, DET_E_UNINIT);
+        (void)Det_ReportError(ETHTSYN_MODULE_ID, 0U, 1U, DET_E_UNINIT);
         return E_NOT_OK;
     }
     if (Timestamp == NULL_PTR) {
-        Det_ReportError(ETHTSYN_MODULE_ID, 0U, 1U, DET_E_PARAM_POINTER);
+        (void)Det_ReportError(ETHTSYN_MODULE_ID, 0U, 1U, DET_E_PARAM_POINTER);
         return E_NOT_OK;
     }
 #endif
@@ -109,11 +109,11 @@ Std_ReturnType EthTSyn_SetTime(const EthTSyn_TimestampType* Timestamp)
 {
 #if (ETHTSYN_DEV_ERROR_DETECT == STD_ON)
     if (EthTSyn_Initialized != TRUE) {
-        Det_ReportError(ETHTSYN_MODULE_ID, 0U, 2U, DET_E_UNINIT);
+        (void)Det_ReportError(ETHTSYN_MODULE_ID, 0U, 2U, DET_E_UNINIT);
         return E_NOT_OK;
     }
     if (Timestamp == NULL_PTR) {
-        Det_ReportError(ETHTSYN_MODULE_ID, 0U, 2U, DET_E_PARAM_POINTER);
+        (void)Det_ReportError(ETHTSYN_MODULE_ID, 0U, 2U, DET_E_PARAM_POINTER);
         return E_NOT_OK;
     }
 #endif
@@ -131,11 +131,11 @@ Std_ReturnType EthTSyn_AdjustRate(int32 rateNumerator, int32 rateDenominator)
 {
 #if (ETHTSYN_DEV_ERROR_DETECT == STD_ON)
     if (EthTSyn_Initialized != TRUE) {
-        Det_ReportError(ETHTSYN_MODULE_ID, 0U, 3U, DET_E_UNINIT);
+        (void)Det_ReportError(ETHTSYN_MODULE_ID, 0U, 3U, DET_E_UNINIT);
         return E_NOT_OK;
     }
     if (rateDenominator == 0) {
-        Det_ReportError(ETHTSYN_MODULE_ID, 0U, 3U, DET_E_PARAM_POINTER);
+        (void)Det_ReportError(ETHTSYN_MODULE_ID, 0U, 3U, DET_E_PARAM_POINTER);
         return E_NOT_OK;
     }
 #endif
@@ -153,11 +153,11 @@ Std_ReturnType EthTSyn_GetPortState(uint8 PortIndex, EthTSyn_PortStateType* Stat
 {
 #if (ETHTSYN_DEV_ERROR_DETECT == STD_ON)
     if (EthTSyn_Initialized != TRUE) {
-        Det_ReportError(ETHTSYN_MODULE_ID, 0U, 4U, DET_E_UNINIT);
+        (void)Det_ReportError(ETHTSYN_MODULE_ID, 0U, 4U, DET_E_UNINIT);
         return E_NOT_OK;
     }
     if (StatePtr == NULL_PTR) {
-        Det_ReportError(ETHTSYN_MODULE_ID, 0U, 4U, DET_E_PARAM_POINTER);
+        (void)Det_ReportError(ETHTSYN_MODULE_ID, 0U, 4U, DET_E_PARAM_POINTER);
         return E_NOT_OK;
     }
 #endif
@@ -175,7 +175,7 @@ Std_ReturnType EthTSyn_GetClockIdentity(EthTSyn_ClockIdentityType* IdentityPtr)
 {
 #if (ETHTSYN_DEV_ERROR_DETECT == STD_ON)
     if (IdentityPtr == NULL_PTR) {
-        Det_ReportError(ETHTSYN_MODULE_ID, 0U, 5U, DET_E_PARAM_POINTER);
+        (void)Det_ReportError(ETHTSYN_MODULE_ID, 0U, 5U, DET_E_PARAM_POINTER);
         return E_NOT_OK;
     }
 #endif

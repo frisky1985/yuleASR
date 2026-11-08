@@ -1043,7 +1043,7 @@ static void CanTp_ProcessRxFrame(PduIdType RxPduId, const uint8* SduDataPtr, Pdu
              * configured padding value (ISO 15765-2). Report-only unless
              * CANTP_REJECT_INVALID_PADDING is enabled. */
             if ((paddingActive == TRUE) &&
-                (CanTp_CheckRxPaddingFrom(SduDataPtr, SduLength, (PduLengthType)sfDl + 1U) == FALSE)) {
+                                (CanTp_CheckRxPaddingFrom(SduDataPtr, SduLength, (PduLengthType)sfDl + 1U) == FALSE)) {
                 (void)Det_ReportRuntimeError(CANTP_MODULE_ID, 0U, CANTP_SID_RXINDICATION, CANTP_E_RX_UNEXP_PADDING);
 #if (CANTP_REJECT_INVALID_PADDING == STD_ON)
                 break;  /* Drop the frame: no channel is allocated */
@@ -1154,7 +1154,7 @@ static void CanTp_ProcessRxFrame(PduIdType RxPduId, const uint8* SduDataPtr, Pdu
                          * Report-only unless CANTP_REJECT_INVALID_PADDING is
                          * enabled (FC frames are exempt per ISO 15765-2). */
                         if ((rxPaddingActive == TRUE) &&
-                            (CanTp_CheckRxPaddingFrom(SduDataPtr, SduLength, (PduLengthType)bytesToCopy + 1U) == FALSE)) {
+                                            (CanTp_CheckRxPaddingFrom(SduDataPtr, SduLength, (PduLengthType)bytesToCopy + 1U) == FALSE)) {
                             (void)Det_ReportRuntimeError(CANTP_MODULE_ID, 0U, CANTP_SID_RXINDICATION, CANTP_E_RX_UNEXP_PADDING);
 #if (CANTP_REJECT_INVALID_PADDING == STD_ON)
                             break;  /* Drop the frame: reception not advanced */

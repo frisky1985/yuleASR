@@ -91,7 +91,7 @@ static rtps_cached_change_t* create_cached_change(
     change->data = s_change_data_pool[(uint32_t)(change - s_change_pool)];
     
     change->seq_number = *seq;
-    memcpy(change->data, data, len);
+    (void)memcpy(change->data, data, len);
     change->data_len = len;
     change->is_inline_qos = false;
     change->ref_count = 1;
@@ -231,7 +231,7 @@ eth_status_t rtps_writer_sm_init(rtps_writer_state_machine_t *writer,
         return ETH_INVALID_PARAM;
     }
     
-    memset(writer, 0, sizeof(rtps_writer_state_machine_t));
+    (void)memset(writer, 0, sizeof(rtps_writer_state_machine_t));
     
     writer->guid = *guid;
     writer->state = RTPS_WRITER_STATE_IDLE;
@@ -291,7 +291,7 @@ eth_status_t rtps_writer_sm_match_reader(rtps_writer_state_machine_t *writer,
     /* 添加新的匹配Reader */
     rtps_matched_reader_t *reader = &writer->matched_readers[writer->matched_reader_count];
     writer->matched_reader_count++;
-    memset(reader, 0, sizeof(rtps_matched_reader_t));
+    (void)memset(reader, 0, sizeof(rtps_matched_reader_t));
     reader->remote_guid = *reader_guid;
     reader->state = RTPS_CONNECTION_MATCHED;
     reader->last_sn.high = 0;
@@ -525,7 +525,7 @@ eth_status_t rtps_reader_sm_init(rtps_reader_state_machine_t *reader,
         return ETH_INVALID_PARAM;
     }
     
-    memset(reader, 0, sizeof(rtps_reader_state_machine_t));
+    (void)memset(reader, 0, sizeof(rtps_reader_state_machine_t));
     
     reader->guid = *guid;
     reader->state = RTPS_READER_STATE_IDLE;
@@ -586,7 +586,7 @@ eth_status_t rtps_reader_sm_match_writer(rtps_reader_state_machine_t *reader,
     /* 添加新的匹配Writer */
     rtps_matched_writer_t *writer = &reader->matched_writers[reader->matched_writer_count];
     reader->matched_writer_count++;
-    memset(writer, 0, sizeof(rtps_matched_writer_t));
+    (void)memset(writer, 0, sizeof(rtps_matched_writer_t));
     writer->remote_guid = *writer_guid;
     writer->state = RTPS_CONNECTION_MATCHED;
     writer->next_expected_seq.high = 0;
@@ -823,7 +823,7 @@ eth_status_t rtps_reader_sm_read(rtps_reader_state_machine_t *reader,
         return ETH_ERROR; /* 缓冲区不足 */
     }
     
-    memcpy(data, found->data, found->data_len);
+    (void)memcpy(data, found->data, found->data_len);
     *actual_len = found->data_len;
     
     if (seq_number != NULL) {
@@ -861,11 +861,11 @@ eth_status_t rtps_reader_sm_build_acknack(rtps_reader_state_machine_t *reader,
     uint32_t pos = 0;
     
     /* Reader ID */
-    memcpy(&buffer[pos], reader->guid.entity_id, RTPS_ENTITY_ID_SIZE);
+    (void)memcpy(&buffer[pos], reader->guid.entity_id, RTPS_ENTITY_ID_SIZE);
     pos += RTPS_ENTITY_ID_SIZE;
     
     /* Writer ID */
-    memcpy(&buffer[pos], writer_guid->entity_id, RTPS_ENTITY_ID_SIZE);
+    (void)memcpy(&buffer[pos], writer_guid->entity_id, RTPS_ENTITY_ID_SIZE);
     pos += RTPS_ENTITY_ID_SIZE;
     
     /* ACK位图基准序列号 */
@@ -936,7 +936,7 @@ eth_status_t rtps_network_init(rtps_network_context_t *net_ctx)
         return ETH_INVALID_PARAM;
     }
     
-    memset(net_ctx, 0, sizeof(rtps_network_context_t));
+    (void)memset(net_ctx, 0, sizeof(rtps_network_context_t));
     net_ctx->state = RTPS_NETWORK_UP;
     
     return ETH_OK;

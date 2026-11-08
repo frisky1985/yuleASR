@@ -106,7 +106,7 @@ static void platform_sleep_ms(uint32_t ms)
 static void generate_guid(rtps_guid_t *guid, const rtps_guid_prefix_t prefix, 
                           uint32_t entity_kind, uint32_t entity_id)
 {
-    memcpy(guid->prefix, prefix, RTPS_GUID_PREFIX_SIZE);
+    (void)memcpy(guid->prefix, prefix, RTPS_GUID_PREFIX_SIZE);
     guid->entity_id[0] = (entity_kind >> 24) & 0xFFU;
     guid->entity_id[1] = (entity_kind >> 16) & 0xFFU;
     guid->entity_id[2] = (entity_kind >> 8) & 0xFFU;
@@ -156,13 +156,13 @@ eth_status_t dds_runtime_init(const dds_runtime_config_t *config)
         return ETH_OK; /* 已初始化 */
     }
     
-    memset(&g_runtime, 0, sizeof(g_runtime));
+    (void)memset(&g_runtime, 0, sizeof(g_runtime));
     
     /* 使用配置或默认配置 */
     if (config != NULL) {
-        memcpy(&g_runtime.config, config, sizeof(dds_runtime_config_t));
+        (void)memcpy(&g_runtime.config, config, sizeof(dds_runtime_config_t));
     } else {
-        memcpy(&g_runtime.config, &g_default_config, sizeof(dds_runtime_config_t));
+        (void)memcpy(&g_runtime.config, &g_default_config, sizeof(dds_runtime_config_t));
     }
     
     /* 越界检查: 参与者静态池上限 (编译期固定) */
@@ -218,14 +218,14 @@ void dds_runtime_deinit(void)
     
     /* 清理所有参与者 */
     while (g_runtime.participants != NULL) {
-        dds_runtime_delete_participant(g_runtime.participants);
+        (void)dds_runtime_delete_participant(g_runtime.participants);
     }
     
     /* 反初始化RTPS层 */
     rtps_discovery_deinit(&g_runtime.discovery_ctx);
     rtps_network_deinit(&g_runtime.network_ctx);
     
-    memset(&g_runtime, 0, sizeof(g_runtime));
+    (void)memset(&g_runtime, 0, sizeof(g_runtime));
 }
 
 eth_status_t dds_spin_once(uint32_t timeout_ms)
@@ -240,19 +240,19 @@ eth_status_t dds_spin_once(uint32_t timeout_ms)
     
     /* 发现处理 */
     if ((current_time - g_runtime.last_discovery_time) >= g_runtime.config.discovery_period_ms) {
-        dds_runtime_schedule_discovery(current_time);
+        (void)dds_runtime_schedule_discovery(current_time);
         g_runtime.last_discovery_time = current_time;
     }
     
     /* 心跳处理 */
     if ((current_time - g_runtime.last_heartbeat_time) >= g_runtime.config.heartbeat_period_ms) {
-        dds_runtime_schedule_heartbeat(current_time);
+        (void)dds_runtime_schedule_heartbeat(current_time);
         g_runtime.last_heartbeat_time = current_time;
     }
     
     /* 资源清理 */
     if ((current_time - g_runtime.last_cleanup_time) >= g_runtime.config.cleanup_period_ms) {
-        dds_runtime_cleanup();
+        (void)dds_runtime_cleanup();
         g_runtime.last_cleanup_time = current_time;
     }
     
@@ -275,11 +275,11 @@ eth_status_t dds_run(void)
     g_runtime.running = true;
     
     /* 启动发现协议 */
-    rtps_discovery_start(&g_runtime.discovery_ctx);
+    (void)rtps_discovery_start(&g_runtime.discovery_ctx);
     
     /* 主循环 */
     while (g_runtime.running) {
-        dds_spin_once(g_runtime.config.spin_period_ms);
+        (void)dds_spin_once(g_runtime.config.spin_period_ms);
         platform_sleep_ms(g_runtime.config.spin_period_ms);
     }
     
@@ -311,7 +311,7 @@ eth_status_t dds_wait_for_discovery(uint32_t timeout_ms)
             return ETH_TIMEOUT;
         }
         
-        dds_spin_once(10);
+        (void)dds_spin_once(10);
         platform_sleep_ms(10);
     }
     
@@ -353,7 +353,7 @@ dds_domain_participant_t* dds_runtime_create_participant(
         return NULL;
     }
     
-    memset(participant, 0, sizeof(dds_domain_participant_t));
+    (void)memset(participant, 0, sizeof(dds_domain_participant_t));
     
     /* 生成GUID */
     rtps_guid_prefix_t prefix;
@@ -484,8 +484,8 @@ eth_status_t dds_runtime_unmatch_endpoints(dds_data_writer_t *writer,
         return ETH_INVALID_PARAM;
     }
     
-    rtps_writer_sm_unmatch_reader(&writer->state_machine, &reader->guid);
-    rtps_reader_sm_unmatch_writer(&reader->state_machine, &writer->guid);
+    (void)rtps_writer_sm_unmatch_reader(&writer->state_machine, &reader->guid);
+    (void)rtps_reader_sm_unmatch_writer(&reader->state_machine, &writer->guid);
     
     return ETH_OK;
 }
@@ -567,13 +567,13 @@ eth_status_t dds_runtime_get_stats(dds_runtime_stats_t *stats)
         return ETH_INVALID_PARAM;
     }
     
-    memcpy(stats, &g_runtime.stats, sizeof(dds_runtime_stats_t));
+    (void)memcpy(stats, &g_runtime.stats, sizeof(dds_runtime_stats_t));
     return ETH_OK;
 }
 
 eth_status_t dds_runtime_reset_stats(void)
 {
-    memset(&g_runtime.stats, 0, sizeof(g_runtime.stats));
+    (void)memset(&g_runtime.stats, 0, sizeof(g_runtime.stats));
     g_runtime.stats.uptime_ms = platform_get_time_ms() - g_runtime.start_time;
     return ETH_OK;
 }
@@ -662,7 +662,7 @@ eth_status_t dds_runtime_schedule_heartbeat(uint64_t current_time_ms)
             dds_data_writer_t *writer = pub->writers;
             while (writer != NULL) {
                 bool need_heartbeat = false;
-                rtps_writer_sm_process(&writer->state_machine, 
+                (void)rtps_writer_sm_process(&writer->state_machine, 
                                         current_time_ms, 
                                         &need_heartbeat);
                 writer = writer->next;
@@ -680,7 +680,7 @@ eth_status_t dds_runtime_schedule_heartbeat(uint64_t current_time_ms)
             dds_data_reader_t *reader = sub->readers;
             while (reader != NULL) {
                 bool need_acknack = false;
-                rtps_reader_sm_process(&reader->state_machine, 
+                (void)rtps_reader_sm_process(&reader->state_machine, 
                                         current_time_ms, 
                                         &need_acknack);
                 reader = reader->next;

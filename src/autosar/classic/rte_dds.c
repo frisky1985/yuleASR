@@ -22,8 +22,8 @@
  * Private Definitions
  ******************************************************************************/
 #define RTE_INITIALIZED_MAGIC           0x52544521U  /* "RTE!" */
-#define RTE_MAX_TOPIC_NAME_LEN          128
-#define RTE_MAX_TYPE_NAME_LEN           64
+#define RTE_MAX_TOPIC_NAME_LEN          128U
+#define RTE_MAX_TYPE_NAME_LEN           64U
 
 /******************************************************************************
  * Private Types
@@ -191,7 +191,7 @@ Std_ReturnType rte_Init(void)
         return E_NOT_OK;
     }
 
-    memset(&g_rteContext, 0, sizeof(g_rteContext));
+    (void)memset(&g_rteContext, 0, sizeof(g_rteContext));
     g_rteContext.initMagic = RTE_INITIALIZED_MAGIC;
     g_rteContext.initialized = TRUE;
 
@@ -258,7 +258,7 @@ Std_ReturnType rte_CreateComponent(
     /* 复制配置到全局表 */
     uint32 idx = g_rteContext.numComponents;
     g_rteContext.numComponents++;
-    memcpy(&g_rteContext.components[idx], config, sizeof(rte_ComponentConfigType));
+    (void)memcpy(&g_rteContext.components[idx], config, sizeof(rte_ComponentConfigType));
     g_rteContext.components[idx].state = RTE_CMP_STOPPED;
 
     *handle = config->componentHandle;
@@ -284,7 +284,7 @@ Std_ReturnType rte_DestroyComponent(rte_ComponentHandleType handle)
 
     /* 从列表中移除 */
     if ((uint32)idx < (g_rteContext.numComponents - 1U)) {
-        memmove(&g_rteContext.components[idx],
+        (void)memmove(&g_rteContext.components[idx],
                 &g_rteContext.components[idx + 1],
                 (g_rteContext.numComponents - idx - 1) * sizeof(rte_ComponentConfigType));
     }
@@ -439,13 +439,13 @@ rte_ResultType rte_Write(
     uint8 protectedData[RTE_MAX_BUFFER_SIZE];
     uint32 protectedLength = dataSize;
     
-    memcpy(protectedData, data, dataSize);
+    (void)memcpy(protectedData, data, dataSize);
     (void)protectedLength; /* 长度由 writer sample_size 决定 */
 
     /* 通过DDS发送 (DDS 序列化层按 writer sample_size 处理长度) */
     dds_ReturnCode_t ret = dds_write(writer, protectedData);
     
-    dds_delete(writer);
+    (void)dds_delete(writer);
 
     return rte_ConvertDdsResult(ret);
 }
@@ -509,7 +509,7 @@ rte_ResultType rte_ReadWithInfo(
     dds_ReturnCode_t ret = dds_take(reader, sampleData, &sampleInfo, 1,
                                      DDS_ANY_SAMPLE_STATE, DDS_ANY_VIEW_STATE, DDS_ANY_INSTANCE_STATE);
 
-    dds_delete(reader);
+    (void)dds_delete(reader);
 
     if (ret != DDS_RETCODE_OK) {
         return rte_ConvertDdsResult(ret);
@@ -529,7 +529,7 @@ rte_ResultType rte_ReadWithInfo(
         }
     }
 
-    memcpy(data, sampleData, dataSize);
+    (void)memcpy(data, sampleData, dataSize);
 
     /* 填充信息 */
     info->timestamp = (rte_TimestampType)sampleInfo.source_timestamp;
@@ -621,15 +621,15 @@ rte_ResultType rte_Call(
     ret = dds_take(rspReader, responseDataBuf, &sampleInfo, 1,
                    DDS_ANY_SAMPLE_STATE, DDS_ANY_VIEW_STATE, DDS_ANY_INSTANCE_STATE);
 
-    dds_delete(reqWriter);
-    dds_delete(rspReader);
+    (void)dds_delete(reqWriter);
+    (void)dds_delete(rspReader);
 
     if ((ret != DDS_RETCODE_OK) || !sampleInfo.valid_data) {
         return RTE_E_TIMEOUT;
     }
 
     /* 复制响应数据 */
-    memcpy(responseData, responseDataBuf, sizeof(responseDataBuf));
+    (void)memcpy(responseData, responseDataBuf, sizeof(responseDataBuf));
     if (responseLength != NULL) {
         *responseLength = sizeof(responseDataBuf);
     }
@@ -650,7 +650,7 @@ Std_ReturnType rte_ComInit(void)
         return E_OK;
     }
 
-    memset(&g_comContext, 0, sizeof(g_comContext));
+    (void)memset(&g_comContext, 0, sizeof(g_comContext));
     g_comContext.initialized = TRUE;
 
     return E_OK;
@@ -684,7 +684,7 @@ Std_ReturnType rte_ComSendSignal(
     uint32 dataSize = sigConfig->bitSize / 8U;
     uint32 protectedLength = dataSize;
 
-    memcpy(protectedData, data, dataSize);
+    (void)memcpy(protectedData, data, dataSize);
 
     if (sigConfig->e2eEnabled) {
         E2E_ContextType e2eCtx;
@@ -741,7 +741,7 @@ Std_ReturnType rte_ComSendPdu(
         return E_NOT_OK;
     }
 
-    memcpy(protectedData, data, length);
+    (void)memcpy(protectedData, data, length);
 
     /* 对每个信号应用E2E保护 */
     for (uint32 i = 0; i < pduConfig->numSignals; i++) {
@@ -856,7 +856,7 @@ void rte_Process(void)
     }
 
     /* 调用DDS处理 */
-    dds_process_events();
+    (void)dds_process_events();
 }
 
 /**

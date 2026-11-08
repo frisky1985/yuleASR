@@ -245,6 +245,7 @@ extern Std_ReturnType Platform_EccHandler_SetPolicy(
     uint8 policy
 );
 
+
 #define PLATFORM_ECCHANDLER_STOP_SEC_CODE
 #include "Platform_MemMap.h"
 

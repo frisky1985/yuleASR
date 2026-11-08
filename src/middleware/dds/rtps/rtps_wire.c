@@ -20,7 +20,7 @@ eth_status_t rtps_wire_init(rtps_wire_context_t *ctx,
     if (ctx == NULL) {
         return ETH_INVALID_PARAM;
     }
-    memset(ctx, 0, sizeof(*ctx));
+    (void)memset(ctx, 0, sizeof(*ctx));
     ctx->initialized = true;
     ctx->rx_callback = rx_callback;
     ctx->rx_user_data = user_data;

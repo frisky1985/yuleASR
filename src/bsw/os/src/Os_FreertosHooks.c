@@ -38,8 +38,7 @@ static StackType_t  xIdleTaskStackBuffer[configMINIMAL_STACK_SIZE];
 /**
  * @brief Provide memory for the FreeRTOS Idle task (static allocation)
  */
-void vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTaskTCBBuffer,
-                                   StackType_t **ppxIdleTaskStackBuffer,
+void vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTaskTCBBuffer,                                   StackType_t **ppxIdleTaskStackBuffer,
                                    configSTACK_DEPTH_TYPE *puxIdleTaskStackSize)
 {
     *ppxIdleTaskTCBBuffer = &xIdleTaskTCBBuffer;
@@ -57,8 +56,7 @@ static StackType_t  xTimerTaskStackBuffer[configTIMER_TASK_STACK_DEPTH];
 /**
  * @brief Provide memory for the FreeRTOS software-timer task (static allocation)
  */
-void vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTaskTCBBuffer,
-                                    StackType_t **ppxTimerTaskStackBuffer,
+void vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTaskTCBBuffer,                                    StackType_t **ppxTimerTaskStackBuffer,
                                     configSTACK_DEPTH_TYPE *puxTimerTaskStackSize)
 {
     *ppxTimerTaskTCBBuffer = &xTimerTaskTCBBuffer;
@@ -74,8 +72,7 @@ void vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTaskTCBBuffer,
  * @brief Called when configASSERT fails - trap for debug.
  *        Only referenced when configASSERT is redirected to this hook.
  */
-void vAssertCalled(const char *pcFile, uint32_t ulLine)
-{
+void vAssertCalled(const char *pcFile, uint32_t ulLine){
     (void)pcFile;
     (void)ulLine;
     for (;;)

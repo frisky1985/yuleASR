@@ -33,13 +33,13 @@ void tearDown(void) {
 }
 
 /* 测试初始化 */
-void test_secoc_init_should_return_valid_context(void) {
+static void test_secoc_init_should_return_valid_context(void) {
     TEST_ASSERT_NOT_NULL(test_ctx);
     TEST_ASSERT_TRUE(test_ctx->initialized);
 }
 
 /* 测试密钥导入 */
-void test_secoc_import_key_should_succeed(void) {
+static void test_secoc_import_key_should_succeed(void) {
     secoc_status_t status = secoc_import_key(test_ctx, 0, test_key, 16);
     TEST_ASSERT_EQUAL(SECOC_OK, status);
     
@@ -53,7 +53,7 @@ void test_secoc_import_key_should_succeed(void) {
 }
 
 /* 测试密钥导入无效参数 */
-void test_secoc_import_key_invalid_params_should_fail(void) {
+static void test_secoc_import_key_invalid_params_should_fail(void) {
     secoc_status_t status = secoc_import_key(NULL, 0, test_key, 16);
     TEST_ASSERT_EQUAL(SECOC_ERROR_INVALID_PARAM, status);
     
@@ -68,7 +68,7 @@ void test_secoc_import_key_invalid_params_should_fail(void) {
 }
 
 /* 测试获取无效密钥槽 */
-void test_secoc_get_key_invalid_slot_should_fail(void) {
+static void test_secoc_get_key_invalid_slot_should_fail(void) {
     uint8_t key[32];
     uint8_t key_len;
     secoc_status_t status = secoc_get_key(test_ctx, 0, key, &key_len);
@@ -76,7 +76,7 @@ void test_secoc_get_key_invalid_slot_should_fail(void) {
 }
 
 /* 测试清除密钥 */
-void test_secoc_clear_key_should_succeed(void) {
+static void test_secoc_clear_key_should_succeed(void) {
     /* 先导入密钥 */
     secoc_import_key(test_ctx, 0, test_key, 16);
     
@@ -92,7 +92,7 @@ void test_secoc_clear_key_should_succeed(void) {
 }
 
 /* 测试添加PDU配置 */
-void test_secoc_add_pdu_config_should_succeed(void) {
+static void test_secoc_add_pdu_config_should_succeed(void) {
     secoc_pdu_config_t config = {
         .pdu_id = 0x100,
         .freshness_type = SECOC_FRESHNESS_COUNTER,
@@ -118,7 +118,7 @@ void test_secoc_add_pdu_config_should_succeed(void) {
 }
 
 /* 测试添加重复PDU ID */
-void test_secoc_add_duplicate_pdu_config_should_fail(void) {
+static void test_secoc_add_duplicate_pdu_config_should_fail(void) {
     secoc_pdu_config_t config = {
         .pdu_id = 0x100,
         .freshness_type = SECOC_FRESHNESS_COUNTER,
@@ -138,13 +138,13 @@ void test_secoc_add_duplicate_pdu_config_should_fail(void) {
 }
 
 /* 测试查找不存在的PDU */
-void test_secoc_get_nonexistent_pdu_config_should_return_null(void) {
+static void test_secoc_get_nonexistent_pdu_config_should_return_null(void) {
     const secoc_pdu_config_t *config = secoc_get_pdu_config(test_ctx, 0x999);
     TEST_ASSERT_NULL(config);
 }
 
 /* 测试移除PDU配置 */
-void test_secoc_remove_pdu_config_should_succeed(void) {
+static void test_secoc_remove_pdu_config_should_succeed(void) {
     secoc_pdu_config_t config = {
         .pdu_id = 0x200,
         .freshness_type = SECOC_FRESHNESS_COUNTER,
@@ -167,7 +167,7 @@ void test_secoc_remove_pdu_config_should_succeed(void) {
 }
 
 /* 测试PDU认证和验证 */
-void test_secoc_authenticate_and_verify_pdu_should_succeed(void) {
+static void test_secoc_authenticate_and_verify_pdu_should_succeed(void) {
     /* 设置配置 */
     secoc_pdu_config_t config = {
         .pdu_id = 0x300,
@@ -220,7 +220,7 @@ void test_secoc_authenticate_and_verify_pdu_should_succeed(void) {
 }
 
 /* 测试验证失败情况 (篡改数据) */
-void test_secoc_verify_modified_pdu_should_fail(void) {
+static void test_secoc_verify_modified_pdu_should_fail(void) {
     /* 设置配置 */
     secoc_pdu_config_t config = {
         .pdu_id = 0x400,
@@ -268,7 +268,7 @@ void test_secoc_verify_modified_pdu_should_fail(void) {
 }
 
 /* 测试统计功能 */
-void test_secoc_stats_should_track_operations(void) {
+static void test_secoc_stats_should_track_operations(void) {
     uint64_t tx_count, rx_count, verify_success, verify_failure;
     
     /* 初始状态 */
@@ -304,7 +304,7 @@ void test_secoc_stats_should_track_operations(void) {
 }
 
 /* 测试重置统计 */
-void test_secoc_reset_stats_should_clear_counters(void) {
+static void test_secoc_reset_stats_should_clear_counters(void) {
     /* 设置配置并执行操作 */
     secoc_pdu_config_t config = {
         .pdu_id = 0x600,

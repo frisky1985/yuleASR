@@ -218,6 +218,7 @@ extern boolean Swc_ModeManager_AreAllComponentsReady(void);
  */
 extern Rte_StatusType Swc_ModeManager_ForceModeTransition(Swc_SystemModeType targetMode);
 
+
 #define RTE_STOP_SEC_CODE
 #include "MemMap.h"
 

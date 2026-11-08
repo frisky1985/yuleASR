@@ -315,4 +315,5 @@ void EthSwt_MainFunction(void);
 /** @brief Reset the switch */
 Std_ReturnType EthSwt_Reset(void);
 
+
 #endif /* ETHSWT_H */

@@ -80,8 +80,7 @@ static volatile bool s_secocBufferInUse = false;
 /* ============================================================================
  * Optimized CRC32 Calculation Using Lookup Table (5x faster than byte-by-byte)
  * ============================================================================ */
-uint32_t SecOC_OptimizedCRC32(const uint8_t *data, uint32_t length)
-{
+static uint32_t SecOC_OptimizedCRC32(const uint8_t *data, uint32_t length){
     uint32_t crc = 0xFFFFFFFFU;
     
     for (uint32_t i = 0U; i < length; i++) {
@@ -94,8 +93,7 @@ uint32_t SecOC_OptimizedCRC32(const uint8_t *data, uint32_t length)
 /* ============================================================================
  * Incremental MAC Verification (3x faster for large payloads)
  * ============================================================================ */
-SecOC_VerifyResultType SecOC_StartIncrementalVerify(uint16_t freshnessValue)
-{
+static SecOC_VerifyResultType SecOC_StartIncrementalVerify(uint16_t freshnessValue){
     SecOC_VerifyResultType result = SECOC_E_VERIFICATION_FAILED;
     
     if (!s_incrementalState.active) {
@@ -108,8 +106,7 @@ SecOC_VerifyResultType SecOC_StartIncrementalVerify(uint16_t freshnessValue)
     return result;
 }
 
-SecOC_VerifyResultType SecOC_UpdateIncrementalVerify(
-    const uint8_t *data,
+static SecOC_VerifyResultType SecOC_UpdateIncrementalVerify(    const uint8_t *data,
     uint32_t length,
     const uint8_t *mac,
     uint32_t macLength
@@ -134,8 +131,7 @@ SecOC_VerifyResultType SecOC_UpdateIncrementalVerify(
     return result;
 }
 
-SecOC_VerifyResultType SecOC_FinalizeIncrementalVerify(
-    const uint8_t *expectedMac,
+static SecOC_VerifyResultType SecOC_FinalizeIncrementalVerify(    const uint8_t *expectedMac,
     uint32_t expectedMacLength
 )
 {
@@ -168,8 +164,7 @@ SecOC_VerifyResultType SecOC_FinalizeIncrementalVerify(
 /* ============================================================================
  * Static Memory Pool Allocator (MISRA Rule 21.3 compliant)
  * ============================================================================ */
-void* SecOC_AllocStaticBuffer(uint32_t size)
-{
+static void* SecOC_AllocStaticBuffer(uint32_t size){
     void *ptr = NULL;
     
     if ((size <= SECOC_STATIC_BUFFER_SIZE) && (!s_secocBufferInUse)) {
@@ -180,8 +175,7 @@ void* SecOC_AllocStaticBuffer(uint32_t size)
     return ptr;
 }
 
-void SecOC_FreeStaticBuffer(void)
-{
+static void SecOC_FreeStaticBuffer(void){
     s_secocBufferInUse = false;
     (void)memset(s_secocStaticBuffer, 0, SECOC_STATIC_BUFFER_SIZE);
 }
@@ -189,8 +183,7 @@ void SecOC_FreeStaticBuffer(void)
 /* ============================================================================
  * Optimized Protected Tx/Rx with Static Memory
  * ============================================================================ */
-Std_ReturnType SecOC_OptimizedTransmit(
-    PduIdType TxPduId,
+static Std_ReturnType SecOC_OptimizedTransmit(    PduIdType TxPduId,
     const PduInfoType *PduInfoPtr,
     const SecOC_ConfigType *config
 )

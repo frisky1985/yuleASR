@@ -257,6 +257,9 @@ void FrTp_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr);
  */
 void FrTp_TxConfirmation(PduIdType TxPduId, Std_ReturnType result);
 
+
+void FrTp_RxStateMachine(FrTp_ConnectionIdxType connIdx);
+void FrTp_TxStateMachine(FrTp_ConnectionIdxType connIdx);
 #define FRTP_STOP_SEC_CODE
 #include "MemMap.h"
 

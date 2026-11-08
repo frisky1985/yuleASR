@@ -428,6 +428,7 @@ extern void SecOC_MainFunctionRx(void);
  */
 extern void SecOC_MainFunctionTx(void);
 
+
 #define SECOC_STOP_SEC_CODE
 #include "SecOC_MemMap.h"
 

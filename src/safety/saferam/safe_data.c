@@ -81,7 +81,7 @@ Std_ReturnType SafeData_Init(void)
     
     /* Clear monitors */
     for (i = 0; i < SAFE_DATA_MAX_MONITORS; i++) {
-        memset(&g_monitors[i], 0, sizeof(SafeDataMonitorType));
+        (void)memset(&g_monitors[i], 0, sizeof(SafeDataMonitorType));
         g_monitors[i].id = i;
         g_monitors[i].active = FALSE;
     }
@@ -126,7 +126,7 @@ Std_ReturnType SafeData_InitElement(
     }
     
     /* Initialize header */
-    memset(&element->header, 0, sizeof(SafeDataHeaderType));
+    (void)memset(&element->header, 0, sizeof(SafeDataHeaderType));
     element->header.magic = SAFE_DATA_MAGIC;
     element->header.data_type = config->data_type;
     element->header.redundancy_mode = config->redundancy_mode;
@@ -161,8 +161,8 @@ Std_ReturnType SafeData_InitElement(
     }
     
     /* Initialize data to 0 */
-    memset(&element->primary, 0, sizeof(element->primary));
-    memset(&element->inverted, 0, sizeof(element->inverted));
+    (void)memset(&element->primary, 0, sizeof(element->primary));
+    (void)memset(&element->inverted, 0, sizeof(element->inverted));
     
     /* Calculate initial CRC */
     element->header.crc32 = SafeData_CalcCRC32(
@@ -187,7 +187,7 @@ Std_ReturnType SafeData_WriteElement(
     }
     
     /* Copy to primary */
-    memcpy(&element->primary, value, element->header.data_size);
+    (void)memcpy(&element->primary, value, element->header.data_size);
     
     /* Create inverted copy if enabled */
     if (element->header.redundancy_mode == SAFE_DATA_REDUNDANCY_INV) {
@@ -231,11 +231,11 @@ Std_ReturnType SafeData_ReadElement(
     }
     
     /* Validate element */
-    SafeData_ValidateElement(element, result);
+    (void)SafeData_ValidateElement(element, result);
     
     if (result->is_valid) {
         /* Copy primary data */
-        memcpy(value, &element->primary, element->header.data_size);
+        (void)memcpy(value, &element->primary, element->header.data_size);
     } else if (element->header.redundancy_mode == SAFE_DATA_REDUNDANCY_INV) {
         /* Try to recover from inverted copy */
         boolean inv_valid = CompareInverted(&element->inverted, &element->primary, 
@@ -356,7 +356,7 @@ Std_ReturnType SafeData_InitArray(
     }
     
     /* Initialize header */
-    memset(&array->header, 0, sizeof(SafeDataHeaderType));
+    (void)memset(&array->header, 0, sizeof(SafeDataHeaderType));
     array->header.magic = SAFE_DATA_MAGIC;
     array->header.data_type = SAFE_DATA_TYPE_ARRAY;
     array->header.redundancy_mode = config->redundancy_mode;
@@ -476,7 +476,7 @@ Std_ReturnType SafeData_ValidateArray(
         uint8_t temp[32];  /* Assumes max element size of 32 bytes */
         
         if (array->element_size <= sizeof(temp)) {
-            SafeData_ReadArrayElement(array, i, temp, &result);
+            (void)SafeData_ReadArrayElement(array, i, temp, &result);
             if (!result.is_valid) {
                 errors++;
             }
@@ -504,7 +504,7 @@ Std_ReturnType SafeData_InitContainer(
     }
     
     /* Initialize header */
-    memset(&container->header, 0, sizeof(SafeDataHeaderType));
+    (void)memset(&container->header, 0, sizeof(SafeDataHeaderType));
     container->header.magic = SAFE_DATA_MAGIC;
     container->header.data_type = SAFE_DATA_TYPE_STRUCT;
     container->header.redundancy_mode = config->redundancy_mode;
@@ -637,14 +637,14 @@ Std_ReturnType SafeData_Vote2of3(
     
     /* Compare copy1 with copy2 */
     if (memcmp(copy1, copy2, size) == 0) {
-        memcpy(result, copy1, size);
+        (void)memcpy(result, copy1, size);
         matches++;
     }
     
     /* Compare copy1 with copy3 */
     if (memcmp(copy1, copy3, size) == 0) {
         if (matches == 0) {
-            memcpy(result, copy1, size);
+            (void)memcpy(result, copy1, size);
         }
         matches++;
     }
@@ -652,7 +652,7 @@ Std_ReturnType SafeData_Vote2of3(
     /* Compare copy2 with copy3 */
     if (memcmp(copy2, copy3, size) == 0) {
         if (matches == 0) {
-            memcpy(result, copy2, size);
+            (void)memcpy(result, copy2, size);
         }
         matches++;
     }
@@ -824,8 +824,8 @@ Std_ReturnType SafeData_RegisterMonitor(SafeDataHeaderType *header, uint8_t *mon
             g_monitors[i].active = TRUE;
             g_monitors[i].header = header;
             g_monitors[i].last_check_time = SafeData_GetTimestamp();
-            memset(&g_monitors[i].last_result, 0, sizeof(SafeDataValidationType));
-            memset(&g_monitors[i].stats, 0, sizeof(SafeDataStatsType));
+            (void)memset(&g_monitors[i].last_result, 0, sizeof(SafeDataValidationType));
+            (void)memset(&g_monitors[i].stats, 0, sizeof(SafeDataStatsType));
             
             *monitor_id = i;
             return E_OK;
@@ -866,10 +866,10 @@ uint32_t SafeData_CheckAllMonitored(void)
                 /* Assume element type */
                 SafeDataElementType *element = (SafeDataElementType *)
                     ((uint8_t *)g_monitors[i].header - offsetof(SafeDataElementType, header));
-                SafeData_ValidateElement(element, &result);
+                (void)SafeData_ValidateElement(element, &result);
             }
             
-            memcpy(&g_monitors[i].last_result, &result, sizeof(SafeDataValidationType));
+            (void)memcpy(&g_monitors[i].last_result, &result, sizeof(SafeDataValidationType));
             g_monitors[i].last_check_time = SafeData_GetTimestamp();
             g_monitors[i].stats.validation_count++;
             
@@ -906,7 +906,7 @@ Std_ReturnType SafeData_GetStats(const SafeDataElementType *element, SafeDataSta
         return E_NOT_OK;
     }
     
-    memcpy(stats, &monitor->stats, sizeof(SafeDataStatsType));
+    (void)memcpy(stats, &monitor->stats, sizeof(SafeDataStatsType));
     
     return E_OK;
 }
@@ -924,7 +924,7 @@ Std_ReturnType SafeData_ResetStats(SafeDataElementType *element)
         uint8_t i;
         for (i = 0; i < SAFE_DATA_MAX_MONITORS; i++) {
             if (g_monitors[i].active) {
-                memset(&g_monitors[i].stats, 0, sizeof(SafeDataStatsType));
+                (void)memset(&g_monitors[i].stats, 0, sizeof(SafeDataStatsType));
             }
         }
     } else {
@@ -932,7 +932,7 @@ Std_ReturnType SafeData_ResetStats(SafeDataElementType *element)
         if (monitor == NULL) {
             return E_NOT_OK;
         }
-        memset(&monitor->stats, 0, sizeof(SafeDataStatsType));
+        (void)memset(&monitor->stats, 0, sizeof(SafeDataStatsType));
     }
     
     return E_OK;

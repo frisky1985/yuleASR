@@ -114,7 +114,7 @@ static own_contender_t* add_contender(own_handle_t *own, const dds_guid_t *guid,
     if (own->contender_count < OWN_MAX_CONTENDERS) {
         own_contender_t *c = &own->contenders[own->contender_count];
     own->contender_count++;
-        memcpy(&c->guid, guid, sizeof(dds_guid_t));
+        (void)memcpy(&c->guid, guid, sizeof(dds_guid_t));
         c->strength = strength;
         c->last_seen = get_time_ms();
         c->priority = 0;
@@ -125,7 +125,7 @@ static own_contender_t* add_contender(own_handle_t *own, const dds_guid_t *guid,
     // 替换最弱的不活跃竞争者
     for (uint8_t i = 0; i < own->contender_count; i++) {
         if (!own->contenders[i].active) {
-            memcpy(&own->contenders[i].guid, guid, sizeof(dds_guid_t));
+            (void)memcpy(&own->contenders[i].guid, guid, sizeof(dds_guid_t));
             own->contenders[i].strength = strength;
             own->contenders[i].last_seen = get_time_ms();
             own->contenders[i].active = true;
@@ -154,7 +154,7 @@ static void determine_owner(own_handle_t *own) {
             own->ownership_start_time = get_time_ms();
             notify_event(own, OWN_EVENT_OWNERSHIP_GAINED, &own->local_guid);
         }
-        memcpy(&own->current_owner.guid, &own->local_guid, sizeof(dds_guid_t));
+        (void)memcpy(&own->current_owner.guid, &own->local_guid, sizeof(dds_guid_t));
         own->current_owner.strength = own->current_strength;
         own->current_owner.state = OWN_STATE_OWNER;
         own->current_owner.active = true;
@@ -179,7 +179,7 @@ static void determine_owner(own_handle_t *own) {
             own->stats.ownership_duration_ms += ownership_duration;
             notify_event(own, OWN_EVENT_OWNERSHIP_LOST, &top->guid);
         }
-        memcpy(&own->current_owner.guid, &top->guid, sizeof(dds_guid_t));
+        (void)memcpy(&own->current_owner.guid, &top->guid, sizeof(dds_guid_t));
         own->current_owner.strength = top->strength;
         own->current_owner.last_heartbeat = top->last_seen;
     }
@@ -217,8 +217,8 @@ own_handle_t* own_create(const own_config_t *config, const dds_guid_t *local_gui
     if (!own) { return NULL; }
     (void)memset(own, 0, sizeof(own_handle_t));
     
-    memcpy(&own->config, config, sizeof(own_config_t));
-    memcpy(&own->local_guid, local_guid, sizeof(dds_guid_t));
+    (void)memcpy(&own->config, config, sizeof(own_config_t));
+    (void)memcpy(&own->local_guid, local_guid, sizeof(dds_guid_t));
     own->current_strength = config->initial_strength;
     own->state = OWN_STATE_IDLE;
     own->contender_count = 0;
@@ -370,7 +370,7 @@ eth_status_t own_is_owner(own_handle_t *own, bool *is_owner) {
 eth_status_t own_get_current_owner(own_handle_t *own, own_owner_info_t *owner_info) {
     if (!own || !owner_info) { return ETH_INVALID_PARAM; }
     
-    memcpy(owner_info, &own->current_owner, sizeof(own_owner_info_t));
+    (void)memcpy(owner_info, &own->current_owner, sizeof(own_owner_info_t));
     return ETH_OK;
 }
 
@@ -397,7 +397,7 @@ eth_status_t own_request_transfer(own_handle_t *own, const dds_guid_t *target_gu
     }
     
     own->pending_transfer_requests++;
-    memcpy(&own->pending_transfer_target, target_guid, sizeof(dds_guid_t));
+    (void)memcpy(&own->pending_transfer_target, target_guid, sizeof(dds_guid_t));
     
     // 详细实现需要发送转移请求消息
     
@@ -410,7 +410,7 @@ eth_status_t own_accept_transfer(own_handle_t *own, uint32_t new_strength) {
     
     // 接受转移，设置新强度
     if (new_strength > 0U) {
-        own_set_strength(own, new_strength);
+        (void)own_set_strength(own, new_strength);
     }
     
     own->state = OWN_STATE_OWNER;
@@ -483,7 +483,7 @@ eth_status_t own_handle_owner_failure(own_handle_t *own) {
     // 检查是否是自己失败
     if (own->state == OWN_STATE_OWNER) {
         // 降低强度让渡所有权
-        own_decrease_strength(own, own->current_strength);
+        (void)own_decrease_strength(own, own->current_strength);
     } else {
         // 移除失败的所有权主
         remove_contender(own, &own->current_owner.guid);
@@ -496,14 +496,14 @@ eth_status_t own_handle_owner_failure(own_handle_t *own) {
 eth_status_t own_get_stats(own_handle_t *own, own_stats_t *stats) {
     if (!own || !stats) { return ETH_INVALID_PARAM; }
     
-    memcpy(stats, &own->stats, sizeof(own_stats_t));
+    (void)memcpy(stats, &own->stats, sizeof(own_stats_t));
     return ETH_OK;
 }
 
 eth_status_t own_reset_stats(own_handle_t *own) {
     if (!own) { return ETH_INVALID_PARAM; }
     
-    memset(&own->stats, 0, sizeof(own_stats_t));
+    (void)memset(&own->stats, 0, sizeof(own_stats_t));
     return ETH_OK;
 }
 
@@ -531,7 +531,7 @@ eth_status_t own_get_owner_list(own_handle_t *own,
     *actual_count = 0;
     for (uint8_t i = 0; (i < own->contender_count) && (*actual_count < max_count); i++) {
         if (own->contenders[i].active) {
-            memcpy(&owners[*actual_count].guid, &own->contenders[i].guid, sizeof(dds_guid_t));
+            (void)memcpy(&owners[*actual_count].guid, &own->contenders[i].guid, sizeof(dds_guid_t));
             owners[*actual_count].strength = own->contenders[i].strength;
             owners[*actual_count].last_heartbeat = own->contenders[i].last_seen;
             owners[*actual_count].active = true;
@@ -546,7 +546,7 @@ eth_status_t own_force_ownership(own_handle_t *own, uint32_t new_strength) {
     if (!own) { return ETH_INVALID_PARAM; }
     
     // 管理员强制获取所有权
-    own_set_strength(own, (new_strength > 0U) ? new_strength : OWN_MAX_STRENGTH);
+    (void)own_set_strength(own, (new_strength > 0U) ? new_strength : OWN_MAX_STRENGTH);
     
     DDS_LOG_INFO(DDS_LOG_MODULE_CORE, "OWN", "Ownership forced (admin command)");
     return ETH_OK;

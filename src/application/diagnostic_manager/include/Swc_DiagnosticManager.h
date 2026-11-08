@@ -240,6 +240,7 @@ extern Rte_StatusType Swc_DiagnosticManager_ClearDtc(uint32 dtcCode);
  */
 extern Rte_StatusType Swc_DiagnosticManager_GetStatus(Swc_DiagnosticManagerStatusType* status);
 
+
 #define RTE_STOP_SEC_CODE
 #include "MemMap.h"
 

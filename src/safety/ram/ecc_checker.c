@@ -98,7 +98,7 @@ static uint8_t EccChecker_ComputeSyndrome32(uint32_t data, uint8_t ecc_code)
     uint8_t syndrome;
 
     /* Get computed ECC (re-encode data) */
-    EccEncoder_Encode32(data, &computed_ecc);
+    (void)EccEncoder_Encode32(data, &computed_ecc);
 
     /* Syndrome is XOR of stored and computed ECC */
     syndrome = ecc_code ^ computed_ecc;
@@ -115,7 +115,7 @@ static uint8_t EccChecker_ComputeSyndrome64(uint64_t data, uint8_t ecc_code)
     uint8_t syndrome;
 
     /* Get computed ECC (re-encode data) */
-    EccEncoder_Encode64(data, &computed_ecc);
+    (void)EccEncoder_Encode64(data, &computed_ecc);
 
     /* Syndrome is XOR of stored and computed ECC */
     syndrome = ecc_code ^ computed_ecc;
@@ -184,13 +184,13 @@ Std_ReturnType EccChecker_Init(const EccCheckerConfigType *config)
 
     if (config == NULL) {
         /* Use defaults: auto-correct single-bit errors */
-        memset(&default_config, 0, sizeof(default_config));
+        (void)memset(&default_config, 0, sizeof(default_config));
         default_config.auto_correct = TRUE;
         config = &default_config;
     }
 
     /* Clear state */
-    memset(&g_checker_state, 0, sizeof(g_checker_state));
+    (void)memset(&g_checker_state, 0, sizeof(g_checker_state));
 
     /* Copy configuration */
     g_checker_state.config = *config;
@@ -206,7 +206,7 @@ Std_ReturnType EccChecker_Init(const EccCheckerConfigType *config)
  */
 Std_ReturnType EccChecker_DeInit(void)
 {
-    memset(&g_checker_state, 0, sizeof(g_checker_state));
+    (void)memset(&g_checker_state, 0, sizeof(g_checker_state));
     g_initialized = FALSE;
     return E_OK;
 }
@@ -420,7 +420,7 @@ const EccErrorStatsType* EccChecker_GetStats(void)
  */
 Std_ReturnType EccChecker_ResetStats(void)
 {
-    memset(&g_checker_state.stats, 0, sizeof(g_checker_state.stats));
+    (void)memset(&g_checker_state.stats, 0, sizeof(g_checker_state.stats));
     return E_OK;
 }
 
@@ -546,7 +546,7 @@ const char* EccChecker_GetPositionString(uint8_t position, EccEncodeModeType mod
 
     if (mode == ECC_MODE_32BIT) {
         if (position < 32U) {
-            Debug_Snprintf(buffer, sizeof(buffer), "Data bit %u", (unsigned)position);
+            (void)Debug_Snprintf(buffer, sizeof(buffer), "Data bit %u", (unsigned)position);
         } else if (position <= 38U) {
             Debug_Snprintf(buffer, sizeof(buffer), "ECC bit %u", (unsigned)(position - 32U));
         } else {
@@ -554,7 +554,7 @@ const char* EccChecker_GetPositionString(uint8_t position, EccEncodeModeType mod
         }
     } else {
         if (position < 64U) {
-            Debug_Snprintf(buffer, sizeof(buffer), "Data bit %u", (unsigned)position);
+            (void)Debug_Snprintf(buffer, sizeof(buffer), "Data bit %u", (unsigned)position);
         } else if (position <= 71U) {
             Debug_Snprintf(buffer, sizeof(buffer), "ECC bit %u", (unsigned)(position - 64U));
         } else {

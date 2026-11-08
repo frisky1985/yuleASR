@@ -103,7 +103,7 @@ const Dcm_ConfigType Dcm_Config = {
 /*==================================================================================================
 *                                  TEST HELPER FUNCTIONS
 ==================================================================================================*/
-static void reset_mocks(void)
+void reset_mocks(void)
 {
     mock_pdur_transmit_called = 0U;
     mock_pdur_transmit_id = 0xFFFFU;

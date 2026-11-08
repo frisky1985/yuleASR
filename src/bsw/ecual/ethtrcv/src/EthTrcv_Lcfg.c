@@ -300,8 +300,7 @@ const EthTrcv_ConfigType EthTrcv_Config =
 /**
  * @brief Gets the interface configuration for a transceiver
  */
-const EthTrcv_InterfaceConfigType* EthTrcv_GetInterfaceConfig(uint8 TrcvIdx)
-{
+static const EthTrcv_InterfaceConfigType* EthTrcv_GetInterfaceConfig(uint8 TrcvIdx){
     if (TrcvIdx < ETHTRCV_NUMBER_OF_TRCVS)
     {
         return &EthTrcv_InterfaceConfig[TrcvIdx];
@@ -312,8 +311,7 @@ const EthTrcv_InterfaceConfigType* EthTrcv_GetInterfaceConfig(uint8 TrcvIdx)
 /**
  * @brief Gets the transceiver configuration
  */
-const EthTrcv_TrcvConfigType* EthTrcv_GetTransceiverConfig(uint8 TrcvIdx)
-{
+static const EthTrcv_TrcvConfigType* EthTrcv_GetTransceiverConfig(uint8 TrcvIdx){
     if (TrcvIdx < ETHTRCV_NUMBER_OF_TRCVS)
     {
         return &EthTrcv_TrcvConfig[TrcvIdx];
@@ -324,8 +322,7 @@ const EthTrcv_TrcvConfigType* EthTrcv_GetTransceiverConfig(uint8 TrcvIdx)
 /**
  * @brief Gets the PHY address for a transceiver
  */
-uint8 EthTrcv_GetPhyAddress(uint8 TrcvIdx)
-{
+static uint8 EthTrcv_GetPhyAddress(uint8 TrcvIdx){
     if (TrcvIdx < ETHTRCV_NUMBER_OF_TRCVS)
     {
         return EthTrcv_TrcvConfig[TrcvIdx].PhyAddress;
@@ -336,8 +333,7 @@ uint8 EthTrcv_GetPhyAddress(uint8 TrcvIdx)
 /**
  * @brief Gets the interface type for a transceiver
  */
-uint8 EthTrcv_GetInterfaceType(uint8 TrcvIdx)
-{
+static uint8 EthTrcv_GetInterfaceType(uint8 TrcvIdx){
     if (TrcvIdx < ETHTRCV_NUMBER_OF_TRCVS)
     {
         return EthTrcv_TrcvConfig[TrcvIdx].InterfaceType;

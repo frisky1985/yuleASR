@@ -119,10 +119,10 @@ bl_upgrade_log_error_t Boot_UpgradeLog_Init(
         return BL_UPGRADE_LOG_ERROR_INVALID_PARAM;
     }
 
-    memset(ctx, 0, sizeof(bl_upgrade_log_context_t));
+    (void)memset(ctx, 0, sizeof(bl_upgrade_log_context_t));
 
     if (config != NULL) {
-        memcpy(&ctx->config, config, sizeof(bl_upgrade_log_config_t));
+        (void)memcpy(&ctx->config, config, sizeof(bl_upgrade_log_config_t));
     }
 
     /* 容量: 0 → 默认; 超上限 → 拒绝 */
@@ -155,7 +155,7 @@ void Boot_UpgradeLog_Deinit(bl_upgrade_log_context_t *ctx)
         return;
     }
 
-    memset(ctx, 0, sizeof(bl_upgrade_log_context_t));
+    (void)memset(ctx, 0, sizeof(bl_upgrade_log_context_t));
 
     DDS_LOG(BL_UPGRADE_LOG_LOG_LEVEL, BL_UPGRADE_LOG_MODULE_NAME,
             "Upgrade log deinitialized");
@@ -198,7 +198,7 @@ bl_upgrade_log_error_t Boot_UpgradeLog_Write(
     /* 填充并写回条目 (时间戳由本模块填充, 保证审计一致性) */
     entry->timestamp_ms = now_ms;
     update_entry_crc(entry);
-    memcpy(&ctx->entries[idx], entry, sizeof(bl_upgrade_log_entry_t));
+    (void)memcpy(&ctx->entries[idx], entry, sizeof(bl_upgrade_log_entry_t));
 
     DDS_LOG(BL_UPGRADE_LOG_LOG_LEVEL, BL_UPGRADE_LOG_MODULE_NAME,
             "Log entry %u: version=0x%08X source=%u sig=%u result=%u",
@@ -226,7 +226,7 @@ bl_upgrade_log_error_t Boot_UpgradeLog_Read(
     }
 
     uint32_t idx = (ctx->header.head + index) % ctx->header.capacity;
-    memcpy(entry, &ctx->entries[idx], sizeof(bl_upgrade_log_entry_t));
+    (void)memcpy(entry, &ctx->entries[idx], sizeof(bl_upgrade_log_entry_t));
 
     /* 条目完整性校验 (诊断读取时发现损坏必须显式报错) */
     if (!validate_entry(entry)) {
@@ -265,7 +265,7 @@ bl_upgrade_log_error_t Boot_UpgradeLog_Clear(bl_upgrade_log_context_t *ctx)
         return BL_UPGRADE_LOG_ERROR_NOT_INITIALIZED;
     }
 
-    memset(ctx->entries, 0, sizeof(ctx->entries));
+    (void)memset(ctx->entries, 0, sizeof(ctx->entries));
     ctx->header.count = 0U;
     ctx->header.head = 0U;
 
@@ -373,8 +373,8 @@ bl_upgrade_log_error_t Boot_UpgradeLog_Load(
     /* 读取到临时结构, 避免损坏数据污染运行态日志 */
     bl_upgrade_log_header_t loaded_header;
     bl_upgrade_log_entry_t loaded_entries[BL_UPGRADE_LOG_MAX_ENTRIES];
-    memset(&loaded_header, 0, sizeof(loaded_header));
-    memset(loaded_entries, 0, sizeof(loaded_entries));
+    (void)memset(&loaded_header, 0, sizeof(loaded_header));
+    (void)memset(loaded_entries, 0, sizeof(loaded_entries));
 
     int32_t result = part_mgr->flash_driver->read(
         address, (uint8_t *)&loaded_header, (uint32_t)sizeof(bl_upgrade_log_header_t));
@@ -409,8 +409,8 @@ bl_upgrade_log_error_t Boot_UpgradeLog_Load(
     }
 
     /* 加载到运行态 */
-    memcpy(&ctx->header, &loaded_header, sizeof(bl_upgrade_log_header_t));
-    memcpy(ctx->entries, loaded_entries, sizeof(loaded_entries));
+    (void)memcpy(&ctx->header, &loaded_header, sizeof(bl_upgrade_log_header_t));
+    (void)memcpy(ctx->entries, loaded_entries, sizeof(loaded_entries));
 
     DDS_LOG(BL_UPGRADE_LOG_LOG_LEVEL, BL_UPGRADE_LOG_MODULE_NAME,
             "Upgrade log loaded from 0x%08X (%u entries)",

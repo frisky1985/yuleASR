@@ -8,8 +8,7 @@
 #include "telemetry_diag.h"
 #include <string.h>
 
-void Tel_Diag_Init(void) {
-    /* 注册到DCM - 由外部调用 */
+void Tel_Diag_Init(void) {    /* 注册到DCM - 由外部调用 */
 }
 
 Std_ReturnType Tel_Diag_ReadData(uint16_t did, uint8_t *data, uint16_t max_len, uint16_t *actual_len) {
@@ -46,7 +45,7 @@ Std_ReturnType Tel_Diag_ReadData(uint16_t did, uint8_t *data, uint16_t max_len, 
                 diag_stats->overflow_count = stats->overflow_cnt;
                 diag_stats->avg_event_size = stats->avg_event_size;
             } else {
-                memset(diag_stats, 0, sizeof(TelDiagStats_t));
+                (void)memset(diag_stats, 0, sizeof(TelDiagStats_t));
             }
             *actual_len = sizeof(TelDiagStats_t);
             return E_OK;

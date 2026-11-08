@@ -590,6 +590,15 @@ void Com_MainFunctionTx(void);
  */
 void Com_MainFunctionRouteSignals(void);
 
+
+Std_ReturnType Com_ReceiveShadowSignal(Com_SignalIdType SignalId, void* SignalDataPtr);
+void Com_ClearIpduGroupVector(Com_IpduGroupVector ipduGroupVector);
+void Com_SetIpduGroup(Com_IpduGroupVector ipduGroupVector, Com_IpduGroupIdType ipduGroupId);
+void Com_ClearIpduGroup(Com_IpduGroupVector ipduGroupVector, Com_IpduGroupIdType ipduGroupId);
+Std_ReturnType Com_SendDynSignal(Com_SignalIdType SignalId, const void* SignalDataPtr, uint16 Length);
+Std_ReturnType Com_ReceiveDynSignal(Com_SignalIdType SignalId, void* SignalDataPtr, uint16* Length);
+void Com_TpRxIndication(PduIdType id, Std_ReturnType result);
+void Com_TpTxConfirmation(PduIdType id, Std_ReturnType result);
 #define COM_STOP_SEC_CODE
 #include "MemMap.h"
 

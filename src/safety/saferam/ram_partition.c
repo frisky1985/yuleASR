@@ -49,8 +49,8 @@ Std_ReturnType RamPartition_Init(void)
     }
     
     /* Clear partition table */
-    memset(&g_partition_table, 0, sizeof(RamPartitionTableType));
-    memset(&g_last_violation, 0, sizeof(RamPartitionViolationType));
+    (void)memset(&g_partition_table, 0, sizeof(RamPartitionTableType));
+    (void)memset(&g_last_violation, 0, sizeof(RamPartitionViolationType));
     
     /* Initialize all partition entries */
     for (i = 0; i < RAM_PARTITION_MAX_COUNT; i++) {
@@ -74,7 +74,7 @@ Std_ReturnType RamPartition_DeInit(void)
     
     /* Unregister all partitions */
     while (g_partition_table.count > 0) {
-        RamPartition_Unregister(g_partition_table.partitions[0].id);
+        (void)RamPartition_Unregister(g_partition_table.partitions[0].id);
     }
     
     g_partition_table.initialized = FALSE;
@@ -147,7 +147,7 @@ Std_ReturnType RamPartition_Register(
     if (config->enable_guard_zones) {
         partition->guard_bottom = config->start_addr - RAM_GUARD_ZONE_SIZE;
         partition->guard_top = partition->end_addr + 1;
-        RamPartition_InitGuardZones(i);
+        (void)RamPartition_InitGuardZones(i);
     } else {
         partition->guard_bottom = 0;
         partition->guard_top = 0;
@@ -175,7 +175,7 @@ Std_ReturnType RamPartition_Unregister(uint8_t partition_id)
     }
     
     /* Clear partition data */
-    memset(partition, 0, sizeof(RamPartitionInfoType));
+    (void)memset(partition, 0, sizeof(RamPartitionInfoType));
     partition->id = partition_id;
     partition->state = PARTITION_STATE_UNINIT;
     partition->is_initialized = FALSE;
@@ -201,7 +201,7 @@ Std_ReturnType RamPartition_GetInfo(
         return E_NOT_OK;
     }
     
-    memcpy(info, &g_partition_table.partitions[partition_id], 
+    (void)memcpy(info, &g_partition_table.partitions[partition_id], 
            sizeof(RamPartitionInfoType));
     
     return E_OK;
@@ -656,7 +656,7 @@ void RamPartition_HandleViolation(const RamPartitionViolationType *violation)
     }
     
     /* Store last violation */
-    memcpy(&g_last_violation, violation, sizeof(RamPartitionViolationType));
+    (void)memcpy(&g_last_violation, violation, sizeof(RamPartitionViolationType));
     
     /* Set partition state to violated */
     if (violation->partition_id < RAM_PARTITION_MAX_COUNT) {
@@ -676,7 +676,7 @@ Std_ReturnType RamPartition_GetLastViolation(RamPartitionViolationType *violatio
         return E_NOT_OK;
     }
     
-    memcpy(violation, &g_last_violation, sizeof(RamPartitionViolationType));
+    (void)memcpy(violation, &g_last_violation, sizeof(RamPartitionViolationType));
     
     return E_OK;
 }
@@ -691,7 +691,7 @@ Std_ReturnType RamPartition_GetTable(RamPartitionTableType *table)
         return E_NOT_OK;
     }
     
-    memcpy(table, &g_partition_table, sizeof(RamPartitionTableType));
+    (void)memcpy(table, &g_partition_table, sizeof(RamPartitionTableType));
     
     return E_OK;
 }
@@ -852,7 +852,7 @@ static void ReportViolation(const RamPartitionViolationType *violation)
     }
     
     /* Store as last violation */
-    memcpy(&g_last_violation, violation, sizeof(RamPartitionViolationType));
+    (void)memcpy(&g_last_violation, violation, sizeof(RamPartitionViolationType));
     
     /* Call callback if registered */
     if (g_violation_callback != NULL) {

@@ -498,7 +498,7 @@ void Swc_DiagnosticManager_Init(void)
     swcDiagManager.lastTesterPresentTime = Rte_GetTime();
     swcDiagManager.dtcSettingEnabled = TRUE;
 
-    Det_ReportError(SWC_DIAGNOSTICMANAGER_MODULE_ID, SWC_DIAGNOSTICMANAGER_INSTANCE_ID,
+    (void)Det_ReportError(SWC_DIAGNOSTICMANAGER_MODULE_ID, SWC_DIAGNOSTICMANAGER_INSTANCE_ID,
                     0x01, RTE_E_OK);
 }
 

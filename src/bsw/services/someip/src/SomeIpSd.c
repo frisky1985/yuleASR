@@ -78,7 +78,7 @@ void SomeIpSd_DeInit(void)
     {
         if ((SomeIpSd_ServiceRegistry[i].IsAvailable) != 0U)
         {
-            SomeIpSd_StopOfferService(
+            (void)SomeIpSd_StopOfferService(
                 SomeIpSd_ServiceRegistry[i].ServiceId,
                 SomeIpSd_ServiceRegistry[i].InstanceId
             );

@@ -19,4 +19,10 @@ extern "C" {
 }
 #endif
 
+
+void dds_entity_pool_free_publisher(void *ptr);
+void dds_entity_pool_free_subscriber(void *ptr);
+void dds_entity_pool_free_topic(void *ptr);
+void dds_entity_pool_free_writer(void *ptr);
+void dds_entity_pool_free_reader(void *ptr);
 #endif /* DDS_DOMAIN_H */

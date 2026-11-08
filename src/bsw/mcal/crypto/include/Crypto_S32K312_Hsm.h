@@ -524,4 +524,5 @@ Std_ReturnType S32K312_Hsm_ClearError(void);
  */
 Std_ReturnType S32K312_Hsm_GetFirmwareVersion(uint8* version);
 
+
 #endif /* CRYPTO_S32K312_HSM_H */

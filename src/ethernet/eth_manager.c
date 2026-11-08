@@ -184,7 +184,7 @@ static eth_status_t eth_monitor_link(void)
 
             /* 尝试自动恢复 */
             if (g_manager_ctx.config.link_monitor.auto_recovery) {
-                eth_manager_auto_recovery();
+                (void)eth_manager_auto_recovery();
             }
         }
     }
@@ -248,7 +248,7 @@ eth_status_t eth_manager_init(const eth_manager_config_t *config)
     }
 
     /* 复制配置 */
-    memcpy(&g_manager_ctx.config, config, sizeof(eth_manager_config_t));
+    (void)memcpy(&g_manager_ctx.config, config, sizeof(eth_manager_config_t));
 
     /* 初始化MAC */
     status = eth_mac_init(&config->mac_config);
@@ -275,7 +275,7 @@ eth_status_t eth_manager_init(const eth_manager_config_t *config)
     }
 
     /* 初始化统计 */
-    memset(&g_manager_ctx.stats, 0, sizeof(eth_manager_stats_t));
+    (void)memset(&g_manager_ctx.stats, 0, sizeof(eth_manager_stats_t));
 
     /* 初始化状态 */
     g_manager_ctx.state = ETH_MANAGER_STATE_INIT;
@@ -305,7 +305,7 @@ void eth_manager_deinit(void)
     }
 
     /* 停止管理器 */
-    eth_manager_stop();
+    (void)eth_manager_stop();
 
     /* 反初始化各模块 */
     automotive_phy_deinit();
@@ -313,7 +313,7 @@ void eth_manager_deinit(void)
     eth_mac_deinit();
 
     /* 清除状态 */
-    memset(&g_manager_ctx, 0, sizeof(eth_manager_context_t));
+    (void)memset(&g_manager_ctx, 0, sizeof(eth_manager_context_t));
     g_manager_ctx.state = ETH_MANAGER_STATE_UNINIT;
 }
 
@@ -334,7 +334,7 @@ eth_status_t eth_manager_start(void)
     /* 启动MAC */
     status = eth_mac_start();
     if (status != ETH_OK) {
-        eth_dma_stop();
+        (void)eth_dma_stop();
         return status;
     }
 
@@ -359,10 +359,10 @@ eth_status_t eth_manager_stop(void)
     }
 
     /* 停止MAC */
-    eth_mac_stop();
+    (void)eth_mac_stop();
 
     /* 停止DMA */
-    eth_dma_stop();
+    (void)eth_dma_stop();
 
     /* 更新状态 */
     if (g_manager_ctx.state != ETH_MANAGER_STATE_INIT) {
@@ -546,7 +546,7 @@ eth_status_t eth_manager_get_stats(eth_manager_stats_t *stats)
     /* 更新吞吐量 */
     eth_update_throughput();
 
-    memcpy(stats, &g_manager_ctx.stats, sizeof(eth_manager_stats_t));
+    (void)memcpy(stats, &g_manager_ctx.stats, sizeof(eth_manager_stats_t));
     return ETH_OK;
 }
 
@@ -557,12 +557,12 @@ eth_status_t eth_manager_clear_stats(void)
     }
 
     /* 清除各模块统计 */
-    eth_mac_clear_stats();
-    eth_dma_clear_stats();
-    automotive_phy_clear_stats();
+    (void)eth_mac_clear_stats();
+    (void)eth_dma_clear_stats();
+    (void)automotive_phy_clear_stats();
 
     /* 清除管理器统计 */
-    memset(&g_manager_ctx.stats, 0, sizeof(eth_manager_stats_t));
+    (void)memset(&g_manager_ctx.stats, 0, sizeof(eth_manager_stats_t));
 
     /* 重置吞吐量计算 */
     g_manager_ctx.last_tx_bytes = 0;
@@ -589,7 +589,7 @@ eth_status_t eth_manager_get_last_error(eth_error_info_t *error)
         return ETH_INVALID_PARAM;
     }
 
-    memcpy(error, &g_manager_ctx.last_error, sizeof(eth_error_info_t));
+    (void)memcpy(error, &g_manager_ctx.last_error, sizeof(eth_error_info_t));
     return ETH_OK;
 }
 
@@ -758,7 +758,7 @@ eth_status_t eth_manager_get_config(eth_manager_config_t *config)
         return ETH_INVALID_PARAM;
     }
 
-    memcpy(config, &g_manager_ctx.config, sizeof(eth_manager_config_t));
+    (void)memcpy(config, &g_manager_ctx.config, sizeof(eth_manager_config_t));
     return ETH_OK;
 }
 
@@ -789,15 +789,15 @@ eth_status_t eth_manager_print_diagnostics(void)
 
     /* 获取当前状态 */
     eth_manager_state_t state;
-    eth_manager_get_state(&state);
+    (void)eth_manager_get_state(&state);
 
     /* 获取统计 */
     eth_manager_stats_t stats;
-    eth_manager_get_stats(&stats);
+    (void)eth_manager_get_stats(&stats);
 
     /* 获取链路状态 */
     automotive_link_status_t link_status;
-    automotive_phy_get_link_status(&link_status);
+    (void)automotive_phy_get_link_status(&link_status);
 
     /* 打印诊断信息(实际实现可以使用printf或日志系统) */
     (void)state;

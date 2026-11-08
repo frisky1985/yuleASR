@@ -552,12 +552,12 @@ static void I2c_IsrHandler(uint8 channel)
                 if ((chInfo->RxBuffer.Length > 0U) && !chInfo->IsRepeatedStart) {
                     /* Switch to RX mode */
                     chInfo->State = I2C_STATE_MASTER_RX;
-                    I2c_SendRepeatedStart(baseAddr, chInfo->CurrentSlaveAddress, 
+                    (void)I2c_SendRepeatedStart(baseAddr, chInfo->CurrentSlaveAddress, 
                                           chInfo->CurrentAddrMode, FALSE);
                 } else {
                     /* Send STOP */
                     if ((chInfo->StopRequested) != 0U) {
-                        I2c_SendStop(baseAddr);
+                        (void)I2c_SendStop(baseAddr);
                     }
                     chInfo->State = I2C_STATE_IDLE;
                     chInfo->Result = I2C_RESULT_OK;
@@ -588,7 +588,7 @@ static void I2c_IsrHandler(uint8 channel)
             } else {
                 /* Transfer complete */
                 if ((chInfo->StopRequested) != 0U) {
-                    I2c_SendStop(baseAddr);
+                    (void)I2c_SendStop(baseAddr);
                 }
                 chInfo->State = I2C_STATE_IDLE;
                 chInfo->Result = I2C_RESULT_OK;
@@ -638,7 +638,7 @@ static Std_ReturnType I2c_MasterTransferPolling(uint8 channel)
                            chInfo->CurrentAddrMode, 
                            chInfo->TxBuffer.Length > 0U);
     if (result != E_OK) {
-        I2c_SendStop(baseAddr);
+        (void)I2c_SendStop(baseAddr);
         return result;
     }
     
@@ -647,7 +647,7 @@ static Std_ReturnType I2c_MasterTransferPolling(uint8 channel)
         result = I2c_WriteByte(baseAddr, chInfo->TxBuffer.Buffer[chInfo->TxBuffer.Index],
                                I2C_TRANSFER_TIMEOUT_MS);
         if (result != E_OK) {
-            I2c_SendStop(baseAddr);
+            (void)I2c_SendStop(baseAddr);
             return result;
         }
         chInfo->TxBuffer.Index++;
@@ -659,7 +659,7 @@ static Std_ReturnType I2c_MasterTransferPolling(uint8 channel)
         result = I2c_SendRepeatedStart(baseAddr, chInfo->CurrentSlaveAddress,
                                        chInfo->CurrentAddrMode, FALSE);
         if (result != E_OK) {
-            I2c_SendStop(baseAddr);
+            (void)I2c_SendStop(baseAddr);
             return result;
         }
         
@@ -669,7 +669,7 @@ static Std_ReturnType I2c_MasterTransferPolling(uint8 channel)
             result = I2c_ReadByte(baseAddr, &chInfo->RxBuffer.Buffer[chInfo->RxBuffer.Index],
                                   sendAck, I2C_TRANSFER_TIMEOUT_MS);
             if (result != E_OK) {
-                I2c_SendStop(baseAddr);
+                (void)I2c_SendStop(baseAddr);
                 return result;
             }
             chInfo->RxBuffer.Index++;
@@ -703,7 +703,7 @@ static Std_ReturnType I2c_MasterTransferInterrupt(uint8 channel)
                                           chInfo->CurrentAddrMode,
                                           chInfo->TxBuffer.Length > 0U);
     if (result != E_OK) {
-        I2c_SendStop(baseAddr);
+        (void)I2c_SendStop(baseAddr);
         return result;
     }
     
@@ -1421,7 +1421,7 @@ Std_ReturnType I2c_CancelTransfer(I2c_ChannelType Channel)
     uint32 baseAddr = I2c_GetBaseAddr(chConfig->HwUnit);
     
     /* Send STOP condition */
-    I2c_SendStop(baseAddr);
+    (void)I2c_SendStop(baseAddr);
     
     #if (I2C_DMA_SUPPORTED == STD_ON)
     /* Stop DMA if active */

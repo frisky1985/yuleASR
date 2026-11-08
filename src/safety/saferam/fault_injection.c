@@ -49,11 +49,11 @@ Std_ReturnType FaultInjection_Init(void)
     }
     
     /* Clear all configurations */
-    memset(&g_config, 0, sizeof(FaultInjectionConfigType));
-    memset(&g_ecc_config, 0, sizeof(EccErrorConfigType));
-    memset(&g_drift_config, 0, sizeof(DriftFaultConfigType));
-    memset(&g_oob_config, 0, sizeof(OobTestConfigType));
-    memset(&g_status, 0, sizeof(FaultInjectionStatusType));
+    (void)memset(&g_config, 0, sizeof(FaultInjectionConfigType));
+    (void)memset(&g_ecc_config, 0, sizeof(EccErrorConfigType));
+    (void)memset(&g_drift_config, 0, sizeof(DriftFaultConfigType));
+    (void)memset(&g_oob_config, 0, sizeof(OobTestConfigType));
+    (void)memset(&g_status, 0, sizeof(FaultInjectionStatusType));
     
     g_config.mode = FAULT_INJ_MODE_DISABLED;
     g_enabled = FALSE;
@@ -70,11 +70,11 @@ Std_ReturnType FaultInjection_DeInit(void)
     }
     
     /* Clear all state */
-    memset(&g_config, 0, sizeof(FaultInjectionConfigType));
-    memset(&g_ecc_config, 0, sizeof(EccErrorConfigType));
-    memset(&g_drift_config, 0, sizeof(DriftFaultConfigType));
-    memset(&g_oob_config, 0, sizeof(OobTestConfigType));
-    memset(&g_status, 0, sizeof(FaultInjectionStatusType));
+    (void)memset(&g_config, 0, sizeof(FaultInjectionConfigType));
+    (void)memset(&g_ecc_config, 0, sizeof(EccErrorConfigType));
+    (void)memset(&g_drift_config, 0, sizeof(DriftFaultConfigType));
+    (void)memset(&g_oob_config, 0, sizeof(OobTestConfigType));
+    (void)memset(&g_status, 0, sizeof(FaultInjectionStatusType));
     
     g_enabled = FALSE;
     g_detection_callback = NULL;
@@ -113,7 +113,7 @@ Std_ReturnType FaultInjection_Configure(const FaultInjectionConfigType *config)
         return E_NOT_OK;
     }
     
-    memcpy(&g_config, config, sizeof(FaultInjectionConfigType));
+    (void)memcpy(&g_config, config, sizeof(FaultInjectionConfigType));
     
     return E_OK;
 }
@@ -124,7 +124,7 @@ Std_ReturnType FaultInjection_ConfigureEcc(const EccErrorConfigType *config)
         return E_NOT_OK;
     }
     
-    memcpy(&g_ecc_config, config, sizeof(EccErrorConfigType));
+    (void)memcpy(&g_ecc_config, config, sizeof(EccErrorConfigType));
     
     return E_OK;
 }
@@ -135,7 +135,7 @@ Std_ReturnType FaultInjection_ConfigureDrift(const DriftFaultConfigType *config)
         return E_NOT_OK;
     }
     
-    memcpy(&g_drift_config, config, sizeof(DriftFaultConfigType));
+    (void)memcpy(&g_drift_config, config, sizeof(DriftFaultConfigType));
     
     return E_OK;
 }
@@ -454,7 +454,7 @@ Std_ReturnType FaultInjection_ConfigOobTest(const OobTestConfigType *config)
         return E_NOT_OK;
     }
     
-    memcpy(&g_oob_config, config, sizeof(OobTestConfigType));
+    (void)memcpy(&g_oob_config, config, sizeof(OobTestConfigType));
     
     return E_OK;
 }
@@ -545,11 +545,11 @@ Std_ReturnType FaultInjection_RunOobTests(uint32_t *fault_count)
     
     /* Test low boundary */
     for (offset = g_oob_config.offset_low; offset < 0; offset++) {
-        FaultInjection_TestOobRead(offset, &result);
+        (void)FaultInjection_TestOobRead(offset, &result);
         if (result) {
             faults++;
         }
-        FaultInjection_TestOobWrite(offset, 0xDEADBEEFU, &result);
+        (void)FaultInjection_TestOobWrite(offset, 0xDEADBEEFU, &result);
         if (result) {
             faults++;
         }
@@ -557,11 +557,11 @@ Std_ReturnType FaultInjection_RunOobTests(uint32_t *fault_count)
     
     /* Test high boundary */
     for (offset = 1; offset <= g_oob_config.offset_high; offset++) {
-        FaultInjection_TestOobRead(offset, &result);
+        (void)FaultInjection_TestOobRead(offset, &result);
         if (result) {
             faults++;
         }
-        FaultInjection_TestOobWrite(offset, 0xDEADBEEFU, &result);
+        (void)FaultInjection_TestOobWrite(offset, 0xDEADBEEFU, &result);
         if (result) {
             faults++;
         }
@@ -772,7 +772,7 @@ Std_ReturnType FaultInjection_GetStatus(FaultInjectionStatusType *status)
         return E_NOT_OK;
     }
     
-    memcpy(status, &g_status, sizeof(FaultInjectionStatusType));
+    (void)memcpy(status, &g_status, sizeof(FaultInjectionStatusType));
     
     return E_OK;
 }
@@ -873,16 +873,16 @@ Std_ReturnType FaultInjection_RunAllTests(uint32_t *total_faults)
     }
     
     /* Run all safety mechanism tests */
-    FaultInjection_TestStackProtection(&count);
+    (void)FaultInjection_TestStackProtection(&count);
     faults += count;
     
-    FaultInjection_TestHeapProtection(&count);
+    (void)FaultInjection_TestHeapProtection(&count);
     faults += count;
     
-    FaultInjection_TestPartitionProtection(&count);
+    (void)FaultInjection_TestPartitionProtection(&count);
     faults += count;
     
-    FaultInjection_RunOobTests(&count);
+    (void)FaultInjection_RunOobTests(&count);
     faults += count;
     
     *total_faults = faults;

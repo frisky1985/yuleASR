@@ -42,7 +42,7 @@
 #define COMM_MAX_PDUS                       50U
 
 /* Signal timeout detection */
-#define COMM_SIGNAL_TIMEOUT_DEFAULT         100
+#define COMM_SIGNAL_TIMEOUT_DEFAULT         100U
 
 /*==================================================================================================
 *                                    LOCAL TYPES
@@ -300,7 +300,7 @@ void Swc_CommunicationManager_Init(void)
     swcCommManager.isInitialized = TRUE;
 /* [MISRA Advisory] Redundant:     swcCommManager.state = COMM_STATE_READY; */
 
-    Det_ReportError(SWC_COMMUNICATIONMANAGER_MODULE_ID, SWC_COMMUNICATIONMANAGER_INSTANCE_ID,
+    (void)Det_ReportError(SWC_COMMUNICATIONMANAGER_MODULE_ID, SWC_COMMUNICATIONMANAGER_INSTANCE_ID,
                     0x01, RTE_E_OK);
 }
 

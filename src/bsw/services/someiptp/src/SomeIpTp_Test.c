@@ -108,8 +108,7 @@ static const SomeIpTp_ConfigType TestConfig = {
 /**
  * @brief Test SomeIpTp_Init with valid configuration
  */
-void Test_SomeIpTp_Init_Valid(void)
-{
+static void Test_SomeIpTp_Init_Valid(void){
     (void)printf("\n[Test] SomeIpTp_Init with valid configuration\n");
     
     SomeIpTp_DeInit();
@@ -121,8 +120,7 @@ void Test_SomeIpTp_Init_Valid(void)
 /**
  * @brief Test SomeIpTp_DeInit
  */
-void Test_SomeIpTp_DeInit(void)
-{
+static void Test_SomeIpTp_DeInit(void){
     (void)printf("\n[Test] SomeIpTp_DeInit\n");
     
     SomeIpTp_Init(&TestConfig);
@@ -135,8 +133,7 @@ void Test_SomeIpTp_DeInit(void)
  * @brief Test SomeIpTp_GetVersionInfo
  */
 #if (SOMEIPTP_VERSION_INFO_API == STD_ON)
-void Test_SomeIpTp_GetVersionInfo(void)
-{
+static void Test_SomeIpTp_GetVersionInfo(void){
     Std_VersionInfoType versionInfo;
     
     (void)printf("\n[Test] SomeIpTp_GetVersionInfo\n");
@@ -154,8 +151,7 @@ void Test_SomeIpTp_GetVersionInfo(void)
 /**
  * @brief Test SomeIpTp_BuildTpHeader and ParseTpHeader
  */
-void Test_SomeIpTp_TpHeader(void)
-{
+static void Test_SomeIpTp_TpHeader(void){
     Std_ReturnType result;
     uint8 buffer[4];
     uint32 offsetIn = 0x1234567UL;
@@ -177,8 +173,7 @@ void Test_SomeIpTp_TpHeader(void)
 /**
  * @brief Test SomeIpTp_Transmit
  */
-void Test_SomeIpTp_Transmit(void)
-{
+static void Test_SomeIpTp_Transmit(void){
     Std_ReturnType result;
     uint8 testData[200];
     PduInfoType pduInfo;
@@ -202,8 +197,7 @@ void Test_SomeIpTp_Transmit(void)
 /**
  * @brief Test SomeIpTp_Transmit with NULL_PTR pointer
  */
-void Test_SomeIpTp_Transmit_Null(void)
-{
+static void Test_SomeIpTp_Transmit_Null(void){
     Std_ReturnType result;
     
     (void)printf("\n[Test] SomeIpTp_Transmit with NULL_PTR pointer\n");
@@ -218,8 +212,7 @@ void Test_SomeIpTp_Transmit_Null(void)
 /**
  * @brief Test SomeIpTp_CancelTransmit
  */
-void Test_SomeIpTp_CancelTransmit(void)
-{
+static void Test_SomeIpTp_CancelTransmit(void){
     Std_ReturnType result;
     
     (void)printf("\n[Test] SomeIpTp_CancelTransmit\n");
@@ -234,8 +227,7 @@ void Test_SomeIpTp_CancelTransmit(void)
 /**
  * @brief Test SomeIpTp_RxIndication
  */
-void Test_SomeIpTp_RxIndication(void)
-{
+static void Test_SomeIpTp_RxIndication(void){
     uint8 segmentData[104]; /* 4 bytes header + 100 bytes payload */
     PduInfoType pduInfo;
     
@@ -261,8 +253,7 @@ void Test_SomeIpTp_RxIndication(void)
 /**
  * @brief Test SomeIpTp_TxConfirmation
  */
-void Test_SomeIpTp_TxConfirmation(void)
-{
+static void Test_SomeIpTp_TxConfirmation(void){
     uint8 testData[200];
     PduInfoType pduInfo;
     
@@ -290,8 +281,7 @@ void Test_SomeIpTp_TxConfirmation(void)
 /**
  * @brief Test SomeIpTp_MainFunction
  */
-void Test_SomeIpTp_MainFunction(void)
-{
+static void Test_SomeIpTp_MainFunction(void){
     (void)printf("\n[Test] SomeIpTp_MainFunction\n");
     
     SomeIpTp_Init(&TestConfig);
@@ -303,8 +293,7 @@ void Test_SomeIpTp_MainFunction(void)
 /**
  * @brief Test SomeIpTp_GetRxBufferStatus
  */
-void Test_SomeIpTp_GetRxBufferStatus(void)
-{
+static void Test_SomeIpTp_GetRxBufferStatus(void){
     Std_ReturnType result;
     PduLengthType bufferSize;
     
@@ -320,8 +309,7 @@ void Test_SomeIpTp_GetRxBufferStatus(void)
 /**
  * @brief Test complete reassembly
  */
-void Test_SomeIpTp_CompleteReassembly(void)
-{
+static void Test_SomeIpTp_CompleteReassembly(void){
     uint8 segmentData[54]; /* 4 bytes header + 50 bytes payload */
     PduInfoType pduInfo;
     
@@ -347,8 +335,7 @@ void Test_SomeIpTp_CompleteReassembly(void)
 /**
  * @brief Test invalid PDU ID
  */
-void Test_SomeIpTp_InvalidPduId(void)
-{
+static void Test_SomeIpTp_InvalidPduId(void){
     Std_ReturnType result;
     uint8 testData[100];
     PduInfoType pduInfo;

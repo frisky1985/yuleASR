@@ -166,7 +166,7 @@ Std_ReturnType Cdd_Safety_Init(const Cdd_Safety_ConfigType* config)
 #if (CDD_DEV_ERROR_DETECT == STD_ON)
     if (config == NULL_PTR)
     {
-        Det_ReportError(CDD_MODULE_ID_SAFETY, 0U, CDD_SAFETY_SID_INIT, 1U);
+        (void)Det_ReportError(CDD_MODULE_ID_SAFETY, 0U, CDD_SAFETY_SID_INIT, 1U);
         return E_NOT_OK;
     }
 #endif

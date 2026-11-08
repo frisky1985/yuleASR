@@ -56,19 +56,19 @@ Std_ReturnType StackProtection_Init(const StackMonitorConfigType *config)
     }
     
     /* Initialize configuration */
-    memcpy(&g_config, config, sizeof(StackMonitorConfigType));
+    (void)memcpy(&g_config, config, sizeof(StackMonitorConfigType));
     
     /* Clear stack arrays */
-    memset(g_task_stacks, 0, sizeof(g_task_stacks));
-    memset(g_isr_stacks, 0, sizeof(g_isr_stacks));
-    memset(&g_last_violation, 0, sizeof(StackViolationType));
+    (void)memset(g_task_stacks, 0, sizeof(g_task_stacks));
+    (void)memset(g_isr_stacks, 0, sizeof(g_isr_stacks));
+    (void)memset(&g_last_violation, 0, sizeof(StackViolationType));
     
     /* Initialize task stacks */
     for (i = 0; i < STACK_PROT_MAX_TASK_STACKS; i++) {
         g_task_stacks[i].id = i;
         g_task_stacks[i].state = STACK_STATE_HEALTHY;
         g_task_stacks[i].canary_enabled = FALSE;
-        strncpy(g_task_stacks[i].name, "UNINIT", 15);
+        (void)strncpy(g_task_stacks[i].name, "UNINIT", 15);
         g_task_stacks[i].name[15] = '\0';
     }
     
@@ -77,7 +77,7 @@ Std_ReturnType StackProtection_Init(const StackMonitorConfigType *config)
         g_isr_stacks[i].id = i;
         g_isr_stacks[i].state = STACK_STATE_HEALTHY;
         g_isr_stacks[i].canary_enabled = FALSE;
-        strncpy(g_isr_stacks[i].name, "UNINIT", 15);
+        (void)strncpy(g_isr_stacks[i].name, "UNINIT", 15);
         g_isr_stacks[i].name[15] = '\0';
     }
     
@@ -102,11 +102,11 @@ Std_ReturnType StackProtection_DeInit(void)
     
     /* Unregister all stacks */
     while (g_monitor_status.task_stack_count > 0) {
-        StackProtection_UnregisterStack(0);
+        (void)StackProtection_UnregisterStack(0);
     }
     
     while (g_monitor_status.isr_stack_count > 0) {
-        StackProtection_UnregisterStack(STACK_PROT_MAX_TASK_STACKS);
+        (void)StackProtection_UnregisterStack(STACK_PROT_MAX_TASK_STACKS);
     }
     
     g_initialized = FALSE;
@@ -166,7 +166,7 @@ Std_ReturnType StackProtection_RegisterStack(
     /* Initialize stack info */
     stack->id = id;
     stack->type = config->type;
-    strncpy(stack->name, config->name, 15);
+    (void)strncpy(stack->name, config->name, 15);
     stack->name[15] = '\0';
     
     /* Stack grows downward: base is high address */
@@ -196,14 +196,14 @@ Std_ReturnType StackProtection_RegisterStack(
         stack->canary_addr = stack->end_addr;
         stack->canary_value = STACK_CANARY_PATTERN;
         stack->canary_enabled = TRUE;
-        StackProtection_InitCanary(id);
+        (void)StackProtection_InitCanary(id);
     } else {
         stack->canary_enabled = FALSE;
     }
     
     /* Initialize watermark if enabled */
     if (config->enable_watermark) {
-        StackProtection_InitWatermark(id);
+        (void)StackProtection_InitWatermark(id);
     }
     
     stack->overflow_count = 0;
@@ -230,8 +230,8 @@ Std_ReturnType StackProtection_UnregisterStack(uint8_t stack_id)
     }
     
     /* Clear stack entry */
-    memset(stack, 0, sizeof(StackInfoType));
-    strncpy(stack->name, "UNINIT", 15);
+    (void)memset(stack, 0, sizeof(StackInfoType));
+    (void)strncpy(stack->name, "UNINIT", 15);
     stack->name[15] = '\0';
     
     /* Update counts */
@@ -627,7 +627,7 @@ Std_ReturnType StackProtection_FullCheck(
     
     /* Check canary */
     if (stack->canary_enabled) {
-        StackProtection_CheckCanary(stack_id, &canary_ok);
+        (void)StackProtection_CheckCanary(stack_id, &canary_ok);
         if (!canary_ok) {
             result->is_valid = FALSE;
             result->error_code = STACK_ERR_CANARY_CORRUPT;
@@ -637,7 +637,7 @@ Std_ReturnType StackProtection_FullCheck(
     }
     
     /* Check overflow */
-    StackProtection_CheckOverflow(stack_id, &overflow);
+    (void)StackProtection_CheckOverflow(stack_id, &overflow);
     if (overflow) {
         result->is_valid = FALSE;
         result->error_code = STACK_ERR_OVERFLOW;
@@ -646,7 +646,7 @@ Std_ReturnType StackProtection_FullCheck(
     }
     
     /* Check underflow */
-    StackProtection_CheckUnderflow(stack_id, &underflow);
+    (void)StackProtection_CheckUnderflow(stack_id, &underflow);
     if (underflow) {
         result->is_valid = FALSE;
         result->error_code = STACK_ERR_UNDERFLOW;
@@ -683,10 +683,10 @@ Std_ReturnType StackProtection_OnContextSwitch(
     }
     
     /* Check outgoing task's stack */
-    StackProtection_CheckTaskStack(from_task_id, &result);
+    (void)StackProtection_CheckTaskStack(from_task_id, &result);
     
     /* Check incoming task's stack */
-    StackProtection_CheckTaskStack(to_task_id, &result);
+    (void)StackProtection_CheckTaskStack(to_task_id, &result);
     
     return E_OK;
 }
@@ -729,7 +729,7 @@ void StackProtection_HandleViolation(const StackViolationType *violation)
     }
     
     /* Store last violation */
-    memcpy(&g_last_violation, violation, sizeof(StackViolationType));
+    (void)memcpy(&g_last_violation, violation, sizeof(StackViolationType));
     g_monitor_status.total_violations++;
     
     /* Call registered callback */
@@ -744,7 +744,7 @@ Std_ReturnType StackProtection_GetLastViolation(StackViolationType *violation)
         return E_NOT_OK;
     }
     
-    memcpy(violation, &g_last_violation, sizeof(StackViolationType));
+    (void)memcpy(violation, &g_last_violation, sizeof(StackViolationType));
     
     return E_OK;
 }
@@ -766,7 +766,7 @@ Std_ReturnType StackProtection_GetInfo(uint8_t stack_id, StackInfoType *info)
         return E_NOT_OK;
     }
     
-    memcpy(info, stack, sizeof(StackInfoType));
+    (void)memcpy(info, stack, sizeof(StackInfoType));
     
     return E_OK;
 }
@@ -777,7 +777,7 @@ Std_ReturnType StackProtection_GetStatus(StackMonitorStatusType *status)
         return E_NOT_OK;
     }
     
-    memcpy(status, &g_monitor_status, sizeof(StackMonitorStatusType));
+    (void)memcpy(status, &g_monitor_status, sizeof(StackMonitorStatusType));
     
     return E_OK;
 }
@@ -959,7 +959,7 @@ static void ReportViolation(const StackViolationType *violation)
     }
     
     /* Store as last violation */
-    memcpy(&g_last_violation, violation, sizeof(StackViolationType));
+    (void)memcpy(&g_last_violation, violation, sizeof(StackViolationType));
     g_monitor_status.total_violations++;
     
     /* Call callback if registered */

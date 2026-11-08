@@ -70,14 +70,14 @@ static uint8 J1939Tp_TxBuffer[J1939TP_MAX_TP_SIZE];
  *                               Local Function Prototypes
  *================================================================================================*/
 static Std_ReturnType J1939Tp_InternalInit(void);
-static void J1939Tp_ResetTxChannel(uint8 ChannelIdx);
-static void J1939Tp_ResetRxChannel(uint8 ChannelIdx);
+void J1939Tp_ResetTxChannel(uint8 ChannelIdx);
+void J1939Tp_ResetRxChannel(uint8 ChannelIdx);
 static void J1939Tp_ProcessTxChannel(uint8 ChannelIdx);
 static void J1939Tp_ProcessRxChannel(uint8 ChannelIdx);
-static Std_ReturnType J1939Tp_SendTpCm(uint8 ChannelIdx, uint8 ControlByte);
-static Std_ReturnType J1939Tp_SendTpDt(uint8 ChannelIdx);
-static void J1939Tp_ProcessTpCmRx(const PduInfoType* PduInfoPtr, uint8 ChannelIdx);
-static void J1939Tp_ProcessTpDtRx(const PduInfoType* PduInfoPtr, uint8 ChannelIdx);
+Std_ReturnType J1939Tp_SendTpCm(uint8 ChannelIdx, uint8 ControlByte);
+Std_ReturnType J1939Tp_SendTpDt(uint8 ChannelIdx);
+void J1939Tp_ProcessTpCmRx(const PduInfoType* PduInfoPtr, uint8 ChannelIdx);
+void J1939Tp_ProcessTpDtRx(const PduInfoType* PduInfoPtr, uint8 ChannelIdx);
 static void J1939Tp_HandleRts(const uint8* Data, uint8 ChannelIdx);
 static void J1939Tp_HandleCts(const uint8* Data, uint8 ChannelIdx);
 static void J1939Tp_HandleEomAck(const uint8* Data, uint8 ChannelIdx);
@@ -326,7 +326,7 @@ void J1939Tp_TxConfirmation(PduIdType TxPduId, Std_ReturnType result)
 /*==================================================================================================
  *                               Local Functions
  *================================================================================================*/
-static void J1939Tp_ResetTxChannel(uint8 ChannelIdx)
+void J1939Tp_ResetTxChannel(uint8 ChannelIdx)
 {
     if (ChannelIdx < J1939TP_MAX_TX_CHANNELS) {
         J1939Tp_TxChannels[ChannelIdx].State = J1939TP_STATE_IDLE;
@@ -342,7 +342,7 @@ static void J1939Tp_ResetTxChannel(uint8 ChannelIdx)
     }
 }
 
-static void J1939Tp_ResetRxChannel(uint8 ChannelIdx)
+void J1939Tp_ResetRxChannel(uint8 ChannelIdx)
 {
     if (ChannelIdx < J1939TP_MAX_RX_CHANNELS) {
         J1939Tp_RxChannels[ChannelIdx].State = J1939TP_STATE_IDLE;
@@ -423,7 +423,7 @@ static void J1939Tp_ProcessRxChannel(uint8 ChannelIdx)
     }
 }
 
-static Std_ReturnType J1939Tp_SendTpCm(uint8 ChannelIdx, uint8 ControlByte)
+Std_ReturnType J1939Tp_SendTpCm(uint8 ChannelIdx, uint8 ControlByte)
 {
     Std_ReturnType result = E_NOT_OK;
     uint8 data[8];
@@ -451,7 +451,7 @@ static Std_ReturnType J1939Tp_SendTpCm(uint8 ChannelIdx, uint8 ControlByte)
     return result;
 }
 
-static Std_ReturnType J1939Tp_SendTpDt(uint8 ChannelIdx)
+Std_ReturnType J1939Tp_SendTpDt(uint8 ChannelIdx)
 {
     Std_ReturnType result = E_NOT_OK;
     uint8 data[8];
@@ -486,7 +486,7 @@ static Std_ReturnType J1939Tp_SendTpDt(uint8 ChannelIdx)
     return result;
 }
 
-static void J1939Tp_ProcessTpCmRx(const PduInfoType* PduInfoPtr, uint8 ChannelIdx)
+void J1939Tp_ProcessTpCmRx(const PduInfoType* PduInfoPtr, uint8 ChannelIdx)
 {
     if ((PduInfoPtr != NULL_PTR) && (PduInfoPtr->SduLength >= 8U) && (ChannelIdx < J1939TP_MAX_RX_CHANNELS)) {
         uint8 controlByte = PduInfoPtr->SduDataPtr[0];
@@ -519,7 +519,7 @@ static void J1939Tp_ProcessTpCmRx(const PduInfoType* PduInfoPtr, uint8 ChannelId
     }
 }
 
-static void J1939Tp_ProcessTpDtRx(const PduInfoType* PduInfoPtr, uint8 ChannelIdx)
+void J1939Tp_ProcessTpDtRx(const PduInfoType* PduInfoPtr, uint8 ChannelIdx)
 {
     if ((PduInfoPtr != NULL_PTR) && (PduInfoPtr->SduLength >= 8U) && (ChannelIdx < J1939TP_MAX_RX_CHANNELS)) {
         J1939Tp_RxChannelType* channel = &J1939Tp_RxChannels[ChannelIdx];

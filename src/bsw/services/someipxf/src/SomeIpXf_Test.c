@@ -88,8 +88,7 @@ static const SomeIpXf_ConfigType TestConfig = {
 /**
  * @brief Test SomeIpXf_Init with valid configuration
  */
-void Test_SomeIpXf_Init_Valid(void)
-{
+static void Test_SomeIpXf_Init_Valid(void){
     (void)printf("\n[Test] SomeIpXf_Init with valid configuration\n");
     
     SomeIpXf_DeInit();
@@ -101,8 +100,7 @@ void Test_SomeIpXf_Init_Valid(void)
 /**
  * @brief Test SomeIpXf_DeInit
  */
-void Test_SomeIpXf_DeInit(void)
-{
+static void Test_SomeIpXf_DeInit(void){
     (void)printf("\n[Test] SomeIpXf_DeInit\n");
     
     SomeIpXf_Init(&TestConfig);
@@ -115,8 +113,7 @@ void Test_SomeIpXf_DeInit(void)
  * @brief Test SomeIpXf_GetVersionInfo
  */
 #if (SOMEIPXF_VERSION_INFO_API == STD_ON)
-void Test_SomeIpXf_GetVersionInfo(void)
-{
+static void Test_SomeIpXf_GetVersionInfo(void){
     Std_VersionInfoType versionInfo;
     
     (void)printf("\n[Test] SomeIpXf_GetVersionInfo\n");
@@ -134,8 +131,7 @@ void Test_SomeIpXf_GetVersionInfo(void)
 /**
  * @brief Test SomeIpXf_BuildHeader and ParseHeader
  */
-void Test_SomeIpXf_Header(void)
-{
+static void Test_SomeIpXf_Header(void){
     Std_ReturnType result;
     SomeIpXf_HeaderType headerIn;
     SomeIpXf_HeaderType headerOut;
@@ -169,8 +165,7 @@ void Test_SomeIpXf_Header(void)
 /**
  * @brief Test SomeIpXf_SerializeUint8 and DeserializeUint8
  */
-void Test_SomeIpXf_Uint8(void)
-{
+static void Test_SomeIpXf_Uint8(void){
     uint8 buffer[4];
     uint8 valueIn = 0xABU;
     uint8 valueOut ;
@@ -191,8 +186,7 @@ void Test_SomeIpXf_Uint8(void)
 /**
  * @brief Test SomeIpXf_SerializeUint16 and DeserializeUint16
  */
-void Test_SomeIpXf_Uint16(void)
-{
+static void Test_SomeIpXf_Uint16(void){
     uint8 buffer[4];
     uint16 valueIn = 0x1234U;
     uint16 valueOut ;
@@ -214,8 +208,7 @@ void Test_SomeIpXf_Uint16(void)
 /**
  * @brief Test SomeIpXf_SerializeUint32 and DeserializeUint32
  */
-void Test_SomeIpXf_Uint32(void)
-{
+static void Test_SomeIpXf_Uint32(void){
     uint8 buffer[8];
     uint32 valueIn = 0x12345678UL;
     uint32 valueOut ;
@@ -239,8 +232,7 @@ void Test_SomeIpXf_Uint32(void)
 /**
  * @brief Test SomeIpXf_SerializeBoolean and DeserializeBoolean
  */
-void Test_SomeIpXf_Boolean(void)
-{
+static void Test_SomeIpXf_Boolean(void){
     uint8 buffer[4];
     boolean valueIn = TRUE;
     boolean valueOut ;
@@ -261,8 +253,7 @@ void Test_SomeIpXf_Boolean(void)
 /**
  * @brief Test SomeIpXf_SerializeString and DeserializeString
  */
-void Test_SomeIpXf_String(void)
-{
+static void Test_SomeIpXf_String(void){
     uint8 buffer[64];
     uint8 strIn[] = "Hello";
     uint8 strOut[32];
@@ -293,8 +284,7 @@ void Test_SomeIpXf_String(void)
 /**
  * @brief Test SomeIpXf_SerializeArray and DeserializeArray
  */
-void Test_SomeIpXf_Array(void)
-{
+static void Test_SomeIpXf_Array(void){
     uint8 buffer[64];
     uint8 arrIn[] = {0x01, 0x02, 0x03, 0x04};
     uint8 arrOut[8];
@@ -323,8 +313,7 @@ void Test_SomeIpXf_Array(void)
 /**
  * @brief Test SomeIpXf_Transform and Detransform
  */
-void Test_SomeIpXf_Transform(void)
-{
+static void Test_SomeIpXf_Transform(void){
     Std_ReturnType result;
     uint8 srcData[4] = {0x12, 0x34, 0x56, 0x78};
     uint8 tgtData[64];
@@ -352,8 +341,7 @@ void Test_SomeIpXf_Transform(void)
 /**
  * @brief Test Transform with header
  */
-void Test_SomeIpXf_TransformWithHeader(void)
-{
+static void Test_SomeIpXf_TransformWithHeader(void){
     Std_ReturnType result;
     uint8 srcData[2] = {0x12, 0x34};
     uint8 tgtData[64];
@@ -380,8 +368,7 @@ void Test_SomeIpXf_TransformWithHeader(void)
 /**
  * @brief Test NULL_PTR pointer handling
  */
-void Test_SomeIpXf_NullPointer(void)
-{
+static void Test_SomeIpXf_NullPointer(void){
     Std_ReturnType result;
     uint8 buffer[16];
     SomeIpXf_BufferType buf = {buffer, 0U, 16U};

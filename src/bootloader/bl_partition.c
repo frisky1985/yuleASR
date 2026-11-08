@@ -362,7 +362,7 @@ bl_partition_error_t bl_partition_table_init_default(
         return BL_ERROR_INVALID_PARAM;
     }
     
-    memset(&mgr->table, 0, sizeof(bl_partition_table_t));
+    (void)memset(&mgr->table, 0, sizeof(bl_partition_table_t));
     
     /* 设置表头 */
     mgr->table.header.magic = BL_PARTITION_TABLE_MAGIC;
@@ -385,7 +385,7 @@ bl_partition_error_t bl_partition_table_init_default(
     uint32_t ota_meta_size = sector_size;       /* OTA metadata */
     
     /* Partition 0: Bootloader */
-    strcpy((char*)mgr->table.partitions[0].name, "bootloader");
+    (void)strcpy((char*)mgr->table.partitions[0].name, "bootloader");
     mgr->table.partitions[0].type = BL_PARTITION_TYPE_BOOTLOADER;
     mgr->table.partitions[0].state = BL_PARTITION_STATE_ACTIVE;
     mgr->table.partitions[0].attributes = BL_PARTITION_ATTR_READ_ONLY;
@@ -394,7 +394,7 @@ bl_partition_error_t bl_partition_table_init_default(
     mgr->table.partitions[0].size = bootloader_size;
     
     /* Partition 1: Application A */
-    strcpy((char*)mgr->table.partitions[1].name, "app_a");
+    (void)strcpy((char*)mgr->table.partitions[1].name, "app_a");
     mgr->table.partitions[1].type = BL_PARTITION_TYPE_APPLICATION;
     mgr->table.partitions[1].state = BL_PARTITION_STATE_ACTIVE;
     mgr->table.partitions[1].attributes = BL_PARTITION_ATTR_VERIFIED;
@@ -404,7 +404,7 @@ bl_partition_error_t bl_partition_table_init_default(
     mgr->table.partitions[1].max_boot_count = 3; /* 3次启动尝试 */
     
     /* Partition 2: Application B */
-    strcpy((char*)mgr->table.partitions[2].name, "app_b");
+    (void)strcpy((char*)mgr->table.partitions[2].name, "app_b");
     mgr->table.partitions[2].type = BL_PARTITION_TYPE_APPLICATION;
     mgr->table.partitions[2].state = BL_PARTITION_STATE_INACTIVE;
     mgr->table.partitions[2].attributes = 0;
@@ -415,7 +415,7 @@ bl_partition_error_t bl_partition_table_init_default(
     mgr->table.partitions[2].max_boot_count = 3;
     
     /* Partition 3: Calibration Data */
-    strcpy((char*)mgr->table.partitions[3].name, "calibration");
+    (void)strcpy((char*)mgr->table.partitions[3].name, "calibration");
     mgr->table.partitions[3].type = BL_PARTITION_TYPE_CALIBRATION;
     mgr->table.partitions[3].state = BL_PARTITION_STATE_ACTIVE;
     mgr->table.partitions[3].attributes = BL_PARTITION_ATTR_READ_ONLY;
@@ -448,7 +448,7 @@ bl_partition_error_t bl_partition_get_info(
         return BL_ERROR_PARTITION_NOT_FOUND;
     }
     
-    memcpy(info, part, sizeof(bl_partition_info_t));
+    (void)memcpy(info, part, sizeof(bl_partition_info_t));
     return BL_OK;
 }
 
@@ -467,7 +467,7 @@ bl_partition_error_t bl_partition_get_info_by_index(
         return BL_ERROR_PARTITION_NOT_FOUND;
     }
     
-    memcpy(info, part, sizeof(bl_partition_info_t));
+    (void)memcpy(info, part, sizeof(bl_partition_info_t));
     return BL_OK;
 }
 
@@ -490,7 +490,7 @@ bl_partition_error_t bl_partition_get_active_app(
         return BL_ERROR_NO_VALID_PARTITION;
     }
     
-    memcpy(info, part, sizeof(bl_partition_info_t));
+    (void)memcpy(info, part, sizeof(bl_partition_info_t));
     return BL_OK;
 }
 
@@ -508,7 +508,7 @@ bl_partition_error_t bl_partition_get_ota_target(
         bl_partition_info_t *part = &mgr->table.partitions[i];
         if ((part->type == BL_PARTITION_TYPE_APPLICATION) && 
             part->is_ota_target) {
-            memcpy(info, part, sizeof(bl_partition_info_t));
+            (void)memcpy(info, part, sizeof(bl_partition_info_t));
             return BL_OK;
         }
     }
@@ -518,7 +518,7 @@ bl_partition_error_t bl_partition_get_ota_target(
         bl_partition_info_t *part = &mgr->table.partitions[i];
         if ((part->type == BL_PARTITION_TYPE_APPLICATION) && 
             (part->state != BL_PARTITION_STATE_ACTIVE)) {
-            memcpy(info, part, sizeof(bl_partition_info_t));
+            (void)memcpy(info, part, sizeof(bl_partition_info_t));
             return BL_OK;
         }
     }
@@ -598,7 +598,7 @@ bl_partition_error_t bl_partition_update_version(
     
     part->firmware_version = firmware_version;
     if (hash != NULL) {
-        memcpy(part->hash, hash, 32);
+        (void)memcpy(part->hash, hash, 32);
     }
     
     DDS_LOG(BL_PARTITION_LOG_LEVEL, BL_PARTITION_MODULE_NAME,
@@ -912,7 +912,7 @@ bl_partition_error_t bl_partition_set_rollback_info(
         return BL_ERROR_INVALID_PARAM;
     }
     
-    memcpy(&mgr->rollback_info, info, sizeof(bl_rollback_info_t));
+    (void)memcpy(&mgr->rollback_info, info, sizeof(bl_rollback_info_t));
     
     return BL_OK;
 }
@@ -926,7 +926,7 @@ bl_partition_error_t bl_partition_get_rollback_info(
         return BL_ERROR_INVALID_PARAM;
     }
     
-    memcpy(info, &mgr->rollback_info, sizeof(bl_rollback_info_t));
+    (void)memcpy(info, &mgr->rollback_info, sizeof(bl_rollback_info_t));
     return BL_OK;
 }
 

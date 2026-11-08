@@ -15,4 +15,5 @@ Boot_Result Boot_Hsm_VerifySignature(const uint8_t *hash,
 Boot_Result Boot_Hsm_Random(uint8_t *buf, uint32_t len);
 boolean Boot_Hsm_IsAvailable(void);
 
+
 #endif /* BOOT_HSM_H */

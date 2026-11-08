@@ -207,7 +207,7 @@ Rte_StatusType Rte_AswScheduler_Start(void)
             Rte_AswComponentTable[i].Init();
             Rte_AswSchedulerState.componentStates[i] = ASW_STATE_INITIALIZED;
 
-            Det_ReportError(RTE_ASWSCHEDULER_MODULE_ID,
+            (void)Det_ReportError(RTE_ASWSCHEDULER_MODULE_ID,
                             RTE_ASWSCHEDULER_INSTANCE_ID,
                             (uint8)(i + 1U),
                             RTE_E_OK);

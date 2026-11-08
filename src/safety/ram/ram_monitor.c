@@ -141,7 +141,7 @@ static Std_ReturnType RamMonitor_ScanRegionInternal(RamRegionType *region,
             ecc_code = ecc_ptr[i];
         } else {
             /* No ECC - just compute and verify */
-            EccEncoder_Encode32(data, &ecc_code);
+            (void)EccEncoder_Encode32(data, &ecc_code);
         }
 
         /* Check and correct */
@@ -149,7 +149,7 @@ static Std_ReturnType RamMonitor_ScanRegionInternal(RamRegionType *region,
             /* Save worst result */
             if (worst_result != NULL && 
                 result.error_type > worst_result->error_type) {
-                memcpy(worst_result, &result, sizeof(EccCheckResultType));
+                (void)memcpy(worst_result, &result, sizeof(EccCheckResultType));
             }
 
             /* Report error */
@@ -231,7 +231,7 @@ Std_ReturnType RamMonitor_Init(const RamMonitorConfigType *config)
     }
 
     /* Clear monitor structure */
-    memset(&g_monitor, 0, sizeof(g_monitor));
+    (void)memset(&g_monitor, 0, sizeof(g_monitor));
 
     /* Copy configuration */
     g_monitor.config = *config;
@@ -249,15 +249,15 @@ Std_ReturnType RamMonitor_Init(const RamMonitorConfigType *config)
         EccEncoderConfigType enc_config;
         EccCheckerConfigType chk_config;
 
-        memset(&enc_config, 0, sizeof(enc_config));
+        (void)memset(&enc_config, 0, sizeof(enc_config));
         enc_config.mode = ECC_MODE_32BIT;
         enc_config.asil_level = ASIL_D;
-        EccEncoder_Init(&enc_config);
+        (void)EccEncoder_Init(&enc_config);
 
-        memset(&chk_config, 0, sizeof(chk_config));
+        (void)memset(&chk_config, 0, sizeof(chk_config));
         chk_config.auto_correct = TRUE;
         chk_config.log_errors = TRUE;
-        EccChecker_Init(&chk_config);
+        (void)EccChecker_Init(&chk_config);
     }
 
     g_monitor.initialized = TRUE;
@@ -265,7 +265,7 @@ Std_ReturnType RamMonitor_Init(const RamMonitorConfigType *config)
 
     /* Auto-start if configured */
     if (config->auto_start) {
-        RamMonitor_Start();
+        (void)RamMonitor_Start();
     }
 
     return E_OK;
@@ -278,11 +278,11 @@ Std_ReturnType RamMonitor_DeInit(void)
 {
     g_monitor.running = FALSE;
     g_monitor.initialized = FALSE;
-    memset(&g_monitor, 0, sizeof(g_monitor));
+    (void)memset(&g_monitor, 0, sizeof(g_monitor));
     g_initialized = FALSE;
     
-    EccEncoder_DeInit();
-    EccChecker_DeInit();
+    (void)EccEncoder_DeInit();
+    (void)EccChecker_DeInit();
     
     return E_OK;
 }
@@ -348,7 +348,7 @@ Std_ReturnType RamMonitor_RegisterRegion(const RamRegionType *region)
     }
 
     /* Copy region configuration */
-    memcpy(&g_monitor.regions[free_idx], region, sizeof(RamRegionType));
+    (void)memcpy(&g_monitor.regions[free_idx], region, sizeof(RamRegionType));
     
     /* Set defaults */
     if (g_monitor.regions[free_idx].scan_interval_ms == 0U) {
@@ -392,7 +392,7 @@ Std_ReturnType RamMonitor_UnregisterRegion(uint32_t region_id)
     }
     g_monitor.stats.total_regions--;
 
-    memset(&g_monitor.regions[idx], 0, sizeof(RamRegionType));
+    (void)memset(&g_monitor.regions[idx], 0, sizeof(RamRegionType));
 
     return E_OK;
 }
@@ -464,7 +464,7 @@ Std_ReturnType RamMonitor_ScanRegion(uint32_t region_id, EccCheckResultType *res
     }
 
     if (result != NULL) {
-        memset(result, 0, sizeof(EccCheckResultType));
+        (void)memset(result, 0, sizeof(EccCheckResultType));
     }
 
     status = RamMonitor_ScanRegionInternal(&g_monitor.regions[idx], result);
@@ -489,7 +489,7 @@ uint32_t RamMonitor_ScanAll(void)
         return 0U;
     }
 
-    memset(&worst_result, 0, sizeof(worst_result));
+    (void)memset(&worst_result, 0, sizeof(worst_result));
 
     for (i = 0U; i < RAM_MONITOR_MAX_REGIONS; i++) {
         if (g_monitor.regions[i].region_id != 0U && g_monitor.regions[i].enabled) {
@@ -536,7 +536,7 @@ Std_ReturnType RamMonitor_ResetStats(void)
         return E_NOT_OK;
     }
 
-    memset(&g_monitor.stats, 0, sizeof(g_monitor.stats));
+    (void)memset(&g_monitor.stats, 0, sizeof(g_monitor.stats));
     
     /* Restore region count */
     {
@@ -602,7 +602,7 @@ void RamMonitor_Task(void *arg)
 
         if (region_idx < RAM_MONITOR_MAX_REGIONS) {
             /* Scan this region */
-            RamMonitor_ScanRegionInternal(&g_monitor.regions[region_idx], NULL);
+            (void)RamMonitor_ScanRegionInternal(&g_monitor.regions[region_idx], NULL);
             
             /* Report progress */
             if (g_monitor.config.progress_callback != NULL) {
@@ -632,7 +632,7 @@ void RamMonitor_TimerCallback(void)
     {
         uint32_t region_idx = RamMonitor_GetPriorityRegion();
         if (region_idx < RAM_MONITOR_MAX_REGIONS) {
-            RamMonitor_ScanRegionInternal(&g_monitor.regions[region_idx], NULL);
+            (void)RamMonitor_ScanRegionInternal(&g_monitor.regions[region_idx], NULL);
         }
     }
 }
@@ -681,7 +681,7 @@ boolean RamMonitor_IsHealthy(void)
         return FALSE;
     }
 
-    return (g_monitor.status & RAM_MONITOR_STATUS_ERROR) ? FALSE : TRUE;
+    return (boolean)(((g_monitor.status & RAM_MONITOR_STATUS_ERROR) != 0U) ? FALSE : TRUE);
 }
 
 /**

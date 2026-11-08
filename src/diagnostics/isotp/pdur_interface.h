@@ -424,4 +424,6 @@ void PduR_ResetStats(void);
 }
 #endif
 
+
+const PduR_RoutingPathType* PduR_FindRoutingPath( PduR_PduIdType srcPduId, PduR_DirectionType direction );
 #endif /* PDUR_INTERFACE_H */

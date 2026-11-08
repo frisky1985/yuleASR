@@ -21,4 +21,5 @@ int32_t Boot_Verify_ConstantCmp(const uint8_t *a,
 extern const Boot_PubKey g_boot_pubkey_sbl;
 extern const Boot_PubKey g_boot_pubkey_app;
 
+
 #endif /* BOOT_VERIFY_H */

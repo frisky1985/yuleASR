@@ -170,6 +170,7 @@ extern sint16 Swc_VehicleDynamics_CalculateBrakeIntervention(sint16 yawRate,
                                                                sint16 targetYawRate,
                                                                sint16 lateralAccel);
 
+
 #define RTE_STOP_SEC_CODE
 #include "MemMap.h"
 

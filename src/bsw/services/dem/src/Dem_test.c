@@ -51,7 +51,7 @@ Std_ReturnType Det_ReportError(uint16 ModuleId, uint8 InstanceId, uint8 ApiId, u
  /*==================================================================================================
   *                                  TEST HELPER FUNCTIONS
   ==================================================================================================*/
-static void reset_mocks(void)
+void reset_mocks(void)
 {
     mock_det_report_error_called = 0U;
     mock_det_module_id = 0xFFFFU;

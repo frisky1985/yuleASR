@@ -21,7 +21,7 @@
 static bool g_initialized = false;
 static ProcessEntryType g_processTable[EXEC_MAX_PROCESSES];
 static ProcessIdType g_nextPid = 1U;
-static void (*g_globalStateCallback)(ProcessIdType, ProcessStateType) = NULL;
+void (*g_globalStateCallback)(ProcessIdType, ProcessStateType) = NULL;
 
 /******************************************************************************
  * Private Functions
@@ -127,12 +127,11 @@ static bool PlatformIsProcessRunning(void* handle) {
  * Public Functions
  ******************************************************************************/
 
-Std_ReturnType ProcessManager_Init(void) {
-    if (g_initialized) {
+Std_ReturnType ProcessManager_Init(void) {    if (g_initialized) {
         return E_OK;
     }
     
-    memset(g_processTable, 0, sizeof(g_processTable));
+    (void)memset(g_processTable, 0, sizeof(g_processTable));
     g_nextPid = 1U;
     g_globalStateCallback = NULL;
     
@@ -140,8 +139,7 @@ Std_ReturnType ProcessManager_Init(void) {
     return E_OK;
 }
 
-Std_ReturnType ProcessManager_Deinit(void) {
-    if (!g_initialized) {
+Std_ReturnType ProcessManager_Deinit(void) {    if (!g_initialized) {
         return E_OK;
     }
     
@@ -152,23 +150,21 @@ Std_ReturnType ProcessManager_Deinit(void) {
         }
     }
     
-    memset(g_processTable, 0, sizeof(g_processTable));
+    (void)memset(g_processTable, 0, sizeof(g_processTable));
     g_globalStateCallback = NULL;
     g_initialized = false;
     
     return E_OK;
 }
 
-bool ProcessManager_IsInitialized(void) {
-    return g_initialized;
+bool ProcessManager_IsInitialized(void) {    return g_initialized;
 }
 
-Std_ReturnType ProcessManager_CreateConfig(ProcessConfigType* config) {
-    if (config == NULL) {
+Std_ReturnType ProcessManager_CreateConfig(ProcessConfigType* config) {    if (config == NULL) {
         return E_NOT_OK;
     }
     
-    memset(config, 0, sizeof(ProcessConfigType));
+    (void)memset(config, 0, sizeof(ProcessConfigType));
     config->startTimeoutMs = 5000U;
     config->restartDelayMs = 1000U;
     config->autoRestart = false;
@@ -178,8 +174,7 @@ Std_ReturnType ProcessManager_CreateConfig(ProcessConfigType* config) {
     return E_OK;
 }
 
-Std_ReturnType ProcessManager_Start(const ProcessConfigType* config, ProcessIdType* pid) {
-    if (!g_initialized) {
+Std_ReturnType ProcessManager_Start(const ProcessConfigType* config, ProcessIdType* pid) {    if (!g_initialized) {
         return E_NOT_OK;
     }
     
@@ -204,7 +199,7 @@ Std_ReturnType ProcessManager_Start(const ProcessConfigType* config, ProcessIdTy
     
     /* Initialize entry */
     entry->isUsed = true;
-    memcpy(&entry->config, config, sizeof(ProcessConfigType));
+    (void)memcpy(&entry->config, config, sizeof(ProcessConfigType));
     
     entry->info.pid = g_nextPid;
     g_nextPid++;
@@ -230,8 +225,7 @@ Std_ReturnType ProcessManager_Start(const ProcessConfigType* config, ProcessIdTy
     return E_OK;
 }
 
-Std_ReturnType ProcessManager_Stop(ProcessIdType pid, TerminationTypeType type) {
-    if (!g_initialized) {
+Std_ReturnType ProcessManager_Stop(ProcessIdType pid, TerminationTypeType type) {    if (!g_initialized) {
         return E_NOT_OK;
     }
     
@@ -257,8 +251,7 @@ Std_ReturnType ProcessManager_Stop(ProcessIdType pid, TerminationTypeType type) 
     return E_OK;
 }
 
-Std_ReturnType ProcessManager_Restart(ProcessIdType pid) {
-    if (!g_initialized) {
+Std_ReturnType ProcessManager_Restart(ProcessIdType pid) {    if (!g_initialized) {
         return E_NOT_OK;
     }
     
@@ -291,8 +284,7 @@ Std_ReturnType ProcessManager_Restart(ProcessIdType pid) {
     return E_OK;
 }
 
-Std_ReturnType ProcessManager_Kill(ProcessIdType pid) {
-    if (!g_initialized) {
+Std_ReturnType ProcessManager_Kill(ProcessIdType pid) {    if (!g_initialized) {
         return E_NOT_OK;
     }
     
@@ -313,8 +305,7 @@ Std_ReturnType ProcessManager_Kill(ProcessIdType pid) {
     return E_OK;
 }
 
-ProcessStateType ProcessManager_GetState(ProcessIdType pid) {
-    if (!g_initialized) {
+ProcessStateType ProcessManager_GetState(ProcessIdType pid) {    if (!g_initialized) {
         return PROCESS_STATE_ERROR;
     }
     
@@ -326,8 +317,7 @@ ProcessStateType ProcessManager_GetState(ProcessIdType pid) {
     return entry->info.state;
 }
 
-Std_ReturnType ProcessManager_GetInfo(ProcessIdType pid, ProcessInfoType* info) {
-    if (!g_initialized || (info == NULL)) {
+Std_ReturnType ProcessManager_GetInfo(ProcessIdType pid, ProcessInfoType* info) {    if (!g_initialized || (info == NULL)) {
         return E_NOT_OK;
     }
     
@@ -336,12 +326,11 @@ Std_ReturnType ProcessManager_GetInfo(ProcessIdType pid, ProcessInfoType* info) 
         return E_NOT_OK;
     }
     
-    memcpy(info, &entry->info, sizeof(ProcessInfoType));
+    (void)memcpy(info, &entry->info, sizeof(ProcessInfoType));
     return E_OK;
 }
 
-bool ProcessManager_IsRunning(ProcessIdType pid) {
-    if (!g_initialized) {
+bool ProcessManager_IsRunning(ProcessIdType pid) {    if (!g_initialized) {
         return false;
     }
     
@@ -354,8 +343,7 @@ bool ProcessManager_IsRunning(ProcessIdType pid) {
            PlatformIsProcessRunning(entry->info.platformHandle);
 }
 
-uint32_t ProcessManager_GetAllProcesses(ProcessIdType* pids, uint32_t maxCount) {
-    if (!g_initialized || (pids == NULL) || (maxCount == 0U)) {
+uint32_t ProcessManager_GetAllProcesses(ProcessIdType* pids, uint32_t maxCount) {    if (!g_initialized || (pids == NULL) || (maxCount == 0U)) {
         return 0U;
     }
     
@@ -370,8 +358,7 @@ uint32_t ProcessManager_GetAllProcesses(ProcessIdType* pids, uint32_t maxCount) 
     return count;
 }
 
-Std_ReturnType ProcessManager_RegisterHealthCheck(ProcessIdType pid,
-                                                   void (*callback)(ProcessIdType, uint8_t*)) {
+Std_ReturnType ProcessManager_RegisterHealthCheck(ProcessIdType pid,                                                   void (*callback)(ProcessIdType, uint8_t*)) {
     if (!g_initialized) {
         return E_NOT_OK;
     }
@@ -385,8 +372,7 @@ Std_ReturnType ProcessManager_RegisterHealthCheck(ProcessIdType pid,
     return E_OK;
 }
 
-Std_ReturnType ProcessManager_UnregisterHealthCheck(ProcessIdType pid) {
-    if (!g_initialized) {
+Std_ReturnType ProcessManager_UnregisterHealthCheck(ProcessIdType pid) {    if (!g_initialized) {
         return E_NOT_OK;
     }
     
@@ -399,8 +385,7 @@ Std_ReturnType ProcessManager_UnregisterHealthCheck(ProcessIdType pid) {
     return E_OK;
 }
 
-Std_ReturnType ProcessManager_RegisterStateCallback(ProcessIdType pid,
-                                                     void (*callback)(ProcessIdType, ProcessStateType)) {
+Std_ReturnType ProcessManager_RegisterStateCallback(ProcessIdType pid,                                                     void (*callback)(ProcessIdType, ProcessStateType)) {
     if (!g_initialized) {
         return E_NOT_OK;
     }
@@ -414,8 +399,7 @@ Std_ReturnType ProcessManager_RegisterStateCallback(ProcessIdType pid,
     return E_OK;
 }
 
-void ProcessManager_MainFunction(void) {
-    if (!g_initialized) {
+void ProcessManager_MainFunction(void) {    if (!g_initialized) {
         return;
     }
     
@@ -455,6 +439,5 @@ void ProcessManager_MainFunction(void) {
     }
 }
 
-ProcessIdType ProcessManager_GetNextPid(void) {
-    return g_nextPid;
+ProcessIdType ProcessManager_GetNextPid(void) {    return g_nextPid;
 }

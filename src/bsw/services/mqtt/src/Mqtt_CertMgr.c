@@ -74,17 +74,17 @@ Mqtt_ReturnType Mqtt_CertMgr_Init(const Mqtt_CertMgrConfigType* config)
     
     /* 清零证书数组 */
     for (i = 0; i < MQTT_CERTMGR_MAX_CERTS; i++) {
-        memset(&CertMgr_Certs[i], 0, sizeof(Mqtt_CertEntryType));
+        (void)memset(&CertMgr_Certs[i], 0, sizeof(Mqtt_CertEntryType));
         CertMgr_Certs[i].isLoaded = FALSE;
     }
     
     /* 清零证书数据池 */
-    memset(CertMgr_CertDataPool, 0, CERTMGR_CERT_DATA_SIZE);
+    (void)memset(CertMgr_CertDataPool, 0, CERTMGR_CERT_DATA_SIZE);
     CertMgr_CertDataUsed = 0;
     
     /* 保存配置 */
     if (config != NULL_PTR) {
-        memcpy(&CertMgr_Config, config, sizeof(Mqtt_CertMgrConfigType));
+        (void)memcpy(&CertMgr_Config, config, sizeof(Mqtt_CertMgrConfigType));
     } else {
         /* 默认配置 */
         CertMgr_Config.autoReload = TRUE;
@@ -158,10 +158,10 @@ Mqtt_ReturnType Mqtt_CertMgr_AddCert(const Mqtt_CertEntryType* entry)
     
     /* 复制证书数据 */
     dest = &CertMgr_CertDataPool[CertMgr_CertDataUsed];
-    memcpy(dest, entry->data, entry->dataLen);
+    (void)memcpy(dest, entry->data, entry->dataLen);
     
     /* 填充证书条目 */
-    memcpy(&CertMgr_Certs[idx], entry, sizeof(Mqtt_CertEntryType));
+    (void)memcpy(&CertMgr_Certs[idx], entry, sizeof(Mqtt_CertEntryType));
     CertMgr_Certs[idx].data = dest;
     CertMgr_Certs[idx].isLoaded = TRUE;
     
@@ -189,11 +189,11 @@ Mqtt_ReturnType Mqtt_CertMgr_RemoveCert(const char* alias)
     
     /* 清零证书数据(安全清除) */
     if ((CertMgr_Certs[idx].data != NULL_PTR) && (CertMgr_Certs[idx].dataLen > 0U) ) {
-        memset(CertMgr_Certs[idx].data, 0, CertMgr_Certs[idx].dataLen);
+        (void)memset(CertMgr_Certs[idx].data, 0, CertMgr_Certs[idx].dataLen);
     }
     
     /* 清零证书条目 */
-    memset(&CertMgr_Certs[idx], 0, sizeof(Mqtt_CertEntryType));
+    (void)memset(&CertMgr_Certs[idx], 0, sizeof(Mqtt_CertEntryType));
     CertMgr_Certs[idx].isLoaded = FALSE;
     
     return MQTT_OK;
@@ -212,7 +212,7 @@ Mqtt_ReturnType Mqtt_CertMgr_GetCert(const char* alias, Mqtt_CertEntryType* entr
         return MQTT_E_NOT_OK;
     }
     
-    memcpy(entry, &CertMgr_Certs[idx], sizeof(Mqtt_CertEntryType));
+    (void)memcpy(entry, &CertMgr_Certs[idx], sizeof(Mqtt_CertEntryType));
     return MQTT_OK;
 }
 
@@ -234,8 +234,8 @@ Mqtt_ReturnType Mqtt_CertMgr_UpdateCert(const char* alias,
     
     /* 创建新证书条目 */
     Mqtt_CertEntryType newEntry;
-    memset(&newEntry, 0, sizeof(Mqtt_CertEntryType));
-    strncpy(newEntry.alias, alias, sizeof(newEntry.alias) - 1U);
+    (void)memset(&newEntry, 0, sizeof(Mqtt_CertEntryType));
+    (void)strncpy(newEntry.alias, alias, sizeof(newEntry.alias) - 1U);
     newEntry.data = (uint8*)newData; /* 临时指针，AddCert会复制 */
     newEntry.dataLen = dataLen;
     newEntry.isLoaded = TRUE;
@@ -553,7 +553,7 @@ Mqtt_ReturnType Mqtt_CertMgr_GetCertAliasByIndex(uint8 index,
     for (i = 0; i < MQTT_CERTMGR_MAX_CERTS; i++) {
         if ((CertMgr_Certs[i].isLoaded) != 0U) {
             if (count == index) {
-                strncpy(alias, CertMgr_Certs[i].alias, aliasSize - 1U);
+                (void)strncpy(alias, CertMgr_Certs[i].alias, aliasSize - 1U);
                 alias[aliasSize - 1U] = '\0';
                 return MQTT_OK;
             }
@@ -576,7 +576,7 @@ Mqtt_ReturnType Mqtt_CertMgr_FindCertByType(Mqtt_CertType type,
     
     for (i = 0; i < MQTT_CERTMGR_MAX_CERTS; i++) {
         if (CertMgr_Certs[i].isLoaded && (CertMgr_Certs[i].type == type)) {
-            strncpy(alias, CertMgr_Certs[i].alias, aliasSize - 1U);
+            (void)strncpy(alias, CertMgr_Certs[i].alias, aliasSize - 1U);
             alias[aliasSize - 1U] = '\0';
             return MQTT_OK;
         }
@@ -651,8 +651,8 @@ Mqtt_ReturnType Mqtt_CertMgr_ImportFromPem(const char* pemData,
         return MQTT_E_NOT_OK;
     }
     
-    memset(&entry, 0, sizeof(Mqtt_CertEntryType));
-    strncpy(entry.alias, alias, sizeof(entry.alias) - 1U);
+    (void)memset(&entry, 0, sizeof(Mqtt_CertEntryType));
+    (void)strncpy(entry.alias, alias, sizeof(entry.alias) - 1U);
     entry.type = type;
     entry.data = (uint8*)pemData;
     entry.dataLen = strlen(pemData);
@@ -684,7 +684,7 @@ Mqtt_ReturnType Mqtt_CertMgr_ExportToPem(const char* alias,
         return MQTT_E_NOT_OK; /* 缓冲区不足 */
     }
     
-    memcpy(pemBuffer, CertMgr_Certs[idx].data, CertMgr_Certs[idx].dataLen);
+    (void)memcpy(pemBuffer, CertMgr_Certs[idx].data, CertMgr_Certs[idx].dataLen);
     pemBuffer[CertMgr_Certs[idx].dataLen] = '\0';
     *writtenSize = CertMgr_Certs[idx].dataLen;
     
@@ -736,9 +736,9 @@ static Mqtt_ReturnType CertMgr_ParseCertInfo(const uint8* data,
         entry->extensions.notBefore = CertMgr_GetCurrentTime();
         entry->extensions.notAfter = entry->extensions.notBefore + 31536000U;
         entry->extensions.isCA = FALSE;
-        strncpy(entry->subject.commonName, "Unknown", 
+        (void)strncpy(entry->subject.commonName, "Unknown", 
                 sizeof(entry->subject.commonName) - 1U);
-        strncpy(entry->issuer.commonName, "Unknown",
+        (void)strncpy(entry->issuer.commonName, "Unknown",
                 sizeof(entry->issuer.commonName) - 1U);
         return MQTT_OK;
     }
@@ -777,7 +777,7 @@ static void CertMgr_ParseSubject(const mbedtls_x509_name* name,
     }
     
     /* 初始化为默认值 */
-    strncpy(subject->commonName, "Unknown", sizeof(subject->commonName) - 1U);
+    (void)strncpy(subject->commonName, "Unknown", sizeof(subject->commonName) - 1U);
     subject->organization[0] = '\0';
     subject->organizationalUnit[0] = '\0';
     subject->country[0] = '\0';
@@ -796,24 +796,24 @@ static void CertMgr_ParseSubject(const mbedtls_x509_name* name,
         if (len >= sizeof(buf)) {
             len = sizeof(buf) - 1U;
         }
-        memcpy(buf, cur->val.p, len);
+        (void)memcpy(buf, cur->val.p, len);
         buf[len] = '\0';
         
         /* 根据OID识别属性类型 */
         if ((uint32_t)(MQTT_OID_CMP(MBEDTLS_OID_AT_CN, &cur->oid)) == 0U ) {
-            strncpy(subject->commonName, buf, sizeof(subject->commonName) - 1U);
+            (void)strncpy(subject->commonName, buf, sizeof(subject->commonName) - 1U);
         } else if ((uint32_t)(MQTT_OID_CMP(MBEDTLS_OID_AT_ORGANIZATION_NAME, &cur->oid)) == 0U ) {
-            strncpy(subject->organization, buf, sizeof(subject->organization) - 1U);
+            (void)strncpy(subject->organization, buf, sizeof(subject->organization) - 1U);
         } else if ((uint32_t)(MQTT_OID_CMP(MBEDTLS_OID_AT_ORG_UNIT, &cur->oid)) == 0U ) {
-            strncpy(subject->organizationalUnit, buf, sizeof(subject->organizationalUnit) - 1U);
+            (void)strncpy(subject->organizationalUnit, buf, sizeof(subject->organizationalUnit) - 1U);
         } else if ((uint32_t)(MQTT_OID_CMP(MBEDTLS_OID_AT_COUNTRY, &cur->oid)) == 0U ) {
-            strncpy(subject->country, buf, sizeof(subject->country) - 1U);
+            (void)strncpy(subject->country, buf, sizeof(subject->country) - 1U);
         } else if ((uint32_t)(MQTT_OID_CMP(MBEDTLS_OID_AT_STATE_PROVINCE, &cur->oid)) == 0U ) {
-            strncpy(subject->state, buf, sizeof(subject->state) - 1U);
+            (void)strncpy(subject->state, buf, sizeof(subject->state) - 1U);
         } else if ((uint32_t)(MQTT_OID_CMP(MBEDTLS_OID_AT_LOCALITY, &cur->oid)) == 0U ) {
-            strncpy(subject->locality, buf, sizeof(subject->locality) - 1U);
+            (void)strncpy(subject->locality, buf, sizeof(subject->locality) - 1U);
         } else if ((uint32_t)(MQTT_OID_CMP(MBEDTLS_OID_PKCS9_EMAIL, &cur->oid)) == 0U ) {
-            strncpy(subject->email, buf, sizeof(subject->email) - 1U);
+            (void)strncpy(subject->email, buf, sizeof(subject->email) - 1U);
         }
     }
 }

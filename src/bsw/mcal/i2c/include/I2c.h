@@ -535,6 +535,7 @@ Std_ReturnType I2c_SlaveReadBuffer(I2c_ChannelType Channel,
  */
 void I2c_MainFunction(void);
 
+
 #define I2C_STOP_SEC_CODE
 #include "MemMap.h"
 

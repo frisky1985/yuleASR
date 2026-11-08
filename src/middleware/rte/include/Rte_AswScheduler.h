@@ -126,6 +126,7 @@ extern Rte_StatusType Rte_AswScheduler_InitComponent(Swc_ComponentIdType compone
  */
 extern Rte_StatusType Rte_AswScheduler_DeinitComponent(Swc_ComponentIdType componentId);
 
+
 #define RTE_STOP_SEC_CODE
 #include "MemMap.h"
 

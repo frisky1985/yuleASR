@@ -253,6 +253,8 @@ extern Std_ReturnType Platform_RamSafety_SetMscmConfig(const Platform_MscmConfig
  */
 extern Std_ReturnType Platform_RamSafety_GetMscmConfig(Platform_MscmConfigType* config);
 
+
+void Platform_Fccu_NonFaultyFault(uint32 faultId);
 #define PLATFORM_RAMSAFETY_STOP_SEC_CODE
 #include "Platform_MemMap.h"
 

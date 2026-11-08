@@ -128,7 +128,7 @@ static boolean Icu_SignalMeasurementRunning[ICU_NUM_CHANNELS];
  * @brief Get eMIOS base address for a channel
  */
 /** @req SWS_Icu_00101 */
-static uint32 Icu_GetEmiosBaseAddr(Icu_ChannelType channel)
+uint32 Icu_GetEmiosBaseAddr(Icu_ChannelType channel)
 {
     if (channel < (ICU_NUM_CHANNELS / 2U)) {
         return ICU_EMIOS_0_BASE_ADDR;
@@ -141,7 +141,7 @@ static uint32 Icu_GetEmiosBaseAddr(Icu_ChannelType channel)
  * @brief Get eMIOS channel number within an instance
  */
 /** @req SWS_Icu_00102 */
-static uint8 Icu_GetEmiosChannelNum(Icu_ChannelType channel)
+uint8 Icu_GetEmiosChannelNum(Icu_ChannelType channel)
 {
     if (channel < (ICU_NUM_CHANNELS / 2U)) {
         return (uint8)channel;
@@ -210,7 +210,7 @@ static void Icu_DisableChannelInterrupt(Icu_ChannelType channel)
  * @brief Clear channel flag
  */
 /** @req SWS_Icu_00107 */
-static void Icu_ClearChannelFlag(Icu_ChannelType channel)
+void Icu_ClearChannelFlag(Icu_ChannelType channel)
 {
     uint32 emiosBase = Icu_GetEmiosBaseAddr(channel);
     uint8 chNum = Icu_GetEmiosChannelNum(channel);
@@ -237,7 +237,7 @@ static uint32 Icu_GetChannelFlag(Icu_ChannelType channel)
  * @brief Process signal measurement for a channel
  */
 /** @req SWS_Icu_00109 */
-static void Icu_ProcessSignalMeasurement(Icu_ChannelType channel, uint16 currentCapture)
+void Icu_ProcessSignalMeasurement(Icu_ChannelType channel, uint16 currentCapture)
 {
     uint16 period;
     uint16 activeTime;
@@ -1029,8 +1029,7 @@ uint32 Icu_GetSysTimestamp(void)
  * @param Channel Channel that triggered the interrupt
  */
 /** @req SWS_Icu_00025 */
-void Icu_ProcessInterrupt(Icu_ChannelType Channel)
-{
+void Icu_ProcessInterrupt(Icu_ChannelType Channel){
     if (Channel >= ICU_NUM_CHANNELS) {
         return;
     }

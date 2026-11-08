@@ -208,7 +208,7 @@ Std_ReturnType E2E_InitContext(E2E_ContextType* context, uint8_t profile)
         return E_NOT_OK;
     }
 
-    memset(context, 0, sizeof(E2E_ContextType));
+    (void)memset(context, 0, sizeof(E2E_ContextType));
     context->profile = profile;
     context->initialized = TRUE;
     context->initMagic = E2E_INITIALIZED_MAGIC;

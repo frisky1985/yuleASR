@@ -473,4 +473,5 @@ void BswM_BswMPartitionRestarted(BswM_ApplicationType Application);
  */
 void BswM_EthIf_PortGroupLinkStateChg(uint8 PortGroup, boolean LinkState);
 
+
 #endif /* BSWM_H */

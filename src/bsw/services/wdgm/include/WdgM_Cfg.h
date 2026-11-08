@@ -95,6 +95,7 @@ extern void WdgM_SafetyEventCallback(
     const void* context
 );
 
+
 #define WDGM_STOP_SEC_CODE
 #include "WdgM_MemMap.h"
 

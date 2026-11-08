@@ -403,6 +403,10 @@ uint8 Icu_GetInputLevel(Icu_ChannelType Channel);
  */
 uint32 Icu_GetSysTimestamp(void);
 
+
+uint32 Icu_GetEmiosBaseAddr(Icu_ChannelType channel);
+uint8 Icu_GetEmiosChannelNum(Icu_ChannelType channel);
+void Icu_ProcessInterrupt(Icu_ChannelType Channel);
 #define ICU_STOP_SEC_CODE
 #include "MemMap.h"
 

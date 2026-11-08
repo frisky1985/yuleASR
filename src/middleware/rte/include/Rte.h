@@ -349,6 +349,16 @@ extern void Rte_ComCbkInv(Rte_DataHandleType dataHandle);
  */
 extern void Rte_ComCbkSwitchAck(Rte_ModeHandleType modeGroup, uint32 mode);
 
+
+void Rte_Scheduler_Init(void);
+void Rte_Scheduler_Start(void);
+void Rte_Scheduler_Stop(void);
+Std_ReturnType Rte_SchedulerCreateTask(uint8 taskId, uint8 priority, uint32 periodMs, void (*entryPoint)(void));
+void Rte_Scheduler_MainFunction(void);
+uint32 Rte_SchedulerGetTickCount(void);
+void Rte_SwcPortApi_ConnectAllPorts(void);
+Std_ReturnType Rte_Write_SWC_DIAGNOSTICMANAGER_PORT_DTC_STATUS_P(const void* data);
+Std_ReturnType Rte_Write_SWC_COMMUNICATIONMANAGER_PORT_SIGNAL_DATA_P(const void* data);
 #define RTE_STOP_SEC_CODE
 #include "MemMap.h"
 

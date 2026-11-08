@@ -53,8 +53,7 @@ STATIC boolean gCryptoAesInitialized = FALSE;
  * @brief 获取空闲的AES作业上下文
  */
 /** @req SWS_Crypto_00011 */
-STATIC Crypto_AesJobContextType* Crypto_AesGetFreeContext(void)
-{
+STATIC Crypto_AesJobContextType* Crypto_AesGetFreeContext(void){
     uint32 i;
     for (i = 0U; i < CRYPTO_MAX_AES_JOBS; i++) {
         if (!gCryptoAesContexts[i].inUse) {
@@ -68,8 +67,7 @@ STATIC Crypto_AesJobContextType* Crypto_AesGetFreeContext(void)
  * @brief 通过jobId查找AES作业上下文
  */
 /** @req SWS_Crypto_00012 */
-STATIC Crypto_AesJobContextType* Crypto_AesFindContext(uint32 jobId)
-{
+STATIC Crypto_AesJobContextType* Crypto_AesFindContext(uint32 jobId){
     uint32 i;
     for (i = 0U; i < CRYPTO_MAX_AES_JOBS; i++) {
         if (gCryptoAesContexts[i].inUse && (gCryptoAesContexts[i].jobId == jobId)) {
@@ -83,8 +81,7 @@ STATIC Crypto_AesJobContextType* Crypto_AesFindContext(uint32 jobId)
  * @brief 将AUTOSAR算法模式转换为AES模式
  */
 /** @req SWS_Crypto_00013 */
-STATIC Aes_ModeType Crypto_AesConvertMode(Crypto_AlgorithmModeType mode)
-{
+STATIC Aes_ModeType Crypto_AesConvertMode(Crypto_AlgorithmModeType mode){
     switch (mode) {
         case CRYPTO_ALGOMODE_ECB:
             return AES_MODE_ECB;

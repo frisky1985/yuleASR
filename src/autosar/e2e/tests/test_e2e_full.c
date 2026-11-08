@@ -745,7 +745,7 @@ static int test_profile_recommendations(void)
 /******************************************************************************
  * Error Handling Tests
  ******************************************************************************/
-static int test_error_handling(void)
+int test_error_handling(void)
 {
     printf("\n[TEST] Error Handling...\n");
 

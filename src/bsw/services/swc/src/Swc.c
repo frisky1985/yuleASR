@@ -65,7 +65,7 @@ static void Swc_InternalInitRunnables(void);
 static void Swc_InternalInitEventQueue(void);
 static Std_ReturnType Swc_ValidateComponentHandle(Swc_ComponentHandleType handle);
 static Std_ReturnType Swc_ValidateRunnableHandle(Swc_RunnableHandleType handle);
-static void Swc_ExecuteRunnable(Swc_RunnableHandleType runnableHandle);
+void Swc_ExecuteRunnable(Swc_RunnableHandleType runnableHandle);
 static void Swc_ProcessQueuedEvents(void);
 static Swc_RunnableHandleType Swc_FindRunnableById(uint16 runnableId);
 
@@ -141,7 +141,7 @@ static Std_ReturnType Swc_ValidateRunnableHandle(Swc_RunnableHandleType handle)
     return ret;
 }
 
-static void Swc_ExecuteRunnable(Swc_RunnableHandleType runnableHandle)
+void Swc_ExecuteRunnable(Swc_RunnableHandleType runnableHandle)
 {
     Swc_RunnableEntityType* runnable = &Swc_InternalData.runnables[runnableHandle];
     

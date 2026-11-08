@@ -497,6 +497,9 @@ extern Std_ReturnType WdgM_RegisterSafetyCallback(
 extern void WdgM_GetVersionInfo(Std_VersionInfoType* versioninfo);
 #endif
 
+
+void WdgM_TestReset(void);
+void WdgM_TestSetDisableAllowed(boolean allow);
 #define WDGM_STOP_SEC_CODE
 #include "WdgM_MemMap.h"
 

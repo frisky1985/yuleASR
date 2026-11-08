@@ -57,7 +57,7 @@ static Std_ReturnType RamSafety_VerifyCopy(const void *dst, const void *src,
  */
 static void RamSafety_ResetStatus(void)
 {
-    memset(&g_safety_status, 0, sizeof(g_safety_status));
+    (void)memset(&g_safety_status, 0, sizeof(g_safety_status));
 }
 
 /**
@@ -134,8 +134,8 @@ Std_ReturnType RamSafety_Init(const RamSafetyConfigType *config)
     
     /* Reset state */
     RamSafety_ResetStatus();
-    memset(&g_safety_config, 0, sizeof(g_safety_config));
-    memset(&g_memory_map, 0, sizeof(g_memory_map));
+    (void)memset(&g_safety_config, 0, sizeof(g_safety_config));
+    (void)memset(&g_memory_map, 0, sizeof(g_memory_map));
     
     /* Copy configuration */
     g_safety_config = *config;
@@ -149,7 +149,7 @@ Std_ReturnType RamSafety_Init(const RamSafetyConfigType *config)
     /* Initialize ECC checker */
     status = EccChecker_Init(&config->checker_config);
     if (status != E_OK) {
-        EccEncoder_DeInit();
+        (void)EccEncoder_DeInit();
         return status;
     }
     
@@ -157,14 +157,14 @@ Std_ReturnType RamSafety_Init(const RamSafetyConfigType *config)
     if (config->enable_monitor) {
         status = RamMonitor_Init(&config->monitor_config);
         if (status != E_OK) {
-            EccChecker_DeInit();
-            EccEncoder_DeInit();
+            (void)EccChecker_DeInit();
+            (void)EccEncoder_DeInit();
             return status;
         }
         g_safety_status.monitor_active = TRUE;
         
         /* Start monitoring */
-        RamMonitor_Start();
+        (void)RamMonitor_Start();
     }
     
     /* Initialize ECC allocator if enabled */
@@ -172,23 +172,23 @@ Std_ReturnType RamSafety_Init(const RamSafetyConfigType *config)
         status = EccAllocator_Init(&config->heap_config);
         if (status != E_OK) {
             if (config->enable_monitor) {
-                RamMonitor_DeInit();
+                (void)RamMonitor_DeInit();
             }
-            EccChecker_DeInit();
-            EccEncoder_DeInit();
+            (void)EccChecker_DeInit();
+            (void)EccEncoder_DeInit();
             return status;
         }
         g_safety_status.allocator_active = TRUE;
     }
     
     /* Initialize memory map */
-    RamSafety_InitMemoryMap();
+    (void)RamSafety_InitMemoryMap();
     
     /* Initialize timer if enabled */
     if (config->enable_timer_checks) {
         uint32_t interval = (config->timer_interval_ms > 0U) ? 
                             config->timer_interval_ms : DEFAULT_TIMER_INTERVAL_MS;
-        RamSafety_InitTimer(interval);
+        (void)RamSafety_InitTimer(interval);
     }
     
     g_safety_status.initialized = TRUE;
@@ -207,23 +207,23 @@ Std_ReturnType RamSafety_DeInit(void)
     
     /* Deinitialize submodules */
     if (g_safety_status.allocator_active) {
-        EccAllocator_DeInit();
+        (void)EccAllocator_DeInit();
         g_safety_status.allocator_active = FALSE;
     }
     
     if (g_safety_status.monitor_active) {
-        RamMonitor_Stop();
-        RamMonitor_DeInit();
+        (void)RamMonitor_Stop();
+        (void)RamMonitor_DeInit();
         g_safety_status.monitor_active = FALSE;
     }
     
-    EccChecker_DeInit();
-    EccEncoder_DeInit();
+    (void)EccChecker_DeInit();
+    (void)EccEncoder_DeInit();
     
     /* Clear state */
     RamSafety_ResetStatus();
-    memset(&g_safety_config, 0, sizeof(g_safety_config));
-    memset(&g_memory_map, 0, sizeof(g_memory_map));
+    (void)memset(&g_safety_config, 0, sizeof(g_safety_config));
+    (void)memset(&g_memory_map, 0, sizeof(g_memory_map));
     
     return E_OK;
 }
@@ -270,7 +270,7 @@ Std_ReturnType RamSafety_MemCpy(void *dst, const void *src,
     
     /* Perform copy with retry */
     for (retry = 0U; retry < MAX_RETRIES; retry++) {
-        memcpy(dst, src, size);
+        (void)memcpy(dst, src, size);
         
         /* Verify copy if requested */
         if (flags & RAM_OP_FLAG_VERIFY_DST) {
@@ -318,7 +318,7 @@ Std_ReturnType RamSafety_MemSet(void *dst, uint8_t value,
     
     /* Perform set with retry and verification */
     for (retry = 0U; retry < MAX_RETRIES; retry++) {
-        memset(dst, (int)value, size);
+        (void)memset(dst, (int)value, size);
         
         /* Verify if requested */
         if (flags & RAM_OP_FLAG_VERIFY_DST) {
@@ -402,7 +402,7 @@ Std_ReturnType RamSafety_MemMove(void *dst, const void *src,
     }
     
     /* Use memmove for overlapping regions */
-    memmove(dst, src, size);
+    (void)memmove(dst, src, size);
     
     /* Verify if requested */
     if (flags & RAM_OP_FLAG_VERIFY_DST) {
@@ -458,7 +458,7 @@ Std_ReturnType RamSafety_VerifyMem(const void *ptr, uint32_t size, uint32_t flag
  */
 Std_ReturnType RamSafety_InitMemoryMap(void)
 {
-    memset(&g_memory_map, 0, sizeof(g_memory_map));
+    (void)memset(&g_memory_map, 0, sizeof(g_memory_map));
     return E_OK;
 }
 
@@ -511,7 +511,7 @@ Std_ReturnType RamSafety_UnmapMemory(uint32_t virt_addr)
                 g_memory_map.entries[j] = g_memory_map.entries[j + 1U];
             }
             g_memory_map.entry_count--;
-            memset(&g_memory_map.entries[g_memory_map.entry_count], 0,
+            (void)memset(&g_memory_map.entries[g_memory_map.entry_count], 0,
                    sizeof(RamMemoryMapEntryType));
             return E_OK;
         }
@@ -850,14 +850,14 @@ Std_ReturnType RamSafety_ResetStats(void)
     g_safety_status.error_count = 0U;
     g_safety_status.last_error_code = 0U;
     
-    EccChecker_ResetStats();
+    (void)EccChecker_ResetStats();
     
     if (g_safety_status.monitor_active) {
-        RamMonitor_ResetStats();
+        (void)RamMonitor_ResetStats();
     }
     
     if (g_safety_status.allocator_active) {
-        EccAllocator_ResetStats();
+        (void)EccAllocator_ResetStats();
     }
     
     return E_OK;

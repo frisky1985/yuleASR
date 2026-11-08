@@ -23,7 +23,7 @@ void dds_domain_participant_qos_init(dds_DomainParticipantQosType *qos)
     if (qos == NULL) {
         return;
     }
-    memset(qos, 0, sizeof(*qos));
+    (void)memset(qos, 0, sizeof(*qos));
     qos->base.reliability = DDS_QOS_RELIABILITY_BEST_EFFORT;
     qos->base.durability = DDS_QOS_DURABILITY_VOLATILE;
     qos->base.deadline_ms = 0;
@@ -42,7 +42,7 @@ void dds_publisher_qos_init(dds_PublisherQosType *qos)
     if (qos == NULL) {
         return;
     }
-    memset(qos, 0, sizeof(*qos));
+    (void)memset(qos, 0, sizeof(*qos));
     qos->base.reliability = DDS_QOS_RELIABILITY_BEST_EFFORT;
     qos->base.durability = DDS_QOS_DURABILITY_VOLATILE;
     qos->base.deadline_ms = 0;
@@ -61,7 +61,7 @@ void dds_subscriber_qos_init(dds_SubscriberQosType *qos)
     if (qos == NULL) {
         return;
     }
-    memset(qos, 0, sizeof(*qos));
+    (void)memset(qos, 0, sizeof(*qos));
     qos->base.reliability = DDS_QOS_RELIABILITY_BEST_EFFORT;
     qos->base.durability = DDS_QOS_DURABILITY_VOLATILE;
     qos->base.deadline_ms = 0;
@@ -80,7 +80,7 @@ void dds_topic_qos_init(dds_TopicQosType *qos)
     if (qos == NULL) {
         return;
     }
-    memset(qos, 0, sizeof(*qos));
+    (void)memset(qos, 0, sizeof(*qos));
     qos->base.reliability = DDS_QOS_RELIABILITY_BEST_EFFORT;
     qos->base.durability = DDS_QOS_DURABILITY_VOLATILE;
     qos->base.deadline_ms = 0;
@@ -98,7 +98,7 @@ void dds_datawriter_qos_init(dds_DataWriterQosType *qos)
     if (qos == NULL) {
         return;
     }
-    memset(qos, 0, sizeof(*qos));
+    (void)memset(qos, 0, sizeof(*qos));
     qos->base.reliability = DDS_QOS_RELIABILITY_RELIABLE;
     qos->base.durability = DDS_QOS_DURABILITY_VOLATILE;
     qos->base.deadline_ms = 0;
@@ -119,7 +119,7 @@ void dds_datareader_qos_init(dds_DataReaderQosType *qos)
     if (qos == NULL) {
         return;
     }
-    memset(qos, 0, sizeof(*qos));
+    (void)memset(qos, 0, sizeof(*qos));
     qos->base.reliability = DDS_QOS_RELIABILITY_RELIABLE;
     qos->base.durability = DDS_QOS_DURABILITY_VOLATILE;
     qos->base.deadline_ms = 0;

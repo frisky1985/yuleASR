@@ -137,7 +137,7 @@ Std_ReturnType Cdd_Init(void)
     if (result != E_OK)
     {
 #if (CDD_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(CDD_MODULE_ID_SAFETY, 0U, CDD_SID_INIT, 1U);
+        (void)Det_ReportError(CDD_MODULE_ID_SAFETY, 0U, CDD_SID_INIT, 1U);
 #endif
         overallResult = E_NOT_OK;
     }
@@ -147,7 +147,7 @@ Std_ReturnType Cdd_Init(void)
     if (result != E_OK)
     {
 #if (CDD_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(CDD_MODULE_ID_LOCKSTEP, 0U, CDD_SID_INIT, 1U);
+        (void)Det_ReportError(CDD_MODULE_ID_LOCKSTEP, 0U, CDD_SID_INIT, 1U);
 #endif
         overallResult = E_NOT_OK;
     }
@@ -157,7 +157,7 @@ Std_ReturnType Cdd_Init(void)
     if (result != E_OK)
     {
 #if (CDD_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(CDD_MODULE_ID_RAMECC, 0U, CDD_SID_INIT, 1U);
+        (void)Det_ReportError(CDD_MODULE_ID_RAMECC, 0U, CDD_SID_INIT, 1U);
 #endif
         overallResult = E_NOT_OK;
     }
@@ -167,7 +167,7 @@ Std_ReturnType Cdd_Init(void)
     if (result != E_OK)
     {
 #if (CDD_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(CDD_MODULE_ID_HSM, 0U, CDD_SID_INIT, 1U);
+        (void)Det_ReportError(CDD_MODULE_ID_HSM, 0U, CDD_SID_INIT, 1U);
 #endif
         overallResult = E_NOT_OK;
     }
@@ -222,7 +222,7 @@ void Cdd_GetVersionInfo(Std_VersionInfoType* versioninfo)
 #if (CDD_DEV_ERROR_DETECT == STD_ON)
     if (versioninfo == NULL_PTR)
     {
-        Det_ReportError(CDD_MODULE_ID_SAFETY, 0U, CDD_SID_GETVERSIONINFO, 1U);
+        (void)Det_ReportError(CDD_MODULE_ID_SAFETY, 0U, CDD_SID_GETVERSIONINFO, 1U);
         return;
     }
 #endif

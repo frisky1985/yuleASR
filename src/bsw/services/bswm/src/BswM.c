@@ -71,7 +71,7 @@ static BswM_InternalType BswM_State = {
     NULL_PTR
 };
 
-static void BswM_ExecuteActionList(uint16 ActionListIndex);
+void BswM_ExecuteActionList(uint16 ActionListIndex);
 
 static boolean BswM_EvaluateExpression(uint16 ExpressionIndex, uint8 Depth)
 {
@@ -394,7 +394,7 @@ static void BswM_ExecuteAction(const BswM_ActionType* Action)
     }
 }
 
-static void BswM_ExecuteActionList(uint16 ActionListIndex)
+void BswM_ExecuteActionList(uint16 ActionListIndex)
 {
     const BswM_ActionListType* list;
     uint8 i;

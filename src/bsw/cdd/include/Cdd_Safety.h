@@ -147,6 +147,8 @@ extern Std_ReturnType Cdd_Safety_RegisterStateCallback(
  */
 extern void Cdd_Safety_MainFunction(void);
 
+
+Std_ReturnType Cdd_Safety_RegisterStateCallback( void (*callback)(Cdd_Safety_StateType newState));
 #define CDD_SAFETY_STOP_SEC_CODE
 #include "Cdd_MemMap.h"
 

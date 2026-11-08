@@ -18,8 +18,8 @@
  * ============================================================================ */
 
 #define DDS_ETH_MAGIC_NUMBER         0x44445345U  /* "DDSE" */
-#define DDS_ETH_VERSION_MAJOR        1
-#define DDS_ETH_VERSION_MINOR        0
+#define DDS_ETH_VERSION_MAJOR        1U
+#define DDS_ETH_VERSION_MINOR        0U
 
 /** 编译工具宏 */
 #if defined(__GNUC__) || defined(__clang__)

@@ -59,7 +59,7 @@ TelStatus_t Tel_RB_Init(TelRingBuffer_t *rb, uint8_t *buffer, uint16_t size) {
     rb->read_idx = 0;
     rb->overflow_cnt = 0;
     
-    memset(buffer, 0, size);
+    (void)memset(buffer, 0, size);
     
     return TEL_OK;
 }
@@ -209,7 +209,7 @@ TelStatus_t Tel_LogEvent(TelModuleId_t module, uint8_t event_id,
         TelEvent_t ts_event;
         ts_event.header.event_id = 0xFF;
         ts_event.header.ts_lo = (relative >> 8) & 0xFF;
-        Tel_RB_Write(&s_tel_state.ring_buffer, (uint8_t*)&ts_event, 2);
+        (void)Tel_RB_Write(&s_tel_state.ring_buffer, (uint8_t*)&ts_event, 2);
         
         s_tel_state.base_timestamp = now;
         s_tel_state.last_relative_ts = 0;
@@ -220,7 +220,7 @@ TelStatus_t Tel_LogEvent(TelModuleId_t module, uint8_t event_id,
     
     uint8_t total_len = sizeof(TelEventHeader_t);
     if (data && (len > 0)) {
-        memcpy(event.data, data, len);
+        (void)memcpy(event.data, data, len);
         total_len += len;
     }
     
@@ -280,7 +280,7 @@ TelStatus_t Tel_ReadEvents(uint8_t *data, uint16_t max_len, uint16_t *actual_len
             break;
         }
         
-        memcpy(data + total_read, event_data, event_len);
+        (void)memcpy(data + total_read, event_data, event_len);
         total_read += event_len;
     }
     

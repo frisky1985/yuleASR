@@ -550,6 +550,7 @@ Std_ReturnType SomeIpXf_BuildHeader(const SomeIpXf_HeaderType* Header, uint8* Bu
  */
 Std_ReturnType SomeIpXf_ParseHeader(const uint8* Buffer, SomeIpXf_HeaderType* Header);
 
+
 #define SOMEIPXF_STOP_SEC_CODE
 #include "MemMap.h"
 

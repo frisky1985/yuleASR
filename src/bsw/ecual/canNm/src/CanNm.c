@@ -138,7 +138,7 @@ static void CanNm_UpdateTxPdu(uint8 ChannelIndex)
     uint8 CbvValue = 0U;
 
     /* Clear buffer */
-    memset(ChState->TxPduBuffer, 0U, CANNM_PDU_LENGTH);
+    (void)memset(ChState->TxPduBuffer, 0U, CANNM_PDU_LENGTH);
 
     /* Set Node ID if enabled */
 #if (CANNM_NODE_ID_ENABLED == STD_ON)
@@ -608,7 +608,7 @@ void CanNm_Init(const CanNm_ConfigType* ConfigPtr)
         const CanNm_ChannelConfigType* ChCfg = &CanNm_ConfigPtr->ChannelConfig[ChannelIndex];
 
         /* Clear state structure */
-        memset(ChState, 0U, sizeof(CanNm_ChannelStateType));
+        (void)memset(ChState, 0U, sizeof(CanNm_ChannelStateType));
 
         /* Set initial state */
         ChState->State = CANNM_STATE_BUS_SLEEP_MODE;
@@ -616,8 +616,8 @@ void CanNm_Init(const CanNm_ConfigType* ConfigPtr)
         ChState->RemoteSleepIndEnabled = ChCfg->RemoteSleepIndEnabled;
 
         /* Initialize TX PDU buffer */
-        memset(ChState->TxPduBuffer, 0U, CANNM_PDU_LENGTH);
-        memset(ChState->RxPduBuffer, 0U, CANNM_PDU_LENGTH);
+        (void)memset(ChState->TxPduBuffer, 0U, CANNM_PDU_LENGTH);
+        (void)memset(ChState->RxPduBuffer, 0U, CANNM_PDU_LENGTH);
     }
 
     CanNm_ModuleInitialized = CANNM_MODULE_INITIALIZED;
@@ -911,7 +911,7 @@ void CanNm_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
         /* Copy received PDU to buffer */
         if (PduInfoPtr->SduDataPtr != NULL_PTR)
         {
-            memcpy(ChState->RxPduBuffer, PduInfoPtr->SduDataPtr, 
+            (void)memcpy(ChState->RxPduBuffer, PduInfoPtr->SduDataPtr, 
                    (PduInfoPtr->SduLength < CANNM_PDU_LENGTH) ? PduInfoPtr->SduLength : CANNM_PDU_LENGTH);
         }
 
@@ -1049,7 +1049,7 @@ Std_ReturnType CanNm_TriggerTransmit(PduIdType TxPduId, PduInfoType* PduInfoPtr)
             {
                 /* Update PDU and copy to output */
                 CanNm_UpdateTxPdu(ChannelIndex);
-                memcpy(PduInfoPtr->SduDataPtr, ChState->TxPduBuffer, CANNM_PDU_LENGTH);
+                (void)memcpy(PduInfoPtr->SduDataPtr, ChState->TxPduBuffer, CANNM_PDU_LENGTH);
                 Result = E_OK;
             }
             break;

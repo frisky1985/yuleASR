@@ -162,8 +162,7 @@ void Ocu_ProcessCompareMatch(Ocu_ChannelType Channel)
  * @implements Ocu_Channel0_IrqHandler
  */
 /** @req SWS_Ocu_00011 */
-void Ocu_Channel0_IrqHandler(void)
-{
+void Ocu_Channel0_IrqHandler(void){
     #if (OCU_CHANNEL_0_ENABLE == STD_ON)
     Ocu_IrqHandler(OCU_CHANNEL_0);
     #endif
@@ -174,8 +173,7 @@ void Ocu_Channel0_IrqHandler(void)
  * @implements Ocu_Channel1_IrqHandler
  */
 /** @req SWS_Ocu_00011 */
-void Ocu_Channel1_IrqHandler(void)
-{
+void Ocu_Channel1_IrqHandler(void){
     #if (OCU_CHANNEL_1_ENABLE == STD_ON)
     Ocu_IrqHandler(OCU_CHANNEL_1);
     #endif
@@ -186,8 +184,7 @@ void Ocu_Channel1_IrqHandler(void)
  * @implements Ocu_Channel2_IrqHandler
  */
 /** @req SWS_Ocu_00011 */
-void Ocu_Channel2_IrqHandler(void)
-{
+void Ocu_Channel2_IrqHandler(void){
     #if (OCU_CHANNEL_2_ENABLE == STD_ON)
     Ocu_IrqHandler(OCU_CHANNEL_2);
     #endif
@@ -198,8 +195,7 @@ void Ocu_Channel2_IrqHandler(void)
  * @implements Ocu_Channel3_IrqHandler
  */
 /** @req SWS_Ocu_00011 */
-void Ocu_Channel3_IrqHandler(void)
-{
+void Ocu_Channel3_IrqHandler(void){
     #if (OCU_CHANNEL_3_ENABLE == STD_ON)
     Ocu_IrqHandler(OCU_CHANNEL_3);
     #endif

@@ -498,6 +498,7 @@ extern Std_ReturnType EthTrcv_GetCableDiagnosticsResult(
     EthTrcv_CableDiagnosticsResultType* ResultPtr
 );
 
+
 #define ETHTRCV_STOP_SEC_CODE
 #include "EthTrcv_MemMap.h"
 

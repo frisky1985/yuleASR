@@ -21,7 +21,7 @@ void csm_job_pool_init(csm_context_t *ctx)
 {
     if (ctx == NULL) { return; }
     
-    memset(ctx->jobs, 0, sizeof(ctx->jobs));
+    (void)memset(ctx->jobs, 0, sizeof(ctx->jobs));
     ctx->num_jobs = 0;
 }
 
@@ -34,7 +34,7 @@ csm_job_t* csm_job_alloc(csm_context_t *ctx)
     /* Find free slot */
     for (uint32_t i = 0U; i < CSM_MAX_JOBS; i++) {
         if (ctx->jobs[i].job_id == 0U) {
-            memset(&ctx->jobs[i], 0, sizeof(csm_job_t));
+            (void)memset(&ctx->jobs[i], 0, sizeof(csm_job_t));
             return &ctx->jobs[i];
         }
     }
@@ -47,7 +47,7 @@ void csm_job_free(csm_context_t *ctx, csm_job_t *job)
     if ((ctx == NULL) || (job == NULL)) { return; }
     
     /* Clear job data */
-    memset(job, 0, sizeof(csm_job_t));
+    (void)memset(job, 0, sizeof(csm_job_t));
 }
 
 csm_job_t* csm_job_find_by_id(csm_context_t *ctx, uint32_t job_id)

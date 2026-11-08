@@ -392,6 +392,7 @@ extern void RamSafety_EnterSafeState(uint8 reason);
 extern void RamSafety_GetVersionInfo(Std_VersionInfoType* versioninfo);
 #endif
 
+
 #define RAMSAFETY_STOP_SEC_CODE
 #include "RamSafety_MemMap.h"
 

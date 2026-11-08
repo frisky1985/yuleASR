@@ -371,7 +371,7 @@ void keym_deinit(keym_context_t *ctx)
     /* Clear all key slots */
     for (int i = 0; (unsigned int)((unsigned int)(i)) < KEYM_MAX_KEY_SLOTS; i++) {
         if (ctx->slots[i].state != KEYM_STATE_EMPTY) {
-            keym_slot_free(ctx, (uint8_t)i);
+            (void)keym_slot_free(ctx, (uint8_t)i);
         }
     }
     
@@ -425,7 +425,7 @@ keym_status_t keym_slot_allocate(keym_context_t *ctx, uint8_t *slot_id,
     slot->key_len = keym_get_key_type_size(key_type);
     
     if (name != NULL) {
-        strncpy(slot->name, name, KEYM_MAX_KEY_NAME_LEN - 1);
+        (void)strncpy(slot->name, name, KEYM_MAX_KEY_NAME_LEN - 1);
         slot->name[KEYM_MAX_KEY_NAME_LEN - 1] = '\0';
     }
     
@@ -448,7 +448,7 @@ keym_status_t keym_slot_free(keym_context_t *ctx, uint8_t slot_id)
     }
     
     /* Erase key material */
-    memset(&ctx->materials[slot_id], 0, sizeof(keym_key_material_t));
+    (void)memset(&ctx->materials[slot_id], 0, sizeof(keym_key_material_t));
     
     /* Free CryIf slot if allocated */
     if ((ctx->slots[slot_id].cryif_slot_id != CRYIF_KEY_SLOT_INVALID) &&
@@ -457,7 +457,7 @@ keym_status_t keym_slot_free(keym_context_t *ctx, uint8_t slot_id)
     }
     
     /* Clear slot info */
-    memset(&ctx->slots[slot_id], 0, sizeof(keym_slot_info_t));
+    (void)memset(&ctx->slots[slot_id], 0, sizeof(keym_slot_info_t));
     ctx->slots[slot_id].slot_id = slot_id;
     ctx->slots[slot_id].state = KEYM_STATE_EMPTY;
     ctx->slots[slot_id].parent_slot_id = KEYM_SLOT_ID_INVALID;
@@ -480,7 +480,7 @@ keym_status_t keym_slot_get_info(keym_context_t *ctx, uint8_t slot_id,
         return KEYM_ERROR_INVALID_PARAM;
     }
     
-    memcpy(info, &ctx->slots[slot_id], sizeof(keym_slot_info_t));
+    (void)memcpy(info, &ctx->slots[slot_id], sizeof(keym_slot_info_t));
     return KEYM_OK;
 }
 
@@ -554,7 +554,7 @@ keym_status_t keym_key_import(keym_context_t *ctx, uint8_t slot_id,
         material->key_data = s_keym_key_storage[slot_id];
     }
     
-    memcpy(material->key_data, key_data, key_len);
+    (void)memcpy(material->key_data, key_data, key_len);
     material->key_data_len = key_len;
     material->crc32 = keym_crc32(key_data, key_len);  /* IEEE 802.3 真实校验 */
     
@@ -599,7 +599,7 @@ keym_status_t keym_key_export(keym_context_t *ctx, uint8_t slot_id,
         return KEYM_ERROR_INVALID_PARAM;
     }
     
-    memcpy(key_data, material->key_data, material->key_data_len);
+    (void)memcpy(key_data, material->key_data, material->key_data_len);
     *key_len = material->key_data_len;
     
     return KEYM_OK;
@@ -902,7 +902,7 @@ keym_status_t keym_set_rotation_policy(keym_context_t *ctx,
         return KEYM_ERROR_INVALID_PARAM;
     }
     
-    memcpy(&ctx->rotation_policy, policy, sizeof(keym_rotation_policy_t));
+    (void)memcpy(&ctx->rotation_policy, policy, sizeof(keym_rotation_policy_t));
     return KEYM_OK;
 }
 
@@ -941,7 +941,7 @@ keym_status_t keym_rotate_key(keym_context_t *ctx, uint8_t slot_id,
     status = keym_key_generate(ctx, new_slot, ctx->slots[slot_id].key_type);
     if (status != KEYM_OK) {
         if ((new_slot_id != NULL) && (*new_slot_id != slot_id)) {
-            keym_slot_free(ctx, new_slot);
+            (void)keym_slot_free(ctx, new_slot);
         }
         ctx->slots[slot_id].state = KEYM_STATE_ACTIVE;
         return status;
@@ -951,7 +951,7 @@ keym_status_t keym_rotate_key(keym_context_t *ctx, uint8_t slot_id,
     status = keym_key_activate(ctx, new_slot);
     if (status != KEYM_OK) {
         if ((new_slot_id != NULL) && (*new_slot_id != slot_id)) {
-            keym_slot_free(ctx, new_slot);
+            (void)keym_slot_free(ctx, new_slot);
         }
         ctx->slots[slot_id].state = KEYM_STATE_ACTIVE;
         return status;
@@ -1022,7 +1022,7 @@ keym_status_t keym_get_version_history(keym_context_t *ctx, uint8_t slot_id,
     uint32_t count = 0;
     for (int i = 0; (i < KEYM_MAX_KEY_VERSIONS) && (count < max_entries); i++) {
         if (ctx->version_history[slot_id][i].version > 0U) {
-            memcpy(&history[count], &ctx->version_history[slot_id][i],
+            (void)memcpy(&history[count], &ctx->version_history[slot_id][i],
                    sizeof(keym_version_history_t));
             count++;
         }
@@ -1095,12 +1095,12 @@ keym_status_t keym_register_certificate(keym_context_t *ctx, uint8_t cert_id,
         return KEYM_ERROR_NO_MEMORY;
     }
     
-    memcpy(ctx->certificates[cert_id].cert_data, cert_data, cert_len);
+    (void)memcpy(ctx->certificates[cert_id].cert_data, cert_data, cert_len);
     ctx->certificates[cert_id].cert_data_len = cert_len;
     ctx->certificates[cert_id].is_revoked = false;
     
     if (name != NULL) {
-        strncpy(ctx->certificates[cert_id].name, name, KEYM_MAX_KEY_NAME_LEN - 1);
+        (void)strncpy(ctx->certificates[cert_id].name, name, KEYM_MAX_KEY_NAME_LEN - 1);
         ctx->certificates[cert_id].name[KEYM_MAX_KEY_NAME_LEN - 1] = '\0';
     }
     
@@ -1140,7 +1140,7 @@ keym_status_t keym_configure_secoc_key(keym_context_t *ctx, uint32_t secoc_pdu_i
     }
     
     /* Create slot name based on PDU ID */
-    Debug_Snprintf(slot_name, sizeof(slot_name), "SecOC_PDU_%lu", (unsigned long)secoc_pdu_id);
+    (void)Debug_Snprintf(slot_name, sizeof(slot_name), "SecOC_PDU_%lu", (unsigned long)secoc_pdu_id);
     
     /* Check if already exists */
     slot = keym_slot_find_by_name(ctx, slot_name);
@@ -1157,7 +1157,7 @@ keym_status_t keym_configure_secoc_key(keym_context_t *ctx, uint32_t secoc_pdu_i
     }
     
     /* Set SecOC usage */
-    keym_slot_set_attributes(ctx, slot, KEYM_USAGE_SECOC, true, false);
+    (void)keym_slot_set_attributes(ctx, slot, KEYM_USAGE_SECOC, true, false);
     
     *key_slot = slot;
     return KEYM_OK;
@@ -1171,7 +1171,7 @@ uint8_t keym_get_secoc_key_slot(keym_context_t *ctx, uint32_t pdu_id)
         return KEYM_SLOT_ID_INVALID;
     }
     
-    Debug_Snprintf(slot_name, sizeof(slot_name), "SecOC_PDU_%lu", (unsigned long)pdu_id);
+    (void)Debug_Snprintf(slot_name, sizeof(slot_name), "SecOC_PDU_%lu", (unsigned long)pdu_id);
     return keym_slot_find_by_name(ctx, slot_name);
 }
 
@@ -1290,7 +1290,7 @@ static void keym_update_version_history(keym_context_t *ctx, uint8_t slot_id)
 {
     /* Shift history entries */
     for (int i = KEYM_MAX_KEY_VERSIONS - 1; i > 0; i--) {
-        memcpy(&ctx->version_history[slot_id][i],
+        (void)memcpy(&ctx->version_history[slot_id][i],
                &ctx->version_history[slot_id][i - 1],
                sizeof(keym_version_history_t));
     }

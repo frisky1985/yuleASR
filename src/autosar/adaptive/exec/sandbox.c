@@ -98,19 +98,17 @@ static Std_ReturnType PlatformRemoveSandbox(ProcessIdType pid) {
  * Public Functions
  ******************************************************************************/
 
-Std_ReturnType Sandbox_Init(void) {
-    if (g_initialized) {
+Std_ReturnType Sandbox_Init(void) {    if (g_initialized) {
         return E_OK;
     }
     
-    memset(g_sandboxTable, 0, sizeof(g_sandboxTable));
+    (void)memset(g_sandboxTable, 0, sizeof(g_sandboxTable));
     
     g_initialized = true;
     return E_OK;
 }
 
-Std_ReturnType Sandbox_Deinit(void) {
-    if (!g_initialized) {
+Std_ReturnType Sandbox_Deinit(void) {    if (!g_initialized) {
         return E_OK;
     }
     
@@ -121,24 +119,22 @@ Std_ReturnType Sandbox_Deinit(void) {
         }
     }
     
-    memset(g_sandboxTable, 0, sizeof(g_sandboxTable));
+    (void)memset(g_sandboxTable, 0, sizeof(g_sandboxTable));
     g_initialized = false;
     
     return E_OK;
 }
 
-bool Sandbox_IsInitialized(void) {
-    return g_initialized;
+bool Sandbox_IsInitialized(void) {    return g_initialized;
 }
 
-Std_ReturnType Sandbox_CreateDefaultConfig(SandboxConfigType* config) {
-    if (config == NULL) {
+Std_ReturnType Sandbox_CreateDefaultConfig(SandboxConfigType* config) {    if (config == NULL) {
         return E_NOT_OK;
     }
     
-    memset(config, 0, sizeof(SandboxConfigType));
+    (void)memset(config, 0, sizeof(SandboxConfigType));
     
-    strncpy(config->rootPath, SANDBOX_DEFAULT_ROOT_PATH, 
+    (void)strncpy(config->rootPath, SANDBOX_DEFAULT_ROOT_PATH, 
             SANDBOX_MAX_PATH_LENGTH - 1U);
     config->rootPath[SANDBOX_MAX_PATH_LENGTH - 1U] = '\0';
     
@@ -161,8 +157,7 @@ Std_ReturnType Sandbox_CreateDefaultConfig(SandboxConfigType* config) {
     return E_OK;
 }
 
-Std_ReturnType Sandbox_Enable(ProcessIdType pid, const SandboxConfigType* config) {
-    if (!g_initialized || (config == NULL)) {
+Std_ReturnType Sandbox_Enable(ProcessIdType pid, const SandboxConfigType* config) {    if (!g_initialized || (config == NULL)) {
         return E_NOT_OK;
     }
     
@@ -184,7 +179,7 @@ Std_ReturnType Sandbox_Enable(ProcessIdType pid, const SandboxConfigType* config
     entry->pid = pid;
     entry->isActive = true;
     entry->activeIsolation = config->isolationLevel;
-    strncpy(entry->actualRootPath, config->rootPath, 
+    (void)strncpy(entry->actualRootPath, config->rootPath, 
             SANDBOX_MAX_PATH_LENGTH - 1U);
     entry->actualRootPath[SANDBOX_MAX_PATH_LENGTH - 1U] = '\0';
     
@@ -216,8 +211,7 @@ Std_ReturnType Sandbox_Enable(ProcessIdType pid, const SandboxConfigType* config
     return E_OK;
 }
 
-Std_ReturnType Sandbox_Disable(ProcessIdType pid) {
-    if (!g_initialized) {
+Std_ReturnType Sandbox_Disable(ProcessIdType pid) {    if (!g_initialized) {
         return E_NOT_OK;
     }
     
@@ -235,16 +229,14 @@ Std_ReturnType Sandbox_Disable(ProcessIdType pid) {
     return E_OK;
 }
 
-bool Sandbox_IsActive(ProcessIdType pid) {
-    if (!g_initialized) {
+bool Sandbox_IsActive(ProcessIdType pid) {    if (!g_initialized) {
         return false;
     }
     
     return FindSandboxEntry(pid) != NULL;
 }
 
-Std_ReturnType Sandbox_GetStatus(ProcessIdType pid, SandboxStatusType* status) {
-    if (!g_initialized || (status == NULL)) {
+Std_ReturnType Sandbox_GetStatus(ProcessIdType pid, SandboxStatusType* status) {    if (!g_initialized || (status == NULL)) {
         return E_NOT_OK;
     }
     
@@ -253,12 +245,11 @@ Std_ReturnType Sandbox_GetStatus(ProcessIdType pid, SandboxStatusType* status) {
         return E_NOT_OK;
     }
     
-    memcpy(status, entry, sizeof(SandboxStatusType));
+    (void)memcpy(status, entry, sizeof(SandboxStatusType));
     return E_OK;
 }
 
-Std_ReturnType Sandbox_AddMountPoint(SandboxConfigType* config,
-                                      const char* source,
+Std_ReturnType Sandbox_AddMountPoint(SandboxConfigType* config,                                      const char* source,
                                       const char* target,
                                       bool readOnly) {
     if ((config == NULL) || (source == NULL) || (target == NULL)) {
@@ -274,9 +265,9 @@ Std_ReturnType Sandbox_AddMountPoint(SandboxConfigType* config,
     }
     
     SandboxMountPointType* mount = &config->mounts[config->mountCount];
-    strncpy(mount->source, source, SANDBOX_MAX_PATH_LENGTH - 1U);
+    (void)strncpy(mount->source, source, SANDBOX_MAX_PATH_LENGTH - 1U);
     mount->source[SANDBOX_MAX_PATH_LENGTH - 1U] = '\0';
-    strncpy(mount->target, target, SANDBOX_MAX_PATH_LENGTH - 1U);
+    (void)strncpy(mount->target, target, SANDBOX_MAX_PATH_LENGTH - 1U);
     mount->target[SANDBOX_MAX_PATH_LENGTH - 1U] = '\0';
     mount->readOnly = readOnly;
     mount->createIfMissing = true;
@@ -286,8 +277,7 @@ Std_ReturnType Sandbox_AddMountPoint(SandboxConfigType* config,
     return E_OK;
 }
 
-Std_ReturnType Sandbox_AddDeviceAccess(SandboxConfigType* config,
-                                        const char* device,
+Std_ReturnType Sandbox_AddDeviceAccess(SandboxConfigType* config,                                        const char* device,
                                         bool readAllowed,
                                         bool writeAllowed) {
     if ((config == NULL) || (device == NULL)) {
@@ -303,7 +293,7 @@ Std_ReturnType Sandbox_AddDeviceAccess(SandboxConfigType* config,
     }
     
     SandboxDeviceAccessType* dev = &config->devices[config->deviceCount];
-    strncpy(dev->device, device, SANDBOX_MAX_PATH_LENGTH - 1U);
+    (void)strncpy(dev->device, device, SANDBOX_MAX_PATH_LENGTH - 1U);
     dev->device[SANDBOX_MAX_PATH_LENGTH - 1U] = '\0';
     dev->readAllowed = readAllowed;
     dev->writeAllowed = writeAllowed;
@@ -313,8 +303,7 @@ Std_ReturnType Sandbox_AddDeviceAccess(SandboxConfigType* config,
     return E_OK;
 }
 
-Std_ReturnType Sandbox_AddSyscallFilter(SandboxConfigType* config,
-                                         uint32_t syscallNumber,
+Std_ReturnType Sandbox_AddSyscallFilter(SandboxConfigType* config,                                         uint32_t syscallNumber,
                                          bool allowed) {
     if (config == NULL) {
         return E_NOT_OK;
@@ -333,8 +322,7 @@ Std_ReturnType Sandbox_AddSyscallFilter(SandboxConfigType* config,
     return E_OK;
 }
 
-bool Sandbox_ValidateConfig(const SandboxConfigType* config) {
-    if (config == NULL) {
+bool Sandbox_ValidateConfig(const SandboxConfigType* config) {    if (config == NULL) {
         return false;
     }
     
@@ -372,8 +360,7 @@ bool Sandbox_ValidateConfig(const SandboxConfigType* config) {
     return true;
 }
 
-Std_ReturnType Sandbox_ApplyFilesystemIsolation(ProcessIdType pid, 
-                                                 const SandboxConfigType* config) {
+Std_ReturnType Sandbox_ApplyFilesystemIsolation(ProcessIdType pid,                                                  const SandboxConfigType* config) {
     (void)pid;
     
     if (config == NULL) {
@@ -402,13 +389,11 @@ Std_ReturnType Sandbox_ApplyFilesystemIsolation(ProcessIdType pid,
     return E_OK;
 }
 
-Std_ReturnType Sandbox_ApplyNetworkIsolation(ProcessIdType pid, bool restrictNet) {
-    (void)pid;
+Std_ReturnType Sandbox_ApplyNetworkIsolation(ProcessIdType pid, bool restrictNet) {    (void)pid;
     return PlatformApplyNetworkRestriction(restrictNet);
 }
 
-Std_ReturnType Sandbox_ApplySyscallFiltering(ProcessIdType pid, 
-                                              const SandboxConfigType* config) {
+Std_ReturnType Sandbox_ApplySyscallFiltering(ProcessIdType pid,                                               const SandboxConfigType* config) {
     (void)pid;
     
     if ((config == NULL) || (config->syscallCount == 0U)) {
@@ -418,8 +403,7 @@ Std_ReturnType Sandbox_ApplySyscallFiltering(ProcessIdType pid,
     return PlatformApplySeccomp(config->syscalls, config->syscallCount);
 }
 
-void Sandbox_MainFunction(void) {
-    if (!g_initialized) {
+void Sandbox_MainFunction(void) {    if (!g_initialized) {
         return;
     }
     

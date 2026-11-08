@@ -46,9 +46,9 @@ static ResourceEntryType* FindOrCreateEntry(ProcessIdType pid) {
         if (!g_resourceTable[i].monitoringEnabled) {
             g_resourceTable[i].pid = pid;
             g_resourceTable[i].monitoringEnabled = false;
-            memset(&g_resourceTable[i].limits, 0, sizeof(g_resourceTable[i].limits));
-            memset(&g_resourceTable[i].currentUsage, 0, sizeof(ResourceUsageType));
-            memset(&g_resourceTable[i].peakUsage, 0, sizeof(ResourceUsageType));
+            (void)memset(&g_resourceTable[i].limits, 0, sizeof(g_resourceTable[i].limits));
+            (void)memset(&g_resourceTable[i].currentUsage, 0, sizeof(ResourceUsageType));
+            (void)memset(&g_resourceTable[i].peakUsage, 0, sizeof(ResourceUsageType));
             return &g_resourceTable[i];
         }
     }
@@ -59,7 +59,7 @@ static Std_ReturnType PlatformGetResourceUsage(ProcessIdType pid, ResourceUsageT
     /* Platform-specific: Get resource usage from OS */
     /* This is a stub - actual implementation depends on target platform */
     (void)pid;
-    memset(usage, 0, sizeof(ResourceUsageType));
+    (void)memset(usage, 0, sizeof(ResourceUsageType));
     return E_OK;
 }
 
@@ -76,7 +76,7 @@ static bool PlatformGetResourceLimit(ProcessIdType pid, ResourceTypeType type,
     /* Platform-specific: Get resource limit from OS */
     (void)pid;
     (void)type;
-    memset(limit, 0, sizeof(ResourceLimitType));
+    (void)memset(limit, 0, sizeof(ResourceLimitType));
     limit->type = type;
     return true;
 }
@@ -113,20 +113,18 @@ static void UpdatePeakUsage(ResourceEntryType* entry) {
  * Public Functions
  ******************************************************************************/
 
-Std_ReturnType ResourceManager_Init(void) {
-    if (g_initialized) {
+Std_ReturnType ResourceManager_Init(void) {    if (g_initialized) {
         return E_OK;
     }
     
-    memset(g_resourceTable, 0, sizeof(g_resourceTable));
+    (void)memset(g_resourceTable, 0, sizeof(g_resourceTable));
     g_lastMonitorTime = 0U;
     
     g_initialized = true;
     return E_OK;
 }
 
-Std_ReturnType ResourceManager_Deinit(void) {
-    if (!g_initialized) {
+Std_ReturnType ResourceManager_Deinit(void) {    if (!g_initialized) {
         return E_OK;
     }
     
@@ -139,12 +137,10 @@ Std_ReturnType ResourceManager_Deinit(void) {
     return E_OK;
 }
 
-bool ResourceManager_IsInitialized(void) {
-    return g_initialized;
+bool ResourceManager_IsInitialized(void) {    return g_initialized;
 }
 
-Std_ReturnType ResourceManager_SetLimit(ProcessIdType pid, const ResourceLimitType* limit) {
-    if (!g_initialized || (limit == NULL)) {
+Std_ReturnType ResourceManager_SetLimit(ProcessIdType pid, const ResourceLimitType* limit) {    if (!g_initialized || (limit == NULL)) {
         return E_NOT_OK;
     }
     
@@ -159,7 +155,7 @@ Std_ReturnType ResourceManager_SetLimit(ProcessIdType pid, const ResourceLimitTy
     }
     
     /* Set limit in table */
-    memcpy(&entry->limits[limit->type], limit, sizeof(ResourceLimitType));
+    (void)memcpy(&entry->limits[limit->type], limit, sizeof(ResourceLimitType));
     
     /* Apply limit to platform */
     if (!PlatformSetResourceLimit(pid, limit)) {
@@ -169,15 +165,14 @@ Std_ReturnType ResourceManager_SetLimit(ProcessIdType pid, const ResourceLimitTy
     return E_OK;
 }
 
-Std_ReturnType ResourceManager_GetLimit(ProcessIdType pid, ResourceTypeType type,
-                                         ResourceLimitType* limit) {
+Std_ReturnType ResourceManager_GetLimit(ProcessIdType pid, ResourceTypeType type,                                         ResourceLimitType* limit) {
     if (!g_initialized || (limit == NULL)) {
         return E_NOT_OK;
     }
     
     ResourceEntryType* entry = FindResourceEntry(pid);
     if ((entry != NULL) && entry->limits[type].enabled) {
-        memcpy(limit, &entry->limits[type], sizeof(ResourceLimitType));
+        (void)memcpy(limit, &entry->limits[type], sizeof(ResourceLimitType));
         return E_OK;
     }
     
@@ -189,14 +184,13 @@ Std_ReturnType ResourceManager_GetLimit(ProcessIdType pid, ResourceTypeType type
     return E_NOT_OK;
 }
 
-Std_ReturnType ResourceManager_GetUsage(ProcessIdType pid, ResourceUsageType* usage) {
-    if (!g_initialized || (usage == NULL)) {
+Std_ReturnType ResourceManager_GetUsage(ProcessIdType pid, ResourceUsageType* usage) {    if (!g_initialized || (usage == NULL)) {
         return E_NOT_OK;
     }
     
     ResourceEntryType* entry = FindResourceEntry(pid);
     if (entry != NULL) {
-        memcpy(usage, &entry->currentUsage, sizeof(ResourceUsageType));
+        (void)memcpy(usage, &entry->currentUsage, sizeof(ResourceUsageType));
         return E_OK;
     }
     
@@ -204,8 +198,7 @@ Std_ReturnType ResourceManager_GetUsage(ProcessIdType pid, ResourceUsageType* us
     return PlatformGetResourceUsage(pid, usage);
 }
 
-Std_ReturnType ResourceManager_GetPeakUsage(ProcessIdType pid, ResourceUsageType* usage) {
-    if (!g_initialized || (usage == NULL)) {
+Std_ReturnType ResourceManager_GetPeakUsage(ProcessIdType pid, ResourceUsageType* usage) {    if (!g_initialized || (usage == NULL)) {
         return E_NOT_OK;
     }
     
@@ -214,12 +207,11 @@ Std_ReturnType ResourceManager_GetPeakUsage(ProcessIdType pid, ResourceUsageType
         return E_NOT_OK;
     }
     
-    memcpy(usage, &entry->peakUsage, sizeof(ResourceUsageType));
+    (void)memcpy(usage, &entry->peakUsage, sizeof(ResourceUsageType));
     return E_OK;
 }
 
-Std_ReturnType ResourceManager_ResetPeakUsage(ProcessIdType pid) {
-    if (!g_initialized) {
+Std_ReturnType ResourceManager_ResetPeakUsage(ProcessIdType pid) {    if (!g_initialized) {
         return E_NOT_OK;
     }
     
@@ -228,12 +220,11 @@ Std_ReturnType ResourceManager_ResetPeakUsage(ProcessIdType pid) {
         return E_NOT_OK;
     }
     
-    memset(&entry->peakUsage, 0, sizeof(ResourceUsageType));
+    (void)memset(&entry->peakUsage, 0, sizeof(ResourceUsageType));
     return E_OK;
 }
 
-Std_ReturnType ResourceManager_EnableMonitoring(ProcessIdType pid) {
-    if (!g_initialized) {
+Std_ReturnType ResourceManager_EnableMonitoring(ProcessIdType pid) {    if (!g_initialized) {
         return E_NOT_OK;
     }
     
@@ -273,8 +264,7 @@ Std_ReturnType ResourceManager_EnableMonitoring(ProcessIdType pid) {
     return E_OK;
 }
 
-Std_ReturnType ResourceManager_DisableMonitoring(ProcessIdType pid) {
-    if (!g_initialized) {
+Std_ReturnType ResourceManager_DisableMonitoring(ProcessIdType pid) {    if (!g_initialized) {
         return E_NOT_OK;
     }
     
@@ -287,8 +277,7 @@ Std_ReturnType ResourceManager_DisableMonitoring(ProcessIdType pid) {
     return E_OK;
 }
 
-bool ResourceManager_IsWithinLimits(ProcessIdType pid) {
-    if (!g_initialized) {
+bool ResourceManager_IsWithinLimits(ProcessIdType pid) {    if (!g_initialized) {
         return false;
     }
     
@@ -326,12 +315,11 @@ bool ResourceManager_IsWithinLimits(ProcessIdType pid) {
     return true;
 }
 
-Std_ReturnType ResourceManager_GetSystemUsage(ResourceUsageType* usage) {
-    if (!g_initialized || (usage == NULL)) {
+Std_ReturnType ResourceManager_GetSystemUsage(ResourceUsageType* usage) {    if (!g_initialized || (usage == NULL)) {
         return E_NOT_OK;
     }
     
-    memset(usage, 0, sizeof(ResourceUsageType));
+    (void)memset(usage, 0, sizeof(ResourceUsageType));
     
     /* Sum up usage from all monitored processes */
     for (uint32_t i = 0U; i < EXEC_MAX_PROCESSES; i++) {
@@ -349,8 +337,7 @@ Std_ReturnType ResourceManager_GetSystemUsage(ResourceUsageType* usage) {
     return E_OK;
 }
 
-void ResourceManager_MainFunction(void) {
-    if (!g_initialized) {
+void ResourceManager_MainFunction(void) {    if (!g_initialized) {
         return;
     }
     

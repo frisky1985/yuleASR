@@ -43,7 +43,7 @@
 #define SWC_VEHICLEDYNAMICS_INSTANCE_ID     0x00
 
 /* Vehicle dynamics constants */
-#define VDC_MAX_VEHICLE_SPEED               250
+#define VDC_MAX_VEHICLE_SPEED               250U
 #define VDC_MAX_ACCEL                       2000    /* m/s^2 * 100 */
 #define VDC_MAX_YAW_RATE                    1000    /* deg/s * 10 */
 #define VDC_MAX_STEERING_ANGLE              720     /* degrees */
@@ -176,7 +176,7 @@ STATIC void Swc_VehicleDynamics_CheckStability(void)
     /* Check if intervention is needed */
     if (swcVehicleDynamics.currentMode != VDC_MODE_DISABLED) {
         if ((ABS(yawRateError) > VDC_YAW_RATE_THRESHOLD) ||
-            (ABS(swcVehicleDynamics.motionData.lateralAccel) > VDC_LAT_ACCEL_THRESHOLD)) {
+                    (ABS(swcVehicleDynamics.motionData.lateralAccel) > VDC_LAT_ACCEL_THRESHOLD)) {
 
             if (swcVehicleDynamics.currentState != VDC_STATE_FAULT) {
                 swcVehicleDynamics.currentState = VDC_STATE_INTERVENING;
@@ -295,7 +295,7 @@ STATIC boolean Swc_VehicleDynamics_CheckTractionLoss(void)
 
     /* Check if any wheel has excessive slip */
     if ((ABS(slipRL) > VDC_SLIP_THRESHOLD_HIGH) ||
-        (ABS(slipRR) > VDC_SLIP_THRESHOLD_HIGH)) {
+                (ABS(slipRR) > VDC_SLIP_THRESHOLD_HIGH)) {
         return TRUE;
     }
 
@@ -347,7 +347,7 @@ void Swc_VehicleDynamics_Init(void)
 
     swcVehicleDynamics.isInitialized = TRUE;
 
-    Det_ReportError(SWC_VEHICLEDYNAMICS_MODULE_ID, SWC_VEHICLEDYNAMICS_INSTANCE_ID,
+    (void)Det_ReportError(SWC_VEHICLEDYNAMICS_MODULE_ID, SWC_VEHICLEDYNAMICS_INSTANCE_ID,
                     0x01, RTE_E_OK);
 }
 

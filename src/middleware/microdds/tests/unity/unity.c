@@ -27,7 +27,7 @@ __attribute__((weak)) void tearDown(void) {
  * 内部辅助函数
  * ============================================================================ */
 
-static void UnityPrintHeader(void) {
+void UnityPrintHeader(void) {
     printf("\n");
     printf("========================================\n");
     printf("    Unity Test Framework v%d.%d.%d\n",
@@ -36,22 +36,22 @@ static void UnityPrintHeader(void) {
     printf("\n");
 }
 
-static void UnityPrintTestStart(const char* test_name) {
+void UnityPrintTestStart(const char* test_name) {
     printf("TEST: %-40s ", test_name);
     fflush(stdout);
 }
 
-static void UnityPrintTestPass(void) {
+void UnityPrintTestPass(void) {
     printf("[PASS]\n");
 }
 
-static void UnityPrintTestFail(void) {
+void UnityPrintTestFail(void) {
     printf("[FAIL]\n");
     printf("      File: %s:%d\n", Unity.test_file ? Unity.test_file : "unknown", Unity.test_line);
     printf("      Msg:  %s\n", Unity.output_buffer);
 }
 
-static void UnityPrintTestIgnore(void) {
+void UnityPrintTestIgnore(void) {
     printf("[IGNORE]\n");
     if (Unity.output_buffer[0] != '\0') {
         printf("      Reason: %s\n", Unity.output_buffer);

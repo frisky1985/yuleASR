@@ -117,8 +117,7 @@ STATIC Std_ReturnType Rte_ComMapSignal(uint16 comSignalId, Rte_DataHandleType rt
 /**
  * @brief   Initializes RTE COM Interface
  */
-void Rte_ComInterface_Init(void)
-{
+static void Rte_ComInterface_Init(void){
     uint8 i;
 
     Rte_ComInterfaceState.IsInitialized = FALSE;
@@ -169,8 +168,7 @@ Std_ReturnType Rte_ComSendSignal(uint16 comSignalId, const void* signalData)
 /**
  * @brief   Receives data from COM signal
  */
-Std_ReturnType Rte_ComReceiveSignal(uint16 comSignalId, void* signalData)
-{
+static Std_ReturnType Rte_ComReceiveSignal(uint16 comSignalId, void* signalData){
     Std_ReturnType result = E_NOT_OK;
 
     if (Rte_ComInterfaceState.IsInitialized && (signalData != NULL_PTR))
@@ -195,8 +193,7 @@ Std_ReturnType Rte_ComReceiveSignal(uint16 comSignalId, void* signalData)
 /**
  * @brief   RTE COM callback for signal reception
  */
-void Rte_ComCallbackRx(uint16 signalId, const void* data)
-{
+static void Rte_ComCallbackRx(uint16 signalId, const void* data){
     if (Rte_ComInterfaceState.IsInitialized && (data != NULL_PTR))
     {
         sint8 mapIndex = Rte_ComFindSignalMapping(signalId);
@@ -215,8 +212,7 @@ void Rte_ComCallbackRx(uint16 signalId, const void* data)
 /**
  * @brief   RTE COM callback for signal transmission confirmation
  */
-void Rte_ComCallbackTx(uint16 signalId)
-{
+static void Rte_ComCallbackTx(uint16 signalId){
     if ((Rte_ComInterfaceState.IsInitialized) != 0U)
     {
         sint8 mapIndex = Rte_ComFindSignalMapping(signalId);
@@ -234,8 +230,7 @@ void Rte_ComCallbackTx(uint16 signalId)
 /**
  * @brief   Trigger COM IPDU send
  */
-Std_ReturnType Rte_ComTriggerIPDUSend(PduIdType pduId)
-{
+static Std_ReturnType Rte_ComTriggerIPDUSend(PduIdType pduId){
     Std_ReturnType result = E_NOT_OK;
 
     if ((Rte_ComInterfaceState.IsInitialized) != 0U)
@@ -249,8 +244,7 @@ Std_ReturnType Rte_ComTriggerIPDUSend(PduIdType pduId)
 /**
  * @brief   Switch COM IPDU transmission mode
  */
-void Rte_ComSwitchIpduTxMode(PduIdType pduId, boolean mode)
-{
+static void Rte_ComSwitchIpduTxMode(PduIdType pduId, boolean mode){
     if ((Rte_ComInterfaceState.IsInitialized) != 0U)
     {
         Com_SwitchIpduTxMode(pduId, mode);
@@ -260,8 +254,7 @@ void Rte_ComSwitchIpduTxMode(PduIdType pduId, boolean mode)
 /**
  * @brief   Main function for COM interface processing
  */
-void Rte_ComInterface_MainFunction(void)
-{
+static void Rte_ComInterface_MainFunction(void){
     if ((Rte_ComInterfaceState.IsInitialized) != 0U)
     {
         /* Process COM main functions */

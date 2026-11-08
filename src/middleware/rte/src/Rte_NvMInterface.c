@@ -218,8 +218,7 @@ STATIC Std_ReturnType Rte_NvmProcessJobQueue(void)
 /**
  * @brief   Initializes RTE NVM Interface
  */
-void Rte_NvmInterface_Init(void)
-{
+static void Rte_NvmInterface_Init(void){
     uint8 i;
 
     Rte_NvmInterfaceState.IsInitialized = FALSE;
@@ -300,8 +299,7 @@ Std_ReturnType Rte_NvmWriteBlock(NvM_BlockIdType blockId, const void* dataPtr)
 /**
  * @brief   Restores block defaults from ROM
  */
-Std_ReturnType Rte_NvmRestoreBlockDefaults(NvM_BlockIdType blockId, void* dataPtr)
-{
+static Std_ReturnType Rte_NvmRestoreBlockDefaults(NvM_BlockIdType blockId, void* dataPtr){
     Std_ReturnType result = E_NOT_OK;
 
     if (Rte_NvmInterfaceState.IsInitialized && (dataPtr != NULL_PTR))
@@ -321,8 +319,7 @@ Std_ReturnType Rte_NvmRestoreBlockDefaults(NvM_BlockIdType blockId, void* dataPt
 /**
  * @brief   Gets NVM block status
  */
-Std_ReturnType Rte_NvmGetBlockStatus(NvM_BlockIdType blockId, NvM_RequestResultType* requestResult)
-{
+static Std_ReturnType Rte_NvmGetBlockStatus(NvM_BlockIdType blockId, NvM_RequestResultType* requestResult){
     Std_ReturnType result = E_NOT_OK;
 
     if (Rte_NvmInterfaceState.IsInitialized && (requestResult != NULL_PTR))
@@ -336,8 +333,7 @@ Std_ReturnType Rte_NvmGetBlockStatus(NvM_BlockIdType blockId, NvM_RequestResultT
 /**
  * @brief   RTE NVM callback for job completion
  */
-void Rte_NvmCallback(uint16 blockId, Std_ReturnType jobResult)
-{
+static void Rte_NvmCallback(uint16 blockId, Std_ReturnType jobResult){
     if (Rte_NvmInterfaceState.IsInitialized)
     {
         sint8 mapIndex = Rte_NvmFindBlockMapping((NvM_BlockIdType)blockId);
@@ -360,8 +356,7 @@ void Rte_NvmCallback(uint16 blockId, Std_ReturnType jobResult)
 /**
  * @brief   Main function for NVM interface processing
  */
-void Rte_NvmInterface_MainFunction(void)
-{
+static void Rte_NvmInterface_MainFunction(void){
     if (Rte_NvmInterfaceState.IsInitialized)
     {
         /* Process job queue */
@@ -375,8 +370,7 @@ void Rte_NvmInterface_MainFunction(void)
 /**
  * @brief   Write all NVM blocks
  */
-Std_ReturnType Rte_NvmWriteAll(void)
-{
+static Std_ReturnType Rte_NvmWriteAll(void){
     Std_ReturnType result = E_NOT_OK;
     uint8 i;
 
@@ -400,8 +394,7 @@ Std_ReturnType Rte_NvmWriteAll(void)
 /**
  * @brief   Read all NVM blocks
  */
-Std_ReturnType Rte_NvmReadAll(void)
-{
+static Std_ReturnType Rte_NvmReadAll(void){
     Std_ReturnType result = E_NOT_OK;
     uint8 i;
 

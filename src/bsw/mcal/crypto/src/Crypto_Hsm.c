@@ -183,8 +183,7 @@ Std_ReturnType Crypto_Hsm_LoadKey(Crypto_KeyIdType keyId)
  * * Crypto_Hsm_UnloadKey
  * *********************************************************************************************************************/
 /** @req SWS_Crypto_00026 */
-Std_ReturnType Crypto_Hsm_UnloadKey(Crypto_KeyIdType keyId)
-{
+static Std_ReturnType Crypto_Hsm_UnloadKey(Crypto_KeyIdType keyId){
     if (Hsm_State != HSM_STATE_READY)
     {
         return E_NOT_OK;
@@ -213,8 +212,7 @@ Std_ReturnType Crypto_Hsm_SelfTest(void)
  * * Crypto_Hsm_GenerateRandom
  * *********************************************************************************************************************/
 /** @req SWS_Crypto_00028 */
-Std_ReturnType Crypto_Hsm_GenerateRandom(uint8* output, uint32 length)
-{
+static Std_ReturnType Crypto_Hsm_GenerateRandom(uint8* output, uint32 length){
     if (Hsm_State != HSM_STATE_READY)
     {
         return E_NOT_OK;
@@ -234,8 +232,7 @@ Std_ReturnType Crypto_Hsm_GenerateRandom(uint8* output, uint32 length)
  * * Crypto_Hsm_SecureBootVerify
  * *********************************************************************************************************************/
 /** @req SWS_Crypto_00029 */
-Std_ReturnType Crypto_Hsm_SecureBootVerify(const uint8* imageHash, uint32 imageHashLen, const uint8* signature,
-                                           uint32 signatureLen, Crypto_VerifyResultType* verifyResult)
+static Std_ReturnType Crypto_Hsm_SecureBootVerify(const uint8* imageHash, uint32 imageHashLen, const uint8* signature,                                           uint32 signatureLen, Crypto_VerifyResultType* verifyResult)
 {
     if (Hsm_State != HSM_STATE_READY)
     {

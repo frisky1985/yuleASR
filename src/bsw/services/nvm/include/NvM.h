@@ -358,6 +358,9 @@ const void* NvM_GetRedundantBlockAddress(NvM_BlockIdType BlockId);
  */
 void NvM_MainFunction(void);
 
+
+void NvM_JobEndNotification(void);
+void NvM_JobErrorNotification(void);
 #define NVM_STOP_SEC_CODE
 #include "MemMap.h"
 

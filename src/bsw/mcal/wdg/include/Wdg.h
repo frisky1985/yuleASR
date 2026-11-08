@@ -225,6 +225,15 @@ uint32 Wdg_GetTriggerCounter(void);
  */
 uint32 Wdg_GetLastTriggerTime(void);
 
+
+uint32 Wdg_GetBaseAddr(void);
+void Wdg_EnableClock(void);
+void Wdg_DisableClock(void);
+uint16 Wdg_CalculateTimeoutValue(Wdg_TimeoutType timeoutMs);
+Wdg_TriggerResultType Wdg_ValidateWindowTrigger( uint32 currentTime, const Wdg_ModeSettingsType* modeSettings);
+uint32 Wdg_GetCurrentTimeMs(void);
+void Wdg_InvokePreWarningCallback(uint32 TimeRemainingUs);
+void Wdg_InvokeWindowViolationCallback(void);
 #define WDG_STOP_SEC_CODE
 #include "MemMap.h"
 

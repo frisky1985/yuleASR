@@ -173,7 +173,7 @@ Std_ReturnType Cdd_Lockstep_Init(const Cdd_Lockstep_ConfigType* config)
 #if (CDD_DEV_ERROR_DETECT == STD_ON)
     if (config == NULL_PTR)
     {
-        Det_ReportError(CDD_MODULE_ID_LOCKSTEP, 0U, CDD_LOCKSTEP_SID_INIT, 1U);
+        (void)Det_ReportError(CDD_MODULE_ID_LOCKSTEP, 0U, CDD_LOCKSTEP_SID_INIT, 1U);
         return E_NOT_OK;
     }
 #endif
@@ -293,7 +293,7 @@ Std_ReturnType Cdd_Lockstep_GetStatus(Cdd_Lockstep_StatusType* status)
 #if (CDD_DEV_ERROR_DETECT == STD_ON)
     if (status == NULL_PTR)
     {
-        Det_ReportError(CDD_MODULE_ID_LOCKSTEP, 0U, CDD_LOCKSTEP_SID_GETSTATUS, 1U);
+        (void)Det_ReportError(CDD_MODULE_ID_LOCKSTEP, 0U, CDD_LOCKSTEP_SID_GETSTATUS, 1U);
         return E_NOT_OK;
     }
 #endif

@@ -38,13 +38,13 @@
 #define SWC_ENGINECONTROL_INSTANCE_ID       0x00
 
 /* Engine control constants */
-#define ENG_MIN_IDLE_SPEED                  800
-#define ENG_MAX_IDLE_SPEED                  1200
+#define ENG_MIN_IDLE_SPEED                  800U
+#define ENG_MAX_IDLE_SPEED                  1200U
 #define ENG_NORMAL_IDLE_SPEED               900U
 #define ENG_MIN_OPERATING_TEMP              (-40)
-#define ENG_MAX_OPERATING_TEMP              120
-#define ENG_OVERHEAT_THRESHOLD              110
-#define ENG_FUEL_CUTOFF_TEMP                125
+#define ENG_MAX_OPERATING_TEMP              120U
+#define ENG_OVERHEAT_THRESHOLD              110U
+#define ENG_FUEL_CUTOFF_TEMP                125U
 
 /* Fuel injection constants */
 #define FUEL_INJ_BASE_TIME_US               2000U
@@ -52,9 +52,9 @@
 #define FUEL_INJ_MIN_TIME_US                500U
 
 /* Ignition timing constants */
-#define IGNITION_ADVANCE_BASE_DEG           10
-#define IGNITION_ADVANCE_MAX_DEG            45
-#define IGNITION_ADVANCE_MIN_DEG            0
+#define IGNITION_ADVANCE_BASE_DEG           10U
+#define IGNITION_ADVANCE_MAX_DEG            45U
+#define IGNITION_ADVANCE_MIN_DEG            0U
 
 /*==================================================================================================
 *                                    LOCAL TYPES
@@ -365,7 +365,7 @@ void Swc_EngineControl_Init(void)
     swcEngineControl.isInitialized = TRUE;
 
     /* Report to DET */
-    Det_ReportError(SWC_ENGINECONTROL_MODULE_ID, SWC_ENGINECONTROL_INSTANCE_ID,
+    (void)Det_ReportError(SWC_ENGINECONTROL_MODULE_ID, SWC_ENGINECONTROL_INSTANCE_ID,
                     0x01, RTE_E_OK);
 }
 

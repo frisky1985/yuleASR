@@ -395,6 +395,7 @@ void FrIf_GetVersionInfo(Std_VersionInfoType* versioninfo);
  */
 void FrIf_MainFunction(void);
 
+
 #define FRIF_STOP_SEC_CODE
 #include "MemMap.h"
 

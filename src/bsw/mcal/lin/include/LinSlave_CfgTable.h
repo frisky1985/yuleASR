@@ -224,8 +224,6 @@ boolean LinSlave_CfgTable_IsDirectionMatching(
 );
 
 /* 特定类型查找 */
-const LinSlave_EventFrameConfigType* LinSlave_CfgTable_FindEventFrame(uint8 Pid);
-const LinSlave_SporadicFrameConfigType* LinSlave_CfgTable_FindSporadicFrame(uint8 Pid);
 
 /* 诊断配置获取 */
 const LinSlave_DiagnosticFrameConfigType* LinSlave_CfgTable_GetDiagnosticConfig(void);

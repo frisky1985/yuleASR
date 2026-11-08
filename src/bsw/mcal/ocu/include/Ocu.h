@@ -285,6 +285,11 @@ void Ocu_EnableNotification(Ocu_ChannelType Channel);
 void Ocu_GetVersionInfo(Std_VersionInfoType* versioninfo);
 #endif
 
+
+void Ocu_Channel0_IrqHandler(void);
+void Ocu_Channel1_IrqHandler(void);
+void Ocu_Channel2_IrqHandler(void);
+void Ocu_Channel3_IrqHandler(void);
 #define OCU_STOP_SEC_CODE
 #include "MemMap.h"
 

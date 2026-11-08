@@ -252,6 +252,8 @@ void Dio_GetVersionInfo(Std_VersionInfoType* versioninfo);
 Dio_LevelType Dio_FlipChannel(Dio_ChannelType ChannelId);
 #endif
 
+
+void Dio_Init(const Dio_ConfigType* ConfigPtr);
 #define DIO_STOP_SEC_CODE
 #include "MemMap.h"
 

@@ -258,7 +258,7 @@ static bl_antrollback_error_t write_slot(
                          + next_slot * (uint32_t)sizeof(bl_antrollback_slot_t);
 
     bl_antrollback_slot_t slot;
-    memset(&slot, 0, sizeof(slot));
+    (void)memset(&slot, 0, sizeof(slot));
     slot.magic = BL_ANTIROLLBACK_MAGIC;
     slot.record_version = BL_ANTIROLLBACK_RECORD_VERSION;
     slot.counter = counter;
@@ -330,7 +330,7 @@ bl_antrollback_error_t Boot_AntiRollback_Init(
         return BL_ANTIROLLBACK_ERROR_INVALID_PARAM;
     }
 
-    memset(ctx, 0, sizeof(bl_antrollback_context_t));
+    (void)memset(ctx, 0, sizeof(bl_antrollback_context_t));
 
     if (slots == 0U) {
         slots = BL_ANTIROLLBACK_DEFAULT_SLOTS;
@@ -365,7 +365,7 @@ void Boot_AntiRollback_Deinit(bl_antrollback_context_t *ctx)
         return;
     }
 
-    memset(ctx, 0, sizeof(bl_antrollback_context_t));
+    (void)memset(ctx, 0, sizeof(bl_antrollback_context_t));
 
     DDS_LOG(BL_ANTIROLLBACK_LOG_LEVEL, BL_ANTIROLLBACK_MODULE_NAME,
             "Anti-rollback counter deinitialized");

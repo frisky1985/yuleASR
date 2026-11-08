@@ -107,7 +107,7 @@ static void DoIP_SendRoutingActivationResponse(
     const uint8* oemDataPtr
 );
 /** @req SWS_DoIP_00004 */
-static Std_ReturnType DoIP_ProcessDiagnosticMessage(
+Std_ReturnType DoIP_ProcessDiagnosticMessage(
     uint16 socketId,
     const uint8* messagePtr,
     uint32 messageLength
@@ -375,7 +375,7 @@ void DoIP_SoAdIfRxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
     if ((dataPtr[DOIP_HDR_IDX_PROTOCOL_VER] != DOIP_PROTOCOL_VERSION) ||
         (dataPtr[DOIP_HDR_IDX_PROTOCOL_VER_INV] != DOIP_PROTOCOL_VERSION_INVERTED))
     {
-        DoIP_SendGenericNack(RxPduId, DOIP_NACK_CODE_INCORRECT_PATTERN_FORMAT);
+        (void)DoIP_SendGenericNack(RxPduId, DOIP_NACK_CODE_INCORRECT_PATTERN_FORMAT);
         return;
     }
 
@@ -386,7 +386,7 @@ void DoIP_SoAdIfRxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
     /* Validate payload length */
     if ((PduInfoPtr->SduLength - DOIP_HEADER_LENGTH) < payloadLength)
     {
-        DoIP_SendGenericNack(RxPduId, DOIP_NACK_CODE_INVALID_PAYLOAD_LENGTH);
+        (void)DoIP_SendGenericNack(RxPduId, DOIP_NACK_CODE_INVALID_PAYLOAD_LENGTH);
         return;
     }
 
@@ -396,13 +396,13 @@ void DoIP_SoAdIfRxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
     switch (payloadType)
     {
         case DOIP_PAYLOAD_TYPE_VID_REQUEST:
-            DoIP_ProcessVehicleIdRequest(RxPduId);
+            (void)DoIP_ProcessVehicleIdRequest(RxPduId);
             break;
 
         case DOIP_PAYLOAD_TYPE_ROUTING_ACTIVATION_REQUEST:
             if (payloadLength >= DOIP_ROUTING_ACTIVATION_REQ_MIN_LEN)
             {
-                DoIP_ProcessRoutingActivation(
+                (void)DoIP_ProcessRoutingActivation(
                     RxPduId,
                     &dataPtr[headerLength],
                     (uint16)payloadLength
@@ -410,12 +410,12 @@ void DoIP_SoAdIfRxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
             }
             else
             {
-                DoIP_SendGenericNack(RxPduId, DOIP_NACK_CODE_INVALID_PAYLOAD_LENGTH);
+                (void)DoIP_SendGenericNack(RxPduId, DOIP_NACK_CODE_INVALID_PAYLOAD_LENGTH);
             }
             break;
 
         case DOIP_PAYLOAD_TYPE_DIAGNOSTIC_MESSAGE:
-            DoIP_ProcessDiagnosticMessage(
+            (void)DoIP_ProcessDiagnosticMessage(
                 RxPduId,
                 &dataPtr[headerLength],
                 payloadLength
@@ -434,7 +434,7 @@ void DoIP_SoAdIfRxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
         default:
             /* Unknown payload type */
             nackCode = DOIP_NACK_CODE_UNKNOWN_PAYLOAD_TYPE;
-            DoIP_SendGenericNack(RxPduId, nackCode);
+            (void)DoIP_SendGenericNack(RxPduId, nackCode);
             break;
     }
 }
@@ -896,7 +896,7 @@ static uint8 DoIP_GetRoutingActivationResponseCode(
 ================================================================================*/
 
 /** @req SWS_DoIP_00004 */
-static Std_ReturnType DoIP_ProcessDiagnosticMessage(
+Std_ReturnType DoIP_ProcessDiagnosticMessage(
     uint16 socketId,
     const uint8* messagePtr,
     uint32 messageLength)

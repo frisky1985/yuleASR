@@ -214,7 +214,7 @@ const NvM_ConfigType NvM_Config = {
 /*==================================================================================================
 *                                  TEST HELPER FUNCTIONS
 ==================================================================================================*/
-static void reset_mocks(void)
+void reset_mocks(void)
 {
     mock_memif_read_called = 0U;
     mock_memif_write_called = 0U;

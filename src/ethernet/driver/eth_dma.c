@@ -149,11 +149,11 @@ static eth_status_t eth_dma_init_rx_ring(void)
 
     /* 使用静态描述符环 (编译期最大配置) */
     g_dma_ctx.rx_desc_ring = s_rx_desc_ring_storage;
-    memset(g_dma_ctx.rx_desc_ring, 0, sizeof(eth_dma_rx_desc_t) * ETH_DMA_MAX_RX_DESC_COUNT);
+    (void)memset(g_dma_ctx.rx_desc_ring, 0, sizeof(eth_dma_rx_desc_t) * ETH_DMA_MAX_RX_DESC_COUNT);
 
     /* 使用静态缓冲区指针数组 */
     g_dma_ctx.rx_buffers = s_rx_buf_ptrs;
-    memset(g_dma_ctx.rx_buffers, 0, sizeof(uint8_t *) * ETH_DMA_MAX_RX_DESC_COUNT);
+    (void)memset(g_dma_ctx.rx_buffers, 0, sizeof(uint8_t *) * ETH_DMA_MAX_RX_DESC_COUNT);
 
     /* 分配和初始化描述符 */
     for (uint16_t i = 0; i < count; i++) {
@@ -197,11 +197,11 @@ static eth_status_t eth_dma_init_tx_ring(void)
 
     /* 使用静态描述符环 (编译期最大配置) */
     g_dma_ctx.tx_desc_ring = s_tx_desc_ring_storage;
-    memset(g_dma_ctx.tx_desc_ring, 0, sizeof(eth_dma_tx_desc_t) * ETH_DMA_MAX_TX_DESC_COUNT);
+    (void)memset(g_dma_ctx.tx_desc_ring, 0, sizeof(eth_dma_tx_desc_t) * ETH_DMA_MAX_TX_DESC_COUNT);
 
     /* 使用静态缓冲区指针数组 */
     g_dma_ctx.tx_buffers = s_tx_buf_ptrs;
-    memset(g_dma_ctx.tx_buffers, 0, sizeof(uint8_t *) * ETH_DMA_MAX_TX_DESC_COUNT);
+    (void)memset(g_dma_ctx.tx_buffers, 0, sizeof(uint8_t *) * ETH_DMA_MAX_TX_DESC_COUNT);
 
     /* 分配和初始化描述符 */
     for (uint16_t i = 0; i < count; i++) {
@@ -299,10 +299,10 @@ eth_status_t eth_dma_init(const eth_dma_config_t *config)
     }
 
     /* 复制配置 */
-    memcpy(&g_dma_ctx.config, config, sizeof(eth_dma_config_t));
+    (void)memcpy(&g_dma_ctx.config, config, sizeof(eth_dma_config_t));
 
     /* 初始化统计 */
-    memset(&g_dma_ctx.stats, 0, sizeof(eth_dma_stats_t));
+    (void)memset(&g_dma_ctx.stats, 0, sizeof(eth_dma_stats_t));
 
     /* 初始化接收环形缓冲区 */
     status = eth_dma_init_rx_ring();
@@ -338,14 +338,14 @@ void eth_dma_deinit(void)
     }
 
     /* 停止DMA */
-    eth_dma_stop();
+    (void)eth_dma_stop();
 
     /* 释放环形缓冲区 */
     eth_dma_deinit_tx_ring();
     eth_dma_deinit_rx_ring();
 
     /* 清除状态 */
-    memset(&g_dma_ctx, 0, sizeof(eth_dma_context_t));
+    (void)memset(&g_dma_ctx, 0, sizeof(eth_dma_context_t));
     g_dma_ctx.state = ETH_DMA_STATE_UNINIT;
 }
 
@@ -581,7 +581,7 @@ eth_status_t eth_dma_tx_queue_packet(const eth_dma_tx_packet_t *packet, uint32_t
     }
 
     /* 复制数据到发送缓冲区 */
-    memcpy(g_dma_ctx.tx_buffers[tail], packet->buffer, packet->length);
+    (void)memcpy(g_dma_ctx.tx_buffers[tail], packet->buffer, packet->length);
 
     /* 配置描述符 */
     desc->td1 = (packet->length & ETH_TX_DESC_TBS_MASK);
@@ -727,7 +727,7 @@ eth_status_t eth_dma_get_stats(eth_dma_stats_t *stats)
         return ETH_INVALID_PARAM;
     }
 
-    memcpy(stats, &g_dma_ctx.stats, sizeof(eth_dma_stats_t));
+    (void)memcpy(stats, &g_dma_ctx.stats, sizeof(eth_dma_stats_t));
     return ETH_OK;
 }
 
@@ -737,7 +737,7 @@ eth_status_t eth_dma_clear_stats(void)
         return ETH_ERROR;
     }
 
-    memset(&g_dma_ctx.stats, 0, sizeof(eth_dma_stats_t));
+    (void)memset(&g_dma_ctx.stats, 0, sizeof(eth_dma_stats_t));
     return ETH_OK;
 }
 

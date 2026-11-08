@@ -155,19 +155,19 @@ dds_auth_status_t dds_auth_sha256(const uint8_t *data, uint32_t len, uint8_t *ha
 
     /* Copy remaining data to buffer */
     buffer_len = len;
-    memcpy(buffer, data, buffer_len);
+    (void)memcpy(buffer, data, buffer_len);
 
     /* Padding */
     buffer[buffer_len] = 0x80;
     buffer_len++;
 
     if (buffer_len > 56U) {
-        memset(buffer + buffer_len, 0, 64U - buffer_len);
+        (void)memset(buffer + buffer_len, 0, 64U - buffer_len);
         sha256_transform(state, buffer);
         buffer_len = 0;
     }
 
-    memset(buffer + buffer_len, 0, 56U - buffer_len);
+    (void)memset(buffer + buffer_len, 0, 56U - buffer_len);
 
     /* Append length */
     buffer[56] = (bit_len_high >> 24) & 0xFFU;
@@ -261,7 +261,7 @@ dds_auth_context_t* dds_auth_init(const dds_security_config_t *config)
     ctx->check_ocsp = false;
 
     /* Initialize DH parameters */
-    dds_auth_init_dh_params(ctx, DDS_AUTH_DH_GROUP_2048);
+    (void)dds_auth_init_dh_params(ctx, DDS_AUTH_DH_GROUP_2048);
 
     return ctx;
 }
@@ -276,7 +276,7 @@ void dds_auth_deinit(dds_auth_context_t *ctx)
         /* Clear sensitive data */
         for (uint32_t i = 0; i < ctx->max_handshakes; i++) {
             if (ctx->handshakes[i].state != DDS_HANDSHAKE_STATE_NONE) {
-                memset(ctx->handshakes[i].identity.shared_secret, 0, sizeof(ctx->handshakes[i].identity.shared_secret));
+                (void)memset(ctx->handshakes[i].identity.shared_secret, 0, sizeof(ctx->handshakes[i].identity.shared_secret));
             }
         }
         /* 静态握手表无需 free */
@@ -303,19 +303,19 @@ dds_auth_status_t dds_auth_load_certificate(dds_auth_context_t *ctx,
     }
 
     cert->length = fread(cert->data, 1, DDS_SECURITY_MAX_CERT_SIZE, fp);
-    fclose(fp);
+    (void)fclose(fp);
 
     if (cert->length == 0U) {
         return DDS_AUTH_ERROR_INVALID_CERT;
     }
 
     /* Calculate fingerprint */
-    dds_auth_calc_fingerprint(ctx, cert, cert->fingerprint);
+    (void)dds_auth_calc_fingerprint(ctx, cert, cert->fingerprint);
 
     /* Set default validity (should parse from cert in real implementation) */
     cert->valid_from = 0;
     cert->valid_until = 0xFFFFFFFFFFFFFFFF;
-    strncpy(cert->subject_name, "CN=Unknown,O=DDS", sizeof(cert->subject_name) - 1U);
+    (void)strncpy(cert->subject_name, "CN=Unknown,O=DDS", sizeof(cert->subject_name) - 1U);
 
     return DDS_AUTH_OK;
 }
@@ -347,16 +347,16 @@ dds_auth_status_t dds_auth_load_private_key(dds_auth_context_t *ctx,
     FILE *fp = fopen(key_path, "rb");
     if ((fp) != 0U) {
         key->private_key_len = fread(key->private_key, 1, DDS_SECURITY_MAX_KEY_SIZE, fp);
-        fclose(fp);
+        (void)fclose(fp);
     } else {
         /* Generate key if file not found (for testing) */
         key->private_key_len = 32;
-        dds_auth_generate_random(key->private_key, key->private_key_len);
+        (void)dds_auth_generate_random(key->private_key, key->private_key_len);
     }
 
     /* Derive public key (simplified) */
     key->public_key_len = 32;
-    dds_auth_sha256(key->private_key, key->private_key_len, key->public_key);
+    (void)dds_auth_sha256(key->private_key, key->private_key_len, key->public_key);
 
     return DDS_AUTH_OK;
 }
@@ -439,9 +439,9 @@ dds_auth_status_t dds_auth_init_dh_params(dds_auth_context_t *ctx, uint8_t group
 
     switch (group_id) {
         case DDS_AUTH_DH_GROUP_2048:
-            memcpy(ctx->dh_params.p, dh_p_2048, sizeof(dh_p_2048));
+            (void)memcpy(ctx->dh_params.p, dh_p_2048, sizeof(dh_p_2048));
             ctx->dh_params.p_len = sizeof(dh_p_2048);
-            memcpy(ctx->dh_params.g, dh_g_2048, sizeof(dh_g_2048));
+            (void)memcpy(ctx->dh_params.g, dh_g_2048, sizeof(dh_g_2048));
             ctx->dh_params.g_len = sizeof(dh_g_2048);
             ctx->dh_params.key_size = 2048;
             break;
@@ -474,7 +474,7 @@ dds_auth_status_t dds_auth_generate_dh_keypair(dds_auth_context_t *ctx,
     /* 私钥: 随机 256-bit (32 字节) */
     uint8_t priv_bytes[32];
     if (rc == 0) {
-        dds_auth_generate_random(priv_bytes, sizeof(priv_bytes));
+        (void)dds_auth_generate_random(priv_bytes, sizeof(priv_bytes));
         rc = mbedtls_mpi_read_binary(&priv, priv_bytes, sizeof(priv_bytes));
     }
 
@@ -488,7 +488,7 @@ dds_auth_status_t dds_auth_generate_dh_keypair(dds_auth_context_t *ctx,
     }
 
     if (rc == 0) {
-        memcpy(key_pair->private_key, priv_bytes, sizeof(priv_bytes));
+        (void)memcpy(key_pair->private_key, priv_bytes, sizeof(priv_bytes));
         key_pair->private_key_len = sizeof(priv_bytes);
         key_pair->public_key_len = (mbedtls_mpi_size(&pub) < sizeof(key_pair->public_key))
             ? mbedtls_mpi_size(&pub) : sizeof(key_pair->public_key);
@@ -558,31 +558,31 @@ dds_auth_status_t dds_auth_derive_key(dds_auth_context_t *ctx,
 
     /* Simple KDF using SHA-256 */
     uint8_t hash[32];
-    dds_auth_sha256(shared_secret, secret_len, hash);
+    (void)dds_auth_sha256(shared_secret, secret_len, hash);
 
     if ((salt) != 0U) {
         for (uint32_t i = 0; i < 32U; i++) {
             hash[i] ^= salt[i % 8U];
         }
-        dds_auth_sha256(hash, 32, hash);
+        (void)dds_auth_sha256(hash, 32, hash);
     }
 
     uint32_t copy_len = (key_len < 32U) ? key_len : 32U;
-    memcpy(key, hash, copy_len);
+    (void)memcpy(key, hash, copy_len);
 
     /* If need more key material, derive additional blocks */
     if (key_len > 32U) {
         uint8_t counter = 1;
         uint8_t additional[32];
-        memcpy(additional, hash, 32);
+        (void)memcpy(additional, hash, 32);
 
         for (uint32_t offset = 32; offset < key_len; offset += 32U) {
             additional[31] ^= counter++;
-            dds_auth_sha256(additional, 32, additional);
+            (void)dds_auth_sha256(additional, 32, additional);
 
             uint32_t remaining = key_len - offset;
             copy_len = (remaining < 32U) ? remaining : 32U;
-            memcpy(key + offset, additional, copy_len);
+            (void)memcpy(key + offset, additional, copy_len);
         }
     }
 
@@ -612,14 +612,14 @@ dds_auth_status_t dds_auth_sign(dds_auth_context_t *ctx,
         hash_len = sizeof(hash_input);
     }
 
-    memcpy(hash_input, data, hash_len - 32U);
-    memcpy(hash_input + hash_len - 32U, private_key, 32);
+    (void)memcpy(hash_input, data, hash_len - 32U);
+    (void)memcpy(hash_input + hash_len - 32U, private_key, 32);
 
     {
         uint32_t out_len = 32U;
-        memcpy(sig_len, &out_len, sizeof(uint32_t));
+        (void)memcpy(sig_len, &out_len, sizeof(uint32_t));
     }
-    dds_auth_sha256(hash_input, hash_len, signature);
+    (void)dds_auth_sha256(hash_input, hash_len, signature);
 
     return DDS_AUTH_OK;
 }
@@ -637,7 +637,7 @@ dds_auth_status_t dds_auth_verify(dds_auth_context_t *ctx,
 
     uint8_t expected_sig[32];
     uint32_t expected_len = 32;
-    dds_auth_sign(ctx, data, data_len, public_key, expected_sig, &expected_len);
+    (void)dds_auth_sign(ctx, data, data_len, public_key, expected_sig, &expected_len);
 
     if ((sig_len != expected_len) || (memcmp(signature, expected_sig, sig_len) != 0)) {
         return DDS_AUTH_ERROR_INVALID_SIGNATURE;
@@ -670,15 +670,15 @@ dds_security_handshake_t* dds_auth_handshake_create(dds_auth_context_t *ctx,
         return NULL;
     }
 
-    memset(handshake, 0, sizeof(dds_security_handshake_t));
+    (void)memset(handshake, 0, sizeof(dds_security_handshake_t));
     handshake->state = DDS_HANDSHAKE_STATE_BEGIN;
-    memcpy(&handshake->local_guid, local_guid, sizeof(rtps_guid_t));
-    memcpy(&handshake->remote_guid, remote_guid, sizeof(rtps_guid_t));
+    (void)memcpy(&handshake->local_guid, local_guid, sizeof(rtps_guid_t));
+    (void)memcpy(&handshake->remote_guid, remote_guid, sizeof(rtps_guid_t));
     handshake->handshake_id = (uint64_t)(uintptr_t)handshake;
     handshake->timeout_ms = ctx->handshake_timeout_ms;
     handshake->start_time = 0; /* Should set to current time */
 
-    dds_auth_generate_challenge(handshake->local_challenge, 32);
+    (void)dds_auth_generate_challenge(handshake->local_challenge, 32);
 
     return handshake;
 }
@@ -690,7 +690,7 @@ void dds_auth_handshake_destroy(dds_auth_context_t *ctx,
         return;
     }
 
-    memset(handshake->identity.shared_secret, 0, sizeof(handshake->identity.shared_secret));
+    (void)memset(handshake->identity.shared_secret, 0, sizeof(handshake->identity.shared_secret));
     handshake->state = DDS_HANDSHAKE_STATE_NONE;
 }
 
@@ -709,22 +709,22 @@ dds_auth_status_t dds_auth_begin_handshake_request(dds_auth_context_t *ctx,
     }
 
     dds_security_key_pair_t dh_keypair;
-    dds_auth_generate_dh_keypair(ctx, &dh_keypair);
+    (void)dds_auth_generate_dh_keypair(ctx, &dh_keypair);
 
-    memcpy((*handshake)->local_dh_public, dh_keypair.public_key, dh_keypair.public_key_len);
+    (void)memcpy((*handshake)->local_dh_public, dh_keypair.public_key, dh_keypair.public_key_len);
     (*handshake)->local_dh_public_len = dh_keypair.public_key_len;
-    memcpy((*handshake)->identity.key_pair.private_key, dh_keypair.private_key,
+    (void)memcpy((*handshake)->identity.key_pair.private_key, dh_keypair.private_key,
            dh_keypair.private_key_len);
     (*handshake)->identity.key_pair.private_key_len = dh_keypair.private_key_len;
 
-    memset(request, 0, sizeof(dds_auth_handshake_request_t));
+    (void)memset(request, 0, sizeof(dds_auth_handshake_request_t));
     request->msg_type = DDS_AUTH_MSG_HANDSHAKE_REQUEST;
-    memcpy(&request->requester_guid, local_guid, sizeof(rtps_guid_t));
-    memcpy(request->dh_public, (*handshake)->local_dh_public, (*handshake)->local_dh_public_len);
+    (void)memcpy(&request->requester_guid, local_guid, sizeof(rtps_guid_t));
+    (void)memcpy(request->dh_public, (*handshake)->local_dh_public, (*handshake)->local_dh_public_len);
     request->dh_public_len = (*handshake)->local_dh_public_len;
-    memcpy(request->challenge, (*handshake)->local_challenge, 32);
+    (void)memcpy(request->challenge, (*handshake)->local_challenge, 32);
 
-    dds_auth_sha256((uint8_t*)&ctx->identity_cert_chain,
+    (void)dds_auth_sha256((uint8_t*)&ctx->identity_cert_chain,
                     sizeof(dds_security_cert_chain_t),
                     request->cert_chain_hash);
 
@@ -756,41 +756,41 @@ dds_auth_status_t dds_auth_process_handshake_request(dds_auth_context_t *ctx,
         return DDS_AUTH_ERROR_NO_MEMORY;
     }
 
-    memcpy((*handshake)->remote_dh_public, request->dh_public, request->dh_public_len);
+    (void)memcpy((*handshake)->remote_dh_public, request->dh_public, request->dh_public_len);
     (*handshake)->remote_dh_public_len = request->dh_public_len;
-    memcpy((*handshake)->remote_challenge, request->challenge, 32);
+    (void)memcpy((*handshake)->remote_challenge, request->challenge, 32);
 
     dds_security_key_pair_t dh_keypair;
-    dds_auth_generate_dh_keypair(ctx, &dh_keypair);
+    (void)dds_auth_generate_dh_keypair(ctx, &dh_keypair);
 
-    memcpy((*handshake)->local_dh_public, dh_keypair.public_key, dh_keypair.public_key_len);
+    (void)memcpy((*handshake)->local_dh_public, dh_keypair.public_key, dh_keypair.public_key_len);
     (*handshake)->local_dh_public_len = dh_keypair.public_key_len;
-    memcpy((*handshake)->identity.key_pair.private_key, dh_keypair.private_key,
+    (void)memcpy((*handshake)->identity.key_pair.private_key, dh_keypair.private_key,
            dh_keypair.private_key_len);
     (*handshake)->identity.key_pair.private_key_len = dh_keypair.private_key_len;
 
-    dds_auth_compute_shared_secret(ctx,
+    (void)dds_auth_compute_shared_secret(ctx,
                                    (*handshake)->identity.key_pair.private_key,
                                    (*handshake)->remote_dh_public,
                                    (*handshake)->remote_dh_public_len,
                                    (*handshake)->identity.shared_secret,
                                    &(*handshake)->identity.shared_secret_len);
 
-    dds_auth_generate_challenge((*handshake)->local_challenge, 32);
+    (void)dds_auth_generate_challenge((*handshake)->local_challenge, 32);
 
     uint8_t response_data[64];
-    memcpy(response_data, (*handshake)->remote_challenge, 32);
-    memcpy(response_data + 32, (*handshake)->local_challenge, 32);
+    (void)memcpy(response_data, (*handshake)->remote_challenge, 32);
+    (void)memcpy(response_data + 32, (*handshake)->local_challenge, 32);
 
-    memset(reply, 0, sizeof(dds_auth_handshake_reply_t));
+    (void)memset(reply, 0, sizeof(dds_auth_handshake_reply_t));
     reply->msg_type = DDS_AUTH_MSG_HANDSHAKE_REPLY;
-    memcpy(&reply->replier_guid, &request->requester_guid, sizeof(rtps_guid_t));
-    memcpy(reply->dh_public, (*handshake)->local_dh_public, (*handshake)->local_dh_public_len);
+    (void)memcpy(&reply->replier_guid, &request->requester_guid, sizeof(rtps_guid_t));
+    (void)memcpy(reply->dh_public, (*handshake)->local_dh_public, (*handshake)->local_dh_public_len);
     reply->dh_public_len = (*handshake)->local_dh_public_len;
-    memcpy(reply->challenge, (*handshake)->local_challenge, 32);
-    memcpy(reply->response, response_data, 32);
+    (void)memcpy(reply->challenge, (*handshake)->local_challenge, 32);
+    (void)memcpy(reply->response, response_data, 32);
 
-    dds_auth_sign(ctx, (uint8_t*)reply, sizeof(dds_auth_handshake_reply_t) - 256U,
+    (void)dds_auth_sign(ctx, (uint8_t*)reply, sizeof(dds_auth_handshake_reply_t) - 256U,
                   (*handshake)->identity.key_pair.private_key,
                   reply->signature, &reply->signature_len);
 
@@ -812,23 +812,23 @@ dds_auth_status_t dds_auth_process_handshake_reply(dds_auth_context_t *ctx,
         return DDS_AUTH_ERROR_INVALID_PARAM;
     }
 
-    memcpy(handshake->remote_dh_public, reply->dh_public, reply->dh_public_len);
+    (void)memcpy(handshake->remote_dh_public, reply->dh_public, reply->dh_public_len);
     handshake->remote_dh_public_len = reply->dh_public_len;
-    memcpy(handshake->remote_challenge, reply->challenge, 32);
+    (void)memcpy(handshake->remote_challenge, reply->challenge, 32);
 
-    dds_auth_compute_shared_secret(ctx,
+    (void)dds_auth_compute_shared_secret(ctx,
                                    handshake->identity.key_pair.private_key,
                                    handshake->remote_dh_public,
                                    handshake->remote_dh_public_len,
                                    handshake->identity.shared_secret,
                                    &handshake->identity.shared_secret_len);
 
-    memset(final, 0, sizeof(dds_auth_handshake_final_t));
+    (void)memset(final, 0, sizeof(dds_auth_handshake_final_t));
     final->msg_type = DDS_AUTH_MSG_HANDSHAKE_FINAL;
-    memcpy(&final->requester_guid, &handshake->local_guid, sizeof(rtps_guid_t));
-    memcpy(final->response, reply->challenge, 32);
+    (void)memcpy(&final->requester_guid, &handshake->local_guid, sizeof(rtps_guid_t));
+    (void)memcpy(final->response, reply->challenge, 32);
 
-    dds_auth_sign(ctx, (uint8_t*)final, sizeof(dds_auth_handshake_final_t) - 256U,
+    (void)dds_auth_sign(ctx, (uint8_t*)final, sizeof(dds_auth_handshake_final_t) - 256U,
                   handshake->identity.key_pair.private_key,
                   final->signature, &final->signature_len);
 
@@ -907,7 +907,7 @@ dds_auth_status_t dds_auth_get_shared_secret(dds_security_handshake_t *handshake
     }
 
     *secret_len = handshake->identity.shared_secret_len;
-    memcpy(secret, handshake->identity.shared_secret, *secret_len);
+    (void)memcpy(secret, handshake->identity.shared_secret, *secret_len);
 
     return DDS_AUTH_OK;
 }

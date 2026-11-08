@@ -118,7 +118,7 @@ static void LinNm_SendNmPdu(uint8 channelIndex, boolean activeWakeup)
     chConfig = &LinNm_ConfigPtr->ChannelConfig[channelIndex];
     chRuntime = &LinNm_ConfigPtr->ChannelRuntime[channelIndex];
     /* Initialize PDU with zeros */
-    memset(nmPdu, 0, LINNM_PDU_SIZE);
+    (void)memset(nmPdu, 0, LINNM_PDU_SIZE);
     /* Set Control Bit Vector (CBV) */
     nmPdu[LINNM_PDU_CBV_POS] = 0x00U;
     if (activeWakeup)

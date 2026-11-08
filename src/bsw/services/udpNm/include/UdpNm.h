@@ -375,6 +375,7 @@ void UdpNm_RemoteSleepIndication(Nm_ChannelHandleType nmChannelHandle);
  */
 void UdpNm_RemoteSleepCancellation(Nm_ChannelHandleType nmChannelHandle);
 
+
 #define UDPNM_STOP_SEC_CODE
 #include "MemMap.h"
 

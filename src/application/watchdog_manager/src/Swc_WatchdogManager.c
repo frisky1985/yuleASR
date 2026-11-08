@@ -41,10 +41,10 @@
 #define WDG_MAX_ENTITIES                    16U
 
 /* Watchdog timeout in ms */
-#define WDG_TIMEOUT_MS                      100
+#define WDG_TIMEOUT_MS                      100U
 
 /* Alive indication window */
-#define WDG_ALIVE_WINDOW_MS                 50
+#define WDG_ALIVE_WINDOW_MS                 50U
 
 /*==================================================================================================
 *                                    LOCAL TYPES
@@ -277,7 +277,7 @@ void Swc_WatchdogManager_Init(void)
     swcWatchdogManager.isInitialized = TRUE;
     swcWatchdogManager.status.isInitialized = TRUE;
 
-    Det_ReportError(SWC_WATCHDOGMANAGER_MODULE_ID, SWC_WATCHDOGMANAGER_INSTANCE_ID,
+    (void)Det_ReportError(SWC_WATCHDOGMANAGER_MODULE_ID, SWC_WATCHDOGMANAGER_INSTANCE_ID,
                     0x01, RTE_E_OK);
 }
 
@@ -523,7 +523,7 @@ void Swc_WatchdogManager_HandleExpiration(void)
     swcWatchdogManager.status.watchdogStatus = WDG_STATUS_EXPIRED;
 
     /* Report error */
-    Det_ReportError(SWC_WATCHDOGMANAGER_MODULE_ID, SWC_WATCHDOGMANAGER_INSTANCE_ID,
+    (void)Det_ReportError(SWC_WATCHDOGMANAGER_MODULE_ID, SWC_WATCHDOGMANAGER_INSTANCE_ID,
                     0x50, RTE_E_NOT_OK);
 
     /* Write status via RTE */

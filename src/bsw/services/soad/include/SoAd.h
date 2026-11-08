@@ -372,6 +372,8 @@ void SoAd_TcpIpEvent(TcpIp_SocketIdType SocketId, TcpIp_EventType Event,
  */
 void SoAd_LocalIpAddrAssignmentChg(uint16 LocalAddrId, TcpIp_IpAddrStateType State);
 
+
+void SoAd_TriggerTransmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr);
 #define SOAD_STOP_SEC_CODE
 #include "MemMap.h"
 

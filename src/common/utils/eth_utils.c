@@ -13,7 +13,7 @@
 void eth_mac_to_str(const eth_mac_addr_t mac, char *str, size_t len)
 {
     if (len < 18U) { return; } /* xx:xx:xx:xx:xx:xx\0 */
-    Debug_Snprintf(str, len, "%02X:%02X:%02X:%02X:%02X:%02X",
+    (void)Debug_Snprintf(str, len, "%02X:%02X:%02X:%02X:%02X:%02X",
              mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
 }
 
@@ -29,7 +29,7 @@ eth_status_t eth_str_to_mac(const char *str, eth_mac_addr_t mac)
 void eth_ip_to_str(eth_ip_addr_t ip, char *str, size_t len)
 {
     if (len < 16U) { return; } /* xxx.xxx.xxx.xxx\0 */
-    Debug_Snprintf(str, len, "%u.%u.%u.%u",
+    (void)Debug_Snprintf(str, len, "%u.%u.%u.%u",
              (unsigned)((ip >> 24) & 0xFFU),
              (unsigned)((ip >> 16) & 0xFFU),
              (unsigned)((ip >> 8) & 0xFFU),

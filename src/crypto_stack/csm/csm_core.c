@@ -140,7 +140,7 @@ csm_context_t* csm_init(const csm_config_t *config)
     
     /* 复制配置 */
     if (config != NULL) {
-        memcpy(&ctx->config, config, sizeof(csm_config_t));
+        (void)memcpy(&ctx->config, config, sizeof(csm_config_t));
     } else {
         /* 默认配置 */
         ctx->config.max_jobs = CSM_MAX_JOBS;
@@ -162,7 +162,7 @@ csm_context_t* csm_init(const csm_config_t *config)
     ctx->active_job = NULL;
     
     /* 初始化统计 */
-    memset(&ctx->stats, 0, sizeof(csm_queue_stats_t));
+    (void)memset(&ctx->stats, 0, sizeof(csm_queue_stats_t));
     
     /* 初始化回调表 */
     for (int i = 0; i < CSM_MAX_CALLBACKS; i++) {
@@ -184,7 +184,7 @@ void csm_deinit(csm_context_t *ctx)
     }
     
     /* 清空队列 */
-    csm_flush_queue(ctx);
+    (void)csm_flush_queue(ctx);
     
     ctx->initialized = false;
     /* 静态上下文: 不再 free(ctx) */
@@ -359,7 +359,7 @@ csm_status_t csm_job_process_sync(csm_context_t *ctx, uint32_t job_id,
     
     /* 如果Job已在队列中(QUEUED)，先从队列移除——同步处理立即出队执行 */
     if (job->state == CSM_JOB_STATE_QUEUED) {
-        csm_queue_remove(ctx, job);
+        (void)csm_queue_remove(ctx, job);
         if (ctx->stats.current_queue_depth > 0U) {
             ctx->stats.current_queue_depth--;
         }
@@ -412,7 +412,7 @@ csm_status_t csm_job_cancel(csm_context_t *ctx, uint32_t job_id)
     
     if (job->state == CSM_JOB_STATE_QUEUED) {
         /* 从队列移除 */
-        csm_queue_remove(ctx, job);
+        (void)csm_queue_remove(ctx, job);
         job->state = CSM_JOB_STATE_CANCELLED;
         job->result = CSM_ERROR_CANCELLED;
         ctx->stats.total_jobs_cancelled++;
@@ -459,7 +459,7 @@ csm_status_t csm_job_release(csm_context_t *ctx, uint32_t job_id)
         (ctx->high_prio_queue == job) ||
         ((ctx->normal_prio_queue == job)) ||
         (ctx->low_prio_queue == job)) {
-        csm_queue_remove(ctx, job);
+        (void)csm_queue_remove(ctx, job);
         if (ctx->stats.current_queue_depth > 0U) {
             ctx->stats.current_queue_depth--;
         }
@@ -497,7 +497,7 @@ csm_status_t csm_encrypt(csm_context_t *ctx, csm_algorithm_t algorithm,
     status = csm_job_process_sync(ctx, job_id, 5000);
     
 cleanup:
-    csm_job_release(ctx, job_id);
+    (void)csm_job_release(ctx, job_id);
     return status;
 }
 
@@ -523,7 +523,7 @@ csm_status_t csm_decrypt(csm_context_t *ctx, csm_algorithm_t algorithm,
     status = csm_job_process_sync(ctx, job_id, 5000);
     
 cleanup:
-    csm_job_release(ctx, job_id);
+    (void)csm_job_release(ctx, job_id);
     return status;
 }
 
@@ -549,7 +549,7 @@ csm_status_t csm_mac_generate(csm_context_t *ctx, csm_algorithm_t algorithm,
     status = csm_job_process_sync(ctx, job_id, 5000);
     
 cleanup:
-    csm_job_release(ctx, job_id);
+    (void)csm_job_release(ctx, job_id);
     return status;
 }
 
@@ -580,7 +580,7 @@ csm_status_t csm_mac_verify(csm_context_t *ctx, csm_algorithm_t algorithm,
     status = csm_job_process_sync(ctx, job_id, 5000);
     
 cleanup:
-    csm_job_release(ctx, job_id);
+    (void)csm_job_release(ctx, job_id);
     return status;
 }
 
@@ -605,7 +605,7 @@ csm_status_t csm_hash(csm_context_t *ctx, csm_algorithm_t algorithm,
     status = csm_job_process_sync(ctx, job_id, 5000);
     
 cleanup:
-    csm_job_release(ctx, job_id);
+    (void)csm_job_release(ctx, job_id);
     return status;
 }
 
@@ -626,7 +626,7 @@ csm_status_t csm_random_generate(csm_context_t *ctx, uint8_t *random_data,
     status = csm_job_process_sync(ctx, job_id, 5000);
     
 cleanup:
-    csm_job_release(ctx, job_id);
+    (void)csm_job_release(ctx, job_id);
     return status;
 }
 
@@ -645,11 +645,11 @@ uint32_t csm_process_queue(csm_context_t *ctx)
     
     /* 处理高优先级队列 */
     while (((job = csm_queue_peek(ctx)) != NULL) && (processed < 10U)) {
-        csm_queue_remove(ctx, job);
+        (void)csm_queue_remove(ctx, job);
         ctx->stats.current_queue_depth--;
         
         job->state = CSM_JOB_STATE_PROCESSING;
-        csm_process_job(ctx, job);
+        (void)csm_process_job(ctx, job);
         processed++;
     }
     
@@ -662,7 +662,7 @@ csm_status_t csm_get_queue_stats(csm_context_t *ctx, csm_queue_stats_t *stats)
         return CSM_ERROR_INVALID_PARAM;
     }
     
-    memcpy(stats, &ctx->stats, sizeof(csm_queue_stats_t));
+    (void)memcpy(stats, &ctx->stats, sizeof(csm_queue_stats_t));
     return CSM_OK;
 }
 
@@ -676,7 +676,7 @@ csm_status_t csm_flush_queue(csm_context_t *ctx)
     
     /* 取消所有排队的Job */
     while ((job = csm_queue_peek(ctx)) != NULL) {
-        csm_queue_remove(ctx, job);
+        (void)csm_queue_remove(ctx, job);
         job->state = CSM_JOB_STATE_CANCELLED;
         job->result = CSM_ERROR_CANCELLED;
         ctx->stats.total_jobs_cancelled++;

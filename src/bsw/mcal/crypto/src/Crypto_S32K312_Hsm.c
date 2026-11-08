@@ -1457,7 +1457,7 @@ Std_ReturnType S32K312_Hsm_Sha256Finish(S32K312_HsmSha256ContextType* context,
     result = S32K312_Hsm_Sha256(context->buffer, context->bufferLength, digest);
     
     /* Clear sensitive context */
-    S32K312_Hsm_Sha256Init(context);
+    (void)S32K312_Hsm_Sha256Init(context);
     
     return result;
 }

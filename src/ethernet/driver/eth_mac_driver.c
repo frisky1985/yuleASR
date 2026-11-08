@@ -45,7 +45,7 @@ typedef struct {
 static eth_mac_context_t g_mac_ctx = {0};
 
 /* 驱动表 - 支持多MAC实例 */
-#define ETH_MAC_MAX_INSTANCES   4
+#define ETH_MAC_MAX_INSTANCES   4U
 static eth_mac_context_t g_mac_instances[ETH_MAC_MAX_INSTANCES] = {0};
 static uint8_t g_mac_instance_count = 0;
 
@@ -172,7 +172,7 @@ eth_status_t eth_mac_init(const eth_mac_config_t *config)
     }
 
     /* 复制配置 */
-    memcpy(&g_mac_ctx.config, config, sizeof(eth_mac_config_t));
+    (void)memcpy(&g_mac_ctx.config, config, sizeof(eth_mac_config_t));
 
     /* 根据MAC类型选择初始化函数 */
     switch (config->mac_type) {
@@ -202,7 +202,7 @@ eth_status_t eth_mac_init(const eth_mac_config_t *config)
     }
 
     /* 初始化统计 */
-    memset(&g_mac_ctx.stats, 0, sizeof(eth_mac_stats_t));
+    (void)memset(&g_mac_ctx.stats, 0, sizeof(eth_mac_stats_t));
 
     /* 设置状态 */
     g_mac_ctx.state = ETH_MAC_STATE_INIT;
@@ -224,10 +224,10 @@ void eth_mac_deinit(void)
     }
 
     /* 停止MAC */
-    eth_mac_stop();
+    (void)eth_mac_stop();
 
     /* 清除状态 */
-    memset(&g_mac_ctx, 0, sizeof(eth_mac_context_t));
+    (void)memset(&g_mac_ctx, 0, sizeof(eth_mac_context_t));
     g_mac_ctx.state = ETH_MAC_STATE_UNINIT;
     g_mac_initialized = false;
 }
@@ -284,7 +284,7 @@ eth_status_t eth_mac_set_address(const eth_mac_addr_t mac_addr)
     }
 
     /* 更新配置 */
-    memcpy(g_mac_ctx.config.mac_addr, mac_addr, 6);
+    (void)memcpy(g_mac_ctx.config.mac_addr, mac_addr, 6);
 
     /* 应用到硬件(实际实现需要操作寄存器) */
     return ETH_OK;
@@ -296,7 +296,7 @@ eth_status_t eth_mac_get_address(eth_mac_addr_t mac_addr)
         return ETH_NOT_INIT;
     }
 
-    memcpy(mac_addr, g_mac_ctx.config.mac_addr, 6);
+    (void)memcpy(mac_addr, g_mac_ctx.config.mac_addr, 6);
     return ETH_OK;
 }
 
@@ -334,7 +334,7 @@ eth_status_t eth_mac_set_filter(const eth_mac_filter_t *filter)
         return ETH_INVALID_PARAM;
     }
 
-    memcpy(&g_mac_ctx.config.filter, filter, sizeof(eth_mac_filter_t));
+    (void)memcpy(&g_mac_ctx.config.filter, filter, sizeof(eth_mac_filter_t));
 
     /* 应用到硬件(实际实现) */
     return ETH_OK;
@@ -410,7 +410,7 @@ eth_status_t eth_mac_get_stats(eth_mac_stats_t *stats)
         return ETH_INVALID_PARAM;
     }
 
-    memcpy(stats, &g_mac_ctx.stats, sizeof(eth_mac_stats_t));
+    (void)memcpy(stats, &g_mac_ctx.stats, sizeof(eth_mac_stats_t));
     return ETH_OK;
 }
 
@@ -420,7 +420,7 @@ eth_status_t eth_mac_clear_stats(void)
         return ETH_NOT_INIT;
     }
 
-    memset(&g_mac_ctx.stats, 0, sizeof(eth_mac_stats_t));
+    (void)memset(&g_mac_ctx.stats, 0, sizeof(eth_mac_stats_t));
     return ETH_OK;
 }
 

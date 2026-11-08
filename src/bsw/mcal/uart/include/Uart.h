@@ -400,4 +400,5 @@ extern void Uart_MainFunction(void);
  */
 extern void Uart_IsrHandler(Uart_ChannelType Channel);
 
+
 #endif /* UART_H */

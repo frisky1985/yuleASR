@@ -149,9 +149,9 @@ static rtps_participant_proxy_t* rtps_participant_create(
         return NULL;
     }
     
-    memset(participant, 0, sizeof(rtps_participant_proxy_t));
-    memcpy(participant->guid_prefix, guid_prefix, RTPS_GUID_PREFIX_SIZE);
-    memcpy(participant->guid.prefix, guid_prefix, RTPS_GUID_PREFIX_SIZE);
+    (void)memset(participant, 0, sizeof(rtps_participant_proxy_t));
+    (void)memcpy(participant->guid_prefix, guid_prefix, RTPS_GUID_PREFIX_SIZE);
+    (void)memcpy(participant->guid.prefix, guid_prefix, RTPS_GUID_PREFIX_SIZE);
     participant->guid.entity_id[0] = 0x00;
     participant->guid.entity_id[1] = 0x00;
     participant->guid.entity_id[2] = 0x01;
@@ -267,7 +267,7 @@ static uint32_t serialize_participant_data(const rtps_participant_proxy_t *parti
     pos += 2U; /* padding */
     
     /* GUID Prefix */
-    memcpy(&buffer[pos], participant->guid_prefix, RTPS_GUID_PREFIX_SIZE);
+    (void)memcpy(&buffer[pos], participant->guid_prefix, RTPS_GUID_PREFIX_SIZE);
     pos += RTPS_GUID_PREFIX_SIZE;
     
     /* Expects Inline QoS */
@@ -321,8 +321,8 @@ eth_status_t rtps_discovery_init(rtps_discovery_context_t *ctx,
         return ETH_INVALID_PARAM;
     }
     
-    memset(ctx, 0, sizeof(rtps_discovery_context_t));
-    memcpy(&ctx->config, config, sizeof(rtps_discovery_config_t));
+    (void)memset(ctx, 0, sizeof(rtps_discovery_context_t));
+    (void)memcpy(&ctx->config, config, sizeof(rtps_discovery_config_t));
     
     /* 设置默认值 */
     if (ctx->config.initial_announce_period_ms == 0U) {
@@ -470,7 +470,7 @@ eth_status_t rtps_discovery_handle_packet(rtps_discovery_context_t *ctx,
     
     /* GUID Prefix */
     rtps_guid_prefix_t src_prefix;
-    memcpy(src_prefix, &data[pos], RTPS_GUID_PREFIX_SIZE);
+    (void)memcpy(src_prefix, &data[pos], RTPS_GUID_PREFIX_SIZE);
     pos += RTPS_GUID_PREFIX_SIZE;
     
     /* 查找已存在的参与者 */
@@ -510,8 +510,8 @@ eth_status_t rtps_discovery_create_participant_data(rtps_discovery_context_t *ct
     
     /* 创建临时参与者代理 */
     rtps_participant_proxy_t local_participant;
-    memset(&local_participant, 0, sizeof(local_participant));
-    memcpy(local_participant.guid_prefix, ctx->config.guid_prefix, RTPS_GUID_PREFIX_SIZE);
+    (void)memset(&local_participant, 0, sizeof(local_participant));
+    (void)memcpy(local_participant.guid_prefix, ctx->config.guid_prefix, RTPS_GUID_PREFIX_SIZE);
     local_participant.protocol_version = (2 << 16) | 4;
     local_participant.vendor_id = RTPS_VENDOR_ID;
     local_participant.available_builtin_endpoints = 
@@ -788,15 +788,15 @@ eth_status_t rtps_discovery_create_endpoint_data(rtps_discovery_context_t *ctx,
     }
     
     /* 端点GUID */
-    memcpy(&buffer[pos], endpoint->guid.prefix, RTPS_GUID_PREFIX_SIZE);
+    (void)memcpy(&buffer[pos], endpoint->guid.prefix, RTPS_GUID_PREFIX_SIZE);
     pos += RTPS_GUID_PREFIX_SIZE;
-    memcpy(&buffer[pos], endpoint->guid.entity_id, RTPS_ENTITY_ID_SIZE);
+    (void)memcpy(&buffer[pos], endpoint->guid.entity_id, RTPS_ENTITY_ID_SIZE);
     pos += RTPS_ENTITY_ID_SIZE;
     
     /* 参与者GUID */
-    memcpy(&buffer[pos], endpoint->participant_guid.prefix, RTPS_GUID_PREFIX_SIZE);
+    (void)memcpy(&buffer[pos], endpoint->participant_guid.prefix, RTPS_GUID_PREFIX_SIZE);
     pos += RTPS_GUID_PREFIX_SIZE;
-    memcpy(&buffer[pos], endpoint->participant_guid.entity_id, RTPS_ENTITY_ID_SIZE);
+    (void)memcpy(&buffer[pos], endpoint->participant_guid.entity_id, RTPS_ENTITY_ID_SIZE);
     pos += RTPS_ENTITY_ID_SIZE;
     
     /* 主题名称 */
@@ -809,7 +809,7 @@ eth_status_t rtps_discovery_create_endpoint_data(rtps_discovery_context_t *ctx,
     pos++;
     buffer[pos] = topic_len & 0xFFU;
     pos++;
-    memcpy(&buffer[pos], endpoint->topic_name, topic_len);
+    (void)memcpy(&buffer[pos], endpoint->topic_name, topic_len);
     pos += topic_len;
     /* 4字节对齐 */
     while ((pos % 4U) != 0U) { buffer[pos] = 0; pos++; }
@@ -824,7 +824,7 @@ eth_status_t rtps_discovery_create_endpoint_data(rtps_discovery_context_t *ctx,
     pos++;
     buffer[pos] = type_len & 0xFFU;
     pos++;
-    memcpy(&buffer[pos], endpoint->type_name, type_len);
+    (void)memcpy(&buffer[pos], endpoint->type_name, type_len);
     pos += type_len;
     while ((pos % 4U) != 0U) { buffer[pos] = 0; pos++; }
     

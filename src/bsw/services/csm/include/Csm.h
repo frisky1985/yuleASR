@@ -785,6 +785,7 @@ extern Std_ReturnType Csm_GetJobState(
 extern void Csm_GetVersionInfo(Std_VersionInfoType* versioninfo);
 #endif
 
+
 #define CSM_STOP_SEC_CODE
 #include "Csm_MemMap.h"
 

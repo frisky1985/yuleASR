@@ -363,16 +363,14 @@ Std_ReturnType Rte_SchedulerCreateTask(uint8 taskId, uint8 priority, uint32 peri
 /**
  * @brief   Activates a task
  */
-Std_ReturnType Rte_SchedulerActivateTask(uint8 taskId)
-{
+static Std_ReturnType Rte_SchedulerActivateTask(uint8 taskId){
     return Rte_SchedulerActivateTaskInternal(taskId);
 }
 
 /**
  * @brief   Terminates current task
  */
-void Rte_SchedulerTerminateTask(void)
-{
+static void Rte_SchedulerTerminateTask(void){
     if (Rte_SchedulerState.CurrentTask != 0xFFU)
     {
         Rte_SchedulerTerminateTaskInternal(Rte_SchedulerState.CurrentTask);
@@ -534,8 +532,7 @@ Rte_StatusType Rte_ClearEvent(Rte_InstanceHandleType instance, Rte_EventType eve
 /**
  * @brief   Scheduler tick handler
  */
-void Rte_SchedulerTick(void)
-{
+static void Rte_SchedulerTick(void){
     if (Rte_SchedulerState.IsInitialized && Rte_SchedulerState.IsRunning)
     {
         /* Increment tick counter */
@@ -567,24 +564,21 @@ void Rte_Scheduler_MainFunction(void)
 /**
  * @brief   Gets scheduler status
  */
-boolean Rte_SchedulerIsRunning(void)
-{
+static boolean Rte_SchedulerIsRunning(void){
     return Rte_SchedulerState.IsRunning;
 }
 
 /**
  * @brief   Gets current task ID
  */
-uint8 Rte_SchedulerGetCurrentTask(void)
-{
+static uint8 Rte_SchedulerGetCurrentTask(void){
     return Rte_SchedulerState.CurrentTask;
 }
 
 /**
  * @brief   Gets tick counter
  */
-uint32 Rte_SchedulerGetTickCount(void)
-{
+uint32 Rte_SchedulerGetTickCount(void){
     return Rte_SchedulerState.TickCounter;
 }
 

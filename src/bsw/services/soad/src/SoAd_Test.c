@@ -127,8 +127,7 @@ static const SoAd_ConfigType TestConfig = {
 /**
  * @brief Test SoAd_Init with valid configuration
  */
-void Test_SoAd_Init_Valid(void)
-{
+static void Test_SoAd_Init_Valid(void){
     (void)printf("\n[Test] SoAd_Init with valid configuration\n");
     
     /* Pre-condition: Module should be uninitialized */
@@ -145,8 +144,7 @@ void Test_SoAd_Init_Valid(void)
 /**
  * @brief Test SoAd_Init with NULL_PTR pointer
  */
-void Test_SoAd_Init_Null(void)
-{
+static void Test_SoAd_Init_Null(void){
     (void)printf("\n[Test] SoAd_Init with NULL_PTR pointer\n");
     
     /* Pre-condition: Reset state */
@@ -162,8 +160,7 @@ void Test_SoAd_Init_Null(void)
 /**
  * @brief Test SoAd_DeInit
  */
-void Test_SoAd_DeInit(void)
-{
+static void Test_SoAd_DeInit(void){
     (void)printf("\n[Test] SoAd_DeInit\n");
     
     /* Pre-condition: Initialize first */
@@ -180,8 +177,7 @@ void Test_SoAd_DeInit(void)
  * @brief Test SoAd_GetVersionInfo
  */
 #if (SOAD_VERSION_INFO_API == STD_ON)
-void Test_SoAd_GetVersionInfo(void)
-{
+static void Test_SoAd_GetVersionInfo(void){
     Std_VersionInfoType versionInfo;
     
     (void)printf("\n[Test] SoAd_GetVersionInfo\n");
@@ -203,8 +199,7 @@ void Test_SoAd_GetVersionInfo(void)
 /**
  * @brief Test SoAd_OpenTcpConnection
  */
-void Test_SoAd_OpenTcpConnection(void)
-{
+static void Test_SoAd_OpenTcpConnection(void){
     Std_ReturnType result;
     
     (void)printf("\n[Test] SoAd_OpenTcpConnection\n");
@@ -224,8 +219,7 @@ void Test_SoAd_OpenTcpConnection(void)
 /**
  * @brief Test SoAd_OpenTcpConnection with invalid ID
  */
-void Test_SoAd_OpenTcpConnection_InvalidId(void)
-{
+static void Test_SoAd_OpenTcpConnection_InvalidId(void){
     Std_ReturnType result;
     
     (void)printf("\n[Test] SoAd_OpenTcpConnection with invalid ID\n");
@@ -243,8 +237,7 @@ void Test_SoAd_OpenTcpConnection_InvalidId(void)
 /**
  * @brief Test SoAd_OpenUdpConnection
  */
-void Test_SoAd_OpenUdpConnection(void)
-{
+static void Test_SoAd_OpenUdpConnection(void){
     Std_ReturnType result;
     
     (void)printf("\n[Test] SoAd_OpenUdpConnection\n");
@@ -264,8 +257,7 @@ void Test_SoAd_OpenUdpConnection(void)
 /**
  * @brief Test SoAd_CloseTcpConnection
  */
-void Test_SoAd_CloseTcpConnection(void)
-{
+static void Test_SoAd_CloseTcpConnection(void){
     Std_ReturnType result;
     
     (void)printf("\n[Test] SoAd_CloseTcpConnection\n");
@@ -286,8 +278,7 @@ void Test_SoAd_CloseTcpConnection(void)
 /**
  * @brief Test SoAd_Send
  */
-void Test_SoAd_Send(void)
-{
+static void Test_SoAd_Send(void){
     Std_ReturnType result;
     PduInfoType pduInfo;
     uint8 testData[8] = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
@@ -314,8 +305,7 @@ void Test_SoAd_Send(void)
 /**
  * @brief Test SoAd_Send with NULL_PTR pointer
  */
-void Test_SoAd_Send_Null(void)
-{
+static void Test_SoAd_Send_Null(void){
     Std_ReturnType result;
     
     (void)printf("\n[Test] SoAd_Send with NULL_PTR pointer\n");
@@ -333,8 +323,7 @@ void Test_SoAd_Send_Null(void)
 /**
  * @brief Test SoAd_Receive
  */
-void Test_SoAd_Receive(void)
-{
+static void Test_SoAd_Receive(void){
     Std_ReturnType result;
     PduInfoType pduInfo;
     PduLengthType length = 100U;
@@ -359,8 +348,7 @@ void Test_SoAd_Receive(void)
 /**
  * @brief Test SoAd_MainFunction
  */
-void Test_SoAd_MainFunction(void)
-{
+static void Test_SoAd_MainFunction(void){
     (void)printf("\n[Test] SoAd_MainFunction\n");
     
     /* Pre-condition: Initialize */
@@ -376,8 +364,7 @@ void Test_SoAd_MainFunction(void)
 /**
  * @brief Test SoAd_MainFunction without initialization
  */
-void Test_SoAd_MainFunction_Uninit(void)
-{
+static void Test_SoAd_MainFunction_Uninit(void){
     (void)printf("\n[Test] SoAd_MainFunction without initialization\n");
     
     /* Pre-condition: Ensure uninitialized */
@@ -393,8 +380,7 @@ void Test_SoAd_MainFunction_Uninit(void)
 /**
  * @brief Test multiple connections
  */
-void Test_SoAd_MultipleConnections(void)
-{
+static void Test_SoAd_MultipleConnections(void){
     Std_ReturnType result1, result2;
     
     (void)printf("\n[Test] SoAd_MultipleConnections\n");

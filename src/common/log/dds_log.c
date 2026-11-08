@@ -23,8 +23,8 @@
  * 宏和常量
  *============================================================================*/
 #define DDS_LOG_MAGIC           0x4444534C  /* "DDSL" */
-#define DDS_LOG_VERSION         1
-#define DDS_LOG_LOCK_TIMEOUT_MS 100
+#define DDS_LOG_VERSION         1U
+#define DDS_LOG_LOCK_TIMEOUT_MS 100U
 
 /* 颜色代码 */
 #define COLOR_RESET     "\033[0m"
@@ -221,7 +221,7 @@ static const char* log_type_to_string(dds_log_type_t type) {
  *============================================================================*/
 
 static int queue_init(log_queue_t* queue, uint32_t capacity) {
-    memset(queue, 0, sizeof(log_queue_t));
+    (void)memset(queue, 0, sizeof(log_queue_t));
     queue->capacity = capacity;
     pthread_mutex_init(&queue->mutex, NULL);
     pthread_cond_init(&queue->cond_not_empty, NULL);
@@ -253,7 +253,7 @@ static int queue_push(log_queue_t* queue, const dds_log_entry_t* entry) {
         return -1;
     }
     
-    memcpy(&node->entry, entry, sizeof(dds_log_entry_t));
+    (void)memcpy(&node->entry, entry, sizeof(dds_log_entry_t));
     node->next = NULL;
     
     if ((queue->tail) != 0U) {
@@ -296,7 +296,7 @@ static int queue_pop(log_queue_t* queue, dds_log_entry_t* entry) {
     }
     queue->size--;
     
-    memcpy(entry, &node->entry, sizeof(dds_log_entry_t));
+    (void)memcpy(entry, &node->entry, sizeof(dds_log_entry_t));
     /* 静态节点池回收 */
     {
         uintptr_t base = (uintptr_t)s_queue_node_pool;
@@ -358,7 +358,7 @@ static int ensure_directory(const char* path) {
 
 static int open_new_log_file(void) {
     if ((g_log_state.log_fp) != 0U) {
-        fclose(g_log_state.log_fp);
+        (void)fclose(g_log_state.log_fp);
         g_log_state.log_fp = NULL;
     }
     
@@ -366,7 +366,7 @@ static int open_new_log_file(void) {
     time_t now = time(NULL);
     struct tm* tm_info = localtime(&now);
     
-    Debug_Snprintf(filename, sizeof(filename), "%s/%s.%04d%02d%02d_%02d%02d%02d_%03u.log",
+    (void)Debug_Snprintf(filename, sizeof(filename), "%s/%s.%04d%02d%02d_%02d%02d%02d_%03u.log",
              g_log_state.config.log_dir,
              g_log_state.config.log_name,
              tm_info->tm_year + 1900,
@@ -382,16 +382,16 @@ static int open_new_log_file(void) {
         return -1;
     }
     
-    strncpy(g_log_state.current_file, filename, DDS_LOG_MAX_PATH_LEN - 1);
+    (void)strncpy(g_log_state.current_file, filename, DDS_LOG_MAX_PATH_LEN - 1);
     g_log_state.current_file_size = 0;
     
     /* 写入文件头 */
-    Debug_Fprintf(g_log_state.log_fp, "# DDS Log File v%d\n", DDS_LOG_VERSION);
-    Debug_Fprintf(g_log_state.log_fp, "# ECU: %s\n", g_log_state.config.ecu_id);
-    Debug_Fprintf(g_log_state.log_fp, "# Created: %04d-%02d-%02d %02d:%02d:%02d\n\n",
+    (void)Debug_Fprintf(g_log_state.log_fp, "# DDS Log File v%d\n", DDS_LOG_VERSION);
+    (void)Debug_Fprintf(g_log_state.log_fp, "# ECU: %s\n", g_log_state.config.ecu_id);
+    (void)Debug_Fprintf(g_log_state.log_fp, "# Created: %04d-%02d-%02d %02d:%02d:%02d\n\n",
             tm_info->tm_year + 1900, tm_info->tm_mon + 1, tm_info->tm_mday,
             tm_info->tm_hour, tm_info->tm_min, tm_info->tm_sec);
-    fflush(g_log_state.log_fp);
+    (void)fflush(g_log_state.log_fp);
     
     return 0;
 }
@@ -414,7 +414,7 @@ static int write_to_file(const char* buffer) {
     /* 检查是否需要轮转 */
     if (g_log_state.config.enable_rotation &&
         ((g_log_state.current_file_size + len) > g_log_state.config.max_file_size)) {
-        rotate_log_file();
+        (void)rotate_log_file();
     }
     
     if (fputs(buffer, g_log_state.log_fp) == EOF) {
@@ -437,7 +437,7 @@ static int write_to_file(const char* buffer) {
 static void format_log_entry(const dds_log_entry_t* entry, char* buffer, size_t size, bool use_color) {
     char time_str[32];
     struct tm* tm_info = localtime(&entry->timestamp.tv_sec);
-    strftime(time_str, sizeof(time_str), "%Y-%m-%d %H:%M:%S", tm_info);
+    (void)strftime(time_str, sizeof(time_str), "%Y-%m-%d %H:%M:%S", tm_info);
     
     int offset = 0;
     
@@ -500,14 +500,14 @@ static void output_log(const dds_log_entry_t* entry) {
     /* 控制台输出 */
     if (g_log_state.config.enable_console) {
         format_log_entry(entry, buffer, sizeof(buffer), g_log_state.config.enable_color);
-        fputs(buffer, (entry->level <= DDS_LOG_LEVEL_ERROR) ? stderr : stdout);
+        (void)fputs(buffer, (entry->level <= DDS_LOG_LEVEL_ERROR) ? stderr : stdout);
     }
     
     /* 文件输出 */
     if (g_log_state.config.enable_file) {
         format_log_entry(entry, buffer, sizeof(buffer), false);
         pthread_mutex_lock(&g_log_state.mutex);
-        write_to_file(buffer);
+        (void)write_to_file(buffer);
         pthread_mutex_unlock(&g_log_state.mutex);
     }
     
@@ -537,7 +537,7 @@ static void* flush_thread_func(void* arg) {
         /* 定期刷新文件 */
         pthread_mutex_lock(&g_log_state.mutex);
         if ((g_log_state.log_fp) != 0U) {
-            fflush(g_log_state.log_fp);
+            (void)fflush(g_log_state.log_fp);
         }
         pthread_mutex_unlock(&g_log_state.mutex);
         
@@ -565,11 +565,11 @@ int dds_log_init(const dds_log_config_t* config) {
         return -1;
     }
     
-    memset(&g_log_state, 0, sizeof(g_log_state));
+    (void)memset(&g_log_state, 0, sizeof(g_log_state));
     
     /* 复制配置 */
     if ((config) != 0U) {
-        memcpy(&g_log_state.config, config, sizeof(dds_log_config_t));
+        (void)memcpy(&g_log_state.config, config, sizeof(dds_log_config_t));
     } else {
         /* 默认配置 */
         g_log_state.config.level = DDS_LOG_LEVEL_INFO;
@@ -585,7 +585,7 @@ int dds_log_init(const dds_log_config_t* config) {
         g_log_state.config.max_files = DDS_LOG_MAX_FILES;
         g_log_state.config.queue_size = DDS_LOG_QUEUE_SIZE;
         g_log_state.config.flush_interval_ms = 100;
-        strcpy(g_log_state.config.log_name, "dds");
+        (void)strcpy(g_log_state.config.log_name, "dds");
     }
     
     /* 初始化同步 */
@@ -606,14 +606,14 @@ int dds_log_init(const dds_log_config_t* config) {
     
     /* 初始化异步队列 */
     if (g_log_state.config.enable_async) {
-        queue_init(&g_log_state.queue, g_log_state.config.queue_size);
+        (void)queue_init(&g_log_state.queue, g_log_state.config.queue_size);
         g_log_state.flush_running = true;
         pthread_create(&g_log_state.flush_thread, NULL, flush_thread_func, NULL);
     }
     
     /* 设置ECU ID */
     if (strlen(g_log_state.config.ecu_id) == 0U) {
-        Debug_Snprintf(g_log_state.config.ecu_id, DDS_LOG_ECUID_LEN, "ECU%04X", getpid() & 0xFFFF);
+        (void)Debug_Snprintf(g_log_state.config.ecu_id, DDS_LOG_ECUID_LEN, "ECU%04X", getpid() & 0xFFFF);
     }
     
     g_log_state.magic = DDS_LOG_MAGIC;
@@ -642,8 +642,8 @@ void dds_log_deinit(void) {
     /* 关闭文件 */
     pthread_mutex_lock(&g_log_state.mutex);
     if ((g_log_state.log_fp) != 0U) {
-        fflush(g_log_state.log_fp);
-        fclose(g_log_state.log_fp);
+        (void)fflush(g_log_state.log_fp);
+        (void)fclose(g_log_state.log_fp);
         g_log_state.log_fp = NULL;
     }
     pthread_mutex_unlock(&g_log_state.mutex);
@@ -721,7 +721,7 @@ void dds_log_flush(void) {
     
     pthread_mutex_lock(&g_log_state.mutex);
     if ((g_log_state.log_fp) != 0U) {
-        fflush(g_log_state.log_fp);
+        (void)fflush(g_log_state.log_fp);
     }
     pthread_mutex_unlock(&g_log_state.mutex);
 }
@@ -756,7 +756,7 @@ void dds_log_vwrite(dds_log_level_t level, dds_log_type_t type,
     
     /* 构建日志条目 */
     dds_log_entry_t entry;
-    memset(&entry, 0, sizeof(entry));
+    (void)memset(&entry, 0, sizeof(entry));
     
     entry.timestamp_ns = get_timestamp_ns();
     clock_gettime(CLOCK_REALTIME, &entry.timestamp);
@@ -770,18 +770,18 @@ void dds_log_vwrite(dds_log_level_t level, dds_log_type_t type,
     if ((file) != 0U) { strncpy(entry.file, file, DDS_LOG_MAX_FILE_NAME - 1); }
     
     /* 复制ECU ID */
-    strncpy(entry.ecu_id, g_log_state.config.ecu_id, DDS_LOG_ECUID_LEN - 1);
+    (void)strncpy(entry.ecu_id, g_log_state.config.ecu_id, DDS_LOG_ECUID_LEN - 1);
     
     /* UDS会话 */
     pthread_mutex_lock(&g_log_state.uds_mutex);
-    strncpy(entry.uds_session, g_log_state.uds_session, DDS_LOG_UDS_SESSION_ID_LEN - 1);
+    (void)strncpy(entry.uds_session, g_log_state.uds_session, DDS_LOG_UDS_SESSION_ID_LEN - 1);
     pthread_mutex_unlock(&g_log_state.uds_mutex);
     
     /* 序列号 */
     entry.sequence_num = __sync_fetch_and_add(&g_log_state.sequence_counter, 1);
     
     /* 格式化消息 */
-    Debug_Vsnprintf(entry.message, DDS_LOG_MAX_MESSAGE_LEN - 1, fmt, args);
+    (void)Debug_Vsnprintf(entry.message, DDS_LOG_MAX_MESSAGE_LEN - 1, fmt, args);
     
     /* 输出 */
     if (g_log_state.config.enable_async) {
@@ -834,7 +834,7 @@ void dds_log_audit(dds_audit_event_type_t event_type,
     va_list args;
     char message[DDS_LOG_MAX_MESSAGE_LEN];
     va_start(args, fmt);
-    Debug_Vsnprintf(message, sizeof(message) - 1U, fmt, args);
+    (void)Debug_Vsnprintf(message, sizeof(message) - 1U, fmt, args);
     va_end(args);
     
     /* 发送日志 */
@@ -845,11 +845,11 @@ void dds_log_audit(dds_audit_event_type_t event_type,
     dds_audit_event_t event;
     event.timestamp_ns = get_timestamp_ns();
     event.event_type = event_type;
-    strncpy(event.ecu_id, g_log_state.config.ecu_id, DDS_LOG_ECUID_LEN - 1);
+    (void)strncpy(event.ecu_id, g_log_state.config.ecu_id, DDS_LOG_ECUID_LEN - 1);
     pthread_mutex_lock(&g_log_state.uds_mutex);
-    strncpy(event.uds_session, g_log_state.uds_session, DDS_LOG_UDS_SESSION_ID_LEN - 1);
+    (void)strncpy(event.uds_session, g_log_state.uds_session, DDS_LOG_UDS_SESSION_ID_LEN - 1);
     pthread_mutex_unlock(&g_log_state.uds_mutex);
-    strncpy(event.description, message, DDS_LOG_MAX_MESSAGE_LEN - 1);
+    (void)strncpy(event.description, message, DDS_LOG_MAX_MESSAGE_LEN - 1);
     event.severity = (event_type & DDS_AUDIT_EVENT_SECURITY_ALERT) ? 2 : 1;
     
     callback_node_t* node = g_log_state.audit_callbacks;
@@ -947,7 +947,7 @@ void dds_log_set_module_level(const char* module, dds_log_level_t level) {
         }
     }
     if ((node) != 0U) {
-        strncpy(node->module, module, DDS_LOG_MAX_MODULE_LEN - 1);
+        (void)strncpy(node->module, module, DDS_LOG_MAX_MODULE_LEN - 1);
         node->level = level;
         node->next = g_log_state.module_levels;
         g_log_state.module_levels = node;
@@ -996,17 +996,17 @@ int dds_log_trigger_ota_upload(const char* session_id, bool compress) {
     
     /* 构建OTA日志条目 */
     dds_ota_log_entry_t entry;
-    memset(&entry, 0, sizeof(entry));
+    (void)memset(&entry, 0, sizeof(entry));
     entry.timestamp_ns = get_timestamp_ns();
-    strncpy(entry.ecu_id, g_log_state.config.ecu_id, DDS_LOG_ECUID_LEN - 1);
+    (void)strncpy(entry.ecu_id, g_log_state.config.ecu_id, DDS_LOG_ECUID_LEN - 1);
     if ((session_id) != 0U) {
-        strncpy(entry.uds_session, session_id, DDS_LOG_UDS_SESSION_ID_LEN - 1);
+        (void)strncpy(entry.uds_session, session_id, DDS_LOG_UDS_SESSION_ID_LEN - 1);
     }
     
     /* 读取日志文件 */
     pthread_mutex_lock(&g_log_state.mutex);
     if ((g_log_state.log_fp) != 0U) {
-        fflush(g_log_state.log_fp);
+        (void)fflush(g_log_state.log_fp);
     }
     pthread_mutex_unlock(&g_log_state.mutex);
     
@@ -1041,10 +1041,10 @@ int dds_log_get_ota_buffer(uint8_t* buffer, uint32_t buffer_size, uint32_t* actu
 void dds_log_set_uds_session(const char* session_id) {
     pthread_mutex_lock(&g_log_state.uds_mutex);
     if ((session_id) != 0U) {
-        strncpy(g_log_state.uds_session, session_id, DDS_LOG_UDS_SESSION_ID_LEN - 1);
+        (void)strncpy(g_log_state.uds_session, session_id, DDS_LOG_UDS_SESSION_ID_LEN - 1);
         DDS_LOG_INFO("DDS_LOG", "UDS", "UDS session started: %s", session_id);
     } else {
-        memset(g_log_state.uds_session, 0, sizeof(g_log_state.uds_session));
+        (void)memset(g_log_state.uds_session, 0, sizeof(g_log_state.uds_session));
     }
     pthread_mutex_unlock(&g_log_state.uds_mutex);
 }
@@ -1054,7 +1054,7 @@ void dds_log_clear_uds_session(void) {
     if (strlen(g_log_state.uds_session) > 0U) {
         DDS_LOG_INFO("DDS_LOG", "UDS", "UDS session ended: %s", g_log_state.uds_session);
     }
-    memset(g_log_state.uds_session, 0, sizeof(g_log_state.uds_session));
+    (void)memset(g_log_state.uds_session, 0, sizeof(g_log_state.uds_session));
     pthread_mutex_unlock(&g_log_state.uds_mutex);
 }
 
@@ -1073,7 +1073,7 @@ void dds_log_uds_event(uint8_t service_id, uint8_t response_code, const char* de
 void dds_log_get_stats(dds_log_stats_t* stats) {
     if (!stats) { return; }
     pthread_mutex_lock(&g_log_state.stats_mutex);
-    memcpy(stats, &g_log_state.stats, sizeof(dds_log_stats_t));
+    (void)memcpy(stats, &g_log_state.stats, sizeof(dds_log_stats_t));
     stats->current_queue_size = g_log_state.queue.size;
     stats->current_file_size = g_log_state.current_file_size;
     pthread_mutex_unlock(&g_log_state.stats_mutex);
@@ -1087,7 +1087,7 @@ int dds_log_get_current_file(char* path, size_t path_size) {
         pthread_mutex_unlock(&g_log_state.mutex);
         return -1;
     }
-    strncpy(path, g_log_state.current_file, path_size - 1U);
+    (void)strncpy(path, g_log_state.current_file, path_size - 1U);
     pthread_mutex_unlock(&g_log_state.mutex);
     
     return 0;
@@ -1108,7 +1108,7 @@ int dds_log_get_file_list(char** files, uint32_t max_files, uint32_t* actual_cou
             /* 静态文件列表缓冲 (固定上限 DDS_LOG_MAX_FILES) */
             files[*actual_count] = s_file_list_pool[*actual_count];
             if ((files[*actual_count]) != 0U) {
-                Debug_Snprintf(files[*actual_count], DDS_LOG_MAX_PATH_LEN, "%s/%s",
+                (void)Debug_Snprintf(files[*actual_count], DDS_LOG_MAX_PATH_LEN, "%s/%s",
                          g_log_state.config.log_dir, entry->d_name);
                 (*actual_count)++;
             }

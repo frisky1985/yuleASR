@@ -45,7 +45,7 @@
 #define STORAGE_BLOCK_DATA_SIZE             256U
 
 /* Write cycle threshold for maintenance */
-#define STORAGE_WRITE_CYCLE_THRESHOLD       100000
+#define STORAGE_WRITE_CYCLE_THRESHOLD       100000U
 
 /*==================================================================================================
 *                                    LOCAL TYPES
@@ -161,7 +161,7 @@ STATIC void Swc_StorageManager_CheckWriteCycles(void)
     for (i = 0; i < swcStorageManager.numBlocks; i++) {
         if (swcStorageManager.blocks[i].status.writeCycleCounter > STORAGE_WRITE_CYCLE_THRESHOLD) {
             /* Trigger maintenance - in real implementation, would trigger block relocation */
-            Det_ReportError(SWC_STORAGEMANAGER_MODULE_ID, SWC_STORAGEMANAGER_INSTANCE_ID,
+            (void)Det_ReportError(SWC_STORAGEMANAGER_MODULE_ID, SWC_STORAGEMANAGER_INSTANCE_ID,
                             0x50, RTE_E_OK);
         }
     }
@@ -206,7 +206,7 @@ void Swc_StorageManager_Init(void)
 
     swcStorageManager.isInitialized = TRUE;
 
-    Det_ReportError(SWC_STORAGEMANAGER_MODULE_ID, SWC_STORAGEMANAGER_INSTANCE_ID,
+    (void)Det_ReportError(SWC_STORAGEMANAGER_MODULE_ID, SWC_STORAGEMANAGER_INSTANCE_ID,
                     0x01, RTE_E_OK);
 }
 
@@ -282,7 +282,7 @@ Swc_StorageResultType Swc_StorageManager_ReadBlock(uint16 blockId,
     }
 
     /* Copy data */
-    memcpy(data, swcStorageManager.blocks[blockIndex].data, length);
+    (void)memcpy(data, swcStorageManager.blocks[blockIndex].data, length);
 
     /* Update statistics */
     swcStorageManager.statistics.readOperations++;
@@ -331,7 +331,7 @@ Swc_StorageResultType Swc_StorageManager_WriteBlock(uint16 blockId,
     swcStorageManager.blocks[blockIndex].status.state = STORAGE_BLOCK_WRITING;
 
     /* Copy data */
-    memcpy(swcStorageManager.blocks[blockIndex].data, data, length);
+    (void)memcpy(swcStorageManager.blocks[blockIndex].data, data, length);
     swcStorageManager.blocks[blockIndex].status.dataLength = length;
 
     /* Calculate CRC */
@@ -434,7 +434,7 @@ Swc_StorageResultType Swc_StorageManager_EraseBlock(uint16 blockId)
     }
 
     /* Clear block data */
-    memset(swcStorageManager.blocks[blockIndex].data, 0xFF, STORAGE_BLOCK_DATA_SIZE);
+    (void)memset(swcStorageManager.blocks[blockIndex].data, 0xFF, STORAGE_BLOCK_DATA_SIZE);
 
     /* Reset block status */
     swcStorageManager.blocks[blockIndex].status.state = STORAGE_BLOCK_EMPTY;

@@ -24,7 +24,7 @@
 
 #define GPTP_MAX_DOMAINS                3U
 #define GPTP_MAX_PORTS                  8U
-#define GPTP_MAX_CLOCK_IDENTITY_LEN     8
+#define GPTP_MAX_CLOCK_IDENTITY_LEN     8U
 
 #define NS_PER_SEC                      1000000000ULL
 #define NS_PER_MS                       1000000ULL
@@ -303,8 +303,8 @@ eth_status_t gptp_init(const gptp_config_t *config) {
         gptp_deinit();
     }
     
-    memset(&g_gptp_state, 0, sizeof(g_gptp_state));
-    memcpy(&g_gptp_state.config, config, sizeof(gptp_config_t));
+    (void)memset(&g_gptp_state, 0, sizeof(g_gptp_state));
+    (void)memcpy(&g_gptp_state.config, config, sizeof(gptp_config_t));
     
     /* 初始化域 */
     for (int i = 0; (unsigned int)((unsigned int)(i)) < GPTP_MAX_DOMAINS; i++) {
@@ -334,11 +334,11 @@ void gptp_deinit(void) {
     /* 停止所有域 */
     for (int i = 0; (unsigned int)((unsigned int)(i)) < GPTP_MAX_DOMAINS; i++) {
         if (g_gptp_state.domains[i].active) {
-            gptp_stop(i);
+            (void)gptp_stop(i);
         }
     }
     
-    memset(&g_gptp_state, 0, sizeof(g_gptp_state));
+    (void)memset(&g_gptp_state, 0, sizeof(g_gptp_state));
 }
 
 eth_status_t gptp_start(uint8_t domain_index) {
@@ -363,7 +363,7 @@ eth_status_t gptp_start(uint8_t domain_index) {
     domain->clock_state.rate_ratio_ppb = 0;
     
     /* 执行BMC选择 */
-    gptp_run_bmc(domain_index);
+    (void)gptp_run_bmc(domain_index);
     
     return ETH_OK;
 }
@@ -386,10 +386,10 @@ eth_status_t gptp_config_port(uint8_t port_index, const gptp_port_config_t *port
         return ETH_INVALID_PARAM;
     }
     
-    memcpy(&g_gptp_state.ports[port_index].config, port_config, sizeof(gptp_port_config_t));
+    (void)memcpy(&g_gptp_state.ports[port_index].config, port_config, sizeof(gptp_port_config_t));
     
     /* 设置端口标识 */
-    memcpy(g_gptp_state.ports[port_index].port_identity.clock_identity,
+    (void)memcpy(g_gptp_state.ports[port_index].port_identity.clock_identity,
            port_config->mac_addr, 6);
     g_gptp_state.ports[port_index].port_identity.port_number = port_config->port_id;
     
@@ -401,7 +401,7 @@ eth_status_t gptp_config_domain(uint8_t domain_index, const gptp_domain_config_t
         return ETH_INVALID_PARAM;
     }
     
-    memcpy(&g_gptp_state.domains[domain_index].config, domain_config, sizeof(gptp_domain_config_t));
+    (void)memcpy(&g_gptp_state.domains[domain_index].config, domain_config, sizeof(gptp_domain_config_t));
     
     return ETH_OK;
 }
@@ -466,7 +466,7 @@ eth_status_t gptp_run_bmc(uint8_t domain_index) {
     
     /* 如果配置为GM Capable，则成为Grandmaster */
     if (g_gptp_state.config.gm_capable) {
-        memcpy(domain->priority_vector.root_system_identity,
+        (void)memcpy(domain->priority_vector.root_system_identity,
                domain->config.clock_identity, GPTP_MAX_CLOCK_IDENTITY_LEN);
         domain->bmc_state = GPTP_BMC_STATE_SUPERIOR_MASTER;
         domain->state = GPTP_DOMAIN_STATE_SYNCHRONIZED;
@@ -477,7 +477,7 @@ eth_status_t gptp_run_bmc(uint8_t domain_index) {
         }
         
         /* 复制GM标识 */
-        memcpy(domain->clock_state.gm_identity,
+        (void)memcpy(domain->clock_state.gm_identity,
                domain->config.clock_identity, GPTP_MAX_CLOCK_IDENTITY_LEN);
     } else {
         domain->bmc_state = GPTP_BMC_STATE_PASSIVE;
@@ -496,7 +496,7 @@ eth_status_t gptp_get_gm_identity(uint8_t domain_index, gptp_clock_identity_t *g
         return ETH_INVALID_PARAM;
     }
     
-    memcpy(gm_identity, g_gptp_state.domains[domain_index].clock_state.gm_identity,
+    (void)memcpy(gm_identity, g_gptp_state.domains[domain_index].clock_state.gm_identity,
            GPTP_MAX_CLOCK_IDENTITY_LEN);
     
     return ETH_OK;
@@ -528,7 +528,7 @@ eth_status_t gptp_start_pdelay_measurement(uint8_t port_index) {
     port->pdelay.valid = false;
     
     /* 记录Pdelay_Req发送时间 */
-    gptp_capture_timestamp(port->config.port_id, &port->pdelay.t1);
+    (void)gptp_capture_timestamp(port->config.port_id, &port->pdelay.t1);
     
     return ETH_OK;
 }
@@ -538,7 +538,7 @@ eth_status_t gptp_get_pdelay_result(uint8_t port_index, gptp_pdelay_result_t *re
         return ETH_INVALID_PARAM;
     }
     
-    memcpy(result, &g_gptp_state.ports[port_index].pdelay, sizeof(gptp_pdelay_result_t));
+    (void)memcpy(result, &g_gptp_state.ports[port_index].pdelay, sizeof(gptp_pdelay_result_t));
     
     return ETH_OK;
 }
@@ -554,7 +554,7 @@ eth_status_t gptp_handle_pdelay_req(uint8_t port_index, const gptp_timestamp_t *
     port->pdelay.t2 = *rx_timestamp;
     
     /* 发送Pdelay_Resp，记录发送时间 (t3) */
-    gptp_capture_timestamp(port->config.port_id, &port->pdelay.t3);
+    (void)gptp_capture_timestamp(port->config.port_id, &port->pdelay.t3);
     
     /* 通知时间戳回调 */
     if ((g_gptp_state.timestamp_cb) != 0U) {
@@ -579,7 +579,7 @@ eth_status_t gptp_handle_pdelay_resp(uint8_t port_index, const void *resp_data) 
     }
     
     /* 记录Pdelay_Resp接收时间 (t4) */
-    gptp_capture_timestamp(port->config.port_id, &port->pdelay.t4);
+    (void)gptp_capture_timestamp(port->config.port_id, &port->pdelay.t4);
     
     /* 标记测量有效并计算 */
     port->pdelay.valid = true;
@@ -600,7 +600,7 @@ eth_status_t gptp_send_sync(uint8_t port_index, uint32_t sync_interval_ms) {
     
     /* 记录Sync发送时间戳 */
     gptp_timestamp_t tx_timestamp;
-    gptp_capture_timestamp(port->config.port_id, &tx_timestamp);
+    (void)gptp_capture_timestamp(port->config.port_id, &tx_timestamp);
     
     port->tx_sync_count++;
     g_gptp_state.message_sequence_id++;
@@ -683,7 +683,7 @@ eth_status_t gptp_get_clock_state(uint8_t domain_index, gptp_clock_state_t *stat
         return ETH_INVALID_PARAM;
     }
     
-    memcpy(state, &g_gptp_state.domains[domain_index].clock_state, sizeof(gptp_clock_state_t));
+    (void)memcpy(state, &g_gptp_state.domains[domain_index].clock_state, sizeof(gptp_clock_state_t));
     
     return ETH_OK;
 }
@@ -733,7 +733,7 @@ eth_status_t gptp_init_safety_monitor(uint8_t domain_index) {
     
     gptp_safety_monitor_t *monitor = &g_gptp_state.domains[domain_index].safety_monitor;
     
-    memset(monitor, 0, sizeof(gptp_safety_monitor_t));
+    (void)memset(monitor, 0, sizeof(gptp_safety_monitor_t));
     monitor->max_clock_drift_ppb = GPTP_MAX_CLOCK_DRIFT_PPB;
     monitor->timestamp_integrity_ok = true;
     monitor->bmc_integrity_ok = true;
@@ -778,7 +778,7 @@ eth_status_t gptp_get_safety_monitor(uint8_t domain_index, gptp_safety_monitor_t
         return ETH_INVALID_PARAM;
     }
     
-    memcpy(monitor, &g_gptp_state.domains[domain_index].safety_monitor,
+    (void)memcpy(monitor, &g_gptp_state.domains[domain_index].safety_monitor,
            sizeof(gptp_safety_monitor_t));
     
     return ETH_OK;
@@ -850,7 +850,7 @@ const char* gptp_timestamp_to_string(const gptp_timestamp_t *ts, char *buf, size
         return NULL;
     }
     
-    Debug_Snprintf(buf, buf_size, "%lu.%09lu", (unsigned long)ts->seconds, 
+    (void)Debug_Snprintf(buf, buf_size, "%lu.%09lu", (unsigned long)ts->seconds, 
              (unsigned long)ts->nanoseconds);
     return buf;
 }

@@ -429,7 +429,7 @@ static int test_csm_queue_management(void)
     return 0;
 }
 
-static void test_callback(uint32_t job_id, csm_status_t result, void *user_data)
+void test_callback(uint32_t job_id, csm_status_t result, void *user_data)
 {
     (void)job_id;
     int *callback_count = (int*)user_data;

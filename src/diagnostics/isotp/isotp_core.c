@@ -123,7 +123,7 @@ Isotp_ReturnType IsoTp_ParseNpci(
     uint8_t pciByte = frame[offset];
     uint8_t pciType = pciByte & ISOTP_N_PCI_TYPE_MASK;
     
-    memset(npci, 0, sizeof(Isotp_NpciType));
+    (void)memset(npci, 0, sizeof(Isotp_NpciType));
     npci->pciType = pciType;
     
     switch (pciType) {
@@ -269,7 +269,7 @@ Isotp_ReturnType IsoTp_BuildSingleFrame(
         return ISOTP_E_INVALID_PARAMETER;
     }
     
-    memset(outFrame, 0xAAU, ISOTP_CANFD_MAX_FRAME_SIZE);  /* Fill with padding */
+    (void)memset(outFrame, 0xAAU, ISOTP_CANFD_MAX_FRAME_SIZE);  /* Fill with padding */
     
     /* Extended addressing byte (if applicable) */
     if (offset > 0U) {
@@ -281,11 +281,11 @@ Isotp_ReturnType IsoTp_BuildSingleFrame(
         /* CAN FD extended SF DL */
         outFrame[offset] = 0x00U;  /* Extended encoding */
         outFrame[offset + 1U] = (uint8_t)dataLen;
-        memcpy(&outFrame[offset + 2U], data, dataLen);
+        (void)memcpy(&outFrame[offset + 2U], data, dataLen);
         *outLen = offset + 2U + dataLen;
     } else {
         outFrame[offset] = ISOTP_N_PCI_SF | (uint8_t)dataLen;
-        memcpy(&outFrame[offset + 1U], data, dataLen);
+        (void)memcpy(&outFrame[offset + 1U], data, dataLen);
         *outLen = offset + 1U + dataLen;
     }
     
@@ -318,7 +318,7 @@ Isotp_ReturnType IsoTp_BuildFirstFrame(
     uint8_t maxPayload = isFd ? (62U - offset) : (6U - offset);
     uint8_t payloadLen = (totalLen < maxPayload) ? (uint8_t)totalLen : maxPayload;
     
-    memset(outFrame, 0xAAU, ISOTP_CANFD_MAX_FRAME_SIZE);
+    (void)memset(outFrame, 0xAAU, ISOTP_CANFD_MAX_FRAME_SIZE);
     
     /* Extended addressing byte (if applicable) */
     if (offset > 0U) {
@@ -330,7 +330,7 @@ Isotp_ReturnType IsoTp_BuildFirstFrame(
     outFrame[offset + 1U] = (uint8_t)(totalLen & 0xFFU);
     
     /* Copy first data bytes */
-    memcpy(&outFrame[offset + 2U], data, payloadLen);
+    (void)memcpy(&outFrame[offset + 2U], data, payloadLen);
     
     *outLen = isFd ? ISOTP_CANFD_DEFAULT_FRAME_SIZE : ISOTP_CAN20_FRAME_SIZE;
     
@@ -353,7 +353,7 @@ Isotp_ReturnType IsoTp_BuildConsecutiveFrame(
     
     uint8_t offset = IsoTp_GetAddrOffset(addrMode);
     
-    memset(outFrame, 0xAAU, ISOTP_CANFD_MAX_FRAME_SIZE);
+    (void)memset(outFrame, 0xAAU, ISOTP_CANFD_MAX_FRAME_SIZE);
     
     /* Extended addressing byte (if applicable) */
     if (offset > 0U) {
@@ -362,7 +362,7 @@ Isotp_ReturnType IsoTp_BuildConsecutiveFrame(
     
     /* PCI byte: 0x2X where X = sequence number (0-15) */
     outFrame[offset] = ISOTP_N_PCI_CF | (seqNum & 0x0FU);
-    memcpy(&outFrame[offset + 1U], data, dataLen);
+    (void)memcpy(&outFrame[offset + 1U], data, dataLen);
     
     *outLen = offset + 1U + dataLen;
     
@@ -393,7 +393,7 @@ Isotp_ReturnType IsoTp_BuildFlowControlFrame(
     
     uint8_t offset = IsoTp_GetAddrOffset(addrMode);
     
-    memset(outFrame, 0xAAU, ISOTP_CANFD_MAX_FRAME_SIZE);
+    (void)memset(outFrame, 0xAAU, ISOTP_CANFD_MAX_FRAME_SIZE);
     
     /* Extended addressing byte (if applicable) */
     if (offset > 0U) {
@@ -424,8 +424,8 @@ Isotp_ReturnType IsoTp_Init(
     }
     
     /* Clear context */
-    memset(&g_isotpContext, 0, sizeof(g_isotpContext));
-    memset(g_channelContexts, 0, sizeof(g_channelContexts));
+    (void)memset(&g_isotpContext, 0, sizeof(g_isotpContext));
+    (void)memset(g_channelContexts, 0, sizeof(g_channelContexts));
     
     g_isotpContext.channelConfigs = config;
     g_isotpContext.numChannels = numChannels;
@@ -446,8 +446,8 @@ Isotp_ReturnType IsoTp_Init(
 
 void IsoTp_DeInit(void)
 {
-    memset(&g_isotpContext, 0, sizeof(g_isotpContext));
-    memset(g_channelContexts, 0, sizeof(g_channelContexts));
+    (void)memset(&g_isotpContext, 0, sizeof(g_isotpContext));
+    (void)memset(g_channelContexts, 0, sizeof(g_channelContexts));
 }
 
 /******************************************************************************
@@ -687,7 +687,7 @@ Isotp_ReturnType IsoTp_ProcessRxFrame(
                 return ISOTP_E_NO_BUFFER;
             }
             
-            memcpy(ctx->rxBuffer, payload, npci.dataLength);
+            (void)memcpy(ctx->rxBuffer, payload, npci.dataLength);
             ctx->rxReceivedLength = npci.dataLength;
             ctx->rxLength = npci.dataLength;
             ctx->state = ISOTP_STATE_RX_DONE;
@@ -698,7 +698,7 @@ Isotp_ReturnType IsoTp_ProcessRxFrame(
             /* First Frame - start multi-frame reception */
             if (ctx->rxBuffer == NULL || config->rxBufferSize < npci.dataLength) {
                 /* Send overflow FC */
-                IsoTp_BuildFlowControlFrame(
+                (void)IsoTp_BuildFlowControlFrame(
                     ISOTP_FS_OVFLW,
                     0U,
                     0U,
@@ -706,13 +706,13 @@ Isotp_ReturnType IsoTp_ProcessRxFrame(
                     &frameLen,
                     config->addressing.addrMode
                 );
-                IsoTp_SendCanFrame(channelId, config->addressing.rxCanId, frame, frameLen);
+                (void)IsoTp_SendCanFrame(channelId, config->addressing.rxCanId, frame, frameLen);
                 return ISOTP_E_BUFFER_OVERFLOW;
             }
             
             ctx->rxLength = npci.dataLength;
             ctx->rxReceivedLength = payloadLen;
-            memcpy(ctx->rxBuffer, payload, payloadLen);
+            (void)memcpy(ctx->rxBuffer, payload, payloadLen);
             ctx->rxSeqNum = 1U;  /* Expect seq 1 in first CF */
             ctx->rxWftCounter = 0U;
             
@@ -734,7 +734,7 @@ Isotp_ReturnType IsoTp_ProcessRxFrame(
             ctx->rxStMin = stmin;
             
             /* Send Flow Control (CTS) */
-            IsoTp_BuildFlowControlFrame(
+            (void)IsoTp_BuildFlowControlFrame(
                 ISOTP_FS_CTS,
                 bs,
                 stmin,
@@ -742,7 +742,7 @@ Isotp_ReturnType IsoTp_ProcessRxFrame(
                 &frameLen,
                 config->addressing.addrMode
             );
-            IsoTp_SendCanFrame(channelId, config->addressing.rxCanId, frame, frameLen);
+            (void)IsoTp_SendCanFrame(channelId, config->addressing.rxCanId, frame, frameLen);
             
             ctx->state = ISOTP_STATE_RX_WAIT_CF;
             ctx->rxWaitStartTime = IsoTp_GetCurrentTime();
@@ -765,7 +765,7 @@ Isotp_ReturnType IsoTp_ProcessRxFrame(
             /* Copy data */
             uint16_t remaining = ctx->rxLength - ctx->rxReceivedLength;
             uint16_t bytesToCopy = (payloadLen < remaining) ? payloadLen : remaining;
-            memcpy(&ctx->rxBuffer[ctx->rxReceivedLength], payload, bytesToCopy);
+            (void)memcpy(&ctx->rxBuffer[ctx->rxReceivedLength], payload, bytesToCopy);
             ctx->rxReceivedLength += bytesToCopy;
             ctx->rxSeqNum = (ctx->rxSeqNum + 1U) & 0x0FU;
             ctx->rxBlockCount++;
@@ -776,7 +776,7 @@ Isotp_ReturnType IsoTp_ProcessRxFrame(
             } else if (ctx->rxBlockSize > 0U && ctx->rxBlockCount >= ctx->rxBlockSize) {
                 /* Block complete, send CTS FC */
                 ctx->rxBlockCount = 0U;
-                IsoTp_BuildFlowControlFrame(
+                (void)IsoTp_BuildFlowControlFrame(
                     ISOTP_FS_CTS,
                     ctx->rxBlockSize,
                     ctx->rxStMin,
@@ -784,7 +784,7 @@ Isotp_ReturnType IsoTp_ProcessRxFrame(
                     &frameLen,
                     config->addressing.addrMode
                 );
-                IsoTp_SendCanFrame(channelId, config->addressing.rxCanId, frame, frameLen);
+                (void)IsoTp_SendCanFrame(channelId, config->addressing.rxCanId, frame, frameLen);
                 ctx->rxWaitStartTime = IsoTp_GetCurrentTime();
             } else {
                 ctx->rxWaitStartTime = IsoTp_GetCurrentTime();

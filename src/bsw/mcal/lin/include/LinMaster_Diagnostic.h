@@ -345,4 +345,5 @@ LinMaster_Diag_StatusType LinMaster_Diag_CommunicationControl(
     uint8 CommunicationType
 );
 
+
 #endif /* LINMASTER_DIAGNOSTIC_H */

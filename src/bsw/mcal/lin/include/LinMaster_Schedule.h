@@ -325,4 +325,5 @@ void LinMaster_Schedule_SetCyclic(boolean IsCyclic);
  */
 Std_ReturnType LinMaster_Schedule_Reset(void);
 
+
 #endif /* LINMASTER_SCHEDULE_H */

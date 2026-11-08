@@ -995,8 +995,7 @@ STATIC void WdgM_PerformSafetyAction(uint32 errorCode)
 
 #ifdef UNIT_TEST
 #include <string.h>
-void WdgM_TestReset(void)
-{
+void WdgM_TestReset(void){
     WdgM_State = WDGM_STATE_UNINIT;
     WdgM_CurrentMode = WDGM_WATCHDOG_MODE_OFF;
     WdgM_CurrentConfig = NULL_PTR;
@@ -1012,8 +1011,7 @@ void WdgM_TestReset(void)
     WdgM_DisableAllowed = FALSE;
 }
 
-void WdgM_TestSetDisableAllowed(boolean allow)
-{
+void WdgM_TestSetDisableAllowed(boolean allow){
     WdgM_DisableAllowed = allow;
 }
 #endif

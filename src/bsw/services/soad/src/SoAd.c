@@ -807,8 +807,7 @@ void SoAd_LocalIpAddrAssignmentChg(uint16 LocalAddrId, TcpIp_IpAddrStateType Sta
 
 /* For backward compatibility with test code: */
 /** @req SWS_SoAd_00020 */
-void SoAd_TriggerTransmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
-{
+void SoAd_TriggerTransmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr){
     (void)TxPduId;
     (void)PduInfoPtr;
 }

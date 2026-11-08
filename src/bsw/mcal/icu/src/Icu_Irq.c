@@ -49,7 +49,7 @@
  * @brief Process edge detection interrupt
  */
 /** @req SWS_Icu_00009 */
-static void Icu_ProcessEdgeDetection(Icu_ChannelType Channel)
+void Icu_ProcessEdgeDetection(Icu_ChannelType Channel)
 {
     /* Set input state to active */
     Icu_ChannelState[Channel].InputState = ICU_ACTIVE;
@@ -65,7 +65,7 @@ static void Icu_ProcessEdgeDetection(Icu_ChannelType Channel)
  * @brief Process signal measurement interrupt
  */
 /** @req SWS_Icu_00018 */
-static void Icu_ProcessSignalMeasurement(Icu_ChannelType Channel)
+void Icu_ProcessSignalMeasurement(Icu_ChannelType Channel)
 {
     uint32 baseAddr = Icu_GetTpmBaseAddr(Channel);
     uint8 chOffset = Icu_GetTpmChannelOffset(Channel);
@@ -145,7 +145,7 @@ static void Icu_ProcessSignalMeasurement(Icu_ChannelType Channel)
  * @brief Process timestamp interrupt
  */
 /** @req SWS_Icu_00011 */
-static void Icu_ProcessTimestamp(Icu_ChannelType Channel, Icu_ValueType CurrentValue)
+void Icu_ProcessTimestamp(Icu_ChannelType Channel, Icu_ValueType CurrentValue)
 {
     (void)CurrentValue;
     uint32 baseAddr = Icu_GetTpmBaseAddr(Channel);
@@ -188,7 +188,7 @@ static void Icu_ProcessTimestamp(Icu_ChannelType Channel, Icu_ValueType CurrentV
  * @brief Process edge count interrupt
  */
 /** @req SWS_Icu_00015 */
-static void Icu_ProcessEdgeCount(Icu_ChannelType Channel)
+void Icu_ProcessEdgeCount(Icu_ChannelType Channel)
 {
     /* Increment edge counter */
     if (Icu_ChannelState[Channel].EdgeCount < ICU_MAX_EDGE_COUNT) {
@@ -272,8 +272,7 @@ static void Icu_ProcessChannelInterrupt(Icu_ChannelType Channel)
  * @brief TPM1 Interrupt Handler (Channels 0-1)
  */
 /** @req SWS_Icu_00025 */
-void Icu_TPM1_IRQHandler(void)
-{
+static void Icu_TPM1_IRQHandler(void){
     /* Process Channel 0 */
     Icu_ProcessChannelInterrupt(ICU_CHANNEL_0);
     
@@ -285,8 +284,7 @@ void Icu_TPM1_IRQHandler(void)
  * @brief TPM2 Interrupt Handler (Channels 2-3)
  */
 /** @req SWS_Icu_00025 */
-void Icu_TPM2_IRQHandler(void)
-{
+static void Icu_TPM2_IRQHandler(void){
     /* Process Channel 2 */
     Icu_ProcessChannelInterrupt(ICU_CHANNEL_2);
     
@@ -298,8 +296,7 @@ void Icu_TPM2_IRQHandler(void)
  * @brief TPM3 Interrupt Handler (Channels 4-5)
  */
 /** @req SWS_Icu_00025 */
-void Icu_TPM3_IRQHandler(void)
-{
+static void Icu_TPM3_IRQHandler(void){
     /* Process Channel 4 */
     Icu_ProcessChannelInterrupt(ICU_CHANNEL_4);
     
@@ -311,8 +308,7 @@ void Icu_TPM3_IRQHandler(void)
  * @brief TPM4 Interrupt Handler (Channels 6-7)
  */
 /** @req SWS_Icu_00025 */
-void Icu_TPM4_IRQHandler(void)
-{
+static void Icu_TPM4_IRQHandler(void){
     /* Process Channel 6 */
     Icu_ProcessChannelInterrupt(ICU_CHANNEL_6);
     

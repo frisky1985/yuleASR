@@ -184,7 +184,7 @@ dds_PublisherHandleType dds_create_publisher(
     if (pub == NULL) {
         return DDS_ENTITY_INVALID; /* 池满 (编译期固定上限) */
     }
-    memset(pub, 0, sizeof(*pub));
+    (void)memset(pub, 0, sizeof(*pub));
 
     pub->guid = participant->guid;
     pub->participant = participant;
@@ -214,7 +214,7 @@ dds_SubscriberHandleType dds_create_subscriber(
     if (sub == NULL) {
         return DDS_ENTITY_INVALID; /* 池满 */
     }
-    memset(sub, 0, sizeof(*sub));
+    (void)memset(sub, 0, sizeof(*sub));
 
     sub->guid = participant->guid;
     sub->participant = participant;
@@ -246,13 +246,13 @@ dds_TopicHandleType dds_create_topic(
     if (topic == NULL) {
         return DDS_ENTITY_INVALID; /* 池满 */
     }
-    memset(topic, 0, sizeof(*topic));
+    (void)memset(topic, 0, sizeof(*topic));
 
     topic->guid = participant->guid;
     topic->participant = participant;
     topic->qos = (qos != NULL) ? qos->base : participant->qos;
-    strncpy(topic->name, topic_name, sizeof(topic->name) - 1U);
-    strncpy(topic->type_name, type_name, sizeof(topic->type_name) - 1U);
+    (void)strncpy(topic->name, topic_name, sizeof(topic->name) - 1U);
+    (void)strncpy(topic->type_name, type_name, sizeof(topic->type_name) - 1U);
     topic->active = true;
 
     topic->next = participant->topics;
@@ -284,7 +284,7 @@ dds_DataWriterHandleType dds_create_writer(
     if (writer == NULL) {
         return DDS_ENTITY_INVALID; /* 池满 */
     }
-    memset(writer, 0, sizeof(*writer));
+    (void)memset(writer, 0, sizeof(*writer));
 
     writer->guid = topic->guid;
     writer->publisher = publisher;
@@ -293,7 +293,7 @@ dds_DataWriterHandleType dds_create_writer(
     writer->active = true;
 
     /* 初始化 RTPS 状态机 (rtps_state.h 提供) */
-    rtps_writer_sm_init(&writer->state_machine, &writer->guid,
+    (void)rtps_writer_sm_init(&writer->state_machine, &writer->guid,
                         (writer->qos.history_depth > 0U) ? writer->qos.history_depth : 1U);
 
     writer->next = publisher->writers;
@@ -322,7 +322,7 @@ dds_DataReaderHandleType dds_create_reader(
     if (reader == NULL) {
         return DDS_ENTITY_INVALID; /* 池满 */
     }
-    memset(reader, 0, sizeof(*reader));
+    (void)memset(reader, 0, sizeof(*reader));
 
     reader->guid = topic->guid;
     reader->subscriber = subscriber;
@@ -331,7 +331,7 @@ dds_DataReaderHandleType dds_create_reader(
     reader->active = true;
 
     /* 初始化 RTPS 状态机 */
-    rtps_reader_sm_init(&reader->state_machine, &reader->guid,
+    (void)rtps_reader_sm_init(&reader->state_machine, &reader->guid,
                         (reader->qos.history_depth > 0U) ? reader->qos.history_depth : 1U);
 
     /* 默认接收缓冲: 静态池 (每个 reader 槽位一个固定 4KB 缓冲) */
@@ -415,10 +415,10 @@ dds_ReturnCode_t dds_take(
     }
 
     /* 简化: 单样本取出 (完整实现见 pubsub/dds_reader.c) */
-    memcpy(data, reader->receive_buffer, (reader->receive_buffer_size > 0U) ? reader->receive_buffer_size : 0U);
+    (void)memcpy(data, reader->receive_buffer, (reader->receive_buffer_size > 0U) ? reader->receive_buffer_size : 0U);
 
     if (sample_info != NULL) {
-        memset(sample_info, 0, sizeof(*sample_info));
+        (void)memset(sample_info, 0, sizeof(*sample_info));
         sample_info->valid_data = true;
         sample_info->source_timestamp = reader->last_read_time;
         sample_info->sample_state = 0x01; /* DDS_READ_SAMPLE_STATE */

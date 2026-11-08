@@ -811,8 +811,7 @@ void Flash_DeInit(void)
  * @brief Erase one or more complete flash sectors
  */
 /** @req SWS_Fls_00015 */
-Std_ReturnType Flash_Erase(Flash_AddressType TargetAddress, Flash_LengthType Length)
-{
+static Std_ReturnType Flash_Erase(Flash_AddressType TargetAddress, Flash_LengthType Length){
     Std_ReturnType result = E_NOT_OK;
 
     if (Flash_DriverState.initState != FLASH_INITIALIZED) {

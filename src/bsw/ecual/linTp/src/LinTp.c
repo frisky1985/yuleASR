@@ -707,7 +707,7 @@ Std_ReturnType LinTp_TriggerTransmit(PduIdType TxPduId, PduInfoType *PduInfoPtr)
                 if (PduInfoPtr->SduLength >= (PduLengthType)(channelPtr->DataLength + 1U))
                 {
                     PduInfoPtr->SduDataPtr[0] = LINTP_BUILD_PCI_SF(channelPtr->DataLength);
-                    memcpy(&PduInfoPtr->SduDataPtr[1], channelPtr->TxBuffer, channelPtr->DataLength);
+                    (void)memcpy(&PduInfoPtr->SduDataPtr[1], channelPtr->TxBuffer, channelPtr->DataLength);
                     return E_OK;
                 }
                 break;
@@ -719,7 +719,7 @@ Std_ReturnType LinTp_TriggerTransmit(PduIdType TxPduId, PduInfoType *PduInfoPtr)
                     PduInfoPtr->SduDataPtr[0] = LINTP_BUILD_PCI_FF(
                         (uint8)((channelPtr->DataLength >> 8) & 0x0FU),
                         (uint8)(channelPtr->DataLength & 0xFFU));
-                    memcpy(&PduInfoPtr->SduDataPtr[1], channelPtr->TxBuffer, LINTP_FF_MAX_DATA_LENGTH);
+                    (void)memcpy(&PduInfoPtr->SduDataPtr[1], channelPtr->TxBuffer, LINTP_FF_MAX_DATA_LENGTH);
                     channelPtr->DataIndex = LINTP_FF_MAX_DATA_LENGTH;
                     return E_OK;
                 }
@@ -734,7 +734,7 @@ Std_ReturnType LinTp_TriggerTransmit(PduIdType TxPduId, PduInfoType *PduInfoPtr)
                                                LINTP_CF_MAX_DATA_LENGTH : remaining;
 
                     PduInfoPtr->SduDataPtr[0] = LINTP_BUILD_PCI_CF(channelPtr->SequenceNumber);
-                    memcpy(&PduInfoPtr->SduDataPtr[1], &channelPtr->TxBuffer[channelPtr->DataIndex], payloadLen);
+                    (void)memcpy(&PduInfoPtr->SduDataPtr[1], &channelPtr->TxBuffer[channelPtr->DataIndex], payloadLen);
                     return E_OK;
                 }
                 break;
@@ -832,7 +832,7 @@ static void LinTp_ResetChannel(uint8 ChannelIdx)
  *  FUNCTION: LinTp_ProcessTxStateMachine
  *  Purpose: Process transmission state machine
  *================================================================================================*/
-static void LinTp_ProcessTxStateMachine(uint8 ChannelIdx)
+void LinTp_ProcessTxStateMachine(uint8 ChannelIdx)
 {
     const LinTp_ChannelRuntimeType *channelPtr = &LinTp_Internal.ChannelRuntime[ChannelIdx];
 
@@ -880,7 +880,7 @@ static void LinTp_ProcessTxStateMachine(uint8 ChannelIdx)
  *  FUNCTION: LinTp_ProcessRxStateMachine
  *  Purpose: Process reception state machine
  *================================================================================================*/
-static void LinTp_ProcessRxStateMachine(uint8 ChannelIdx)
+void LinTp_ProcessRxStateMachine(uint8 ChannelIdx)
 {
     LinTp_ChannelRuntimeType *channelPtr = &LinTp_Internal.ChannelRuntime[ChannelIdx];
 
@@ -920,7 +920,7 @@ static void LinTp_ProcessRxStateMachine(uint8 ChannelIdx)
  *  FUNCTION: LinTp_ProcessSingleFrame
  *  Purpose: Process received Single Frame
  *================================================================================================*/
-static void LinTp_ProcessSingleFrame(uint8 ChannelIdx, const PduInfoType *PduInfoPtr)
+void LinTp_ProcessSingleFrame(uint8 ChannelIdx, const PduInfoType *PduInfoPtr)
 {
     uint8 dataLength;
     PduInfoType pduRInfo;
@@ -997,7 +997,7 @@ static void LinTp_ProcessSingleFrame(uint8 ChannelIdx, const PduInfoType *PduInf
  *  FUNCTION: LinTp_ProcessFirstFrame
  *  Purpose: Process received First Frame
  *================================================================================================*/
-static void LinTp_ProcessFirstFrame(uint8 ChannelIdx, const PduInfoType *PduInfoPtr)
+void LinTp_ProcessFirstFrame(uint8 ChannelIdx, const PduInfoType *PduInfoPtr)
 {
     uint16 dataLength;
     PduInfoType pduRInfo;
@@ -1038,7 +1038,7 @@ static void LinTp_ProcessFirstFrame(uint8 ChannelIdx, const PduInfoType *PduInfo
     channelPtr->BlockCount = 0U;
 
     /* Copy FF payload to local buffer */
-    memcpy(channelPtr->RxBuffer, &PduInfoPtr->SduDataPtr[2], LINTP_FF_MAX_DATA_LENGTH);
+    (void)memcpy(channelPtr->RxBuffer, &PduInfoPtr->SduDataPtr[2], LINTP_FF_MAX_DATA_LENGTH);
 
     /* Request buffer from PduR */
     pduRInfo.SduLength = LINTP_FF_MAX_DATA_LENGTH;
@@ -1079,7 +1079,7 @@ static void LinTp_ProcessFirstFrame(uint8 ChannelIdx, const PduInfoType *PduInfo
  *  FUNCTION: LinTp_ProcessConsecutiveFrame
  *  Purpose: Process received Consecutive Frame
  *================================================================================================*/
-static void LinTp_ProcessConsecutiveFrame(uint8 ChannelIdx, const PduInfoType *PduInfoPtr)
+void LinTp_ProcessConsecutiveFrame(uint8 ChannelIdx, const PduInfoType *PduInfoPtr)
 {
     uint8 sequenceNumber;
     PduLengthType payloadLength;
@@ -1120,7 +1120,7 @@ static void LinTp_ProcessConsecutiveFrame(uint8 ChannelIdx, const PduInfoType *P
     payloadLength = (bytesToCopy > LINTP_CF_MAX_DATA_LENGTH) ? LINTP_CF_MAX_DATA_LENGTH : bytesToCopy;
 
     /* Copy CF payload to local buffer */
-    memcpy(&channelPtr->RxBuffer[channelPtr->DataIndex], &PduInfoPtr->SduDataPtr[1], payloadLength);
+    (void)memcpy(&channelPtr->RxBuffer[channelPtr->DataIndex], &PduInfoPtr->SduDataPtr[1], payloadLength);
 
     /* Update index and sequence number */
     channelPtr->DataIndex += payloadLength;
@@ -1169,7 +1169,7 @@ static void LinTp_ProcessConsecutiveFrame(uint8 ChannelIdx, const PduInfoType *P
  *  FUNCTION: LinTp_ProcessFlowControl
  *  Purpose: Process received Flow Control frame
  *================================================================================================*/
-static void LinTp_ProcessFlowControl(uint8 ChannelIdx, const PduInfoType *PduInfoPtr)
+void LinTp_ProcessFlowControl(uint8 ChannelIdx, const PduInfoType *PduInfoPtr)
 {
     uint8 flowStatus;
     uint8 blockSize;
@@ -1250,7 +1250,7 @@ static void LinTp_ProcessFlowControl(uint8 ChannelIdx, const PduInfoType *PduInf
  *  FUNCTION: LinTp_SendFlowControl
  *  Purpose: Send a Flow Control frame
  *================================================================================================*/
-static void LinTp_SendFlowControl(uint8 ChannelIdx, LinTp_FlowStatusType FlowStatus)
+void LinTp_SendFlowControl(uint8 ChannelIdx, LinTp_FlowStatusType FlowStatus)
 {
     LinTp_ChannelRuntimeType *channelPtr = &LinTp_Internal.ChannelRuntime[ChannelIdx];
 
@@ -1263,7 +1263,7 @@ static void LinTp_SendFlowControl(uint8 ChannelIdx, LinTp_FlowStatusType FlowSta
  *  FUNCTION: LinTp_CopyTxData
  *  Purpose: Request Tx data from PduR
  *================================================================================================*/
-static Std_ReturnType LinTp_CopyTxData(uint8 ChannelIdx)
+Std_ReturnType LinTp_CopyTxData(uint8 ChannelIdx)
 {
     PduInfoType pduInfo;
     RetryInfoType retryInfo;
@@ -1312,7 +1312,7 @@ static Std_ReturnType LinTp_CopyTxData(uint8 ChannelIdx)
  *  FUNCTION: LinTp_ProvideRxBuffer
  *  Purpose: Provide buffer for reception
  *================================================================================================*/
-static Std_ReturnType LinTp_ProvideRxBuffer(uint8 ChannelIdx)
+Std_ReturnType LinTp_ProvideRxBuffer(uint8 ChannelIdx)
 {
     /* Buffer is statically allocated */
     return E_OK;
@@ -1322,7 +1322,7 @@ static Std_ReturnType LinTp_ProvideRxBuffer(uint8 ChannelIdx)
  *  FUNCTION: LinTp_AbortTransmission
  *  Purpose: Abort an ongoing transmission
  *================================================================================================*/
-static void LinTp_AbortTransmission(uint8 ChannelIdx)
+void LinTp_AbortTransmission(uint8 ChannelIdx)
 {
     LinTp_ChannelRuntimeType *channelPtr = &LinTp_Internal.ChannelRuntime[ChannelIdx];
 
@@ -1337,7 +1337,7 @@ static void LinTp_AbortTransmission(uint8 ChannelIdx)
  *  FUNCTION: LinTp_AbortReception
  *  Purpose: Abort an ongoing reception
  *================================================================================================*/
-static void LinTp_AbortReception(uint8 ChannelIdx)
+void LinTp_AbortReception(uint8 ChannelIdx)
 {
     LinTp_ChannelRuntimeType *channelPtr = &LinTp_Internal.ChannelRuntime[ChannelIdx];
 

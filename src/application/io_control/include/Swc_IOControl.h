@@ -249,6 +249,7 @@ extern Rte_StatusType Swc_IOControl_GetStatistics(Swc_IOStatisticsType* stats);
  */
 extern Rte_StatusType Swc_IOControl_ResetStatistics(void);
 
+
 #define RTE_STOP_SEC_CODE
 #include "MemMap.h"
 

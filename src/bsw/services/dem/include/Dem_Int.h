@@ -270,6 +270,7 @@ extern Std_ReturnType Dem_IntValidateDTC(Dem_DTCType DTC, Dem_DTCOriginType Orig
 extern void Dem_IntProcessDebounceMainFunction(uint32 DeltaTimeMs);
 extern void Dem_IntProcessAgingMainFunction(void);
 
+
 #define DEM_STOP_SEC_CODE
 #include "MemMap.h"
 

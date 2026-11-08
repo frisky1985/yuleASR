@@ -21,8 +21,8 @@
  * Private Definitions
  ******************************************************************************/
 #define ARA_COM_INITIALIZED_MAGIC       0xA5A5A5A5U
-#define ARA_COM_MAX_SAMPLE_POOL_SIZE    1024
-#define ARA_COM_METHOD_TIMEOUT_DEFAULT  5000
+#define ARA_COM_MAX_SAMPLE_POOL_SIZE    1024U
+#define ARA_COM_METHOD_TIMEOUT_DEFAULT  5000U
 
 /******************************************************************************
  * Private Types
@@ -183,13 +183,13 @@ Std_ReturnType ara_com_Init(void)
     }
 
     /* 清零服务表 */
-    memset(g_araComContext.services, 0, sizeof(g_araComContext.services));
+    (void)memset(g_araComContext.services, 0, sizeof(g_araComContext.services));
     g_araComContext.numServices = 0;
     g_araComContext.initMagic = ARA_COM_INITIALIZED_MAGIC;
     g_araComContext.initialized = TRUE;
 
 #if SOMEIP_DDS_GATEWAY_ENABLED
-    memset(g_gatewayEntries, 0, sizeof(g_gatewayEntries));
+    (void)memset(g_gatewayEntries, 0, sizeof(g_gatewayEntries));
     g_gatewayNumEntries = 0;
     ara_com_SomeIPDDSGateway_Init();
 #endif
@@ -374,7 +374,7 @@ Std_ReturnType ara_com_StopOfferService(ara_com_ServiceHandleType* handle)
     }
 
     if (handle->ddsHandle != DDS_ENTITY_INVALID) {
-        dds_delete(handle->ddsHandle);
+        (void)dds_delete(handle->ddsHandle);
         handle->ddsHandle = DDS_ENTITY_INVALID;
     }
 
@@ -496,19 +496,19 @@ Std_ReturnType ara_com_DestroyEvent(ara_com_EventHandleType* handle)
 
     /* 删除DDS实体 */
     if (handle->readerHandle != DDS_ENTITY_INVALID) {
-        dds_delete(handle->readerHandle);
+        (void)dds_delete(handle->readerHandle);
     }
     if (handle->writerHandle != DDS_ENTITY_INVALID) {
-        dds_delete(handle->writerHandle);
+        (void)dds_delete(handle->writerHandle);
     }
     if (handle->subHandle != DDS_ENTITY_INVALID) {
-        dds_delete(handle->subHandle);
+        (void)dds_delete(handle->subHandle);
     }
     if (handle->pubHandle != DDS_ENTITY_INVALID) {
-        dds_delete(handle->pubHandle);
+        (void)dds_delete(handle->pubHandle);
     }
     if (handle->topicHandle != DDS_ENTITY_INVALID) {
-        dds_delete(handle->topicHandle);
+        (void)dds_delete(handle->topicHandle);
     }
 
     /* 静态句柄池回收 (越界检查) */
@@ -549,7 +549,7 @@ Std_ReturnType ara_com_SendEvent(
         return E_NOT_OK;
     }
 
-    memcpy(protectedData, data, length);
+    (void)memcpy(protectedData, data, length);
 
     if (handle->service->e2eContext != NULL) {
         if (E2E_Protect(handle->service->e2eContext, protectedData, &protectedLength, 
@@ -579,9 +579,9 @@ Std_ReturnType ara_com_SubscribeEvent(
 
     /* 设置DataReader的资源限制 */
     dds_DataReaderQosType qos;
-    dds_get_qos(handle->readerHandle, &qos);
+    (void)dds_get_qos(handle->readerHandle, &qos);
     qos.max_samples = maxSampleCount;
-    dds_set_qos(handle->readerHandle, &qos);
+    (void)dds_set_qos(handle->readerHandle, &qos);
 
     handle->subState = ARA_COM_SUB_SUBSCRIBED;
 
@@ -763,12 +763,12 @@ Std_ReturnType ara_com_DestroyMethod(ara_com_MethodHandleType* handle)
     }
 
     /* 删除DDS实体 */
-    if (handle->responseReader != DDS_ENTITY_INVALID) { dds_delete(handle->responseReader); }
-    if (handle->responseWriter != DDS_ENTITY_INVALID) { dds_delete(handle->responseWriter); }
-    if (handle->requestReader != DDS_ENTITY_INVALID) { dds_delete(handle->requestReader); }
-    if (handle->requestWriter != DDS_ENTITY_INVALID) { dds_delete(handle->requestWriter); }
-    if (handle->responseTopic != DDS_ENTITY_INVALID) { dds_delete(handle->responseTopic); }
-    if (handle->requestTopic != DDS_ENTITY_INVALID) { dds_delete(handle->requestTopic); }
+    if (handle->responseReader != DDS_ENTITY_INVALID) { (void)dds_delete(handle->responseReader); }
+    if (handle->responseWriter != DDS_ENTITY_INVALID) { (void)dds_delete(handle->responseWriter); }
+    if (handle->requestReader != DDS_ENTITY_INVALID) { (void)dds_delete(handle->requestReader); }
+    if (handle->requestWriter != DDS_ENTITY_INVALID) { (void)dds_delete(handle->requestWriter); }
+    if (handle->responseTopic != DDS_ENTITY_INVALID) { (void)dds_delete(handle->responseTopic); }
+    if (handle->requestTopic != DDS_ENTITY_INVALID) { (void)dds_delete(handle->requestTopic); }
 
     /* 静态方法句柄池回收 (越界检查) */
     {
@@ -825,7 +825,7 @@ Std_ReturnType ara_com_CallMethod(
     /* 复制响应数据 */
     uint32_t receivedLen = sizeof(responseDataBuf);
     if (receivedLen <= *responseLength) {
-        memcpy(responseData, responseDataBuf, receivedLen);
+        (void)memcpy(responseData, responseDataBuf, receivedLen);
         *responseLength = receivedLen;
     } else {
         return E_NOT_OK;
@@ -910,7 +910,7 @@ Std_ReturnType ara_com_E2ECheck(
  */
 Std_ReturnType ara_com_SomeIPDDSGateway_Init(void)
 {
-    memset(g_gatewayEntries, 0, sizeof(g_gatewayEntries));
+    (void)memset(g_gatewayEntries, 0, sizeof(g_gatewayEntries));
     g_gatewayNumEntries = 0;
     return E_OK;
 }
@@ -960,7 +960,7 @@ Std_ReturnType ara_com_SomeIPDDSGateway_UnregisterService(
             g_gatewayEntries[i].isActive = FALSE;
             /* 移动数组元素填充空位 */
             if (i < (g_gatewayNumEntries - 1U)) {
-                memmove(&g_gatewayEntries[i], &g_gatewayEntries[i + 1],
+                (void)memmove(&g_gatewayEntries[i], &g_gatewayEntries[i + 1],
                         (g_gatewayNumEntries - i - 1) * sizeof(SomeIP_DDS_GatewayEntryType));
             }
             g_gatewayNumEntries--;
@@ -1026,6 +1026,6 @@ uint32_t ara_com_GetLatencyUs(ara_com_EventHandleType* handle)
     }
 
     dds_DataWriterQosType qos;
-    dds_get_qos(handle->writerHandle, &qos);
+    (void)dds_get_qos(handle->writerHandle, &qos);
     return qos.base.latency_budget_ms * 1000U;
 }

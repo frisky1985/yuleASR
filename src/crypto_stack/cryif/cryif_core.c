@@ -216,7 +216,7 @@ cryif_status_t cryif_channel_get_info(cryif_context_t *ctx, uint8_t channel_id,
         return CRYIF_ERROR_INVALID_PARAM;
     }
     
-    memcpy(channel, &ctx->channels[channel_id], sizeof(cryif_channel_t));
+    (void)memcpy(channel, &ctx->channels[channel_id], sizeof(cryif_channel_t));
     return CRYIF_OK;
 }
 

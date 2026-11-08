@@ -103,7 +103,7 @@ Mqtt_ReturnType Mqtt_Tls_Init(void)
     
     /* 清零所有上下文槽 */
     for (i = 0; i < MQTT_TLS_MAX_CONTEXTS; i++) {
-        memset(&Mqtt_TlsContexts[i], 0, sizeof(Mqtt_TlsInternalContextType));
+        (void)memset(&Mqtt_TlsContexts[i], 0, sizeof(Mqtt_TlsInternalContextType));
         Mqtt_TlsContexts[i].inUse = FALSE;
         Mqtt_TlsContexts[i].socketId = TCPIP_SOCKETID_INVALID;
         Mqtt_TlsContexts[i].handshakeComplete = FALSE;
@@ -167,14 +167,14 @@ Mqtt_ReturnType Mqtt_Tls_CreateContext(
     }
     
     /* 初始化上下文 */
-    memset(ctx, 0, sizeof(Mqtt_TlsInternalContextType));
+    (void)memset(ctx, 0, sizeof(Mqtt_TlsInternalContextType));
     ctx->inUse = TRUE;
     ctx->socketId = TCPIP_SOCKETID_INVALID;
     ctx->handshakeComplete = FALSE;
     ctx->lastError = 0;
     
     /* 复制配置 */
-    memcpy(&ctx->config, config, sizeof(Mqtt_TlsConfigType));
+    (void)memcpy(&ctx->config, config, sizeof(Mqtt_TlsConfigType));
     
     /* 初始化mbedTLS上下文 */
     mbedtls_ssl_init(&ctx->ssl);
@@ -325,7 +325,7 @@ void Mqtt_Tls_DestroyContext(Mqtt_TlsContextType context)
     mbedtls_ssl_session_free(&ctx->savedSession);
     
     /* 清零上下文 */
-    memset(ctx, 0, sizeof(Mqtt_TlsInternalContextType));
+    (void)memset(ctx, 0, sizeof(Mqtt_TlsInternalContextType));
     ctx->inUse = FALSE;
 }
 
@@ -373,7 +373,7 @@ Mqtt_ReturnType Mqtt_Tls_PerformHandshake(
         
         if (callback != NULL_PTR) {
             Mqtt_CertValidationResultType validationResult;
-            memset(&validationResult, 0, sizeof(validationResult));
+            (void)memset(&validationResult, 0, sizeof(validationResult));
             validationResult.isValid = TRUE;
             validationResult.isTrusted = TRUE;
             validationResult.hostnameMatch = TRUE;
@@ -504,7 +504,7 @@ Mqtt_ReturnType Mqtt_Tls_VerifyCertificate(
         return MQTT_E_NOT_OK;
     }
     
-    memset(result, 0, sizeof(Mqtt_CertValidationResultType));
+    (void)memset(result, 0, sizeof(Mqtt_CertValidationResultType));
     
     ctx = Mqtt_Tls_GetContext(context);
     if (ctx == NULL_PTR) {
@@ -521,13 +521,13 @@ Mqtt_ReturnType Mqtt_Tls_VerifyCertificate(
     if (peerCert != NULL_PTR) {
         /* 拷贝颁发者信息 */
         if ((peerCert->issuer.next != NULL_PTR) && (peerCert->issuer.next->val.p != NULL_PTR)) {
-            strncpy(result->issuer, (char*)peerCert->issuer.next->val.p,
+            (void)strncpy(result->issuer, (char*)peerCert->issuer.next->val.p,
                 sizeof(result->issuer) - 1);
         }
         
         /* 拷贝主体信息 */
         if ((peerCert->subject.next != NULL_PTR) && (peerCert->subject.next->val.p != NULL_PTR)) {
-            strncpy(result->subject, (char*)peerCert->subject.next->val.p,
+            (void)strncpy(result->subject, (char*)peerCert->subject.next->val.p,
                 sizeof(result->subject) - 1);
         }
         
@@ -574,7 +574,7 @@ Mqtt_ReturnType Mqtt_Tls_SaveSession(
     }
     
     if ((sessionData != NULL_PTR) && (sessionDataSize >= sizeof(mbedtls_ssl_session))) {
-        memcpy(sessionData, &ctx->savedSession, sizeof(mbedtls_ssl_session));
+        (void)memcpy(sessionData, &ctx->savedSession, sizeof(mbedtls_ssl_session));
     }
     
     return MQTT_OK;
@@ -597,7 +597,7 @@ Mqtt_ReturnType Mqtt_Tls_RestoreSession(
         return MQTT_E_NOT_OK;
     }
     
-    memcpy(&ctx->savedSession, sessionData, sizeof(mbedtls_ssl_session));
+    (void)memcpy(&ctx->savedSession, sessionData, sizeof(mbedtls_ssl_session));
     
     return MQTT_OK;
 }
@@ -690,7 +690,7 @@ Mqtt_ReturnType Mqtt_Tls_GetCipherSuite(
     
     suite = mbedtls_ssl_get_ciphersuite(&ctx->ssl);
     if (suite != NULL_PTR) {
-        strncpy(name, suite, nameSize - 1);
+        (void)strncpy(name, suite, nameSize - 1);
         name[nameSize - 1] = '\0';
     } else {
         name[0] = '\0';

@@ -406,4 +406,5 @@ extern Std_ReturnType CanNm_EnableCommunication(NetworkHandleType nmChannelHandl
 }
 #endif
 
+
 #endif /* CANNM_H */

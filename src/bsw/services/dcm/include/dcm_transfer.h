@@ -319,6 +319,7 @@ Std_ReturnType Dcm_MapLogicalToPhysicalAddress(
     uint32* PhysicalAddr
 );
 
+
 #define DCM_STOP_SEC_CODE
 #include "MemMap.h"
 

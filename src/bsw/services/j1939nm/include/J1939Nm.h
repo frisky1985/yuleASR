@@ -330,6 +330,7 @@ extern void J1939Nm_HandleAddressConflict(
     J1939Nm_AddressType ReceivedAddress
 );
 
+
 #define J1939NM_STOP_SEC_CODE
 #include "MemMap.h"
 

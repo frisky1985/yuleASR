@@ -16,4 +16,5 @@ Boot_Result Boot_Image_ReadTrailer(uint32_t           payload_addr,
                                    Boot_ImageTrailer *out_trailer);
 uint32_t Boot_Image_CalcHeaderCrc(const Boot_ImageHeader *hdr);
 
+
 #endif /* BOOT_IMAGE_H */

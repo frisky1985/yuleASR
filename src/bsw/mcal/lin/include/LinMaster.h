@@ -209,4 +209,5 @@ LinMaster_StatusType LinMaster_GoToSleep(void);
 void LinMaster_GetVersionInfo(Std_VersionInfoType* VersionInfo);
 #endif
 
+
 #endif /* LINMASTER_H */

@@ -35,7 +35,7 @@
 
 EccHeapStateType g_heap_state;
 static boolean g_initialized = FALSE;
-static void (*g_failure_callback)(uint32_t size, uint32_t flags) = NULL;
+void (*g_failure_callback)(uint32_t size, uint32_t flags) = NULL;
 
 /* Default heap buffer (can be overridden) */
 static uint8_t g_default_heap[ECC_ALLOC_HEAP_SIZE];
@@ -344,7 +344,7 @@ static void EccAllocator_SetGuards(EccMemBlockType *block)
         uint32_t *data_words = (uint32_t*)user_data;
         
         for (i = 0U; i < num_words; i++) {
-            EccEncoder_Encode32(data_words[i], &ecc_storage[i]);
+            (void)EccEncoder_Encode32(data_words[i], &ecc_storage[i]);
         }
         
         /* Rear guard after ECC storage */
@@ -469,7 +469,7 @@ static void* EccAllocator_DoAlloc(uint32_t size, uint32_t alignment, uint32_t fl
     
     /* Zero memory if requested */
     if (flags & ECC_ALLOC_FLAG_ZERO) {
-        memset(user_ptr, 0, size);
+        (void)memset(user_ptr, 0, size);
     }
     
     /* Set guard words and ECC codes */
@@ -515,7 +515,7 @@ Std_ReturnType EccAllocator_Init(const EccHeapConfigType *config)
             g_heap_state.config.heap_size = ECC_ALLOC_HEAP_SIZE;
         }
     } else {
-        memset(&g_heap_state.config, 0, sizeof(g_heap_state.config));
+        (void)memset(&g_heap_state.config, 0, sizeof(g_heap_state.config));
         g_heap_state.config.heap_base = g_default_heap;
         g_heap_state.config.heap_size = ECC_ALLOC_HEAP_SIZE;
         g_heap_state.config.alignment = ECC_ALLOC_ALIGN_DEFAULT;
@@ -531,7 +531,7 @@ Std_ReturnType EccAllocator_Init(const EccHeapConfigType *config)
     }
     
     /* Clear heap */
-    memset(heap_base, 0, heap_size);
+    (void)memset(heap_base, 0, heap_size);
     
     /* Initialize heap state */
     g_heap_state.heap_start = heap_base;
@@ -543,7 +543,7 @@ Std_ReturnType EccAllocator_Init(const EccHeapConfigType *config)
     g_heap_state.ecc_pool_size = sizeof(g_ecc_pool);
     g_heap_state.ecc_pool_used = 0U;
     
-    memset(&g_heap_state.stats, 0, sizeof(g_heap_state.stats));
+    (void)memset(&g_heap_state.stats, 0, sizeof(g_heap_state.stats));
     
     /* Create initial free block covering entire heap */
     initial_block = (EccMemBlockType*)heap_base;
@@ -563,10 +563,10 @@ Std_ReturnType EccAllocator_Init(const EccHeapConfigType *config)
     /* Initialize ECC encoder */
     {
         EccEncoderConfigType enc_config;
-        memset(&enc_config, 0, sizeof(enc_config));
+        (void)memset(&enc_config, 0, sizeof(enc_config));
         enc_config.mode = ECC_MODE_32BIT;
         enc_config.asil_level = g_heap_state.config.asil_level;
-        EccEncoder_Init(&enc_config);
+        (void)EccEncoder_Init(&enc_config);
     }
     
     g_heap_state.initialized = TRUE;
@@ -586,15 +586,15 @@ Std_ReturnType EccAllocator_DeInit(void)
     
     /* Clear heap if scrub enabled */
     if (g_heap_state.config.auto_scrub) {
-        memset(g_heap_state.config.heap_base, 
+        (void)memset(g_heap_state.config.heap_base, 
                (int)(g_heap_state.config.scrub_pattern & 0xFF),
                g_heap_state.config.heap_size);
     }
     
-    memset(&g_heap_state, 0, sizeof(g_heap_state));
+    (void)memset(&g_heap_state, 0, sizeof(g_heap_state));
     g_initialized = FALSE;
     
-    EccEncoder_DeInit();
+    (void)EccEncoder_DeInit();
     
     return E_OK;
 }
@@ -663,7 +663,7 @@ void* EccAllocator_Realloc(void *ptr, uint32_t new_size, uint32_t flags)
     
     /* If size is 0, behave like free */
     if (new_size == 0U) {
-        EccAllocator_Free(ptr);
+        (void)EccAllocator_Free(ptr);
         return NULL;
     }
     
@@ -682,10 +682,10 @@ void* EccAllocator_Realloc(void *ptr, uint32_t new_size, uint32_t flags)
     }
     
     /* Copy data (min of old and new size) */
-    memcpy(new_ptr, ptr, (new_size < old_size) ? new_size : old_size);
+    (void)memcpy(new_ptr, ptr, (new_size < old_size) ? new_size : old_size);
     
     /* Free old block */
-    EccAllocator_Free(ptr);
+    (void)EccAllocator_Free(ptr);
     
     return new_ptr;
 }
@@ -885,7 +885,7 @@ Std_ReturnType EccAllocator_ResetStats(void)
         return E_NOT_OK;
     }
     
-    memset(&g_heap_state.stats, 0, sizeof(g_heap_state.stats));
+    (void)memset(&g_heap_state.stats, 0, sizeof(g_heap_state.stats));
     
     return E_OK;
 }

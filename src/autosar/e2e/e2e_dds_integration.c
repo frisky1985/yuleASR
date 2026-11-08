@@ -154,7 +154,7 @@ static Std_ReturnType E2E_DDS_InitStateMachine(
     }
 
     E2E_SM_ConfigType smConfig;
-    memset(&smConfig, 0, sizeof(E2E_SM_ConfigType));
+    (void)memset(&smConfig, 0, sizeof(E2E_SM_ConfigType));
     smConfig.profile = config->e2eProfile;
     smConfig.timeoutMs = config->timeoutMs;
     smConfig.enableWindowCheck = TRUE;
@@ -205,7 +205,7 @@ Std_ReturnType E2E_DDS_Deinit(void)
     g_initialized = FALSE;
     g_initMagic = 0;
     g_nextTopicId = 0;
-    memset(&g_callbacks, 0, sizeof(E2E_DDS_CallbackType));
+    (void)memset(&g_callbacks, 0, sizeof(E2E_DDS_CallbackType));
 
     E2E_SM_Deinit();
     E2E_Deinit();
@@ -230,7 +230,7 @@ Std_ReturnType E2E_DDS_RegisterCallbacks(const E2E_DDS_CallbackType* callbacks)
         return E_NOT_OK;
     }
 
-    memcpy(&g_callbacks, callbacks, sizeof(E2E_DDS_CallbackType));
+    (void)memcpy(&g_callbacks, callbacks, sizeof(E2E_DDS_CallbackType));
     return E_OK;
 }
 
@@ -253,10 +253,10 @@ Std_ReturnType E2E_DDS_CreateTopic(
         return E_NOT_OK;
     }
 
-    memset(handle, 0, sizeof(E2E_DDS_TopicHandleType));
+    (void)memset(handle, 0, sizeof(E2E_DDS_TopicHandleType));
     handle->topicId = g_nextTopicId;
     g_nextTopicId++;
-    memcpy(&handle->config, config, sizeof(E2E_DDS_TopicConfigType));
+    (void)memcpy(&handle->config, config, sizeof(E2E_DDS_TopicConfigType));
 
     /* Initialize E2E context */
     if (E2E_DDS_InitE2EContext(handle, config) != E_OK) {
@@ -532,7 +532,7 @@ Std_ReturnType E2E_DDS_Check(
     /* If state machine enabled, process through it */
     if (handle->config.enableStateMachine) {
         E2E_SM_ConfigType smConfig;
-        memset(&smConfig, 0, sizeof(E2E_SM_ConfigType));
+        (void)memset(&smConfig, 0, sizeof(E2E_SM_ConfigType));
         smConfig.profile = handle->config.e2eProfile;
         smConfig.timeoutMs = handle->config.timeoutMs;
         smConfig.enableWindowCheck = TRUE;

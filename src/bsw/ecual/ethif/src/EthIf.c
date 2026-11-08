@@ -57,7 +57,7 @@ void EthIf_Init(const EthIf_ConfigType* ConfigPtr)
     EthIf_State.state = ETHIF_UNINIT;
     EthIf_State.activeControllerCount = 0U;
     EthIf_State.configPtr = ConfigPtr;
-    memset(EthIf_State.controllerModes, 0, sizeof(EthIf_State.controllerModes));
+    (void)memset(EthIf_State.controllerModes, 0, sizeof(EthIf_State.controllerModes));
 
     if (ConfigPtr->NumControllers > ETHIF_MAX_CONTROLLERS) { return; }
     EthIf_State.activeControllerCount = ConfigPtr->NumControllers;

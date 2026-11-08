@@ -296,21 +296,21 @@ static void CanSm_HandleModeConfirmation(uint8 NetworkIndex, CanIf_ControllerMod
             if ((CanSm_Global.Networks[NetworkIndex].BsmState == CANSM_BSM_S_NOCOM) ||
                 (CanSm_Global.Networks[NetworkIndex].BsmState == CANSM_BSM_S_SILENTCOM) ||
                 (CanSm_Global.Networks[NetworkIndex].BsmState == CANSM_BSM_S_SILENTCOM_BOR)) {
-                CanSm_TransitionToFullCom(NetworkIndex);
+                (void)CanSm_TransitionToFullCom(NetworkIndex);
             }
             break;
 
         case CANIF_CS_STOPPED:
             /* Controller is stopped - transition to SILENTCOM or NOCOM */
             if (CanSm_Global.Networks[NetworkIndex].BsmState == CANSM_BSM_S_FULLCOM) {
-                CanSm_TransitionToSilentCom(NetworkIndex);
+                (void)CanSm_TransitionToSilentCom(NetworkIndex);
             }
             break;
             
         case CANIF_CS_SLEEP:
             /* Controller is in sleep - transition to NOCOM */
             if (CanSm_Global.Networks[NetworkIndex].BsmState != CANSM_BSM_S_NOCOM) {
-                CanSm_TransitionToNoCom(NetworkIndex);
+                (void)CanSm_TransitionToNoCom(NetworkIndex);
             }
             break;
             

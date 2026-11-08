@@ -35,7 +35,7 @@ static void guid_to_string(const rtps_guid_t *guid, char *str, size_t str_size)
         return;
     }
     
-    Debug_Snprintf(str, str_size, 
+    (void)Debug_Snprintf(str, str_size, 
              "%02X%02X%02X%02X-%02X%02X%02X%02X-%02X%02X%02X%02X",
              guid->prefix[0], guid->prefix[1], guid->prefix[2], guid->prefix[3],
              guid->prefix[4], guid->prefix[5], guid->prefix[6], guid->prefix[7],
@@ -90,7 +90,7 @@ dds_security_context_t* dds_security_manager_init(const dds_security_config_t *c
     ctx->start_time = dds_get_current_time_ms();
 
     /* Copy configuration */
-    memcpy(&ctx->config, config, sizeof(dds_security_config_t));
+    (void)memcpy(&ctx->config, config, sizeof(dds_security_config_t));
 
     /* 静态参与者表 (编译期固定上限) */
     ctx->max_participants = DDS_SECMGR_MAX_PARTICIPANTS;
@@ -137,7 +137,7 @@ dds_security_context_t* dds_security_manager_init(const dds_security_config_t *c
     ctx->state = DDS_SECMGR_STATE_READY;
 
     /* Log initialization */
-    dds_security_log_audit(ctx, DDS_SEC_EVT_SYSTEM_STARTUP, 
+    (void)dds_security_log_audit(ctx, DDS_SEC_EVT_SYSTEM_STARTUP, 
                            DDS_SEC_SEVERITY_INFO, NULL,
                            "DDS-Security manager initialized");
 
@@ -153,7 +153,7 @@ void dds_security_manager_deinit(dds_security_context_t *ctx)
     ctx->state = DDS_SECMGR_STATE_SHUTDOWN;
 
     /* Log shutdown */
-    dds_security_log_audit(ctx, DDS_SEC_EVT_SYSTEM_SHUTDOWN,
+    (void)dds_security_log_audit(ctx, DDS_SEC_EVT_SYSTEM_SHUTDOWN,
                            DDS_SEC_SEVERITY_INFO, NULL,
                            "DDS-Security manager shutting down");
 
@@ -172,7 +172,7 @@ void dds_security_manager_deinit(dds_security_context_t *ctx)
     if ((ctx->participants) != 0U) {
         for (uint32_t i = 0; i < ctx->max_participants; i++) {
             if (ctx->participants[i].state != DDS_SEC_PARTICIPANT_UNAUTHENTICATED) {
-                memset(ctx->participants[i].replay_window.window, 0, 
+                (void)memset(ctx->participants[i].replay_window.window, 0, 
                        sizeof(ctx->participants[i].replay_window.window));
             }
         }
@@ -237,18 +237,18 @@ dds_security_status_t dds_security_register_participant(dds_security_context_t *
         return DDS_SECURITY_ERROR_NO_MEMORY;
     }
 
-    memset(participant, 0, sizeof(dds_sec_participant_t));
-    memcpy(&participant->guid, guid, sizeof(rtps_guid_t));
+    (void)memset(participant, 0, sizeof(dds_sec_participant_t));
+    (void)memcpy(&participant->guid, guid, sizeof(rtps_guid_t));
     participant->state = DDS_SEC_PARTICIPANT_UNAUTHENTICATED;
     participant->created_time = dds_get_current_time_ms();
 
     if ((subject_name) != 0U) {
-        strncpy(participant->subject_name, subject_name, sizeof(participant->subject_name) - 1U);
+        (void)strncpy(participant->subject_name, subject_name, sizeof(participant->subject_name) - 1U);
     }
 
     ctx->participant_count++;
 
-    dds_security_log_audit(ctx, DDS_SEC_EVT_AUTH_BEGIN, DDS_SEC_SEVERITY_INFO,
+    (void)dds_security_log_audit(ctx, DDS_SEC_EVT_AUTH_BEGIN, DDS_SEC_SEVERITY_INFO,
                            guid, "Participant registered");
 
     return DDS_SECURITY_OK;
@@ -276,10 +276,10 @@ dds_security_status_t dds_security_unregister_participant(dds_security_context_t
         dds_auth_handshake_destroy(ctx->auth_ctx, participant->handshake);
     }
 
-    memset(participant, 0, sizeof(dds_sec_participant_t));
+    (void)memset(participant, 0, sizeof(dds_sec_participant_t));
     ctx->participant_count--;
 
-    dds_security_log_audit(ctx, DDS_SEC_EVT_SECURE_CHANNEL_LOST, DDS_SEC_SEVERITY_INFO,
+    (void)dds_security_log_audit(ctx, DDS_SEC_EVT_SECURE_CHANNEL_LOST, DDS_SEC_SEVERITY_INFO,
                            guid, "Participant unregistered");
 
     return DDS_SECURITY_OK;
@@ -334,7 +334,7 @@ dds_security_status_t dds_security_begin_authentication(dds_security_context_t *
     local->handshake = handshake;
     ctx->total_auth_attempts++;
 
-    dds_security_trigger_event(ctx, DDS_SEC_EVT_AUTH_BEGIN, DDS_SEC_SEVERITY_INFO,
+    (void)dds_security_trigger_event(ctx, DDS_SEC_EVT_AUTH_BEGIN, DDS_SEC_SEVERITY_INFO,
                                local_guid, "Authentication started");
 
     return DDS_SECURITY_OK;
@@ -357,7 +357,7 @@ dds_security_status_t dds_security_complete_authentication(dds_security_context_
         participant->auth_failures++;
         participant->state = DDS_SEC_PARTICIPANT_UNAUTHENTICATED;
         
-        dds_security_trigger_event(ctx, DDS_SEC_EVT_AUTH_FAILURE, DDS_SEC_SEVERITY_ERROR,
+        (void)dds_security_trigger_event(ctx, DDS_SEC_EVT_AUTH_FAILURE, DDS_SEC_SEVERITY_ERROR,
                                    guid, "Authentication failed");
         
         return DDS_SECURITY_ERROR_AUTHENTICATION_FAILED;
@@ -367,7 +367,7 @@ dds_security_status_t dds_security_complete_authentication(dds_security_context_
     uint8_t shared_secret[64];
     uint32_t secret_len = 0;
     
-    dds_auth_get_shared_secret(participant->handshake, shared_secret, &secret_len);
+    (void)dds_auth_get_shared_secret(participant->handshake, shared_secret, &secret_len);
 
     participant->crypto_session_id = dds_crypto_create_session(ctx->crypto_ctx,
                                                                 guid, guid,
@@ -375,16 +375,16 @@ dds_security_status_t dds_security_complete_authentication(dds_security_context_
                                                                 secret_len);
     
     /* Clear shared secret from memory */
-    memset(shared_secret, 0, sizeof(shared_secret));
+    (void)memset(shared_secret, 0, sizeof(shared_secret));
 
     participant->state = DDS_SEC_PARTICIPANT_SECURE_ESTABLISHED;
     participant->auth_completed_time = dds_get_current_time_ms();
     ctx->total_auth_success++;
 
-    dds_security_trigger_event(ctx, DDS_SEC_EVT_AUTH_SUCCESS, DDS_SEC_SEVERITY_INFO,
+    (void)dds_security_trigger_event(ctx, DDS_SEC_EVT_AUTH_SUCCESS, DDS_SEC_SEVERITY_INFO,
                                guid, "Authentication completed successfully");
 
-    dds_security_log_audit(ctx, DDS_SEC_EVT_SECURE_CHANNEL_ESTABLISHED,
+    (void)dds_security_log_audit(ctx, DDS_SEC_EVT_SECURE_CHANNEL_ESTABLISHED,
                            DDS_SEC_SEVERITY_INFO, guid,
                            "Secure channel established");
 
@@ -444,7 +444,7 @@ dds_security_status_t dds_security_protect_data(dds_security_context_t *ctx,
         protected_len);
 
     if (crypto_status != DDS_CRYPTO_OK) {
-        dds_security_trigger_event(ctx, DDS_SEC_EVT_ENCRYPTION_ERROR, 
+        (void)dds_security_trigger_event(ctx, DDS_SEC_EVT_ENCRYPTION_ERROR, 
                                    DDS_SEC_SEVERITY_ERROR,
                                    participant_guid, "Encryption failed");
         return DDS_SECURITY_ERROR_ENCRYPTION_FAILED;
@@ -495,7 +495,7 @@ dds_security_status_t dds_security_unprotect_data(dds_security_context_t *ctx,
 
     if (crypto_status != DDS_CRYPTO_OK) {
         participant->decrypt_failures++;
-        dds_security_trigger_event(ctx, DDS_SEC_EVT_DECRYPTION_ERROR,
+        (void)dds_security_trigger_event(ctx, DDS_SEC_EVT_DECRYPTION_ERROR,
                                    DDS_SEC_SEVERITY_ERROR,
                                    participant_guid, "Decryption failed");
         return DDS_SECURITY_ERROR_DECRYPTION_FAILED;
@@ -560,7 +560,7 @@ dds_security_status_t dds_security_check_access(dds_security_context_t *ctx,
     if (access_status != DDS_ACCESS_OK) {
         ctx->total_access_violations++;
         
-        dds_security_trigger_event(ctx, DDS_SEC_EVT_ACCESS_DENIED, 
+        (void)dds_security_trigger_event(ctx, DDS_SEC_EVT_ACCESS_DENIED, 
                                    DDS_SEC_SEVERITY_WARNING,
                                    participant_guid, 
                                    "Access denied for topic: %s", topic_name);
@@ -622,7 +622,7 @@ dds_security_status_t dds_security_trigger_event(dds_security_context_t *ctx,
     va_list args;
     va_start(args, format);
     char message[256];
-    Debug_Vsnprintf(message, sizeof(message), format, args);
+    (void)Debug_Vsnprintf(message, sizeof(message), format, args);
     va_end(args);
 
     /* Add to event history */
@@ -631,9 +631,9 @@ dds_security_status_t dds_security_trigger_event(dds_security_context_t *ctx,
     record->event_type = event;
     record->severity = severity;
     if ((participant_guid) != 0U) {
-        memcpy(&record->participant_guid, participant_guid, sizeof(rtps_guid_t));
+        (void)memcpy(&record->participant_guid, participant_guid, sizeof(rtps_guid_t));
     }
-    strncpy(record->description, message, sizeof(record->description) - 1U);
+    (void)strncpy(record->description, message, sizeof(record->description) - 1U);
 
     ctx->event_mgr.write_index = (ctx->event_mgr.write_index + 1U) % ctx->event_mgr.max_events;
     if (ctx->event_mgr.event_count < ctx->event_mgr.max_events) {
@@ -648,7 +648,7 @@ dds_security_status_t dds_security_trigger_event(dds_security_context_t *ctx,
 
     /* Also log to audit log for critical events */
     if (severity >= DDS_SEC_SEVERITY_ERROR) {
-        dds_security_log_audit(ctx, event, severity, participant_guid, message);
+        (void)dds_security_log_audit(ctx, event, severity, participant_guid, message);
     }
 
     return DDS_SECURITY_OK;
@@ -678,9 +678,9 @@ dds_security_status_t dds_security_log_audit(dds_security_context_t *ctx,
     log->event_type = event_type;
     log->severity = severity;
     if ((participant_guid) != 0U) {
-        memcpy(&log->participant_guid, participant_guid, sizeof(rtps_guid_t));
+        (void)memcpy(&log->participant_guid, participant_guid, sizeof(rtps_guid_t));
     }
-    strncpy(log->message, message, sizeof(log->message) - 1U);
+    (void)strncpy(log->message, message, sizeof(log->message) - 1U);
 
     ctx->audit_mgr.write_index = (ctx->audit_mgr.write_index + 1U) % ctx->audit_mgr.max_entries;
     if (ctx->audit_mgr.entry_count < ctx->audit_mgr.max_entries) {
@@ -700,12 +700,12 @@ dds_security_status_t dds_security_log_audit(dds_security_context_t *ctx,
                 guid_to_string(participant_guid, guid_str, sizeof(guid_str));
             }
             
-            Debug_Fprintf(fp, "[%llu] [%d] [%s] %s\n",
+            (void)Debug_Fprintf(fp, "[%llu] [%d] [%s] %s\n",
                     (unsigned long long)log->timestamp,
                     severity,
                     guid_str,
                     message);
-            fclose(fp);
+            (void)fclose(fp);
         }
     }
 
@@ -726,7 +726,7 @@ dds_security_status_t dds_security_configure_audit(dds_security_context_t *ctx,
     ctx->audit_mgr.min_severity = min_severity;
 
     if ((file_path) != 0U) {
-        strncpy(ctx->audit_mgr.log_file_path, file_path, 
+        (void)strncpy(ctx->audit_mgr.log_file_path, file_path, 
                 sizeof(ctx->audit_mgr.log_file_path) - 1U);
     }
 
@@ -764,7 +764,7 @@ dds_security_status_t dds_security_detect_replay(dds_security_context_t *ctx,
             uint32_t idx = (uint32_t)(((uint64_t)participant->replay_window.write_index - (uint64_t)diff - 1U + DDS_SECURITY_REPLAY_WINDOW_SIZE) 
                           % DDS_SECURITY_REPLAY_WINDOW_SIZE);
             if (participant->replay_window.window[idx] == seq_number) {
-                dds_security_trigger_event(ctx, DDS_SEC_EVT_REPLAY_DETECTED,
+                (void)dds_security_trigger_event(ctx, DDS_SEC_EVT_REPLAY_DETECTED,
                                            DDS_SEC_SEVERITY_CRITICAL,
                                            participant_guid,
                                            "Replay attack detected: seq=%llu", 
@@ -819,16 +819,16 @@ dds_security_status_t dds_security_maintain(dds_security_context_t *ctx,
     }
 
     /* Check handshake timeouts */
-    dds_auth_check_handshake_timeouts(ctx->auth_ctx, current_time);
+    (void)dds_auth_check_handshake_timeouts(ctx->auth_ctx, current_time);
 
     /* Check key expiry */
-    dds_crypto_check_key_expiry(ctx->crypto_ctx, current_time);
+    (void)dds_crypto_check_key_expiry(ctx->crypto_ctx, current_time);
 
     /* Check certificate expiry */
-    dds_security_check_certificate_expiry(ctx, current_time);
+    (void)dds_security_check_certificate_expiry(ctx, current_time);
 
     /* Check permissions expiry */
-    dds_access_check_permissions_expiry(ctx->access_ctx, current_time);
+    (void)dds_access_check_permissions_expiry(ctx->access_ctx, current_time);
 
     return DDS_SECURITY_OK;
 }
@@ -844,20 +844,20 @@ dds_security_status_t dds_security_rotate_keys(dds_security_context_t *ctx,
         /* Rotate for specific participant */
         dds_sec_participant_t *participant = dds_security_find_participant(ctx, participant_guid);
         if (participant && (participant->crypto_session_id != 0U)) {
-            dds_crypto_update_session_key(ctx->crypto_ctx, participant->crypto_session_id);
+            (void)dds_crypto_update_session_key(ctx->crypto_ctx, participant->crypto_session_id);
         }
     } else {
         /* Rotate for all participants */
         for (uint32_t i = 0; i < ctx->max_participants; i++) {
             if ((ctx->participants[i].state == DDS_SEC_PARTICIPANT_SECURE_ESTABLISHED) &&
                 (ctx->participants[i].crypto_session_id != 0U)) {
-                dds_crypto_update_session_key(ctx->crypto_ctx, 
+                (void)dds_crypto_update_session_key(ctx->crypto_ctx, 
                                               ctx->participants[i].crypto_session_id);
             }
         }
     }
 
-    dds_security_trigger_event(ctx, DDS_SEC_EVT_KEY_ROTATION, DDS_SEC_SEVERITY_INFO,
+    (void)dds_security_trigger_event(ctx, DDS_SEC_EVT_KEY_ROTATION, DDS_SEC_SEVERITY_INFO,
                                participant_guid, "Keys rotated");
 
     return DDS_SECURITY_OK;
@@ -881,7 +881,7 @@ uint32_t dds_security_check_certificate_expiry(dds_security_context_t *ctx,
             
             if (status == DDS_AUTH_ERROR_CERT_EXPIRED) {
                 expiry_count++;
-                dds_security_trigger_event(ctx, DDS_SEC_EVT_CERT_EXPIRED,
+                (void)dds_security_trigger_event(ctx, DDS_SEC_EVT_CERT_EXPIRED,
                                            DDS_SEC_SEVERITY_ERROR,
                                            &p->guid, "Certificate expired");
             }

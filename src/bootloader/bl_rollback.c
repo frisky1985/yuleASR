@@ -153,7 +153,7 @@ static bl_rollback_error_t add_to_history(
             return time_result;
         }
         if (hash != NULL) {
-            memcpy(record->history[existing].hash, hash, 32);
+            (void)memcpy(record->history[existing].hash, hash, 32);
         }
         return BL_ROLLBACK_OK;
     }
@@ -170,13 +170,13 @@ static bl_rollback_error_t add_to_history(
     /* 如果没有空位置，移动历史记录 */
     if (slot < 0) {
         /* 移除最早的记录 */
-        memmove(&record->history[0], &record->history[1],
+        (void)memmove(&record->history[0], &record->history[1],
                 (BL_ROLLBACK_MAX_HISTORY - 1U) * sizeof(bl_version_history_entry_t));
         slot = BL_ROLLBACK_MAX_HISTORY - 1U;
     }
     
     /* 添加新记录 */
-    memset(&record->history[slot], 0, sizeof(bl_version_history_entry_t));
+    (void)memset(&record->history[slot], 0, sizeof(bl_version_history_entry_t));
     record->history[slot].version = version;
     record->history[slot].partition_id = partition_id;
     bl_rollback_error_t time_result = get_current_time(&record->history[slot].install_time);
@@ -185,7 +185,7 @@ static bl_rollback_error_t add_to_history(
     }
     record->history[slot].is_valid = true;
     if (hash != NULL) {
-        memcpy(record->history[slot].hash, hash, 32);
+        (void)memcpy(record->history[slot].hash, hash, 32);
     }
     
     /* 更新分区名称 */
@@ -193,7 +193,7 @@ static bl_rollback_error_t add_to_history(
     if (part_mgr != NULL) {
         bl_partition_info_t part_info;
         if (bl_partition_get_info_by_index(part_mgr, partition_id, &part_info) == BL_OK) {
-            strncpy((char*)record->history[slot].partition_name, 
+            (void)strncpy((char*)record->history[slot].partition_name, 
                     (char*)part_info.name, 15);
             record->history[slot].partition_name[15] = '\0';
         }
@@ -220,8 +220,8 @@ bl_rollback_error_t bl_rollback_init(
         return BL_ROLLBACK_ERROR_INVALID_PARAM;
     }
     
-    memset(mgr, 0, sizeof(bl_rollback_manager_t));
-    memcpy(&mgr->config, config, sizeof(bl_rollback_config_t));
+    (void)memset(mgr, 0, sizeof(bl_rollback_manager_t));
+    (void)memcpy(&mgr->config, config, sizeof(bl_rollback_config_t));
     mgr->partition_manager = partition_mgr;
     
     /* 初始化回滚记录 */
@@ -245,7 +245,7 @@ void bl_rollback_deinit(bl_rollback_manager_t *mgr)
         return;
     }
     
-    memset(mgr, 0, sizeof(bl_rollback_manager_t));
+    (void)memset(mgr, 0, sizeof(bl_rollback_manager_t));
     
     DDS_LOG(BL_ROLLBACK_LOG_LEVEL, BL_ROLLBACK_MODULE_NAME,
             "Rollback manager deinitialized");
@@ -610,7 +610,7 @@ bl_rollback_error_t bl_rollback_get_history(
     
     for (int32_t i = 0; ((unsigned int)((unsigned int)(i)) < BL_ROLLBACK_MAX_HISTORY) && (*num_entries < max_entries); i++) {
         if (mgr->record.history[i].is_valid) {
-            memcpy(&history[*num_entries], &mgr->record.history[i],
+            (void)memcpy(&history[*num_entries], &mgr->record.history[i],
                    sizeof(bl_version_history_entry_t));
             (*num_entries)++;
         }
@@ -712,7 +712,7 @@ bl_rollback_error_t bl_rollback_load_record(
     
     /* 读取到临时缓冲区，避免损坏数据污染管理器状态 */
     bl_rollback_record_t loaded;
-    memset(&loaded, 0, sizeof(loaded));
+    (void)memset(&loaded, 0, sizeof(loaded));
     int32_t result = part_mgr->flash_driver->read(
         address, (uint8_t*)&loaded, sizeof(bl_rollback_record_t));
     
@@ -730,7 +730,7 @@ bl_rollback_error_t bl_rollback_load_record(
     }
     
     /* 加载到管理器 */
-    memcpy(&mgr->record, &loaded, sizeof(bl_rollback_record_t));
+    (void)memcpy(&mgr->record, &loaded, sizeof(bl_rollback_record_t));
     
     DDS_LOG(BL_ROLLBACK_LOG_LEVEL, BL_ROLLBACK_MODULE_NAME,
             "Rollback record loaded from 0x%08X", address);
@@ -755,7 +755,7 @@ bl_rollback_error_t bl_rollback_get_record(
         return BL_ROLLBACK_ERROR_INVALID_PARAM;
     }
     
-    memcpy(record, &mgr->record, sizeof(bl_rollback_record_t));
+    (void)memcpy(record, &mgr->record, sizeof(bl_rollback_record_t));
     return BL_ROLLBACK_OK;
 }
 
@@ -818,7 +818,7 @@ bl_rollback_error_t bl_rollback_reset(bl_rollback_manager_t *mgr)
     }
     
     /* 清除历史记录 */
-    memset(mgr->record.history, 0, sizeof(mgr->record.history));
+    (void)memset(mgr->record.history, 0, sizeof(mgr->record.history));
     mgr->record.history_count = 0;
     mgr->record.rollback_count = 0;
     mgr->record.active = false;

@@ -168,7 +168,7 @@ Std_ReturnType E2E_SM_InitStateMachine(
         return E_NOT_OK;
     }
 
-    memset(state, 0, sizeof(E2E_SM_InternalStateType));
+    (void)memset(state, 0, sizeof(E2E_SM_InternalStateType));
     state->state = E2E_SM_NODATA;
     state->errorCounter = 0;
     state->okCounter = 0;

@@ -368,6 +368,7 @@ void StbM_MainFunction(void);
  */
 void StbM_TimeStampChanged(uint8 timeBaseId, const Eth_TimeStampType* ethTimeStampPtr);
 
+
 #define STBM_STOP_SEC_CODE
 #include "MemMap.h"
 

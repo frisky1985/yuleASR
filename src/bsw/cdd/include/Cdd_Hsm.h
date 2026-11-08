@@ -167,6 +167,7 @@ extern Std_ReturnType Cdd_Hsm_SecureBootVerify(
  */
 extern void Cdd_Hsm_MainFunction(void);
 
+
 #define CDD_HSM_STOP_SEC_CODE
 #include "Cdd_MemMap.h"
 

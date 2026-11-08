@@ -140,8 +140,8 @@ bl_secure_boot_error_t bl_secure_boot_init(
         return BL_SB_ERROR_INVALID_PARAM;
     }
     
-    memset(ctx, 0, sizeof(bl_secure_boot_context_t));
-    memcpy(&ctx->config, config, sizeof(bl_secure_boot_config_t));
+    (void)memset(ctx, 0, sizeof(bl_secure_boot_context_t));
+    (void)memcpy(&ctx->config, config, sizeof(bl_secure_boot_config_t));
     
     ctx->csm_context = csm_ctx;
     ctx->keym_context = keym_ctx;
@@ -165,7 +165,7 @@ void bl_secure_boot_deinit(bl_secure_boot_context_t *ctx)
         return;
     }
     
-    memset(ctx, 0, sizeof(bl_secure_boot_context_t));
+    (void)memset(ctx, 0, sizeof(bl_secure_boot_context_t));
     
     DDS_LOG(BL_SB_LOG_LEVEL, BL_SB_MODULE_NAME,
             "Secure boot deinitialized");
@@ -187,7 +187,7 @@ bl_secure_boot_error_t bl_secure_boot_parse_header(
     }
     
     /* 复制头部数据 */
-    memcpy(header, header_data, sizeof(bl_firmware_header_t));
+    (void)memcpy(header, header_data, sizeof(bl_firmware_header_t));
     
     /* 验证魔法 */
     if (header->magic != BL_SB_FIRMWARE_MAGIC) {
@@ -727,11 +727,11 @@ bl_secure_boot_error_t bl_secure_boot_verify_signature_bound(
 
     /* 构造版本绑定结构: 版本号在签名内容内 (防篡改版本号) */
     bl_version_binding_t binding;
-    memset(&binding, 0, sizeof(binding));
+    (void)memset(&binding, 0, sizeof(binding));
     binding.format_version = BL_SB_VERSION_BINDING_FORMAT_VERSION;
     binding.firmware_version = version;
     binding.firmware_size = payload_size;
-    memcpy(binding.payload_hash, payload_hash, BL_SB_HASH_SIZE);
+    (void)memcpy(binding.payload_hash, payload_hash, BL_SB_HASH_SIZE);
 
     /* 对绑定结构验签 (签名覆盖整个绑定结构) */
     return bl_secure_boot_verify_signature(
@@ -820,7 +820,7 @@ bl_secure_boot_error_t bl_secure_boot_verify_strict(
         set_error(ctx, result);
         return result;
     }
-    memcpy(&ctx->current_header, &header, sizeof(bl_firmware_header_t));
+    (void)memcpy(&ctx->current_header, &header, sizeof(bl_firmware_header_t));
 
     result = bl_secure_boot_verify_header_crc(ctx, &header);
     if (result != BL_SB_OK) {
@@ -858,7 +858,7 @@ bl_secure_boot_error_t bl_secure_boot_verify_strict(
 
     /* 验证成功 */
     set_state(ctx, BL_SB_STATE_VERIFIED);
-    bl_secure_boot_update_rollback_info(ctx, header.firmware_version);
+    (void)bl_secure_boot_update_rollback_info(ctx, header.firmware_version);
 
     if (ctx->config.on_verification_complete != NULL) {
         ctx->config.on_verification_complete(BL_SB_OK);
@@ -891,7 +891,7 @@ bl_secure_boot_error_t bl_secure_boot_verify(
         set_error(ctx, result);
         return result;
     }
-    memcpy(&ctx->current_header, &header, sizeof(bl_firmware_header_t));
+    (void)memcpy(&ctx->current_header, &header, sizeof(bl_firmware_header_t));
     
     /* 2. 验证头部CRC */
     result = bl_secure_boot_verify_header_crc(ctx, &header);
@@ -953,7 +953,7 @@ bl_secure_boot_error_t bl_secure_boot_verify(
     set_state(ctx, BL_SB_STATE_VERIFIED);
     
     /* 更新回滚防护信息 */
-    bl_secure_boot_update_rollback_info(ctx, header.firmware_version);
+    (void)bl_secure_boot_update_rollback_info(ctx, header.firmware_version);
     
     if (ctx->config.on_verification_complete != NULL) {
         ctx->config.on_verification_complete(BL_SB_OK);
@@ -1077,7 +1077,7 @@ const char* bl_secure_boot_version_to_string(
     uint8_t minor = (version >> 16) & 0xFFU;
     uint16_t patch = version & 0xFFFFU;
     
-    Debug_Snprintf(buf, buf_size, "%u.%u.%u", major, minor, patch);
+    (void)Debug_Snprintf(buf, buf_size, "%u.%u.%u", major, minor, patch);
     return buf;
 }
 

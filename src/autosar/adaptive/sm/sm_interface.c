@@ -64,7 +64,7 @@ static SM_ClientType* FindFreeClientSlot(void) {
 
 static void ResetRequest(SM_RequestType* request) {
     if (request != NULL) {
-        memset(request, 0, sizeof(SM_RequestType));
+        (void)memset(request, 0, sizeof(SM_RequestType));
     }
 }
 
@@ -72,21 +72,19 @@ static void ResetRequest(SM_RequestType* request) {
  * Public Functions
  ******************************************************************************/
 
-Std_ReturnType SM_Interface_Init(void) {
-    if (g_initialized) {
+Std_ReturnType SM_Interface_Init(void) {    if (g_initialized) {
         return E_OK;
     }
     
-    memset(g_requests, 0, sizeof(g_requests));
-    memset(g_clients, 0, sizeof(g_clients));
+    (void)memset(g_requests, 0, sizeof(g_requests));
+    (void)memset(g_clients, 0, sizeof(g_clients));
     g_nextHandle = 1U;
     
     g_initialized = true;
     return E_OK;
 }
 
-Std_ReturnType SM_Interface_Deinit(void) {
-    if (!g_initialized) {
+Std_ReturnType SM_Interface_Deinit(void) {    if (!g_initialized) {
         return E_OK;
     }
     
@@ -97,19 +95,17 @@ Std_ReturnType SM_Interface_Deinit(void) {
         }
     }
     
-    memset(g_requests, 0, sizeof(g_requests));
-    memset(g_clients, 0, sizeof(g_clients));
+    (void)memset(g_requests, 0, sizeof(g_requests));
+    (void)memset(g_clients, 0, sizeof(g_clients));
     g_initialized = false;
     
     return E_OK;
 }
 
-bool SM_Interface_IsInitialized(void) {
-    return g_initialized;
+bool SM_Interface_IsInitialized(void) {    return g_initialized;
 }
 
-Std_ReturnType SM_RegisterClient(const char* name, uint32_t* clientId) {
-    if (!g_initialized || (name == NULL) || (clientId == NULL)) {
+Std_ReturnType SM_RegisterClient(const char* name, uint32_t* clientId) {    if (!g_initialized || (name == NULL) || (clientId == NULL)) {
         return E_NOT_OK;
     }
     
@@ -123,7 +119,7 @@ Std_ReturnType SM_RegisterClient(const char* name, uint32_t* clientId) {
     
     client->clientId = nextClientId;
     nextClientId++;
-    strncpy(client->name, name, sizeof(client->name) - 1U);
+    (void)strncpy(client->name, name, sizeof(client->name) - 1U);
     client->name[sizeof(client->name) - 1U] = '\0';
     client->isActive = true;
     client->requestCount = 0U;
@@ -132,8 +128,7 @@ Std_ReturnType SM_RegisterClient(const char* name, uint32_t* clientId) {
     return E_OK;
 }
 
-Std_ReturnType SM_UnregisterClient(uint32_t clientId) {
-    if (!g_initialized) {
+Std_ReturnType SM_UnregisterClient(uint32_t clientId) {    if (!g_initialized) {
         return E_NOT_OK;
     }
     
@@ -149,8 +144,7 @@ Std_ReturnType SM_UnregisterClient(uint32_t clientId) {
     return E_OK;
 }
 
-SM_RequestHandle SM_CreateStateRequest(uint32_t clientId, MachineStateType targetState) {
-    if (!g_initialized) {
+SM_RequestHandle SM_CreateStateRequest(uint32_t clientId, MachineStateType targetState) {    if (!g_initialized) {
         return 0U;
     }
     
@@ -176,8 +170,7 @@ SM_RequestHandle SM_CreateStateRequest(uint32_t clientId, MachineStateType targe
     return request->handle;
 }
 
-SM_RequestHandle SM_CreateFGStateRequest(uint32_t clientId,
-                                          FunctionGroupNameType fg,
+SM_RequestHandle SM_CreateFGStateRequest(uint32_t clientId,                                          FunctionGroupNameType fg,
                                           FunctionGroupStateType state) {
     if (!g_initialized) {
         return 0U;
@@ -206,8 +199,7 @@ SM_RequestHandle SM_CreateFGStateRequest(uint32_t clientId,
     return request->handle;
 }
 
-Std_ReturnType SM_SubmitRequest(SM_RequestHandle handle) {
-    if (!g_initialized) {
+Std_ReturnType SM_SubmitRequest(SM_RequestHandle handle) {    if (!g_initialized) {
         return E_NOT_OK;
     }
     
@@ -260,8 +252,7 @@ Std_ReturnType SM_SubmitRequest(SM_RequestHandle handle) {
     return E_OK;
 }
 
-Std_ReturnType SM_CancelRequest(SM_RequestHandle handle) {
-    if (!g_initialized) {
+Std_ReturnType SM_CancelRequest(SM_RequestHandle handle) {    if (!g_initialized) {
         return E_NOT_OK;
     }
     
@@ -295,8 +286,7 @@ Std_ReturnType SM_CancelRequest(SM_RequestHandle handle) {
     return E_OK;
 }
 
-SM_RequestStatus SM_GetRequestStatus(SM_RequestHandle handle) {
-    if (!g_initialized) {
+SM_RequestStatus SM_GetRequestStatus(SM_RequestHandle handle) {    if (!g_initialized) {
         return SM_REQUEST_STATUS_FAILED;
     }
     
@@ -308,8 +298,7 @@ SM_RequestStatus SM_GetRequestStatus(SM_RequestHandle handle) {
     return request->status;
 }
 
-Std_ReturnType SM_ConfirmRequest(SM_RequestHandle handle) {
-    if (!g_initialized) {
+Std_ReturnType SM_ConfirmRequest(SM_RequestHandle handle) {    if (!g_initialized) {
         return E_NOT_OK;
     }
     
@@ -343,8 +332,7 @@ Std_ReturnType SM_ConfirmRequest(SM_RequestHandle handle) {
     return E_OK;
 }
 
-Std_ReturnType SM_RejectRequest(SM_RequestHandle handle, int32_t errorCode,
-                                const char* errorMessage) {
+Std_ReturnType SM_RejectRequest(SM_RequestHandle handle, int32_t errorCode,                                const char* errorMessage) {
     if (!g_initialized) {
         return E_NOT_OK;
     }
@@ -376,8 +364,7 @@ Std_ReturnType SM_RejectRequest(SM_RequestHandle handle, int32_t errorCode,
     return E_OK;
 }
 
-Std_ReturnType SM_CompleteRequest(SM_RequestHandle handle, bool success) {
-    if (!g_initialized) {
+Std_ReturnType SM_CompleteRequest(SM_RequestHandle handle, bool success) {    if (!g_initialized) {
         return E_NOT_OK;
     }
     
@@ -405,8 +392,7 @@ Std_ReturnType SM_CompleteRequest(SM_RequestHandle handle, bool success) {
     return E_OK;
 }
 
-Std_ReturnType SM_SetCompletionCallback(SM_RequestHandle handle,
-                                        void (*callback)(SM_RequestHandle, SM_RequestStatus)) {
+Std_ReturnType SM_SetCompletionCallback(SM_RequestHandle handle,                                        void (*callback)(SM_RequestHandle, SM_RequestStatus)) {
     if (!g_initialized) {
         return E_NOT_OK;
     }
@@ -420,8 +406,7 @@ Std_ReturnType SM_SetCompletionCallback(SM_RequestHandle handle,
     return E_OK;
 }
 
-SM_RequestStatus SM_WaitForCompletion(SM_RequestHandle handle, uint32_t timeoutMs) {
-    if (!g_initialized) {
+SM_RequestStatus SM_WaitForCompletion(SM_RequestHandle handle, uint32_t timeoutMs) {    if (!g_initialized) {
         return SM_REQUEST_STATUS_FAILED;
     }
     
@@ -448,8 +433,7 @@ SM_RequestStatus SM_WaitForCompletion(SM_RequestHandle handle, uint32_t timeoutM
     return request->status;
 }
 
-Std_ReturnType SM_GetRequest(SM_RequestHandle handle, SM_RequestType* request) {
-    if (!g_initialized || (request == NULL)) {
+Std_ReturnType SM_GetRequest(SM_RequestHandle handle, SM_RequestType* request) {    if (!g_initialized || (request == NULL)) {
         return E_NOT_OK;
     }
     
@@ -458,12 +442,11 @@ Std_ReturnType SM_GetRequest(SM_RequestHandle handle, SM_RequestType* request) {
         return E_NOT_OK;
     }
     
-    memcpy(request, req, sizeof(SM_RequestType));
+    (void)memcpy(request, req, sizeof(SM_RequestType));
     return E_OK;
 }
 
-Std_ReturnType SM_GetResponse(SM_RequestHandle handle, SM_ResponseType* response) {
-    if (!g_initialized || (response == NULL)) {
+Std_ReturnType SM_GetResponse(SM_RequestHandle handle, SM_ResponseType* response) {    if (!g_initialized || (response == NULL)) {
         return E_NOT_OK;
     }
     
@@ -475,13 +458,12 @@ Std_ReturnType SM_GetResponse(SM_RequestHandle handle, SM_ResponseType* response
     response->handle = handle;
     response->status = request->status;
     response->errorCode = 0;
-    memset(response->errorMessage, 0, sizeof(response->errorMessage));
+    (void)memset(response->errorMessage, 0, sizeof(response->errorMessage));
     
     return E_OK;
 }
 
-void SM_Interface_MainFunction(void) {
-    if (!g_initialized) {
+void SM_Interface_MainFunction(void) {    if (!g_initialized) {
         return;
     }
     
@@ -522,8 +504,7 @@ void SM_Interface_MainFunction(void) {
     }
 }
 
-uint32_t SM_GetActiveRequestCount(void) {
-    if (!g_initialized) {
+uint32_t SM_GetActiveRequestCount(void) {    if (!g_initialized) {
         return 0U;
     }
     
@@ -539,8 +520,7 @@ uint32_t SM_GetActiveRequestCount(void) {
     return count;
 }
 
-Std_ReturnType SM_CancelClientRequests(uint32_t clientId) {
-    if (!g_initialized) {
+Std_ReturnType SM_CancelClientRequests(uint32_t clientId) {    if (!g_initialized) {
         return E_NOT_OK;
     }
     

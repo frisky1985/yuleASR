@@ -256,6 +256,7 @@ uint32 Ea_GetEraseCycleCount(void);
  */
 void Ea_MainFunction(void);
 
+
 #define EA_STOP_SEC_CODE
 #include "MemMap.h"
 

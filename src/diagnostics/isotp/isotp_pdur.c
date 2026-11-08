@@ -530,8 +530,7 @@ Isotp_ReturnType Isotp_PduR_RegisterDcmRxCallback(
  * @brief PduR TP Start of Reception callback
  * Called by PduR when TP reception starts
  */
-BufReq_ReturnType PduR_IsotpTpStartOfReception(
-    PduIdType RxPduId,
+static BufReq_ReturnType PduR_IsotpTpStartOfReception(    PduIdType RxPduId,
     PduLengthType TpSduLength,
     PduLengthType *BufferSizePtr)
 {
@@ -544,8 +543,7 @@ BufReq_ReturnType PduR_IsotpTpStartOfReception(
  * @brief PduR TP Copy RX Data callback
  * Called by PduR to copy received data
  */
-BufReq_ReturnType PduR_IsotpTpCopyRxData(
-    PduIdType RxPduId,
+static BufReq_ReturnType PduR_IsotpTpCopyRxData(    PduIdType RxPduId,
     const PduInfoType *PduInfoPtr,
     PduLengthType *BufferSizePtr)
 {
@@ -558,8 +556,7 @@ BufReq_ReturnType PduR_IsotpTpCopyRxData(
  * @brief PduR TP Copy TX Data callback
  * Called by PduR to copy transmit data
  */
-BufReq_ReturnType PduR_IsotpTpCopyTxData(
-    PduIdType TxPduId,
+static BufReq_ReturnType PduR_IsotpTpCopyTxData(    PduIdType TxPduId,
     const PduInfoType *PduInfoPtr,
     const RetryInfoType *RetryInfoPtr,
     PduLengthType *AvailableDataPtr)
@@ -573,8 +570,7 @@ BufReq_ReturnType PduR_IsotpTpCopyTxData(
  * @brief PduR TP Tx Confirmation callback
  * Called by PduR to confirm transmission
  */
-void PduR_IsotpTpTxConfirmation(PduIdType TxPduId, Std_ReturnType Result)
-{
+static void PduR_IsotpTpTxConfirmation(PduIdType TxPduId, Std_ReturnType Result){
     /* Map PDU ID to channel ID - simplified mapping */
     uint8_t channelId = (uint8_t)(TxPduId & 0xFFU);
     Isotp_PduR_TxConfirmation(channelId, Result);

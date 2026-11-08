@@ -122,8 +122,7 @@ DDS_ReturnCode_t CDR_Buffer_reset(CDR_Buffer *buffer) {
     return DDS_RETCODE_OK;
 }
 
-DDS_ReturnCode_t CDR_Buffer_set_write_pos(CDR_Buffer *buffer, uint32_t offset) {
-    if (buffer == NULL_PTR) {
+DDS_ReturnCode_t CDR_Buffer_set_write_pos(CDR_Buffer *buffer, uint32_t offset) {    if (buffer == NULL_PTR) {
         return DDS_RETCODE_BAD_PARAMETER;
     }
 
@@ -136,8 +135,7 @@ DDS_ReturnCode_t CDR_Buffer_set_write_pos(CDR_Buffer *buffer, uint32_t offset) {
     return DDS_RETCODE_OK;
 }
 
-DDS_ReturnCode_t CDR_Buffer_set_read_pos(CDR_Buffer *buffer, uint32_t offset) {
-    if (buffer == NULL_PTR) {
+DDS_ReturnCode_t CDR_Buffer_set_read_pos(CDR_Buffer *buffer, uint32_t offset) {    if (buffer == NULL_PTR) {
         return DDS_RETCODE_BAD_PARAMETER;
     }
 
@@ -150,24 +148,21 @@ DDS_ReturnCode_t CDR_Buffer_set_read_pos(CDR_Buffer *buffer, uint32_t offset) {
     return DDS_RETCODE_OK;
 }
 
-uint32_t CDR_Buffer_remaining_write(const CDR_Buffer *buffer) {
-    if (buffer == NULL_PTR) {
+uint32_t CDR_Buffer_remaining_write(const CDR_Buffer *buffer) {    if (buffer == NULL_PTR) {
         return 0U;
     }
 
     return (buffer->size > buffer->write_pos) ? (buffer->size - buffer->write_pos) : 0U;
 }
 
-uint32_t CDR_Buffer_remaining_read(const CDR_Buffer *buffer) {
-    if (buffer == NULL_PTR) {
+uint32_t CDR_Buffer_remaining_read(const CDR_Buffer *buffer) {    if (buffer == NULL_PTR) {
         return 0U;
     }
 
     return (buffer->write_pos > buffer->read_pos) ? (buffer->write_pos - buffer->read_pos) : 0U;
 }
 
-DDS_ReturnCode_t CDR_Buffer_align_write(CDR_Buffer *buffer, uint8_t alignment) {
-    if (buffer == NULL_PTR) {
+DDS_ReturnCode_t CDR_Buffer_align_write(CDR_Buffer *buffer, uint8_t alignment) {    if (buffer == NULL_PTR) {
         return DDS_RETCODE_BAD_PARAMETER;
     }
 
@@ -190,8 +185,7 @@ DDS_ReturnCode_t CDR_Buffer_align_write(CDR_Buffer *buffer, uint8_t alignment) {
     return DDS_RETCODE_OK;
 }
 
-DDS_ReturnCode_t CDR_Buffer_align_read(CDR_Buffer *buffer, uint8_t alignment) {
-    if (buffer == NULL_PTR) {
+DDS_ReturnCode_t CDR_Buffer_align_read(CDR_Buffer *buffer, uint8_t alignment) {    if (buffer == NULL_PTR) {
         return DDS_RETCODE_BAD_PARAMETER;
     }
 
@@ -600,8 +594,7 @@ DDS_ReturnCode_t CDR_deserialize_string(CDR_Buffer *buffer, char *str, uint32_t 
     return DDS_RETCODE_OK;
 }
 
-DDS_ReturnCode_t CDR_serialize_fixed_string(CDR_Buffer *buffer, const char *str, uint32_t fixed_len) {
-    if ((buffer == NULL_PTR) || (str == NULL_PTR)) {
+DDS_ReturnCode_t CDR_serialize_fixed_string(CDR_Buffer *buffer, const char *str, uint32_t fixed_len) {    if ((buffer == NULL_PTR) || (str == NULL_PTR)) {
         return DDS_RETCODE_BAD_PARAMETER;
     }
 
@@ -628,8 +621,7 @@ DDS_ReturnCode_t CDR_serialize_fixed_string(CDR_Buffer *buffer, const char *str,
     return DDS_RETCODE_OK;
 }
 
-DDS_ReturnCode_t CDR_deserialize_fixed_string(CDR_Buffer *buffer, char *str, uint32_t fixed_len) {
-    if ((buffer == NULL_PTR) || (str == NULL_PTR)) {
+DDS_ReturnCode_t CDR_deserialize_fixed_string(CDR_Buffer *buffer, char *str, uint32_t fixed_len) {    if ((buffer == NULL_PTR) || (str == NULL_PTR)) {
         return DDS_RETCODE_BAD_PARAMETER;
     }
 
@@ -650,8 +642,7 @@ DDS_ReturnCode_t CDR_deserialize_fixed_string(CDR_Buffer *buffer, char *str, uin
 /* ============================================================================
  * 原始字节序列化
  * ============================================================================ */
-DDS_ReturnCode_t CDR_serialize_bytes(CDR_Buffer *buffer, const uint8_t *data, uint32_t len) {
-    if ((buffer == NULL_PTR) || (data == NULL_PTR)) {
+DDS_ReturnCode_t CDR_serialize_bytes(CDR_Buffer *buffer, const uint8_t *data, uint32_t len) {    if ((buffer == NULL_PTR) || (data == NULL_PTR)) {
         return DDS_RETCODE_BAD_PARAMETER;
     }
 
@@ -671,8 +662,7 @@ DDS_ReturnCode_t CDR_serialize_bytes(CDR_Buffer *buffer, const uint8_t *data, ui
     return DDS_RETCODE_OK;
 }
 
-DDS_ReturnCode_t CDR_deserialize_bytes(CDR_Buffer *buffer, uint8_t *data, uint32_t len) {
-    if ((buffer == NULL_PTR) || (data == NULL_PTR)) {
+DDS_ReturnCode_t CDR_deserialize_bytes(CDR_Buffer *buffer, uint8_t *data, uint32_t len) {    if ((buffer == NULL_PTR) || (data == NULL_PTR)) {
         return DDS_RETCODE_BAD_PARAMETER;
     }
 
@@ -695,8 +685,7 @@ DDS_ReturnCode_t CDR_deserialize_bytes(CDR_Buffer *buffer, uint8_t *data, uint32
 /* ============================================================================
  * 样本头部实现
  * ============================================================================ */
-void CDR_SampleHeader_init(CDR_SampleHeader *header, uint32_t seq_num, uint16_t encapsulation) {
-    if (header != NULL_PTR) {
+void CDR_SampleHeader_init(CDR_SampleHeader *header, uint32_t seq_num, uint16_t encapsulation) {    if (header != NULL_PTR) {
         header->sequence_number = seq_num;
         header->timestamp_sec = 0U;
         header->timestamp_nsec = 0U;
@@ -705,8 +694,7 @@ void CDR_SampleHeader_init(CDR_SampleHeader *header, uint32_t seq_num, uint16_t 
     }
 }
 
-void CDR_SampleHeader_set_timestamp(CDR_SampleHeader *header, uint32_t sec, uint32_t nsec) {
-    if (header != NULL_PTR) {
+void CDR_SampleHeader_set_timestamp(CDR_SampleHeader *header, uint32_t sec, uint32_t nsec) {    if (header != NULL_PTR) {
         header->timestamp_sec = sec;
         header->timestamp_nsec = nsec;
     }
@@ -779,8 +767,7 @@ DDS_ReturnCode_t CDR_deserialize_sample_header(CDR_Buffer *buffer, CDR_SampleHea
 /* ============================================================================
  * RTPS头部实现
  * ============================================================================ */
-void CDR_RTPSHeader_init(CDR_RTPSHeader *header, uint8_t version_major, uint8_t version_minor) {
-    if (header != NULL_PTR) {
+void CDR_RTPSHeader_init(CDR_RTPSHeader *header, uint8_t version_major, uint8_t version_minor) {    if (header != NULL_PTR) {
         for (uint32_t i = 0U; i < 4U; i++) {
             header->protocol[i] = RTPS_PROTOCOL_ID[i];
         }
@@ -794,8 +781,7 @@ void CDR_RTPSHeader_init(CDR_RTPSHeader *header, uint8_t version_major, uint8_t 
     }
 }
 
-DDS_ReturnCode_t CDR_serialize_rtps_header(CDR_Buffer *buffer, const CDR_RTPSHeader *header) {
-    DDS_ReturnCode_t ret;
+DDS_ReturnCode_t CDR_serialize_rtps_header(CDR_Buffer *buffer, const CDR_RTPSHeader *header) {    DDS_ReturnCode_t ret;
 
     if ((buffer == NULL_PTR) || (header == NULL_PTR)) {
         return DDS_RETCODE_BAD_PARAMETER;
@@ -829,8 +815,7 @@ DDS_ReturnCode_t CDR_serialize_rtps_header(CDR_Buffer *buffer, const CDR_RTPSHea
     return ret;
 }
 
-DDS_ReturnCode_t CDR_deserialize_rtps_header(CDR_Buffer *buffer, CDR_RTPSHeader *header) {
-    DDS_ReturnCode_t ret;
+DDS_ReturnCode_t CDR_deserialize_rtps_header(CDR_Buffer *buffer, CDR_RTPSHeader *header) {    DDS_ReturnCode_t ret;
 
     if ((buffer == NULL_PTR) || (header == NULL_PTR)) {
         return DDS_RETCODE_BAD_PARAMETER;
@@ -872,8 +857,7 @@ DDS_ReturnCode_t CDR_deserialize_rtps_header(CDR_Buffer *buffer, CDR_RTPSHeader 
 /* ============================================================================
  * 序列号管理
  * ============================================================================ */
-uint32_t CDR_generate_sequence_number(void) {
-    uint32_t seq = sequence_counter;
+uint32_t CDR_generate_sequence_number(void) {    uint32_t seq = sequence_counter;
     sequence_counter++;
     if (sequence_counter == 0U) {
         sequence_counter = 1U;
@@ -881,15 +865,13 @@ uint32_t CDR_generate_sequence_number(void) {
     return seq;
 }
 
-void CDR_reset_sequence_number(void) {
-    sequence_counter = 1U;
+void CDR_reset_sequence_number(void) {    sequence_counter = 1U;
 }
 
 /* ============================================================================
  * 高级封装API
  * ============================================================================ */
-DDS_ReturnCode_t CDR_begin_sample(CDR_Buffer *buffer, uint16_t encapsulation) {
-    if (buffer == NULL_PTR) {
+DDS_ReturnCode_t CDR_begin_sample(CDR_Buffer *buffer, uint16_t encapsulation) {    if (buffer == NULL_PTR) {
         return DDS_RETCODE_BAD_PARAMETER;
     }
 
@@ -902,14 +884,12 @@ DDS_ReturnCode_t CDR_begin_sample(CDR_Buffer *buffer, uint16_t encapsulation) {
     return CDR_serialize_sample_header(buffer, &header);
 }
 
-DDS_ReturnCode_t CDR_end_sample(CDR_Buffer *buffer) {
-    /* CDR样本不需要特殊的结束标记 */
+DDS_ReturnCode_t CDR_end_sample(CDR_Buffer *buffer) {    /* CDR样本不需要特殊的结束标记 */
     (void)buffer;
     return DDS_RETCODE_OK;
 }
 
-DDS_ReturnCode_t CDR_get_serialized_data(const CDR_Buffer *buffer, uint8_t **data, uint32_t *len) {
-    if ((buffer == NULL_PTR) || (data == NULL_PTR) || (len == NULL_PTR)) {
+DDS_ReturnCode_t CDR_get_serialized_data(const CDR_Buffer *buffer, uint8_t **data, uint32_t *len) {    if ((buffer == NULL_PTR) || (data == NULL_PTR) || (len == NULL_PTR)) {
         return DDS_RETCODE_BAD_PARAMETER;
     }
 

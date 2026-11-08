@@ -62,7 +62,7 @@ void secoc_dds_deinit(secoc_dds_context_t *ctx) {
     
     /* 清除密钥池 */
     for (int i = 0; i < 16; i++) {
-        memset(ctx->shared_key_pool[i], 0, 32);
+        (void)memset(ctx->shared_key_pool[i], 0, 32);
     }
     
     /* 反初始化SecOC */
@@ -104,7 +104,7 @@ secoc_status_t secoc_dds_add_mapping(secoc_dds_context_t *ctx,
     }
     
     /* 添加映射 */
-    memcpy(&ctx->mappings[ctx->num_mappings], mapping, sizeof(secoc_dds_mapping_t));
+    (void)memcpy(&ctx->mappings[ctx->num_mappings], mapping, sizeof(secoc_dds_mapping_t));
     ctx->num_mappings++;
     
     return SECOC_OK;
@@ -132,7 +132,7 @@ secoc_status_t secoc_dds_remove_mapping(secoc_dds_context_t *ctx, uint32_t pdu_i
     
     for (uint32_t i = 0; i < ctx->num_mappings; i++) {
         if (ctx->mappings[i].secoc_pdu_id == pdu_id) {
-            memmove(&ctx->mappings[i], &ctx->mappings[i + 1U],
+            (void)memmove(&ctx->mappings[i], &ctx->mappings[i + 1U],
                     (ctx->num_mappings - i - 1U) * sizeof(secoc_dds_mapping_t));
             ctx->num_mappings--;
             return SECOC_OK;
@@ -197,11 +197,11 @@ secoc_status_t secoc_dds_export_key_to_dds(secoc_dds_context_t *ctx,
     }
     
     /* 存储到共享密钥池 */
-    memcpy(ctx->shared_key_pool[dds_key_id], key, key_len);
+    (void)memcpy(ctx->shared_key_pool[dds_key_id], key, key_len);
     ctx->shared_key_versions[dds_key_id]++;
     
     /* 清除敏感数据 */
-    memset(key, 0, sizeof(key));
+    (void)memset(key, 0, sizeof(key));
     
     g_stats.key_export_count++;
     g_stats.key_sync_count++;
@@ -259,9 +259,9 @@ secoc_status_t secoc_dds_compute_mac(secoc_dds_context_t *ctx,
         uint32_t auth_len = 0;
         
         /* 构建认证数据 */
-        memcpy(auth_data, data, data_len);
+        (void)memcpy(auth_data, data, data_len);
         auth_len += data_len;
-        memcpy(&auth_data[auth_len], freshness_value, fv_len);
+        (void)memcpy(&auth_data[auth_len], freshness_value, fv_len);
         auth_len += fv_len;
         
         /* 获取密钥 */
@@ -292,7 +292,7 @@ secoc_status_t secoc_dds_compute_mac(secoc_dds_context_t *ctx,
         
         if (dds_status == DDS_CRYPTO_OK) {
             /* 截断MAC到指定长度 */
-            memcpy(mac, full_mac, (mac_len < DDS_CRYPTO_GCM_TAG_SIZE) ? mac_len : DDS_CRYPTO_GCM_TAG_SIZE);
+            (void)memcpy(mac, full_mac, (mac_len < DDS_CRYPTO_GCM_TAG_SIZE) ? mac_len : DDS_CRYPTO_GCM_TAG_SIZE);
             g_stats.dds_ops++;
             return SECOC_OK;
         }
@@ -306,10 +306,10 @@ secoc_status_t secoc_dds_compute_mac(secoc_dds_context_t *ctx,
     config.auth_key_slot = mapping->secoc_key_slot;
     
     secoc_authenticated_pdu_t auth_pdu;
-    memset(&auth_pdu, 0, sizeof(auth_pdu));
+    (void)memset(&auth_pdu, 0, sizeof(auth_pdu));
     auth_pdu.data = (uint8_t*)data;
     auth_pdu.data_len = data_len;
-    memcpy(auth_pdu.freshness_value, freshness_value, fv_len);
+    (void)memcpy(auth_pdu.freshness_value, freshness_value, fv_len);
     auth_pdu.freshness_len = fv_len;
     auth_pdu.auth_len = mac_len;
     

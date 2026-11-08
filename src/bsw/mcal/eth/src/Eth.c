@@ -53,7 +53,7 @@ uint8 Eth_RxBufPool[ETH_MAX_CONTROLLERS][ETH_MAX_RX_BUFS][ETH_MAX_FRAME_SIZE];
 /**
  * @brief Initialize TX buffers for a controller
  */
-static void Eth_InitTxBuffers(Eth_ControllerType CtrlIdx)
+void Eth_InitTxBuffers(Eth_ControllerType CtrlIdx)
 {
     uint8 bufIdx;
     
@@ -73,7 +73,7 @@ static void Eth_InitTxBuffers(Eth_ControllerType CtrlIdx)
 /**
  * @brief Initialize RX buffers for a controller
  */
-static void Eth_InitRxBuffers(Eth_ControllerType CtrlIdx)
+void Eth_InitRxBuffers(Eth_ControllerType CtrlIdx)
 {
     uint8 bufIdx;
     
@@ -92,7 +92,7 @@ static void Eth_InitRxBuffers(Eth_ControllerType CtrlIdx)
 /**
  * @brief Allocate a TX buffer
  */
-static Eth_BufIdxType Eth_AllocateTxBuffer(Eth_ControllerType CtrlIdx, uint16 Len)
+Eth_BufIdxType Eth_AllocateTxBuffer(Eth_ControllerType CtrlIdx, uint16 Len)
 {
     uint8 bufIdx;
     Eth_BufIdxType allocatedBuf = ETH_INVALID_BUF_INDEX;
@@ -114,7 +114,7 @@ static Eth_BufIdxType Eth_AllocateTxBuffer(Eth_ControllerType CtrlIdx, uint16 Le
 /**
  * @brief Free a TX buffer
  */
-static void Eth_FreeTxBuffer(Eth_ControllerType CtrlIdx, Eth_BufIdxType BufIdx)
+void Eth_FreeTxBuffer(Eth_ControllerType CtrlIdx, Eth_BufIdxType BufIdx)
 {
     if ((BufIdx < Eth_CtrlState[CtrlIdx].TxBufCount) && 
         (Eth_TxDesc[CtrlIdx][BufIdx].State != ETH_BUF_STATE_FREE))
@@ -128,7 +128,7 @@ static void Eth_FreeTxBuffer(Eth_ControllerType CtrlIdx, Eth_BufIdxType BufIdx)
 /**
  * @brief Free an RX buffer
  */
-static void Eth_FreeRxBuffer(Eth_ControllerType CtrlIdx, Eth_BufIdxType BufIdx)
+void Eth_FreeRxBuffer(Eth_ControllerType CtrlIdx, Eth_BufIdxType BufIdx)
 {
     if ((BufIdx < Eth_CtrlState[CtrlIdx].RxBufCount) && 
         (Eth_RxDesc[CtrlIdx][BufIdx].State != ETH_BUF_STATE_FREE))
@@ -141,7 +141,7 @@ static void Eth_FreeRxBuffer(Eth_ControllerType CtrlIdx, Eth_BufIdxType BufIdx)
 /**
  * @brief Validate frame data
  */
-static boolean Eth_ValidateFrame(const uint8* DataPtr, uint16 Len)
+boolean Eth_ValidateFrame(const uint8* DataPtr, uint16 Len)
 {
     boolean valid = TRUE;
     
@@ -164,7 +164,7 @@ static boolean Eth_ValidateFrame(const uint8* DataPtr, uint16 Len)
 /**
  * @brief Update MAC address in hardware
  */
-static void Eth_UpdateMacAddress(Eth_ControllerType CtrlIdx, const uint8* MacAddr)
+void Eth_UpdateMacAddress(Eth_ControllerType CtrlIdx, const uint8* MacAddr)
 {
     /* This would write to hardware registers */
     /* For now, just store in controller state */
@@ -181,7 +181,7 @@ static void Eth_UpdateMacAddress(Eth_ControllerType CtrlIdx, const uint8* MacAdd
 /**
  * @brief Initialize hardware for a controller
  */
-static Std_ReturnType Eth_HwInit(Eth_ControllerType CtrlIdx, const Eth_ControllerConfigType* CfgPtr)
+Std_ReturnType Eth_HwInit(Eth_ControllerType CtrlIdx, const Eth_ControllerConfigType* CfgPtr)
 {
     Std_ReturnType result = E_OK;
     
@@ -202,7 +202,7 @@ static Std_ReturnType Eth_HwInit(Eth_ControllerType CtrlIdx, const Eth_Controlle
 /**
  * @brief De-initialize hardware for a controller
  */
-static Std_ReturnType Eth_HwDeInit(Eth_ControllerType CtrlIdx)
+Std_ReturnType Eth_HwDeInit(Eth_ControllerType CtrlIdx)
 {
     /* Disable MAC and DMA */
     /* Reset hardware registers */
@@ -216,7 +216,7 @@ static Std_ReturnType Eth_HwDeInit(Eth_ControllerType CtrlIdx)
 /**
  * @brief Set controller mode in hardware
  */
-static Std_ReturnType Eth_HwSetMode(Eth_ControllerType CtrlIdx, Eth_ModeType Mode)
+Std_ReturnType Eth_HwSetMode(Eth_ControllerType CtrlIdx, Eth_ModeType Mode)
 {
     Std_ReturnType result = E_OK;
     
@@ -237,7 +237,7 @@ static Std_ReturnType Eth_HwSetMode(Eth_ControllerType CtrlIdx, Eth_ModeType Mod
 /**
  * @brief Write to MII register
  */
-static Std_ReturnType Eth_HwWriteMii(Eth_ControllerType CtrlIdx, Eth_PhyAddrType PhyAddr, 
+Std_ReturnType Eth_HwWriteMii(Eth_ControllerType CtrlIdx, Eth_PhyAddrType PhyAddr, 
                                       Eth_RegAddrType RegAddr, Eth_DataType Data)
 {
     Std_ReturnType result = E_OK;
@@ -257,7 +257,7 @@ static Std_ReturnType Eth_HwWriteMii(Eth_ControllerType CtrlIdx, Eth_PhyAddrType
 /**
  * @brief Read from MII register
  */
-static Std_ReturnType Eth_HwReadMii(Eth_ControllerType CtrlIdx, Eth_PhyAddrType PhyAddr, 
+Std_ReturnType Eth_HwReadMii(Eth_ControllerType CtrlIdx, Eth_PhyAddrType PhyAddr, 
                                      Eth_RegAddrType RegAddr, Eth_DataType* DataPtr)
 {
     Std_ReturnType result = E_OK;
@@ -281,7 +281,7 @@ static Std_ReturnType Eth_HwReadMii(Eth_ControllerType CtrlIdx, Eth_PhyAddrType 
 /**
  * @brief Transmit frame via hardware
  */
-static Std_ReturnType Eth_HwTransmit(Eth_ControllerType CtrlIdx, Eth_BufIdxType BufIdx, uint16 Len)
+Std_ReturnType Eth_HwTransmit(Eth_ControllerType CtrlIdx, Eth_BufIdxType BufIdx, uint16 Len)
 {
     Std_ReturnType result = E_OK;
     
@@ -301,7 +301,7 @@ static Std_ReturnType Eth_HwTransmit(Eth_ControllerType CtrlIdx, Eth_BufIdxType 
 /**
  * @brief Receive frame from hardware
  */
-static Std_ReturnType Eth_HwReceive(Eth_ControllerType CtrlIdx, Eth_BufIdxType* BufIdxPtr, uint16* LenPtr)
+Std_ReturnType Eth_HwReceive(Eth_ControllerType CtrlIdx, Eth_BufIdxType* BufIdxPtr, uint16* LenPtr)
 {
     Std_ReturnType result = E_NOT_OK;
     uint8 bufIdx;

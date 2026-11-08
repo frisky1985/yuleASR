@@ -173,4 +173,5 @@ boolean Crypto_HwTrng_IsEntropyAvailable(void);
  */
 Std_ReturnType Crypto_HwTrng_WaitReady(uint32 timeoutUs);
 
+
 #endif /* CRYPTO_HWTRNG_H */

@@ -66,10 +66,10 @@ Std_ReturnType HeapProtection_Init(const HeapConfigType *config)
     }
     
     /* Copy configuration */
-    memcpy(&g_config, config, sizeof(HeapConfigType));
+    (void)memcpy(&g_config, config, sizeof(HeapConfigType));
     
     /* Initialize heap info */
-    memset(&g_heap_info, 0, sizeof(HeapInfoType));
+    (void)memset(&g_heap_info, 0, sizeof(HeapInfoType));
     g_heap_info.state = HEAP_STATE_HEALTHY;
     g_heap_info.initialized = TRUE;
     g_heap_info.locked = FALSE;
@@ -81,7 +81,7 @@ Std_ReturnType HeapProtection_Init(const HeapConfigType *config)
     g_free_list = NULL;
     
     /* Clear violation record */
-    memset(&g_last_violation, 0, sizeof(HeapViolationType));
+    (void)memset(&g_last_violation, 0, sizeof(HeapViolationType));
     
     g_alloc_counter = 1;
     g_initialized = TRUE;
@@ -115,8 +115,8 @@ Std_ReturnType HeapProtection_DeInit(void)
     }
     
     /* Clear all state */
-    memset(&g_config, 0, sizeof(HeapConfigType));
-    memset(&g_heap_info, 0, sizeof(HeapInfoType));
+    (void)memset(&g_config, 0, sizeof(HeapConfigType));
+    (void)memset(&g_heap_info, 0, sizeof(HeapInfoType));
     g_block_list = NULL;
     g_free_list = NULL;
     g_violation_callback = NULL;
@@ -170,7 +170,7 @@ void* HeapProtection_Malloc(uint32_t size, uint8_t flags)
         /* Zero memory if requested */
         user_ptr = HeapProtection_GetUserPtr(block);
         if (flags & HEAP_FLAG_ZERO_ON_ALLOC) {
-            memset(user_ptr, 0, block->size);
+            (void)memset(user_ptr, 0, block->size);
         } else {
             /* Fill with allocation pattern */
             HeapProtection_FillPattern(user_ptr, block->size, HEAP_FILL_PATTERN_ALLOC);
@@ -217,7 +217,7 @@ void* HeapProtection_Malloc(uint32_t size, uint8_t flags)
     
     /* Initialize memory */
     if (flags & HEAP_FLAG_ZERO_ON_ALLOC) {
-        memset(user_ptr, 0, size);
+        (void)memset(user_ptr, 0, size);
     } else {
         HeapProtection_FillPattern(user_ptr, size, HEAP_FILL_PATTERN_ALLOC);
     }
@@ -269,7 +269,7 @@ void* HeapProtection_Realloc(void *ptr, uint32_t new_size, uint8_t flags)
     
     if (new_size == 0) {
         /* Behave like free */
-        HeapProtection_Free(ptr, flags);
+        (void)HeapProtection_Free(ptr, flags);
         return NULL;
     }
     
@@ -288,10 +288,10 @@ void* HeapProtection_Realloc(void *ptr, uint32_t new_size, uint8_t flags)
     }
     
     /* Copy data */
-    memcpy(new_ptr, ptr, (old_size < new_size) ? old_size : new_size);
+    (void)memcpy(new_ptr, ptr, (old_size < new_size) ? old_size : new_size);
     
     /* Free old block */
-    HeapProtection_Free(ptr, flags);
+    (void)HeapProtection_Free(ptr, flags);
     
     return new_ptr;
 }
@@ -703,7 +703,7 @@ void HeapProtection_FillPattern(void *ptr, uint32_t size, uint8_t pattern)
         return;
     }
     
-    memset(ptr, pattern, size);
+    (void)memset(ptr, pattern, size);
 }
 
 void HeapProtection_ClearOnFree(void *ptr, uint32_t size)
@@ -785,10 +785,10 @@ uint32_t HeapProtection_FullCheck(void)
             if (block->state == HEAP_BLOCK_STATE_ALLOCATED) {
                 void *user_ptr = HeapProtection_GetUserPtr(block);
                 
-                HeapProtection_CheckOverflow(user_ptr, &overflow);
+                (void)HeapProtection_CheckOverflow(user_ptr, &overflow);
                 if (overflow) errors++;
                 
-                HeapProtection_CheckUnderflow(user_ptr, &underflow);
+                (void)HeapProtection_CheckUnderflow(user_ptr, &underflow);
                 if (underflow) errors++;
             }
             block = block->next;
@@ -845,7 +845,7 @@ void HeapProtection_HandleViolation(const HeapViolationType *violation)
     }
     
     /* Store last violation */
-    memcpy(&g_last_violation, violation, sizeof(HeapViolationType));
+    (void)memcpy(&g_last_violation, violation, sizeof(HeapViolationType));
     
     /* Lock heap if configured */
     if (g_config.flags & HEAP_FLAG_LOCK_ON_CORRUPTION) {
@@ -864,7 +864,7 @@ Std_ReturnType HeapProtection_GetLastViolation(HeapViolationType *violation)
         return E_NOT_OK;
     }
     
-    memcpy(violation, &g_last_violation, sizeof(HeapViolationType));
+    (void)memcpy(violation, &g_last_violation, sizeof(HeapViolationType));
     
     return E_OK;
 }
@@ -879,7 +879,7 @@ Std_ReturnType HeapProtection_GetInfo(HeapInfoType *info)
         return E_NOT_OK;
     }
     
-    memcpy(info, &g_heap_info, sizeof(HeapInfoType));
+    (void)memcpy(info, &g_heap_info, sizeof(HeapInfoType));
     
     return E_OK;
 }
@@ -890,7 +890,7 @@ Std_ReturnType HeapProtection_GetStats(HeapStatisticsType *stats)
         return E_NOT_OK;
     }
     
-    memcpy(stats, &g_heap_info.stats, sizeof(HeapStatisticsType));
+    (void)memcpy(stats, &g_heap_info.stats, sizeof(HeapStatisticsType));
     
     return E_OK;
 }
@@ -1137,7 +1137,7 @@ static void ReportViolation(const HeapViolationType *violation)
     }
     
     /* Store last violation */
-    memcpy(&g_last_violation, violation, sizeof(HeapViolationType));
+    (void)memcpy(&g_last_violation, violation, sizeof(HeapViolationType));
     
     /* Update heap state */
     g_heap_info.state = HEAP_STATE_CORRUPTED;

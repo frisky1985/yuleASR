@@ -207,6 +207,24 @@ void Os_GetVersionInfo(Std_VersionInfoType* versioninfo);
 /* BSW Alarm Callback Dispatcher */
 void Os_Callback_Alarm(AlarmType AlarmID);
 
+
+void Appl_ErrorHook(StatusType Error);
+void Appl_PreTaskHook(void);
+void Appl_PostTaskHook(void);
+void Appl_StartupHook(void);
+void Appl_ShutdownHook(StatusType Error);
+void OsTask_Init_Entry(void);
+void OsTask_10ms_Entry(void);
+void OsTask_50ms_Entry(void);
+void OsTask_100ms_Entry(void);
+void OsTask_Background_Entry(void);
+void OsTask_ComMainFunctionRx_Entry(void);
+void OsTask_ComMainFunctionTx_Entry(void);
+void OsTask_Diagnostic_Entry(void);
+void Os_StartTaskExecutionTiming(TaskType TaskID);
+void Os_StopTaskExecutionTiming(TaskType TaskID);
+void Os_CheckTaskExecutionBudget(TaskType TaskID);
+void Os_TimingProtectionMainFunction(void);
 #define OS_STOP_SEC_CODE
 #include "MemMap.h"
 

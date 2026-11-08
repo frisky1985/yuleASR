@@ -748,8 +748,7 @@ Std_ReturnType Com_ReceiveSignalGroup(Com_SignalGroupIdType SignalGroupId)
  * @brief   Update shadow signal
  */
 /** @req SWS_Com_00007 */
-Std_ReturnType Com_UpdateShadowSignal(Com_SignalIdType SignalId, const void* SignalDataPtr)
-{
+Std_ReturnType Com_UpdateShadowSignal(Com_SignalIdType SignalId, const void* SignalDataPtr){
     uint8 result = COM_SERVICE_NOT_OK;
     const Com_SignalConfigType* signalConfig;
 
@@ -783,8 +782,7 @@ Std_ReturnType Com_UpdateShadowSignal(Com_SignalIdType SignalId, const void* Sig
  * @brief   Receive shadow signal
  */
 /** @req SWS_Com_00008 */
-Std_ReturnType Com_ReceiveShadowSignal(Com_SignalIdType SignalId, void* SignalDataPtr)
-{
+Std_ReturnType Com_ReceiveShadowSignal(Com_SignalIdType SignalId, void* SignalDataPtr){
     uint8 result = COM_SERVICE_NOT_OK;
     const Com_SignalConfigType* signalConfig;
 
@@ -1123,8 +1121,7 @@ void Com_GetVersionInfo(Std_VersionInfoType* versioninfo)
 
 /* IPDU Group Control functions */
 /** @req SWS_Com_00018 */
-void Com_ClearIpduGroupVector(Com_IpduGroupVector ipduGroupVector)
-{
+void Com_ClearIpduGroupVector(Com_IpduGroupVector ipduGroupVector){
     uint16 i;
     for (i = 0U; i < ((COM_NUM_OF_IPDU_GROUPS + 7U) / 8U); i++)
     {
@@ -1133,8 +1130,7 @@ void Com_ClearIpduGroupVector(Com_IpduGroupVector ipduGroupVector)
 }
 
 /** @req SWS_Com_00019 */
-void Com_SetIpduGroup(Com_IpduGroupVector ipduGroupVector, Com_IpduGroupIdType ipduGroupId)
-{
+void Com_SetIpduGroup(Com_IpduGroupVector ipduGroupVector, Com_IpduGroupIdType ipduGroupId){
     if (ipduGroupId < COM_NUM_OF_IPDU_GROUPS)
     {
         ipduGroupVector[ipduGroupId / 8U] |= (1U << (ipduGroupId % 8U));
@@ -1142,8 +1138,7 @@ void Com_SetIpduGroup(Com_IpduGroupVector ipduGroupVector, Com_IpduGroupIdType i
 }
 
 /** @req SWS_Com_00020 */
-void Com_ClearIpduGroup(Com_IpduGroupVector ipduGroupVector, Com_IpduGroupIdType ipduGroupId)
-{
+void Com_ClearIpduGroup(Com_IpduGroupVector ipduGroupVector, Com_IpduGroupIdType ipduGroupId){
     if (ipduGroupId < COM_NUM_OF_IPDU_GROUPS)
     {
         ipduGroupVector[ipduGroupId / 8U] &= ~(1U << (ipduGroupId % 8U));
@@ -1317,8 +1312,7 @@ Std_ReturnType Com_InvalidateSignalGroup(Com_SignalGroupIdType SignalGroupId)
 }
 
 /** @req SWS_Com_00027 */
-Std_ReturnType Com_SendDynSignal(Com_SignalIdType SignalId, const void* SignalDataPtr, uint16 Length)
-{
+Std_ReturnType Com_SendDynSignal(Com_SignalIdType SignalId, const void* SignalDataPtr, uint16 Length){
     (void)SignalId;
     (void)SignalDataPtr;
     (void)Length;
@@ -1326,8 +1320,7 @@ Std_ReturnType Com_SendDynSignal(Com_SignalIdType SignalId, const void* SignalDa
 }
 
 /** @req SWS_Com_00028 */
-Std_ReturnType Com_ReceiveDynSignal(Com_SignalIdType SignalId, void* SignalDataPtr, uint16* Length)
-{
+Std_ReturnType Com_ReceiveDynSignal(Com_SignalIdType SignalId, void* SignalDataPtr, uint16* Length){
     (void)SignalId;
     (void)SignalDataPtr;
     (void)Length;
@@ -1342,23 +1335,20 @@ void Com_SwitchIpduTxMode(PduIdType PduId, ComTxModeModeType Mode)
 }
 
 /** @req SWS_Com_00030 */
-Std_ReturnType Com_TriggerIPDUSendWithMetaData(PduIdType PduId, const uint8* MetaData)
-{
+Std_ReturnType Com_TriggerIPDUSendWithMetaData(PduIdType PduId, const uint8* MetaData){
     (void)PduId;
     (void)MetaData;
     return E_NOT_OK;
 }
 
 /** @req SWS_Com_00031 */
-void Com_TpRxIndication(PduIdType id, Std_ReturnType result)
-{
+void Com_TpRxIndication(PduIdType id, Std_ReturnType result){
     (void)id;
     (void)result;
 }
 
 /** @req SWS_Com_00032 */
-void Com_TpTxConfirmation(PduIdType id, Std_ReturnType result)
-{
+void Com_TpTxConfirmation(PduIdType id, Std_ReturnType result){
     (void)id;
     (void)result;
 }

@@ -35,7 +35,7 @@ TelStatus_t Tel_Dds_Init(const TelDdsConfig_t *config) {
         s_dds_config = *config;
     }
     
-    memset(&s_dds_sample, 0, sizeof(s_dds_sample));
+    (void)memset(&s_dds_sample, 0, sizeof(s_dds_sample));
     s_seq_num = 0;
     
     return TEL_OK;
@@ -107,7 +107,7 @@ TelStatus_t Tel_Dds_FlushBuffer(void) {
                                                    TEL_DDS_MAX_PAYLOAD);
         
         if (compressed_len < payload_len) {
-            memcpy(s_dds_sample.payload, compressed, compressed_len);
+            (void)memcpy(s_dds_sample.payload, compressed, compressed_len);
             payload_len = compressed_len;
             s_dds_sample.compression = 1; /* RLE */
         } else {

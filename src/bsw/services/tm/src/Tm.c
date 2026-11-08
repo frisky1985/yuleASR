@@ -16,7 +16,7 @@ Std_ReturnType Tm_Init(const Tm_ConfigType* Config)
 {
 #if (TM_DEV_ERROR_DETECT == STD_ON)
     if (Config == NULL_PTR) {
-        Det_ReportError(TM_MODULE_ID, 0U, 0U, DET_E_PARAM_POINTER);
+        (void)Det_ReportError(TM_MODULE_ID, 0U, 0U, DET_E_PARAM_POINTER);
         return E_NOT_OK;
     }
 #endif
@@ -52,11 +52,11 @@ Std_ReturnType Tm_GetTimeBaseValue(uint8 timeBaseId, Tm_TimeBaseType* value)
     (void)timeBaseId;
 #if (TM_DEV_ERROR_DETECT == STD_ON)
     if (!Tm_Initialized) {
-        Det_ReportError(TM_MODULE_ID, 0U, 1U, DET_E_UNINIT);
+        (void)Det_ReportError(TM_MODULE_ID, 0U, 1U, DET_E_UNINIT);
         return E_NOT_OK;
     }
     if (value == NULL_PTR) {
-        Det_ReportError(TM_MODULE_ID, 0U, 1U, DET_E_PARAM_POINTER);
+        (void)Det_ReportError(TM_MODULE_ID, 0U, 1U, DET_E_PARAM_POINTER);
         return E_NOT_OK;
     }
 #endif

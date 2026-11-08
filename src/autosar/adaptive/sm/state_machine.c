@@ -80,12 +80,11 @@ static void NotifyFGStateChange(FunctionGroupNameType fg, FunctionGroupStateType
  * Public Functions
  ******************************************************************************/
 
-Std_ReturnType StateMachine_Init(void) {
-    if (g_context.isInitialized) {
+Std_ReturnType StateMachine_Init(void) {    if (g_context.isInitialized) {
         return E_OK;
     }
     
-    memset(&g_context, 0, sizeof(StateMachineContextType));
+    (void)memset(&g_context, 0, sizeof(StateMachineContextType));
     
     g_context.currentState = MACHINE_STATE_OFF;
     g_context.previousState = MACHINE_STATE_OFF;
@@ -104,8 +103,7 @@ Std_ReturnType StateMachine_Init(void) {
     return E_OK;
 }
 
-Std_ReturnType StateMachine_Deinit(void) {
-    if (!g_context.isInitialized) {
+Std_ReturnType StateMachine_Deinit(void) {    if (!g_context.isInitialized) {
         return E_OK;
     }
     
@@ -115,12 +113,11 @@ Std_ReturnType StateMachine_Deinit(void) {
         /* In real implementation, should wait for completion */
     }
     
-    memset(&g_context, 0, sizeof(StateMachineContextType));
+    (void)memset(&g_context, 0, sizeof(StateMachineContextType));
     return E_OK;
 }
 
-bool StateMachine_IsInitialized(void) {
-    return g_context.isInitialized;
+bool StateMachine_IsInitialized(void) {    return g_context.isInitialized;
 }
 
 StateRequestResultType StateMachine_RequestTransition(MachineStateType targetState) {
@@ -159,16 +156,13 @@ StateRequestResultType StateMachine_RequestTransition(MachineStateType targetSta
     return STATE_REQUEST_ACCEPTED;
 }
 
-MachineStateType StateMachine_GetCurrentState(void) {
-    return g_context.isInitialized ? g_context.currentState : MACHINE_STATE_OFF;
+MachineStateType StateMachine_GetCurrentState(void) {    return g_context.isInitialized ? g_context.currentState : MACHINE_STATE_OFF;
 }
 
-MachineStateType StateMachine_GetPreviousState(void) {
-    return g_context.isInitialized ? g_context.previousState : MACHINE_STATE_OFF;
+MachineStateType StateMachine_GetPreviousState(void) {    return g_context.isInitialized ? g_context.previousState : MACHINE_STATE_OFF;
 }
 
-bool StateMachine_IsTransitionAllowed(MachineStateType fromState, MachineStateType toState) {
-    for (uint32_t i = 0U; i < g_numTransitionRules; i++) {
+bool StateMachine_IsTransitionAllowed(MachineStateType fromState, MachineStateType toState) {    for (uint32_t i = 0U; i < g_numTransitionRules; i++) {
         if ((g_transitionRules[i].fromState == fromState) &&
             (g_transitionRules[i].toState == toState)) {
             return g_transitionRules[i].allowed;
@@ -177,8 +171,7 @@ bool StateMachine_IsTransitionAllowed(MachineStateType fromState, MachineStateTy
     return false;
 }
 
-Std_ReturnType StateMachine_ConfirmTransition(StateRequestResultType result) {
-    if (!g_context.isInitialized || !g_context.transitionInProgress) {
+Std_ReturnType StateMachine_ConfirmTransition(StateRequestResultType result) {    if (!g_context.isInitialized || !g_context.transitionInProgress) {
         return E_NOT_OK;
     }
     
@@ -235,16 +228,14 @@ Std_ReturnType StateMachine_SetFGState(FunctionGroupNameType fg, FunctionGroupSt
     return E_OK;
 }
 
-FunctionGroupStateType StateMachine_GetFGState(FunctionGroupNameType fg) {
-    if (!g_context.isInitialized || (fg >= FUNCTION_GROUP_COUNT)) {
+FunctionGroupStateType StateMachine_GetFGState(FunctionGroupNameType fg) {    if (!g_context.isInitialized || (fg >= FUNCTION_GROUP_COUNT)) {
         return FUNCTION_GROUP_STATE_OFF;
     }
     
     return g_context.functionGroups[fg].state;
 }
 
-Std_ReturnType StateMachine_RegisterCallback(void (*callback)(MachineStateType, MachineStateType)) {
-    if (!g_context.isInitialized) {
+Std_ReturnType StateMachine_RegisterCallback(void (*callback)(MachineStateType, MachineStateType)) {    if (!g_context.isInitialized) {
         return E_NOT_OK;
     }
     
@@ -252,8 +243,7 @@ Std_ReturnType StateMachine_RegisterCallback(void (*callback)(MachineStateType, 
     return E_OK;
 }
 
-Std_ReturnType StateMachine_UnregisterCallback(void) {
-    if (!g_context.isInitialized) {
+Std_ReturnType StateMachine_UnregisterCallback(void) {    if (!g_context.isInitialized) {
         return E_NOT_OK;
     }
     
@@ -261,8 +251,7 @@ Std_ReturnType StateMachine_UnregisterCallback(void) {
     return E_OK;
 }
 
-Std_ReturnType StateMachine_RegisterFGCallback(FunctionGroupNameType fg,
-                                                void (*callback)(FunctionGroupNameType,
+Std_ReturnType StateMachine_RegisterFGCallback(FunctionGroupNameType fg,                                                void (*callback)(FunctionGroupNameType,
                                                                 FunctionGroupStateType)) {
     if (!g_context.isInitialized || (fg >= FUNCTION_GROUP_COUNT)) {
         return E_NOT_OK;
@@ -272,8 +261,7 @@ Std_ReturnType StateMachine_RegisterFGCallback(FunctionGroupNameType fg,
     return E_OK;
 }
 
-Std_ReturnType StateMachine_UnregisterFGCallback(FunctionGroupNameType fg) {
-    if (!g_context.isInitialized || (fg >= FUNCTION_GROUP_COUNT)) {
+Std_ReturnType StateMachine_UnregisterFGCallback(FunctionGroupNameType fg) {    if (!g_context.isInitialized || (fg >= FUNCTION_GROUP_COUNT)) {
         return E_NOT_OK;
     }
     
@@ -281,8 +269,7 @@ Std_ReturnType StateMachine_UnregisterFGCallback(FunctionGroupNameType fg) {
     return E_OK;
 }
 
-Std_ReturnType StateMachine_CancelRequest(void) {
-    if (!g_context.isInitialized || !g_context.transitionInProgress) {
+Std_ReturnType StateMachine_CancelRequest(void) {    if (!g_context.isInitialized || !g_context.transitionInProgress) {
         return E_NOT_OK;
     }
     
@@ -293,12 +280,10 @@ Std_ReturnType StateMachine_CancelRequest(void) {
     return E_OK;
 }
 
-bool StateMachine_IsRequestPending(void) {
-    return g_context.isInitialized && g_context.transitionInProgress;
+bool StateMachine_IsRequestPending(void) {    return g_context.isInitialized && g_context.transitionInProgress;
 }
 
-void StateMachine_MainFunction(void) {
-    if (!g_context.isInitialized) {
+void StateMachine_MainFunction(void) {    if (!g_context.isInitialized) {
         return;
     }
     
@@ -359,8 +344,7 @@ const char* StateMachine_GetFGNameString(FunctionGroupNameType fg) {
     return "Unknown";
 }
 
-const char* StateMachine_GetStateNameString(MachineStateType state) {
-    switch (state) {
+const char* StateMachine_GetStateNameString(MachineStateType state) {    switch (state) {
         case MACHINE_STATE_OFF:
             return "Off";
         case MACHINE_STATE_STARTUP:
@@ -378,8 +362,7 @@ const char* StateMachine_GetStateNameString(MachineStateType state) {
     }
 }
 
-const char* StateMachine_GetFGStateNameString(FunctionGroupStateType state) {
-    switch (state) {
+const char* StateMachine_GetFGStateNameString(FunctionGroupStateType state) {    switch (state) {
         case FUNCTION_GROUP_STATE_OFF:
             return "Off";
         case FUNCTION_GROUP_STATE_STARTING:

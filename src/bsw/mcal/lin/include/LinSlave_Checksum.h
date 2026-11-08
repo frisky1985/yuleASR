@@ -62,4 +62,5 @@ boolean LinSlave_ValidateChecksum(
     uint8 ReceivedChecksum
 );
 
+
 #endif /* LINSLAVE_CHECKSUM_H */

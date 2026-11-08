@@ -93,8 +93,8 @@ static srp_stream_reservation_t* find_or_create_stream(const srp_stream_id_t str
     idx = g_srp_state.stream_count;
     g_srp_state.stream_count++;
     srp_stream_reservation_t *stream = &g_srp_state.streams[idx];
-    memset(stream, 0, sizeof(srp_stream_reservation_t));
-    memcpy(stream->stream_id, stream_id, SRP_STREAM_ID_LEN);
+    (void)memset(stream, 0, sizeof(srp_stream_reservation_t));
+    (void)memcpy(stream->stream_id, stream_id, SRP_STREAM_ID_LEN);
     stream->state = SRP_RESERVATION_STATE_NONE;
     stream->safety_margin_percent = SRP_SAFETY_BANDWIDTH_MARGIN;
     
@@ -206,7 +206,7 @@ eth_status_t srp_init(void) {
         srp_deinit();
     }
     
-    memset(&g_srp_state, 0, sizeof(g_srp_state));
+    (void)memset(&g_srp_state, 0, sizeof(g_srp_state));
     
     for (int i = 0; (unsigned int)((unsigned int)(i)) < SRP_MAX_PORTS; i++) {
         g_srp_state.ports[i].bandwidth.port_id = i;
@@ -221,7 +221,7 @@ void srp_deinit(void) {
         return;
     }
     
-    memset(&g_srp_state, 0, sizeof(g_srp_state));
+    (void)memset(&g_srp_state, 0, sizeof(g_srp_state));
 }
 
 eth_status_t srp_config_port_bandwidth(uint16_t port_id, uint32_t total_bandwidth_bps) {
@@ -246,7 +246,7 @@ eth_status_t srp_config_sr_class(uint16_t port_id, uint8_t class_id,
         return ETH_INVALID_PARAM;
     }
     
-    memcpy(&g_srp_state.ports[port_id].domain[class_id], domain, 
+    (void)memcpy(&g_srp_state.ports[port_id].domain[class_id], domain, 
            sizeof(srp_domain_declaration_t));
     
     return ETH_OK;
@@ -263,17 +263,17 @@ eth_status_t srp_register_talker(uint16_t port_id,
         return ETH_NO_MEMORY;
     }
     
-    memcpy(&stream->talker, talker, sizeof(srp_talker_declaration_t));
+    (void)memcpy(&stream->talker, talker, sizeof(srp_talker_declaration_t));
     stream->talker_registered = true;
     
     /* 计算带宽需求 */
     stream->reserved_bandwidth_bps = calc_bandwidth(&talker->tspec);
     
     /* 预留带宽 */
-    srp_reserve_bandwidth(port_id, talker->stream_id, stream->reserved_bandwidth_bps);
+    (void)srp_reserve_bandwidth(port_id, talker->stream_id, stream->reserved_bandwidth_bps);
     
     /* 更新预留状态 */
-    update_reservation_state(stream);
+    (void)update_reservation_state(stream);
     
     /* 通知回调 */
     if ((g_srp_state.talker_cb) != 0U) {
@@ -296,12 +296,12 @@ eth_status_t srp_deregister_talker(uint16_t port_id, const srp_stream_id_t strea
     srp_stream_reservation_t *stream = &g_srp_state.streams[idx];
     
     /* 释放带宽 */
-    srp_release_bandwidth(port_id, stream_id);
+    (void)srp_release_bandwidth(port_id, stream_id);
     
     stream->talker_registered = false;
-    memset(&stream->talker, 0, sizeof(srp_talker_declaration_t));
+    (void)memset(&stream->talker, 0, sizeof(srp_talker_declaration_t));
     
-    update_reservation_state(stream);
+    (void)update_reservation_state(stream);
     
     return ETH_OK;
 }
@@ -324,7 +324,7 @@ eth_status_t srp_get_talker(uint16_t port_id, const srp_stream_id_t stream_id,
         return ETH_ERROR;
     }
     
-    memcpy(talker, &g_srp_state.streams[idx].talker, sizeof(srp_talker_declaration_t));
+    (void)memcpy(talker, &g_srp_state.streams[idx].talker, sizeof(srp_talker_declaration_t));
     
     return ETH_OK;
 }
@@ -344,10 +344,10 @@ eth_status_t srp_register_listener(uint16_t port_id,
     for (uint32_t i = 0; i < stream->listener_count; i++) {
         /* 简化: 更新现有Listener状态 */
         stream->listeners[i].state = listener->state;
-        memcpy(&stream->listeners[i].failure_info, &listener->failure_info,
+        (void)memcpy(&stream->listeners[i].failure_info, &listener->failure_info,
                sizeof(srp_failure_info_t));
         
-        update_reservation_state(stream);
+        (void)update_reservation_state(stream);
         
         if ((g_srp_state.listener_cb) != 0U) {
             g_srp_state.listener_cb(listener->stream_id, listener, 
@@ -364,9 +364,9 @@ eth_status_t srp_register_listener(uint16_t port_id,
     
     uint32_t idx = stream->listener_count;
     stream->listener_count++;
-    memcpy(&stream->listeners[idx], listener, sizeof(srp_listener_declaration_t));
+    (void)memcpy(&stream->listeners[idx], listener, sizeof(srp_listener_declaration_t));
     
-    update_reservation_state(stream);
+    (void)update_reservation_state(stream);
     
     if ((g_srp_state.listener_cb) != 0U) {
         g_srp_state.listener_cb(listener->stream_id, listener, 
@@ -392,9 +392,9 @@ eth_status_t srp_deregister_listener(uint16_t port_id, const srp_stream_id_t str
     
     /* 简化: 清除所有Listener */
     stream->listener_count = 0;
-    memset(stream->listeners, 0, sizeof(stream->listeners));
+    (void)memset(stream->listeners, 0, sizeof(stream->listeners));
     
-    update_reservation_state(stream);
+    (void)update_reservation_state(stream);
     
     return ETH_OK;
 }
@@ -402,8 +402,8 @@ eth_status_t srp_deregister_listener(uint16_t port_id, const srp_stream_id_t str
 eth_status_t srp_update_listener_state(uint16_t port_id, const srp_stream_id_t stream_id,
                                         srp_listener_state_t state) {
     srp_listener_declaration_t listener;
-    memset(&listener, 0, sizeof(listener));
-    memcpy(listener.stream_id, stream_id, SRP_STREAM_ID_LEN);
+    (void)memset(&listener, 0, sizeof(listener));
+    (void)memcpy(listener.stream_id, stream_id, SRP_STREAM_ID_LEN);
     listener.state = state;
     
     return srp_register_listener(port_id, &listener);
@@ -474,7 +474,7 @@ eth_status_t srp_calculate_path(const srp_stream_id_t stream_id,
     }
     
     /* 简化实现: 返回直连路径 */
-    memcpy(path->stream_id, stream_id, SRP_STREAM_ID_LEN);
+    (void)memcpy(path->stream_id, stream_id, SRP_STREAM_ID_LEN);
     path->port_count = 1;
     path->port_list[0] = 0;
     path->total_latency_us = 100;  /* 假设100us延迟 */
@@ -513,7 +513,7 @@ eth_status_t srp_get_port_bandwidth(uint16_t port_id, srp_port_bandwidth_t *band
         return ETH_INVALID_PARAM;
     }
     
-    memcpy(bandwidth, &g_srp_state.ports[port_id].bandwidth, 
+    (void)memcpy(bandwidth, &g_srp_state.ports[port_id].bandwidth, 
            sizeof(srp_port_bandwidth_t));
     
     return ETH_OK;
@@ -530,7 +530,7 @@ eth_status_t srp_get_stream_reservation(const srp_stream_id_t stream_id,
         return ETH_ERROR;
     }
     
-    memcpy(reservation, &g_srp_state.streams[idx], sizeof(srp_stream_reservation_t));
+    (void)memcpy(reservation, &g_srp_state.streams[idx], sizeof(srp_stream_reservation_t));
     
     return ETH_OK;
 }
@@ -547,7 +547,7 @@ eth_status_t srp_get_all_reservations(srp_stream_reservation_t *reservations,
     }
     
     for (uint32_t i = 0; i < to_copy; i++) {
-        memcpy(&reservations[i], &g_srp_state.streams[i], 
+        (void)memcpy(&reservations[i], &g_srp_state.streams[i], 
                sizeof(srp_stream_reservation_t));
     }
     
@@ -608,7 +608,7 @@ eth_status_t srp_init_safety_monitor(uint16_t port_id) {
     }
     
     srp_safety_monitor_t *monitor = &g_srp_state.ports[port_id].safety_monitor;
-    memset(monitor, 0, sizeof(srp_safety_monitor_t));
+    (void)memset(monitor, 0, sizeof(srp_safety_monitor_t));
     monitor->reservation_integrity_ok = true;
     
     return ETH_OK;
@@ -627,7 +627,7 @@ eth_status_t srp_get_safety_monitor(uint16_t port_id, srp_safety_monitor_t *moni
         return ETH_INVALID_PARAM;
     }
     
-    memcpy(monitor, &g_srp_state.ports[port_id].safety_monitor, 
+    (void)memcpy(monitor, &g_srp_state.ports[port_id].safety_monitor, 
            sizeof(srp_safety_monitor_t));
     
     return ETH_OK;
@@ -661,7 +661,7 @@ eth_status_t srp_stream_id_to_string(const srp_stream_id_t stream_id,
         return ETH_INVALID_PARAM;
     }
     
-    Debug_Snprintf(buf, buf_size, "%02X%02X:%02X%02X:%02X%02X:%02X%02X",
+    (void)Debug_Snprintf(buf, buf_size, "%02X%02X:%02X%02X:%02X%02X:%02X%02X",
              stream_id[0], stream_id[1], stream_id[2], stream_id[3],
              stream_id[4], stream_id[5], stream_id[6], stream_id[7]);
     
@@ -709,7 +709,7 @@ eth_status_t srp_print_reservation(const srp_stream_id_t stream_id) {
     
     srp_stream_reservation_t *stream = &g_srp_state.streams[idx];
     char id_str[24];
-    srp_stream_id_to_string(stream_id, id_str, sizeof(id_str));
+    (void)srp_stream_id_to_string(stream_id, id_str, sizeof(id_str));
     
     Debug_Printf("=== Stream Reservation: %s ===\n", id_str);
     Debug_Printf("State: %d\n", stream->state);

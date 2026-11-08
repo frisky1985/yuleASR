@@ -128,7 +128,7 @@ static eth_status_t process_window_sample(tbf_handle_t *tbf,
     // 提取值(假设数据的前4字节为u32值)
     uint32_t value = 0;
     if (size >= sizeof(uint32_t)) {
-        memcpy(&value, sample, sizeof(uint32_t));
+        (void)memcpy(&value, sample, sizeof(uint32_t));
     }
     
     switch (tbf->config.policy) {
@@ -148,14 +148,14 @@ static eth_status_t process_window_sample(tbf_handle_t *tbf,
         case TBF_POLICY_SAMPLE_LAST:
             // 覆盖缓冲区
             if (size <= tbf->sample_buffer_size) {
-                memcpy(tbf->sample_buffer, sample, size);
+                (void)memcpy(tbf->sample_buffer, sample, size);
             }
             break;
             
         case TBF_POLICY_SAMPLE_FIRST:
             // 只保留第一个
             if ((tbf->state.samples_in_window == 0U) && (size <= tbf->sample_buffer_size)) {
-                memcpy(tbf->sample_buffer, sample, size);
+                (void)memcpy(tbf->sample_buffer, sample, size);
             }
             break;
             
@@ -167,7 +167,7 @@ static eth_status_t process_window_sample(tbf_handle_t *tbf,
     if ((tbf->config.compression == TBF_COMPRESS_KALMAN) && (tbf->state.samples_in_window == 0U)) {
         kalman_init(&tbf->state, value);
     } else if (tbf->config.compression == TBF_COMPRESS_KALMAN) {
-        kalman_update(&tbf->state, value,
+        (void)kalman_update(&tbf->state, value,
                      tbf->config.compression_params.kalman.process_noise,
                      tbf->config.compression_params.kalman.measurement_noise);
     }
@@ -190,7 +190,7 @@ static eth_status_t generate_compressed_sample(tbf_handle_t *tbf,
      * Kalman path had a chance to overwrite it — a stack-smashing bug. */
     if (tbf->config.compression == TBF_COMPRESS_KALMAN) {
         uint32_t filtered_value = (uint32_t)tbf->state.kalman_estimate;
-        memcpy(output, &filtered_value, sizeof(uint32_t));
+        (void)memcpy(output, &filtered_value, sizeof(uint32_t));
         *output_size = sizeof(uint32_t);
         return ETH_OK;
     }
@@ -199,14 +199,14 @@ static eth_status_t generate_compressed_sample(tbf_handle_t *tbf,
         case TBF_POLICY_AVERAGE:
             if (tbf->state.samples_in_window > 0U) {
                 uint32_t avg_value = (uint32_t)(tbf->state.accumulator / (double)tbf->state.samples_in_window);
-                memcpy(output, &avg_value, sizeof(uint32_t));
+                (void)memcpy(output, &avg_value, sizeof(uint32_t));
                 *output_size = sizeof(uint32_t);
             }
             break;
             
         case TBF_POLICY_PEAK_HOLD:
             // 输出峰值
-            memcpy(output, &tbf->state.max_value, sizeof(uint32_t));
+            (void)memcpy(output, &tbf->state.max_value, sizeof(uint32_t));
             *output_size = sizeof(uint32_t);
             break;
             
@@ -216,7 +216,7 @@ static eth_status_t generate_compressed_sample(tbf_handle_t *tbf,
         default:
             // 复制缓冲区内容
             *output_size = tbf->sample_buffer_size;
-            memcpy(output, tbf->sample_buffer, tbf->sample_buffer_size);
+            (void)memcpy(output, tbf->sample_buffer, tbf->sample_buffer_size);
             break;
     }
 
@@ -274,7 +274,7 @@ tbf_handle_t* tbf_create(const tbf_config_t *config) {
     if (!tbf) { return NULL; }
     (void)memset(tbf, 0, sizeof(tbf_handle_t));
     
-    memcpy(&tbf->config, config, sizeof(tbf_config_t));
+    (void)memcpy(&tbf->config, config, sizeof(tbf_config_t));
     
     // 样本缓冲区: 静态池 (编译期固定 256B)
     tbf->sample_buffer_size = 256; // 默认大小
@@ -347,7 +347,7 @@ eth_status_t tbf_process_sample(tbf_handle_t *tbf,
     // 处理当前样本
     if (!time_to_output) {
         // 在窗口内，进行压缩
-        process_window_sample(tbf, sample, size, timestamp_us);
+        (void)process_window_sample(tbf, sample, size, timestamp_us);
         tbf->stats.total_samples++;
         tbf->stats.compressed_samples++;
         
@@ -362,7 +362,7 @@ eth_status_t tbf_process_sample(tbf_handle_t *tbf,
              * size 会让后续 process_window_sample() 按 256 字节读取调用方的
              * 小样本缓冲区 (越界读). */
             uint32_t compressed_size = size;
-            generate_compressed_sample(tbf, tbf->sample_buffer, &compressed_size);
+            (void)generate_compressed_sample(tbf, tbf->sample_buffer, &compressed_size);
             (void)compressed_size;  /* API 无输出长度参数, 仅供内部使用 */
             if ((output_sample) != 0U) {
                 *output_sample = tbf->sample_buffer;
@@ -375,7 +375,7 @@ eth_status_t tbf_process_sample(tbf_handle_t *tbf,
         
         // 重置窗口
         reset_window_state(tbf, current_time);
-        process_window_sample(tbf, sample, size, timestamp_us);
+        (void)process_window_sample(tbf, sample, size, timestamp_us);
     }
     
     return ETH_OK;
@@ -406,7 +406,7 @@ eth_status_t tbf_get_compressed_sample(tbf_handle_t *tbf,
         return ETH_ERROR;
     }
     
-    generate_compressed_sample(tbf, compressed_sample, compressed_size);
+    (void)generate_compressed_sample(tbf, compressed_sample, compressed_size);
     
     // 重置窗口
     tbf->state.last_output_time = current_time_us;
@@ -458,14 +458,14 @@ bool tbf_validate_timestamp(uint64_t timestamp_us,
 eth_status_t tbf_get_stats(tbf_handle_t *tbf, tbf_stats_t *stats) {
     if (!tbf || !stats) { return ETH_INVALID_PARAM; }
     
-    memcpy(stats, &tbf->stats, sizeof(tbf_stats_t));
+    (void)memcpy(stats, &tbf->stats, sizeof(tbf_stats_t));
     return ETH_OK;
 }
 
 eth_status_t tbf_reset_stats(tbf_handle_t *tbf) {
     if (!tbf) { return ETH_INVALID_PARAM; }
     
-    memset(&tbf->stats, 0, sizeof(tbf_stats_t));
+    (void)memset(&tbf->stats, 0, sizeof(tbf_stats_t));
     return ETH_OK;
 }
 
@@ -481,7 +481,7 @@ eth_status_t tbf_flush_window(tbf_handle_t *tbf,
     }
     
     if (flushed_sample && flushed_size) {
-        generate_compressed_sample(tbf, flushed_sample, flushed_size);
+        (void)generate_compressed_sample(tbf, flushed_sample, flushed_size);
     }
     
     tbf->state.last_output_time = current_time_us;
@@ -505,7 +505,7 @@ eth_status_t tbf_configure_multistream(tbf_handle_t *tbf,
     tbf->multistream.max_streams = max_streams;
     
     if (enable) {
-        memset(tbf->multistream.stream_offsets, 0, sizeof(tbf->multistream.stream_offsets));
+        (void)memset(tbf->multistream.stream_offsets, 0, sizeof(tbf->multistream.stream_offsets));
     }
     
     DDS_LOG_INFO(DDS_LOG_MODULE_CORE, "TBF", "Multistream %s (max_streams=%d)", enable ? "enabled" : "disabled", max_streams);

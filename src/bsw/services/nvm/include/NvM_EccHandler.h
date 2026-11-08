@@ -294,6 +294,7 @@ extern Std_ReturnType NvM_EccHandler_SetRecoveryStrategy(
     uint8 strategy
 );
 
+
 #define NVM_ECCHANDLER_STOP_SEC_CODE
 #include "NvM_MemMap.h"
 

@@ -250,8 +250,7 @@ static const LinSM_ConfigType * const LinSM_ConfigPtrs[1] =
  * @param variantIdx - Configuration variant index
  * @return Pointer to configuration structure
  */
-const LinSM_ConfigType * LinSM_GetConfig(uint8 variantIdx)
-{
+static const LinSM_ConfigType * LinSM_GetConfig(uint8 variantIdx){
     if (variantIdx < 1U)
     {
         return LinSM_ConfigPtrs[variantIdx];

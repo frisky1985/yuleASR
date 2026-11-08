@@ -186,7 +186,7 @@ void SomeIp_RxIndication(const uint8* Data, uint32 Length)
     message.PayloadLength = message.Header.Length - 8U;
     
     /* Process message */
-    SomeIp_ProcessMessage(&message);
+    (void)SomeIp_ProcessMessage(&message);
 }
 
 /** @req SWS_SomeIp_00009 */

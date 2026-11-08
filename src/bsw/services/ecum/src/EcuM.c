@@ -265,7 +265,7 @@ static void EcuM_ProcessStartupOne(void)
     EcuM_ShutdownMode = 0u;
     
     /* Enable wakeup sources configured for startup */
-    EcuM_EnableWakeupSources(ECUM_CONFIGURED_WAKEUP_SOURCES);
+    (void)EcuM_EnableWakeupSources(ECUM_CONFIGURED_WAKEUP_SOURCES);
     
     EcuM_IsPreOsInitialized = TRUE;
     
@@ -595,7 +595,7 @@ static void EcuM_ProcessHalt(void)
     EcuM_UpdateSubState(ECUM_SUBSTATE_HALT);
     
     /* Enable wakeup sources before halting */
-    EcuM_EnableWakeupSources(EcuM_EnabledWakeupSources);
+    (void)EcuM_EnableWakeupSources(EcuM_EnabledWakeupSources);
     
     /* Execute HALT instruction - CPU stops here */
     /* This is typically implemented in Mcu module */
@@ -868,7 +868,7 @@ static void EcuM_PerformSleep(void)
     EcuM_DisableInterrupts();
     
     /* Enable configured wakeup sources */
-    EcuM_EnableWakeupSources(EcuM_EnabledWakeupSources);
+    (void)EcuM_EnableWakeupSources(EcuM_EnabledWakeupSources);
     
     /* Enter sleep mode via callout */
     EcuM_AL_EnterSleep();
@@ -877,7 +877,7 @@ static void EcuM_PerformSleep(void)
     /* Execution resumes here after wakeup */
     
     /* Disable wakeup sources */
-    EcuM_DisableWakeupSources(ECUM_CONFIGURED_WAKEUP_SOURCES);
+    (void)EcuM_DisableWakeupSources(ECUM_CONFIGURED_WAKEUP_SOURCES);
     
     /* Enable interrupts */
     EcuM_EnableInterrupts();

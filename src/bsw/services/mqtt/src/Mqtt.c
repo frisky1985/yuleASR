@@ -119,23 +119,23 @@ static uint32 Mqtt_TickCount = 0U;
 /*============================================================================
  * 内部函数声明
  *===========================================================================*/
-static Mqtt_ReturnType Mqtt_ProcessStateMachine(Mqtt_InternalConnectionType* conn);
-static Mqtt_ReturnType Mqtt_SendPacket(Mqtt_InternalConnectionType* conn, 
+Mqtt_ReturnType Mqtt_ProcessStateMachine(Mqtt_InternalConnectionType* conn);
+Mqtt_ReturnType Mqtt_SendPacket(Mqtt_InternalConnectionType* conn, 
                                         const uint8* data, uint16 length);
-static Mqtt_ReturnType Mqtt_ReceivePacket(Mqtt_InternalConnectionType* conn);
-static Mqtt_ReturnType Mqtt_EncodeConnect(Mqtt_InternalConnectionType* conn);
-static Mqtt_ReturnType Mqtt_EncodePublish(Mqtt_InternalConnectionType* conn,
+Mqtt_ReturnType Mqtt_ReceivePacket(Mqtt_InternalConnectionType* conn);
+Mqtt_ReturnType Mqtt_EncodeConnect(Mqtt_InternalConnectionType* conn);
+Mqtt_ReturnType Mqtt_EncodePublish(Mqtt_InternalConnectionType* conn,
                                            const Mqtt_PublishMessageType* msg,
                                            uint16 packetId);
-static Mqtt_ReturnType Mqtt_EncodeSubscribe(Mqtt_InternalConnectionType* conn,
+Mqtt_ReturnType Mqtt_EncodeSubscribe(Mqtt_InternalConnectionType* conn,
                                              const Mqtt_SubscriptionType* sub,
                                              uint16 packetId);
-static Mqtt_ReturnType Mqtt_EncodePing(Mqtt_InternalConnectionType* conn);
-static Mqtt_ReturnType Mqtt_EncodeDisconnect(Mqtt_InternalConnectionType* conn);
-static void Mqtt_UpdateState(Mqtt_InternalConnectionType* conn, 
+Mqtt_ReturnType Mqtt_EncodePing(Mqtt_InternalConnectionType* conn);
+Mqtt_ReturnType Mqtt_EncodeDisconnect(Mqtt_InternalConnectionType* conn);
+void Mqtt_UpdateState(Mqtt_InternalConnectionType* conn, 
                               Mqtt_ConnectionStateType newState);
-static uint16 Mqtt_GetNextPacketId(Mqtt_InternalConnectionType* conn);
-static boolean Mqtt_CheckTimeout(Mqtt_InternalConnectionType* conn, uint32 timeoutMs);
+uint16 Mqtt_GetNextPacketId(Mqtt_InternalConnectionType* conn);
+boolean Mqtt_CheckTimeout(Mqtt_InternalConnectionType* conn, uint32 timeoutMs);
 
 /*============================================================================
  * 公共API实现
@@ -169,8 +169,8 @@ Mqtt_ReturnType Mqtt_Init(const Mqtt_ConfigType* config)
         Mqtt_Connections[i].tlsContext = NULL_PTR;
 #endif
         
-        memset(&Mqtt_Connections[i].info, 0, sizeof(Mqtt_ConnectionInfoType));
-        memset(&Mqtt_Connections[i].config, 0, sizeof(Mqtt_ConnectionConfigType));
+        (void)memset(&Mqtt_Connections[i].info, 0, sizeof(Mqtt_ConnectionInfoType));
+        (void)memset(&Mqtt_Connections[i].config, 0, sizeof(Mqtt_ConnectionConfigType));
         
         for (j = 0; j < MQTT_MAX_SUBSCRIPTIONS_PER_CONN; j++) {
             Mqtt_Connections[i].subscriptions[j].state = SUB_STATE_INACTIVE;
@@ -248,7 +248,7 @@ Mqtt_ReturnType Mqtt_Connect(Mqtt_ConnectionIdType connectionId,
     }
     
     /* 保存配置 */
-    memcpy(&conn->config, connConfig, sizeof(Mqtt_ConnectionConfigType));
+    (void)memcpy(&conn->config, connConfig, sizeof(Mqtt_ConnectionConfigType));
     
 #if (MQTT_SUPPORT_TLS == STD_ON)
     /* 初始化TLS配置 */
@@ -262,7 +262,7 @@ Mqtt_ReturnType Mqtt_Connect(Mqtt_ConnectionIdType connectionId,
         }
         
         /* 复制TLS配置 */
-        memcpy(&conn->tlsConfig, connConfig->tlsConfig, sizeof(Mqtt_TlsConfigType));
+        (void)memcpy(&conn->tlsConfig, connConfig->tlsConfig, sizeof(Mqtt_TlsConfigType));
         
         /* 创建TLS上下文 */
         tlsResult = Mqtt_Tls_CreateContext(&conn->tlsConfig, &conn->tlsContext);
@@ -440,7 +440,7 @@ Mqtt_ReturnType Mqtt_Subscribe(Mqtt_ConnectionIdType connectionId,
     }
     
     /* 填充订阅信息 */
-    strncpy(internalSub->topicFilter, subscription->topicFilter, 
+    (void)strncpy(internalSub->topicFilter, subscription->topicFilter, 
             MQTT_MAX_TOPIC_LENGTH - 1U);
     internalSub->topicFilter[MQTT_MAX_TOPIC_LENGTH - 1U] = '\0';
     internalSub->maxQoS = subscription->maxQoS;
@@ -571,7 +571,7 @@ Mqtt_ReturnType Mqtt_GetConnectionInfo(Mqtt_ConnectionIdType connectionId,
         return MQTT_E_NOT_OK;
     }
     
-    memcpy(info, &Mqtt_Connections[connectionId].info, sizeof(Mqtt_ConnectionInfoType));
+    (void)memcpy(info, &Mqtt_Connections[connectionId].info, sizeof(Mqtt_ConnectionInfoType));
     
     return MQTT_OK;
 }
@@ -624,7 +624,7 @@ void Mqtt_GetVersionInfo(Std_VersionInfoType* versioninfo)
  * 内部函数实现
  *===========================================================================*/
 
-static void Mqtt_UpdateState(Mqtt_InternalConnectionType* conn, 
+void Mqtt_UpdateState(Mqtt_InternalConnectionType* conn, 
                               Mqtt_ConnectionStateType newState)
 {
     Mqtt_ConnectionStateType oldState = conn->state;
@@ -644,7 +644,7 @@ static void Mqtt_UpdateState(Mqtt_InternalConnectionType* conn,
     }
 }
 
-static Mqtt_ReturnType Mqtt_ProcessStateMachine(Mqtt_InternalConnectionType* conn)
+Mqtt_ReturnType Mqtt_ProcessStateMachine(Mqtt_InternalConnectionType* conn)
 {
     Mqtt_ReturnType result = MQTT_OK;
     
@@ -733,7 +733,7 @@ static Mqtt_ReturnType Mqtt_ProcessStateMachine(Mqtt_InternalConnectionType* con
     return result;
 }
 
-static uint16 Mqtt_GetNextPacketId(Mqtt_InternalConnectionType* conn)
+uint16 Mqtt_GetNextPacketId(Mqtt_InternalConnectionType* conn)
 {
     conn->packetIdCounter++;
     if (conn->packetIdCounter == 0U ) {
@@ -742,7 +742,7 @@ static uint16 Mqtt_GetNextPacketId(Mqtt_InternalConnectionType* conn)
     return conn->packetIdCounter;
 }
 
-static boolean Mqtt_CheckTimeout(Mqtt_InternalConnectionType* conn, uint32 timeoutMs)
+boolean Mqtt_CheckTimeout(Mqtt_InternalConnectionType* conn, uint32 timeoutMs)
 {
     if (conn == NULL_PTR) {
         return FALSE;
@@ -757,7 +757,7 @@ static boolean Mqtt_CheckTimeout(Mqtt_InternalConnectionType* conn, uint32 timeo
     return ((Mqtt_TickCount - conn->connectStartTime) >= timeoutMs);
 }
 
-static Mqtt_ReturnType Mqtt_SendPacket(Mqtt_InternalConnectionType* conn,
+Mqtt_ReturnType Mqtt_SendPacket(Mqtt_InternalConnectionType* conn,
                                         const uint8* data, uint16 length)
 {
     Std_ReturnType result;
@@ -782,7 +782,7 @@ static Mqtt_ReturnType Mqtt_SendPacket(Mqtt_InternalConnectionType* conn,
     }
 }
 
-static Mqtt_ReturnType Mqtt_ReceivePacket(Mqtt_InternalConnectionType* conn)
+Mqtt_ReturnType Mqtt_ReceivePacket(Mqtt_InternalConnectionType* conn)
 {
     Std_ReturnType result;
     uint16 receivedLength = 0;
@@ -822,7 +822,7 @@ static Mqtt_ReturnType Mqtt_ReceivePacket(Mqtt_InternalConnectionType* conn)
 }
 
 /* 编码函数实现示例 - 完整实现需更多细节 */
-static Mqtt_ReturnType Mqtt_EncodeConnect(Mqtt_InternalConnectionType* conn)
+Mqtt_ReturnType Mqtt_EncodeConnect(Mqtt_InternalConnectionType* conn)
 {
     uint16 idx = 0;
     uint16 remainingLength = 0;
@@ -901,7 +901,7 @@ static Mqtt_ReturnType Mqtt_EncodeConnect(Mqtt_InternalConnectionType* conn)
     idx++;
     conn->sendBuffer[idx] = clientIdLen & 0xFFU;
     idx++;
-    memcpy(&conn->sendBuffer[idx], conn->config.clientId, clientIdLen);
+    (void)memcpy(&conn->sendBuffer[idx], conn->config.clientId, clientIdLen);
     idx += clientIdLen;
     
     /* 用户名 */
@@ -911,7 +911,7 @@ static Mqtt_ReturnType Mqtt_EncodeConnect(Mqtt_InternalConnectionType* conn)
         idx++;
         conn->sendBuffer[idx] = usernameLen & 0xFFU;
         idx++;
-        memcpy(&conn->sendBuffer[idx], conn->config.username, usernameLen);
+        (void)memcpy(&conn->sendBuffer[idx], conn->config.username, usernameLen);
         idx += usernameLen;
     }
     
@@ -922,7 +922,7 @@ static Mqtt_ReturnType Mqtt_EncodeConnect(Mqtt_InternalConnectionType* conn)
         idx++;
         conn->sendBuffer[idx] = passwordLen & 0xFFU;
         idx++;
-        memcpy(&conn->sendBuffer[idx], conn->config.password, passwordLen);
+        (void)memcpy(&conn->sendBuffer[idx], conn->config.password, passwordLen);
         idx += passwordLen;
     }
     
@@ -931,7 +931,7 @@ static Mqtt_ReturnType Mqtt_EncodeConnect(Mqtt_InternalConnectionType* conn)
     return MQTT_OK;
 }
 
-static Mqtt_ReturnType Mqtt_EncodePublish(Mqtt_InternalConnectionType* conn,
+Mqtt_ReturnType Mqtt_EncodePublish(Mqtt_InternalConnectionType* conn,
                                            const Mqtt_PublishMessageType* msg,
                                            uint16 packetId)
 {
@@ -977,7 +977,7 @@ static Mqtt_ReturnType Mqtt_EncodePublish(Mqtt_InternalConnectionType* conn,
     idx++;
     conn->sendBuffer[idx] = topicLen & 0xFFU;
     idx++;
-    memcpy(&conn->sendBuffer[idx], msg->topic, topicLen);
+    (void)memcpy(&conn->sendBuffer[idx], msg->topic, topicLen);
     idx += topicLen;
     
     /* 包ID (QoS > 0U ) */
@@ -989,7 +989,7 @@ static Mqtt_ReturnType Mqtt_EncodePublish(Mqtt_InternalConnectionType* conn,
     }
     
     /* 负载 */
-    memcpy(&conn->sendBuffer[idx], msg->payload, msg->payloadLength);
+    (void)memcpy(&conn->sendBuffer[idx], msg->payload, msg->payloadLength);
     idx += msg->payloadLength;
     
     conn->sendLength = idx;
@@ -997,7 +997,7 @@ static Mqtt_ReturnType Mqtt_EncodePublish(Mqtt_InternalConnectionType* conn,
     return MQTT_OK;
 }
 
-static Mqtt_ReturnType Mqtt_EncodeSubscribe(Mqtt_InternalConnectionType* conn,
+Mqtt_ReturnType Mqtt_EncodeSubscribe(Mqtt_InternalConnectionType* conn,
                                              const Mqtt_SubscriptionType* sub,
                                              uint16 packetId)
 {
@@ -1032,7 +1032,7 @@ static Mqtt_ReturnType Mqtt_EncodeSubscribe(Mqtt_InternalConnectionType* conn,
     idx++;
     conn->sendBuffer[idx] = topicLen & 0xFFU;
     idx++;
-    memcpy(&conn->sendBuffer[idx], sub->topicFilter, topicLen);
+    (void)memcpy(&conn->sendBuffer[idx], sub->topicFilter, topicLen);
     idx += topicLen;
     
     /* 最大QoS */
@@ -1044,7 +1044,7 @@ static Mqtt_ReturnType Mqtt_EncodeSubscribe(Mqtt_InternalConnectionType* conn,
     return MQTT_OK;
 }
 
-static Mqtt_ReturnType Mqtt_EncodePing(Mqtt_InternalConnectionType* conn)
+Mqtt_ReturnType Mqtt_EncodePing(Mqtt_InternalConnectionType* conn)
 {
     conn->sendBuffer[0] = MQTT_PACKET_TYPE_PINGREQ;
     conn->sendBuffer[1] = 0x00;
@@ -1053,7 +1053,7 @@ static Mqtt_ReturnType Mqtt_EncodePing(Mqtt_InternalConnectionType* conn)
     return MQTT_OK;
 }
 
-static Mqtt_ReturnType Mqtt_EncodeDisconnect(Mqtt_InternalConnectionType* conn)
+Mqtt_ReturnType Mqtt_EncodeDisconnect(Mqtt_InternalConnectionType* conn)
 {
     conn->sendBuffer[0] = MQTT_PACKET_TYPE_DISCONNECT;
     conn->sendBuffer[1] = 0x00;

@@ -283,4 +283,5 @@ LinSlave_Uds_StatusType LinSlave_Uds_ReadDTCInformation(
     LinSlave_Uds_ResponseType* ResponsePtr
 );
 
+
 #endif /* LINSLAVE_UDS_H */

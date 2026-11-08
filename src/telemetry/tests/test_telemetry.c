@@ -382,7 +382,7 @@ static int test_rb_null_arguments(void)
 /* ============================================================================
  * 7. 初始化 / 去初始化
  * ============================================================================ */
-static int test_init_deinit(void)
+int test_init_deinit(void)
 {
     uint8_t buf[64];
     const TelStats_t *stats;

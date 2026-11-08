@@ -46,7 +46,7 @@
 #define IO_MAX_PWM_OUTPUTS                  4U
 
 /* Debounce constants */
-#define IO_DEBOUNCE_SAMPLES                 3
+#define IO_DEBOUNCE_SAMPLES                 3U
 
 /*==================================================================================================
 *                                    LOCAL TYPES
@@ -373,7 +373,7 @@ void Swc_IOControl_Init(void)
     swcIOControl.state = IO_STATE_ACTIVE;
     swcIOControl.isInitialized = TRUE;
 
-    Det_ReportError(SWC_IOCONTROL_MODULE_ID, SWC_IOCONTROL_INSTANCE_ID,
+    (void)Det_ReportError(SWC_IOCONTROL_MODULE_ID, SWC_IOCONTROL_INSTANCE_ID,
                     0x01, RTE_E_OK);
 }
 

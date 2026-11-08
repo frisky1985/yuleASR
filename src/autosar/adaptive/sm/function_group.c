@@ -64,13 +64,12 @@ static bool AreAllMembersActive(FunctionGroupNameType name) {
  * Public Functions
  ******************************************************************************/
 
-Std_ReturnType FG_Init(void) {
-    if (g_initialized) {
+Std_ReturnType FG_Init(void) {    if (g_initialized) {
         return E_OK;
     }
     
-    memset(g_configs, 0, sizeof(g_configs));
-    memset(g_runtimes, 0, sizeof(g_runtimes));
+    (void)memset(g_configs, 0, sizeof(g_configs));
+    (void)memset(g_runtimes, 0, sizeof(g_runtimes));
     
     /* Initialize runtime states */
     for (uint32_t i = 0U; i < (uint32_t)(FUNCTION_GROUP_COUNT); i++) {
@@ -81,7 +80,7 @@ Std_ReturnType FG_Init(void) {
         g_runtimes[i].isStable = true;
         
         /* Set default configuration */
-        strncpy(g_configs[i].displayName, StateMachine_GetFGNameString((FunctionGroupNameType)i),
+        (void)strncpy(g_configs[i].displayName, StateMachine_GetFGNameString((FunctionGroupNameType)i),
                 FG_MAX_NAME_LENGTH - 1U);
         g_configs[i].displayName[FG_MAX_NAME_LENGTH - 1U] = '\0';
         g_configs[i].name = (FunctionGroupNameType)i;
@@ -93,8 +92,7 @@ Std_ReturnType FG_Init(void) {
     return E_OK;
 }
 
-Std_ReturnType FG_Deinit(void) {
-    if (!g_initialized) {
+Std_ReturnType FG_Deinit(void) {    if (!g_initialized) {
         return E_OK;
     }
     
@@ -103,28 +101,25 @@ Std_ReturnType FG_Deinit(void) {
         FG_Stop((FunctionGroupNameType)i);
     }
     
-    memset(g_configs, 0, sizeof(g_configs));
-    memset(g_runtimes, 0, sizeof(g_runtimes));
+    (void)memset(g_configs, 0, sizeof(g_configs));
+    (void)memset(g_runtimes, 0, sizeof(g_runtimes));
     
     g_initialized = false;
     return E_OK;
 }
 
-bool FG_IsInitialized(void) {
-    return g_initialized;
+bool FG_IsInitialized(void) {    return g_initialized;
 }
 
-Std_ReturnType FG_CreateConfig(FunctionGroupNameType name, FG_ConfigType* config) {
-    if (!g_initialized || (config == NULL) || (name >= FUNCTION_GROUP_COUNT)) {
+Std_ReturnType FG_CreateConfig(FunctionGroupNameType name, FG_ConfigType* config) {    if (!g_initialized || (config == NULL) || (name >= FUNCTION_GROUP_COUNT)) {
         return E_NOT_OK;
     }
     
-    memcpy(config, &g_configs[name], sizeof(FG_ConfigType));
+    (void)memcpy(config, &g_configs[name], sizeof(FG_ConfigType));
     return E_OK;
 }
 
-Std_ReturnType FG_AddMember(FG_ConfigType* config, const FG_MemberType* member) {
-    if (!g_initialized || (config == NULL) || (member == NULL)) {
+Std_ReturnType FG_AddMember(FG_ConfigType* config, const FG_MemberType* member) {    if (!g_initialized || (config == NULL) || (member == NULL)) {
         return E_NOT_OK;
     }
     
@@ -139,14 +134,13 @@ Std_ReturnType FG_AddMember(FG_ConfigType* config, const FG_MemberType* member) 
         }
     }
     
-    memcpy(&config->members[config->memberCount], member, sizeof(FG_MemberType));
+    (void)memcpy(&config->members[config->memberCount], member, sizeof(FG_MemberType));
     config->memberCount++;
     
     return E_OK;
 }
 
-Std_ReturnType FG_RemoveMember(FG_ConfigType* config, const char* memberName) {
-    if (!g_initialized || (config == NULL) || (memberName == NULL)) {
+Std_ReturnType FG_RemoveMember(FG_ConfigType* config, const char* memberName) {    if (!g_initialized || (config == NULL) || (memberName == NULL)) {
         return E_NOT_OK;
     }
     
@@ -164,24 +158,23 @@ Std_ReturnType FG_RemoveMember(FG_ConfigType* config, const char* memberName) {
     
     /* Shift remaining members */
     for (uint32_t i = (uint32_t)index; i < (config->memberCount - 1U); i++) {
-        memcpy(&config->members[i], &config->members[i + 1U], sizeof(FG_MemberType));
+        (void)memcpy(&config->members[i], &config->members[i + 1U], sizeof(FG_MemberType));
     }
     
     config->memberCount--;
-    memset(&config->members[config->memberCount], 0, sizeof(FG_MemberType));
+    (void)memset(&config->members[config->memberCount], 0, sizeof(FG_MemberType));
     
     return E_OK;
 }
 
-Std_ReturnType FG_GetMember(const FG_ConfigType* config, const char* memberName,
-                            FG_MemberType* member) {
+Std_ReturnType FG_GetMember(const FG_ConfigType* config, const char* memberName,                            FG_MemberType* member) {
     if (!g_initialized || (config == NULL) || (memberName == NULL) || (member == NULL)) {
         return E_NOT_OK;
     }
     
     for (uint32_t i = 0U; i < config->memberCount; i++) {
         if (strcmp(config->members[i].name, memberName) == 0) {
-            memcpy(member, &config->members[i], sizeof(FG_MemberType));
+            (void)memcpy(member, &config->members[i], sizeof(FG_MemberType));
             return E_OK;
         }
     }
@@ -189,8 +182,7 @@ Std_ReturnType FG_GetMember(const FG_ConfigType* config, const char* memberName,
     return E_NOT_OK;  /* Member not found */
 }
 
-Std_ReturnType FG_Configure(FunctionGroupNameType name, const FG_ConfigType* config) {
-    if (!g_initialized || (config == NULL) || (name >= FUNCTION_GROUP_COUNT)) {
+Std_ReturnType FG_Configure(FunctionGroupNameType name, const FG_ConfigType* config) {    if (!g_initialized || (config == NULL) || (name >= FUNCTION_GROUP_COUNT)) {
         return E_NOT_OK;
     }
     
@@ -200,14 +192,13 @@ Std_ReturnType FG_Configure(FunctionGroupNameType name, const FG_ConfigType* con
         return E_NOT_OK;
     }
     
-    memcpy(&g_configs[name], config, sizeof(FG_ConfigType));
+    (void)memcpy(&g_configs[name], config, sizeof(FG_ConfigType));
     g_configs[name].name = name;  /* Ensure name is correct */
     
     return E_OK;
 }
 
-Std_ReturnType FG_Start(FunctionGroupNameType name) {
-    if (!g_initialized || (name >= FUNCTION_GROUP_COUNT)) {
+Std_ReturnType FG_Start(FunctionGroupNameType name) {    if (!g_initialized || (name >= FUNCTION_GROUP_COUNT)) {
         return E_NOT_OK;
     }
     
@@ -234,8 +225,7 @@ Std_ReturnType FG_Start(FunctionGroupNameType name) {
     return E_OK;
 }
 
-Std_ReturnType FG_Stop(FunctionGroupNameType name) {
-    if (!g_initialized || (name >= FUNCTION_GROUP_COUNT)) {
+Std_ReturnType FG_Stop(FunctionGroupNameType name) {    if (!g_initialized || (name >= FUNCTION_GROUP_COUNT)) {
         return E_NOT_OK;
     }
     
@@ -262,8 +252,7 @@ Std_ReturnType FG_Stop(FunctionGroupNameType name) {
     return E_OK;
 }
 
-Std_ReturnType FG_GetRuntimeState(FunctionGroupNameType name, FG_RuntimeType* runtime) {
-    if (!g_initialized || (runtime == NULL) || (name >= FUNCTION_GROUP_COUNT)) {
+Std_ReturnType FG_GetRuntimeState(FunctionGroupNameType name, FG_RuntimeType* runtime) {    if (!g_initialized || (runtime == NULL) || (name >= FUNCTION_GROUP_COUNT)) {
         return E_NOT_OK;
     }
     
@@ -272,12 +261,11 @@ Std_ReturnType FG_GetRuntimeState(FunctionGroupNameType name, FG_RuntimeType* ru
         return E_NOT_OK;
     }
     
-    memcpy(runtime, r, sizeof(FG_RuntimeType));
+    (void)memcpy(runtime, r, sizeof(FG_RuntimeType));
     return E_OK;
 }
 
-bool FG_IsStable(FunctionGroupNameType name) {
-    if (!g_initialized || (name >= FUNCTION_GROUP_COUNT)) {
+bool FG_IsStable(FunctionGroupNameType name) {    if (!g_initialized || (name >= FUNCTION_GROUP_COUNT)) {
         return false;
     }
     
@@ -289,8 +277,7 @@ bool FG_IsStable(FunctionGroupNameType name) {
     return runtime->isStable;
 }
 
-Std_ReturnType FG_WaitForStable(FunctionGroupNameType name, uint32_t timeoutMs) {
-    if (!g_initialized || (name >= FUNCTION_GROUP_COUNT)) {
+Std_ReturnType FG_WaitForStable(FunctionGroupNameType name, uint32_t timeoutMs) {    if (!g_initialized || (name >= FUNCTION_GROUP_COUNT)) {
         return E_NOT_OK;
     }
     
@@ -308,8 +295,7 @@ Std_ReturnType FG_WaitForStable(FunctionGroupNameType name, uint32_t timeoutMs) 
     return E_OK;
 }
 
-Std_ReturnType FG_NotifyMemberState(FunctionGroupNameType name, const char* memberName,
-                                     bool isActive) {
+Std_ReturnType FG_NotifyMemberState(FunctionGroupNameType name, const char* memberName,                                     bool isActive) {
     if (!g_initialized || (name >= FUNCTION_GROUP_COUNT) || (memberName == NULL)) {
         return E_NOT_OK;
     }
@@ -347,8 +333,7 @@ Std_ReturnType FG_NotifyMemberState(FunctionGroupNameType name, const char* memb
     return E_OK;
 }
 
-uint32_t FG_GetActiveMemberCount(FunctionGroupNameType name) {
-    if (!g_initialized || (name >= FUNCTION_GROUP_COUNT)) {
+uint32_t FG_GetActiveMemberCount(FunctionGroupNameType name) {    if (!g_initialized || (name >= FUNCTION_GROUP_COUNT)) {
         return 0U;
     }
     
@@ -360,8 +345,7 @@ uint32_t FG_GetActiveMemberCount(FunctionGroupNameType name) {
     return runtime->activeMemberCount;
 }
 
-void FG_MainFunction(void) {
-    if (!g_initialized) {
+void FG_MainFunction(void) {    if (!g_initialized) {
         return;
     }
     

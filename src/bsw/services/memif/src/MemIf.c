@@ -205,8 +205,7 @@ void MemIf_Init(const MemIf_ConfigType* ConfigPtr)
  * @req SWS_MemIf_00002
  * @return None
  */
-void MemIf_DeInit(void)
-{
+void MemIf_DeInit(void){
 #if (MEMIF_DEV_ERROR_DETECT == STD_ON)
     MEMIF_VALIDATE_INITIALIZED(MEMIF_SID_DEINIT);
 #endif
@@ -632,8 +631,7 @@ void MemIf_SetMode(uint8 DeviceIndex, MemIf_ModeType Mode)
  * @req SWS_MemIf_00013
  * @return Number of configured devices
  */
-uint8 MemIf_GetNumberOfDevices(void)
-{
+uint8 MemIf_GetNumberOfDevices(void){
 #if (MEMIF_DEV_ERROR_DETECT == STD_ON)
     MEMIF_VALIDATE_INITIALIZED_RET(MEMIF_SID_INIT, 0u);
 #endif

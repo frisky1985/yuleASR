@@ -109,8 +109,7 @@ static const StbM_ConfigType TestConfig = {
 /**
  * @brief Test StbM_Init with valid configuration
  */
-void Test_StbM_Init_Valid(void)
-{
+static void Test_StbM_Init_Valid(void){
     (void)printf("\n[Test] StbM_Init with valid configuration\n");
     
     StbM_DeInit();
@@ -122,8 +121,7 @@ void Test_StbM_Init_Valid(void)
 /**
  * @brief Test StbM_DeInit
  */
-void Test_StbM_DeInit(void)
-{
+static void Test_StbM_DeInit(void){
     (void)printf("\n[Test] StbM_DeInit\n");
     
     StbM_Init(&TestConfig);
@@ -136,8 +134,7 @@ void Test_StbM_DeInit(void)
  * @brief Test StbM_GetVersionInfo
  */
 #if (STBM_VERSION_INFO_API == STD_ON)
-void Test_StbM_GetVersionInfo(void)
-{
+static void Test_StbM_GetVersionInfo(void){
     Std_VersionInfoType versionInfo;
     
     (void)printf("\n[Test] StbM_GetVersionInfo\n");
@@ -155,8 +152,7 @@ void Test_StbM_GetVersionInfo(void)
 /**
  * @brief Test StbM_SetGlobalTime and GetCurrentTime
  */
-void Test_StbM_SetAndGetTime(void)
-{
+static void Test_StbM_SetAndGetTime(void){
     Std_ReturnType result;
     StbM_TimeStampType setTime;
     StbM_TimeStampType getTime;
@@ -182,8 +178,7 @@ void Test_StbM_SetAndGetTime(void)
 /**
  * @brief Test StbM_BusSetGlobalTime
  */
-void Test_StbM_BusSetGlobalTime(void)
-{
+static void Test_StbM_BusSetGlobalTime(void){
     Std_ReturnType result;
     StbM_TimeStampType timeStamp;
     StbM_VirtualLocalTimeType virtualTime;
@@ -204,8 +199,7 @@ void Test_StbM_BusSetGlobalTime(void)
 /**
  * @brief Test StbM_GetTimeBaseStatus
  */
-void Test_StbM_GetTimeBaseStatus(void)
-{
+static void Test_StbM_GetTimeBaseStatus(void){
     Std_ReturnType result;
     uint8 syncStatus;
     uint8 timeBaseStatus;
@@ -222,8 +216,7 @@ void Test_StbM_GetTimeBaseStatus(void)
 /**
  * @brief Test StbM_GetMasterConfig
  */
-void Test_StbM_GetMasterConfig(void)
-{
+static void Test_StbM_GetMasterConfig(void){
     Std_ReturnType result;
     StbM_MasterConfigType masterConfig;
     
@@ -243,8 +236,7 @@ void Test_StbM_GetMasterConfig(void)
 /**
  * @brief Test StbM_SetRateCorrection
  */
-void Test_StbM_SetRateCorrection(void)
-{
+static void Test_StbM_SetRateCorrection(void){
     Std_ReturnType result;
     
     (void)printf("\n[Test] StbM_SetRateCorrection\n");
@@ -261,8 +253,7 @@ void Test_StbM_SetRateCorrection(void)
 /**
  * @brief Test StbM_GetTimeBaseUpdateCounter
  */
-void Test_StbM_GetTimeBaseUpdateCounter(void)
-{
+static void Test_StbM_GetTimeBaseUpdateCounter(void){
     Std_ReturnType result;
     uint32 updateCounter;
     
@@ -278,8 +269,7 @@ void Test_StbM_GetTimeBaseUpdateCounter(void)
 /**
  * @brief Test StbM_SetUserData
  */
-void Test_StbM_SetUserData(void)
-{
+static void Test_StbM_SetUserData(void){
     Std_ReturnType result;
     StbM_UserDataType userData;
     
@@ -298,8 +288,7 @@ void Test_StbM_SetUserData(void)
 /**
  * @brief Test StbM_MainFunction
  */
-void Test_StbM_MainFunction(void)
-{
+static void Test_StbM_MainFunction(void){
     (void)printf("\n[Test] StbM_MainFunction\n");
     
     StbM_Init(&TestConfig);
@@ -311,8 +300,7 @@ void Test_StbM_MainFunction(void)
 /**
  * @brief Test StbM_TimeStampChanged
  */
-void Test_StbM_TimeStampChanged(void)
-{
+static void Test_StbM_TimeStampChanged(void){
     Eth_TimeStampType ethTime;
     
     (void)printf("\n[Test] StbM_TimeStampChanged\n");
@@ -330,8 +318,7 @@ void Test_StbM_TimeStampChanged(void)
 /**
  * @brief Test invalid time base ID
  */
-void Test_StbM_InvalidTimeBaseId(void)
-{
+static void Test_StbM_InvalidTimeBaseId(void){
     Std_ReturnType result;
     StbM_TimeStampType timeStamp;
     
@@ -346,8 +333,7 @@ void Test_StbM_InvalidTimeBaseId(void)
 /**
  * @brief Test slave cannot set global time
  */
-void Test_StbM_SlaveSetGlobalTime(void)
-{
+static void Test_StbM_SlaveSetGlobalTime(void){
     Std_ReturnType result;
     StbM_TimeStampType timeStamp;
     

@@ -176,14 +176,14 @@ Std_ReturnType EccEncoder_Init(const EccEncoderConfigType *config)
 
     if (config == NULL) {
         /* Use defaults: 32-bit ECC mode, ASIL-D */
-        memset(&default_config, 0, sizeof(default_config));
+        (void)memset(&default_config, 0, sizeof(default_config));
         default_config.mode = ECC_MODE_32BIT;
         default_config.asil_level = ASIL_D;
         config = &default_config;
     }
 
     /* Clear state structure */
-    memset(&g_encoder_state, 0, sizeof(g_encoder_state));
+    (void)memset(&g_encoder_state, 0, sizeof(g_encoder_state));
 
     /* Copy configuration */
     g_encoder_state.config = *config;
@@ -199,7 +199,7 @@ Std_ReturnType EccEncoder_Init(const EccEncoderConfigType *config)
  */
 Std_ReturnType EccEncoder_DeInit(void)
 {
-    memset(&g_encoder_state, 0, sizeof(g_encoder_state));
+    (void)memset(&g_encoder_state, 0, sizeof(g_encoder_state));
     g_initialized = FALSE;
     return E_OK;
 }

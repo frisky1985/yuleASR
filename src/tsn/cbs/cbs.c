@@ -22,7 +22,7 @@
  * ============================================================================ */
 
 #define CBS_MAX_PORTS                   8U
-#define CBS_MAX_QUEUES_PER_PORT         8
+#define CBS_MAX_QUEUES_PER_PORT         8U
 #define NS_PER_US                       1000ULL
 
 /* ============================================================================
@@ -109,7 +109,7 @@ eth_status_t cbs_init(void) {
         cbs_deinit();
     }
     
-    memset(&g_cbs_state, 0, sizeof(g_cbs_state));
+    (void)memset(&g_cbs_state, 0, sizeof(g_cbs_state));
     
     for (int i = 0; (unsigned int)((unsigned int)(i)) < CBS_MAX_PORTS; i++) {
         g_cbs_state.ports[i].config.port_id = i;
@@ -127,7 +127,7 @@ void cbs_deinit(void) {
         return;
     }
     
-    memset(&g_cbs_state, 0, sizeof(g_cbs_state));
+    (void)memset(&g_cbs_state, 0, sizeof(g_cbs_state));
 }
 
 eth_status_t cbs_config_port(uint16_t port_id, const cbs_port_config_t *config) {
@@ -135,7 +135,7 @@ eth_status_t cbs_config_port(uint16_t port_id, const cbs_port_config_t *config) 
         return ETH_INVALID_PARAM;
     }
     
-    memcpy(&g_cbs_state.ports[port_id].config, config, sizeof(cbs_port_config_t));
+    (void)memcpy(&g_cbs_state.ports[port_id].config, config, sizeof(cbs_port_config_t));
     g_cbs_state.ports[port_id].configured = true;
     g_cbs_state.ports[port_id].last_update_time_ns = get_current_time_ns();
     
@@ -147,7 +147,7 @@ eth_status_t cbs_get_port_config(uint16_t port_id, cbs_port_config_t *config) {
         return ETH_INVALID_PARAM;
     }
     
-    memcpy(config, &g_cbs_state.ports[port_id].config, sizeof(cbs_port_config_t));
+    (void)memcpy(config, &g_cbs_state.ports[port_id].config, sizeof(cbs_port_config_t));
     return ETH_OK;
 }
 
@@ -158,7 +158,7 @@ eth_status_t cbs_config_sr_class(uint16_t port_id, uint8_t class_index,
         return ETH_INVALID_PARAM;
     }
     
-    memcpy(&g_cbs_state.ports[port_id].config.sr_classes[class_index],
+    (void)memcpy(&g_cbs_state.ports[port_id].config.sr_classes[class_index],
            sr_config, sizeof(cbs_sr_class_config_t));
     
     return ETH_OK;
@@ -171,7 +171,7 @@ eth_status_t cbs_config_queue(uint16_t port_id, uint8_t queue_index,
         return ETH_INVALID_PARAM;
     }
     
-    memcpy(&g_cbs_state.ports[port_id].config.queue_configs[queue_index],
+    (void)memcpy(&g_cbs_state.ports[port_id].config.queue_configs[queue_index],
            queue_config, sizeof(cbs_queue_config_t));
     
     return ETH_OK;
@@ -313,7 +313,7 @@ eth_status_t cbs_can_transmit(uint16_t port_id, uint8_t queue_id,
     /* 先更新信用 */
     uint64_t current_time = get_current_time_ns();
     uint64_t elapsed = current_time - port->last_update_time_ns;
-    cbs_update_credit(port_id, queue_id, elapsed);
+    (void)cbs_update_credit(port_id, queue_id, elapsed);
     port->last_update_time_ns = current_time;
     
     /* CBS传输规则: 只有当信用 >= 所需信用时才能传输 */
@@ -364,8 +364,8 @@ eth_status_t cbs_complete_transmission(uint16_t port_id, uint8_t queue_id,
     queue->transmission_in_progress = false;
     
     /* 更新信用 */
-    cbs_update_credit(port_id, queue_id, actual_time_ns);
-    cbs_decrement_credit(port_id, queue_id, frame_size);
+    (void)cbs_update_credit(port_id, queue_id, actual_time_ns);
+    (void)cbs_decrement_credit(port_id, queue_id, frame_size);
     
     /* 检查传输超时 */
     uint32_t expected_time_us = (frame_size * 8U) / 
@@ -454,10 +454,10 @@ eth_status_t cbs_get_stats(uint16_t port_id, cbs_stats_t *stats) {
     
     cbs_port_runtime_t *port = get_port(port_id);
     
-    memset(stats, 0, sizeof(cbs_stats_t));
+    (void)memset(stats, 0, sizeof(cbs_stats_t));
     
     for (int i = 0; (unsigned int)((unsigned int)(i)) < CBS_SR_CLASS_MAX; i++) {
-        memcpy(&stats->queue_states[i], &port->queue_states[i], sizeof(cbs_queue_state_t));
+        (void)memcpy(&stats->queue_states[i], &port->queue_states[i], sizeof(cbs_queue_state_t));
         stats->total_frames_transmitted += port->queue_states[i].frames_transmitted;
         stats->total_bytes_transmitted += port->queue_states[i].bytes_transmitted;
         stats->total_credit_violations += port->queue_states[i].credit_violations;
@@ -494,7 +494,7 @@ eth_status_t cbs_get_queue_state(uint16_t port_id, uint8_t queue_id,
         return ETH_INVALID_PARAM;
     }
     
-    memcpy(state, &g_cbs_state.ports[port_id].queue_states[queue_id], 
+    (void)memcpy(state, &g_cbs_state.ports[port_id].queue_states[queue_id], 
            sizeof(cbs_queue_state_t));
     
     return ETH_OK;
@@ -535,7 +535,7 @@ eth_status_t cbs_init_safety_monitor(uint16_t port_id) {
     
     cbs_safety_monitor_t *monitor = &g_cbs_state.ports[port_id].safety_monitor;
     
-    memset(monitor, 0, sizeof(cbs_safety_monitor_t));
+    (void)memset(monitor, 0, sizeof(cbs_safety_monitor_t));
     monitor->min_credit_limit = CBS_MAX_NEGATIVE_CREDIT;
     monitor->max_credit_limit = 0;
     
@@ -555,7 +555,7 @@ eth_status_t cbs_get_safety_monitor(uint16_t port_id, cbs_safety_monitor_t *moni
         return ETH_INVALID_PARAM;
     }
     
-    memcpy(monitor, &g_cbs_state.ports[port_id].safety_monitor, 
+    (void)memcpy(monitor, &g_cbs_state.ports[port_id].safety_monitor, 
            sizeof(cbs_safety_monitor_t));
     
     return ETH_OK;
@@ -609,7 +609,7 @@ eth_status_t cbs_create_automotive_config(uint16_t port_id,
         return ETH_INVALID_PARAM;
     }
     
-    memset(config, 0, sizeof(cbs_port_config_t));
+    (void)memset(config, 0, sizeof(cbs_port_config_t));
     
     config->port_id = port_id;
     config->port_transmit_rate_bps = (uint32_t)port_rate_mbps * 1000000U;
@@ -641,8 +641,8 @@ eth_status_t cbs_create_automotive_config(uint16_t port_id,
     /* Class A 队列配置 - 25% 带宽 */
     config->queue_configs[CBS_SR_CLASS_A].queue_id = 0;
     config->queue_configs[CBS_SR_CLASS_A].sr_class = CBS_SR_CLASS_A_TYPE;
-    cbs_calc_idle_slope(port_rate_bps, 25, &config->queue_configs[CBS_SR_CLASS_A].idle_slope_bps);
-    cbs_calc_send_slope(port_rate_bps, config->queue_configs[CBS_SR_CLASS_A].idle_slope_bps,
+    (void)cbs_calc_idle_slope(port_rate_bps, 25, &config->queue_configs[CBS_SR_CLASS_A].idle_slope_bps);
+    (void)cbs_calc_send_slope(port_rate_bps, config->queue_configs[CBS_SR_CLASS_A].idle_slope_bps,
                         &config->queue_configs[CBS_SR_CLASS_A].send_slope_bps);
     config->queue_configs[CBS_SR_CLASS_A].low_credit = CBS_MAX_NEGATIVE_CREDIT;
     config->queue_configs[CBS_SR_CLASS_A].high_credit = 0;
@@ -651,8 +651,8 @@ eth_status_t cbs_create_automotive_config(uint16_t port_id,
     /* Class B 队列配置 - 25% 带宽 */
     config->queue_configs[CBS_SR_CLASS_B].queue_id = 1;
     config->queue_configs[CBS_SR_CLASS_B].sr_class = CBS_SR_CLASS_B_TYPE;
-    cbs_calc_idle_slope(port_rate_bps, 25, &config->queue_configs[CBS_SR_CLASS_B].idle_slope_bps);
-    cbs_calc_send_slope(port_rate_bps, config->queue_configs[CBS_SR_CLASS_B].idle_slope_bps,
+    (void)cbs_calc_idle_slope(port_rate_bps, 25, &config->queue_configs[CBS_SR_CLASS_B].idle_slope_bps);
+    (void)cbs_calc_send_slope(port_rate_bps, config->queue_configs[CBS_SR_CLASS_B].idle_slope_bps,
                         &config->queue_configs[CBS_SR_CLASS_B].send_slope_bps);
     config->queue_configs[CBS_SR_CLASS_B].low_credit = CBS_MAX_NEGATIVE_CREDIT;
     config->queue_configs[CBS_SR_CLASS_B].high_credit = 0;

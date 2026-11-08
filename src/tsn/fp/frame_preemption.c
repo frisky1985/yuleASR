@@ -199,7 +199,7 @@ eth_status_t fp_init(void) {
         fp_deinit();
     }
     
-    memset(&g_fp_state, 0, sizeof(g_fp_state));
+    (void)memset(&g_fp_state, 0, sizeof(g_fp_state));
     
     for (int i = 0; (unsigned int)((unsigned int)(i)) < FP_MAX_PORTS; i++) {
         g_fp_state.ports[i].config.port_id = i;
@@ -216,7 +216,7 @@ void fp_deinit(void) {
         return;
     }
     
-    memset(&g_fp_state, 0, sizeof(g_fp_state));
+    (void)memset(&g_fp_state, 0, sizeof(g_fp_state));
 }
 
 eth_status_t fp_config_port(uint16_t port_id, const fp_config_t *config) {
@@ -224,7 +224,7 @@ eth_status_t fp_config_port(uint16_t port_id, const fp_config_t *config) {
         return ETH_INVALID_PARAM;
     }
     
-    memcpy(&g_fp_state.ports[port_id].config, config, sizeof(fp_config_t));
+    (void)memcpy(&g_fp_state.ports[port_id].config, config, sizeof(fp_config_t));
     g_fp_state.ports[port_id].configured = true;
     g_fp_state.ports[port_id].state = FP_STATE_IDLE;
     
@@ -236,7 +236,7 @@ eth_status_t fp_get_port_config(uint16_t port_id, fp_config_t *config) {
         return ETH_INVALID_PARAM;
     }
     
-    memcpy(config, &g_fp_state.ports[port_id].config, sizeof(fp_config_t));
+    (void)memcpy(config, &g_fp_state.ports[port_id].config, sizeof(fp_config_t));
     return ETH_OK;
 }
 
@@ -284,7 +284,7 @@ eth_status_t fp_send_express_frame(uint16_t port_id, const uint8_t *data, uint32
     
     /* 如果正在传输可抢占帧，需要抢占 */
     if (port->state == FP_STATE_TRANSMITTING_PREEMPTABLE) {
-        fp_preempt_transmission(port_id);
+        (void)fp_preempt_transmission(port_id);
     }
     
     port->state = FP_STATE_TRANSMITTING_EXPRESS;
@@ -368,12 +368,12 @@ eth_status_t fp_preempt_transmission(uint16_t port_id) {
                                         port->preemptable_tx.frag_sequence);
     
     mpacket_data[0] = smd;
-    memcpy(mpacket_data + 1, 
+    (void)memcpy(mpacket_data + 1, 
            port->preemptable_tx.frame_data + port->preemptable_tx.bytes_transmitted,
            frag_size);
     
     uint32_t crc = calc_crc32(mpacket_data, frag_size + 1U);
-    memcpy(mpacket_data + 1U + frag_size, &crc, 4);
+    (void)memcpy(mpacket_data + 1U + frag_size, &crc, 4);
     
     if ((g_fp_state.tx_cb) != 0U) {
         g_fp_state.tx_cb(port_id, mpacket_data, frag_size + 5U, false, g_fp_state.tx_user_data);
@@ -419,12 +419,12 @@ eth_status_t fp_resume_transmission(uint16_t port_id) {
         uint8_t smd = get_smd_for_fragment(frag_type, port->preemptable_tx.frag_sequence);
         
         mpacket_data[0] = smd;
-        memcpy(mpacket_data + 1, 
+        (void)memcpy(mpacket_data + 1, 
                port->preemptable_tx.frame_data + port->preemptable_tx.bytes_transmitted,
                frag_size);
         
         uint32_t crc = calc_crc32(mpacket_data, frag_size + 1U);
-        memcpy(mpacket_data + 1U + frag_size, &crc, 4);
+        (void)memcpy(mpacket_data + 1U + frag_size, &crc, 4);
         
         if ((g_fp_state.tx_cb) != 0U) {
             g_fp_state.tx_cb(port_id, mpacket_data, frag_size + 5U, false, g_fp_state.tx_user_data);
@@ -533,7 +533,7 @@ eth_status_t fp_reassemble_mpacket(const fp_mpacket_t *mpacket,
     }
     
     /* 复制数据 */
-    memcpy(frame_data, mpacket->data, mpacket->len);
+    (void)memcpy(frame_data, mpacket->data, mpacket->len);
     *frame_len = mpacket->len;
     
     /* 判断是否完整 */
@@ -564,8 +564,8 @@ eth_status_t fp_rx_mpacket(uint16_t port_id, const fp_mpacket_t *mpacket) {
             
         case FP_FRAME_FIRST_FRAGMENT:
             /* 开始新的重组 */
-            memset(reasm, 0, sizeof(fp_reassembly_context_t));
-            memcpy(reasm->reassembly_buffer, mpacket->data, mpacket->len);
+            (void)memset(reasm, 0, sizeof(fp_reassembly_context_t));
+            (void)memcpy(reasm->reassembly_buffer, mpacket->data, mpacket->len);
             reasm->reassembly_len = mpacket->len;
             reasm->reassembly_active = true;
             reasm->expected_sequence = (mpacket->frag_sequence + 1U) & 0x03U;
@@ -596,7 +596,7 @@ eth_status_t fp_rx_mpacket(uint16_t port_id, const fp_mpacket_t *mpacket) {
                 return ETH_ERROR;
             }
             
-            memcpy(reasm->reassembly_buffer + reasm->reassembly_len, 
+            (void)memcpy(reasm->reassembly_buffer + reasm->reassembly_len, 
                    mpacket->data, mpacket->len);
             reasm->reassembly_len += mpacket->len;
             reasm->expected_sequence = (reasm->expected_sequence + 1U) & 0x03U;
@@ -636,7 +636,7 @@ eth_status_t fp_get_stats(uint16_t port_id, fp_stats_t *stats) {
         return ETH_INVALID_PARAM;
     }
     
-    memcpy(stats, &g_fp_state.ports[port_id].stats, sizeof(fp_stats_t));
+    (void)memcpy(stats, &g_fp_state.ports[port_id].stats, sizeof(fp_stats_t));
     return ETH_OK;
 }
 
@@ -645,7 +645,7 @@ eth_status_t fp_clear_stats(uint16_t port_id) {
         return ETH_INVALID_PARAM;
     }
     
-    memset(&g_fp_state.ports[port_id].stats, 0, sizeof(fp_stats_t));
+    (void)memset(&g_fp_state.ports[port_id].stats, 0, sizeof(fp_stats_t));
     return ETH_OK;
 }
 
@@ -655,7 +655,7 @@ eth_status_t fp_get_preemptable_state(uint16_t port_id,
         return ETH_INVALID_PARAM;
     }
     
-    memcpy(preemptable_state, &g_fp_state.ports[port_id].preemptable_tx, 
+    (void)memcpy(preemptable_state, &g_fp_state.ports[port_id].preemptable_tx, 
            sizeof(fp_preemptable_frame_state_t));
     return ETH_OK;
 }
@@ -693,7 +693,7 @@ eth_status_t fp_init_safety_monitor(uint16_t port_id) {
     
     fp_safety_monitor_t *monitor = &g_fp_state.ports[port_id].safety_monitor;
     
-    memset(monitor, 0, sizeof(fp_safety_monitor_t));
+    (void)memset(monitor, 0, sizeof(fp_safety_monitor_t));
     monitor->frame_integrity_ok = true;
     
     return ETH_OK;
@@ -712,7 +712,7 @@ eth_status_t fp_get_safety_monitor(uint16_t port_id, fp_safety_monitor_t *monito
         return ETH_INVALID_PARAM;
     }
     
-    memcpy(monitor, &g_fp_state.ports[port_id].safety_monitor, sizeof(fp_safety_monitor_t));
+    (void)memcpy(monitor, &g_fp_state.ports[port_id].safety_monitor, sizeof(fp_safety_monitor_t));
     return ETH_OK;
 }
 

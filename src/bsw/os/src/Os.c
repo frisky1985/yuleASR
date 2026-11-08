@@ -1295,8 +1295,7 @@ void Os_Internal_ErrorHook(StatusType Error)
  * @brief Application error hook - weak reference
  *        Can be overridden by application code
  */
-OS_WEAK void Appl_ErrorHook(StatusType Error)
-{
+OS_WEAK void Appl_ErrorHook(StatusType Error){
     (void)Error;
 }
 
@@ -1320,8 +1319,7 @@ void Os_Internal_PreTaskHook(void)
  * @brief Application pre-task hook - weak reference
  *        Can be overridden by application code
  */
-OS_WEAK void Appl_PreTaskHook(void)
-{
+OS_WEAK void Appl_PreTaskHook(void){
     /* Default empty implementation */
 }
 
@@ -1345,8 +1343,7 @@ void Os_Internal_PostTaskHook(void)
  * @brief Application post-task hook - weak reference
  *        Can be overridden by application code
  */
-OS_WEAK void Appl_PostTaskHook(void)
-{
+OS_WEAK void Appl_PostTaskHook(void){
     /* Default empty implementation */
 }
 
@@ -1370,8 +1367,7 @@ void Os_Internal_StartupHook(void)
  * @brief Application startup hook - weak reference
  *        Can be overridden by application code
  */
-OS_WEAK void Appl_StartupHook(void)
-{
+OS_WEAK void Appl_StartupHook(void){
     /* Default empty implementation */
 }
 
@@ -1398,8 +1394,7 @@ void Os_Internal_ShutdownHook(StatusType Error)
  * @brief Application shutdown hook - weak reference
  *        Can be overridden by application code
  */
-OS_WEAK void Appl_ShutdownHook(StatusType Error)
-{
+OS_WEAK void Appl_ShutdownHook(StatusType Error){
     (void)Error;
 }
 

@@ -204,6 +204,7 @@ extern Swc_StorageResultType Swc_StorageManager_GetStatistics(
 extern Swc_StorageResultType Swc_StorageManager_SetWriteProtection(uint16 blockId,
                                                                     boolean protected);
 
+
 #define RTE_STOP_SEC_CODE
 #include "MemMap.h"
 

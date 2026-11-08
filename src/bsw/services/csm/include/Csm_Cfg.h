@@ -157,6 +157,7 @@ extern Std_ReturnType Csm_Cfg_RandomGenerate(
  */
 extern uint32 Csm_Cfg_GetTimestamp(void);
 
+
 #define CSM_STOP_SEC_CODE
 #include "Csm_MemMap.h"
 

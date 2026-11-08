@@ -82,7 +82,7 @@ static const PduR_PduConfigType* PduR_FindPduConfig(PduR_PduIdType pduId)
 /**
  * @brief Find routing path
  */
-static const PduR_RoutingPathType* PduR_FindRoutingPath(
+const PduR_RoutingPathType* PduR_FindRoutingPath(
     PduR_PduIdType srcPduId,
     PduR_DirectionType direction
 )
@@ -142,7 +142,7 @@ PduR_ReturnType PduR_Init(
         return PDUR_INVALID_PARAMETER;
     }
     
-    memset(&g_pdurContext, 0, sizeof(g_pdurContext));
+    (void)memset(&g_pdurContext, 0, sizeof(g_pdurContext));
     
     g_pdurContext.pduConfigs = pduConfigs;
     g_pdurContext.numPdus = numPdus;
@@ -165,7 +165,7 @@ PduR_ReturnType PduR_Init(
 
 void PduR_DeInit(void)
 {
-    memset(&g_pdurContext, 0, sizeof(g_pdurContext));
+    (void)memset(&g_pdurContext, 0, sizeof(g_pdurContext));
 }
 
 /******************************************************************************
@@ -317,7 +317,7 @@ PduR_ReturnType PduR_LoTpCopyRxData(
     uint16_t remaining = buffer->size - buffer->used;
     uint16_t toCopy = (pduInfo->sduLength < remaining) ? pduInfo->sduLength : remaining;
     
-    memcpy(&buffer->data[buffer->used], pduInfo->sduDataPtr, toCopy);
+    (void)memcpy(&buffer->data[buffer->used], pduInfo->sduDataPtr, toCopy);
     buffer->used += toCopy;
     
     *bufferSizePtr = buffer->size - buffer->used;
@@ -343,7 +343,7 @@ PduR_ReturnType PduR_LoTpCopyTxData(
     uint16_t remaining = buffer->used - buffer->used;  /* Simplified */
     uint16_t toCopy = (pduInfo->sduLength < remaining) ? pduInfo->sduLength : remaining;
     
-    memcpy(pduInfo->sduDataPtr, buffer->data, toCopy);
+    (void)memcpy(pduInfo->sduDataPtr, buffer->data, toCopy);
     pduInfo->sduLength = toCopy;
     
     if (availableDataPtr != NULL) {

@@ -118,7 +118,7 @@ eth_status_t rtps_header_build(rtps_header_t *header,
     header->version_minor = RTPS_VERSION_MINOR;
     header->vendor_id[0] = (vendor_id >> 8) & 0xFFU;
     header->vendor_id[1] = vendor_id & 0xFFU;
-    memcpy(header->guid_prefix, guid_prefix, RTPS_GUID_PREFIX_SIZE);
+    (void)memcpy(header->guid_prefix, guid_prefix, RTPS_GUID_PREFIX_SIZE);
     
     return ETH_OK;
 }
@@ -136,12 +136,12 @@ eth_status_t rtps_header_parse(const uint8_t *data,
         return ETH_ERROR;
     }
     
-    memcpy(header->magic, data, 4);
+    (void)memcpy(header->magic, data, 4);
     header->version_major = data[4];
     header->version_minor = data[5];
     header->vendor_id[0] = data[6];
     header->vendor_id[1] = data[7];
-    memcpy(header->guid_prefix, &data[8], RTPS_GUID_PREFIX_SIZE);
+    (void)memcpy(header->guid_prefix, &data[8], RTPS_GUID_PREFIX_SIZE);
     
     *bytes_consumed = RTPS_HEADER_SIZE;
     return ETH_OK;
@@ -178,7 +178,7 @@ eth_status_t rtps_message_builder_init(rtps_message_builder_t *builder,
     builder->max_size = max_size;
     builder->current_pos = 0;
     builder->little_endian = little_endian;
-    memcpy(builder->src_guid_prefix, guid_prefix, RTPS_GUID_PREFIX_SIZE);
+    (void)memcpy(builder->src_guid_prefix, guid_prefix, RTPS_GUID_PREFIX_SIZE);
     
     /* 构建报文头 */
     buffer[0] = 'R';
@@ -189,7 +189,7 @@ eth_status_t rtps_message_builder_init(rtps_message_builder_t *builder,
     buffer[5] = RTPS_VERSION_MINOR;
     buffer[6] = 0x01;  /* Vendor ID high */
     buffer[7] = 0x00;  /* Vendor ID low */
-    memcpy(&buffer[8], guid_prefix, RTPS_GUID_PREFIX_SIZE);
+    (void)memcpy(&buffer[8], guid_prefix, RTPS_GUID_PREFIX_SIZE);
     
     builder->current_pos = RTPS_HEADER_SIZE;
     
@@ -253,11 +253,11 @@ eth_status_t rtps_message_add_data(rtps_message_builder_t *builder,
     pos += 2U;
     
     /* reader_id */
-    memcpy(&builder->buffer[pos], reader_id, 4);
+    (void)memcpy(&builder->buffer[pos], reader_id, 4);
     pos += 4U;
     
     /* writer_id */
-    memcpy(&builder->buffer[pos], writer_id, 4);
+    (void)memcpy(&builder->buffer[pos], writer_id, 4);
     pos += 4U;
     
     /* writer_sn */
@@ -268,7 +268,7 @@ eth_status_t rtps_message_add_data(rtps_message_builder_t *builder,
     
     /* inline QoS (if present) */
     if ((inline_qos != NULL) && (inline_qos_len > 0U)) {
-        memcpy(&builder->buffer[pos], inline_qos, inline_qos_len);
+        (void)memcpy(&builder->buffer[pos], inline_qos, inline_qos_len);
         pos += inline_qos_len;
         while ((pos % 4U) != 0U) { builder->buffer[pos] = 0; pos++; }
     }
@@ -282,7 +282,7 @@ eth_status_t rtps_message_add_data(rtps_message_builder_t *builder,
     pos++;
     
     /* serialized data */
-    memcpy(&builder->buffer[pos], data, data_len);
+    (void)memcpy(&builder->buffer[pos], data, data_len);
     pos += data_len;
     while ((pos % 4U) != 0U) { builder->buffer[pos] = 0; pos++; }
     
@@ -323,11 +323,11 @@ eth_status_t rtps_message_add_heartbeat(rtps_message_builder_t *builder,
     pos += 2U;
     
     /* reader_id */
-    memcpy(&builder->buffer[pos], reader_id, 4);
+    (void)memcpy(&builder->buffer[pos], reader_id, 4);
     pos += 4U;
     
     /* writer_id */
-    memcpy(&builder->buffer[pos], writer_id, 4);
+    (void)memcpy(&builder->buffer[pos], writer_id, 4);
     pos += 4U;
     
     /* first_sn */
@@ -390,11 +390,11 @@ eth_status_t rtps_message_add_acknack(rtps_message_builder_t *builder,
     pos += 2U;
     
     /* reader_id */
-    memcpy(&builder->buffer[pos], reader_id, 4);
+    (void)memcpy(&builder->buffer[pos], reader_id, 4);
     pos += 4U;
     
     /* writer_id */
-    memcpy(&builder->buffer[pos], writer_id, 4);
+    (void)memcpy(&builder->buffer[pos], writer_id, 4);
     pos += 4U;
     
     /* bitmap_base */
@@ -451,9 +451,9 @@ eth_status_t rtps_message_add_gap(rtps_message_builder_t *builder,
     write_u16(&builder->buffer[pos], submsg_size - 4U, builder->little_endian);
     pos += 2U;
     
-    memcpy(&builder->buffer[pos], reader_id, 4);
+    (void)memcpy(&builder->buffer[pos], reader_id, 4);
     pos += 4U;
-    memcpy(&builder->buffer[pos], writer_id, 4);
+    (void)memcpy(&builder->buffer[pos], writer_id, 4);
     pos += 4U;
     
     write_i32(&builder->buffer[pos], gap_start->high, builder->little_endian);
@@ -494,7 +494,7 @@ eth_status_t rtps_message_add_info_dst(rtps_message_builder_t *builder,
     write_u16(&builder->buffer[pos], 12, builder->little_endian);
     pos += 2U;
     
-    memcpy(&builder->buffer[pos], guid_prefix, RTPS_GUID_PREFIX_SIZE);
+    (void)memcpy(&builder->buffer[pos], guid_prefix, RTPS_GUID_PREFIX_SIZE);
     pos += RTPS_GUID_PREFIX_SIZE;
     
     builder->current_pos = pos;
@@ -568,11 +568,11 @@ eth_status_t rtps_message_parser_init(rtps_message_parser_t *parser,
     
     /* 解析报文头获取字节序 */
     parser->little_endian = false;  /* 默认大端 */
-    memcpy(parser->header.magic, data, 4);
+    (void)memcpy(parser->header.magic, data, 4);
     parser->header.version_major = data[4];
     parser->header.version_minor = data[5];
-    memcpy(parser->header.vendor_id, &data[6], 2);
-    memcpy(parser->header.guid_prefix, &data[8], 12);
+    (void)memcpy(parser->header.vendor_id, &data[6], 2);
+    (void)memcpy(parser->header.guid_prefix, &data[8], 12);
     
     return ETH_OK;
 }
@@ -645,11 +645,11 @@ eth_status_t rtps_parse_data_submessage(const uint8_t *data,
     pos += 4U;
     
     /* reader_id */
-    memcpy(out_reader_id, &data[pos], 4);
+    (void)memcpy(out_reader_id, &data[pos], 4);
     pos += 4U;
     
     /* writer_id */
-    memcpy(out_writer_id, &data[pos], 4);
+    (void)memcpy(out_writer_id, &data[pos], 4);
     pos += 4U;
     
     /* writer_sn */
@@ -710,8 +710,8 @@ eth_status_t rtps_parse_heartbeat_submessage(const uint8_t *data,
     
     (void)flags;
     
-    memcpy(out_reader_id, &data[0], 4);
-    memcpy(out_writer_id, &data[4], 4);
+    (void)memcpy(out_reader_id, &data[0], 4);
+    (void)memcpy(out_writer_id, &data[4], 4);
     
     out_first_sn->high = read_i32(&data[8], little_endian);
     out_first_sn->low = read_u32(&data[12], little_endian);
@@ -746,8 +746,8 @@ eth_status_t rtps_parse_acknack_submessage(const uint8_t *data,
     
     (void)flags;
     
-    memcpy(out_reader_id, &data[0], 4);
-    memcpy(out_writer_id, &data[4], 4);
+    (void)memcpy(out_reader_id, &data[0], 4);
+    (void)memcpy(out_writer_id, &data[4], 4);
     
     out_bitmap_base->high = read_i32(&data[8], little_endian);
     out_bitmap_base->low = read_u32(&data[12], little_endian);
@@ -799,8 +799,8 @@ uint32_t rtps_serialize_guid(const rtps_guid_t *guid,
         return 0;
     }
     
-    memcpy(buffer, guid->prefix, RTPS_GUID_PREFIX_SIZE);
-    memcpy(&buffer[RTPS_GUID_PREFIX_SIZE], guid->entity_id, RTPS_ENTITY_ID_SIZE);
+    (void)memcpy(buffer, guid->prefix, RTPS_GUID_PREFIX_SIZE);
+    (void)memcpy(&buffer[RTPS_GUID_PREFIX_SIZE], guid->entity_id, RTPS_ENTITY_ID_SIZE);
     
     (void)little_endian;
     return RTPS_GUID_SIZE;
@@ -815,8 +815,8 @@ eth_status_t rtps_deserialize_guid(const uint8_t *buffer,
         return ETH_INVALID_PARAM;
     }
     
-    memcpy(guid->prefix, buffer, RTPS_GUID_PREFIX_SIZE);
-    memcpy(guid->entity_id, &buffer[RTPS_GUID_PREFIX_SIZE], RTPS_ENTITY_ID_SIZE);
+    (void)memcpy(guid->prefix, buffer, RTPS_GUID_PREFIX_SIZE);
+    (void)memcpy(guid->entity_id, &buffer[RTPS_GUID_PREFIX_SIZE], RTPS_ENTITY_ID_SIZE);
     
     (void)little_endian;
     return ETH_OK;
@@ -827,7 +827,7 @@ uint32_t rtps_serialize_entity_id(const rtps_entity_id_t entity_id, uint8_t *buf
     if ((entity_id == NULL) || (buffer == NULL)) {
         return 0;
     }
-    memcpy(buffer, entity_id, RTPS_ENTITY_ID_SIZE);
+    (void)memcpy(buffer, entity_id, RTPS_ENTITY_ID_SIZE);
     return RTPS_ENTITY_ID_SIZE;
 }
 
@@ -837,7 +837,7 @@ eth_status_t rtps_deserialize_entity_id(const uint8_t *buffer,
     if ((buffer == NULL) || (entity_id == NULL)) {
         return ETH_INVALID_PARAM;
     }
-    memcpy(entity_id, buffer, RTPS_ENTITY_ID_SIZE);
+    (void)memcpy(entity_id, buffer, RTPS_ENTITY_ID_SIZE);
     return ETH_OK;
 }
 
@@ -904,11 +904,11 @@ eth_status_t rtps_message_add_data_autosar(rtps_message_builder_t *builder,
     pos += 2U;
     
     /* reader_id */
-    memcpy(&builder->buffer[pos], reader_id, 4);
+    (void)memcpy(&builder->buffer[pos], reader_id, 4);
     pos += 4U;
     
     /* writer_id */
-    memcpy(&builder->buffer[pos], writer_id, 4);
+    (void)memcpy(&builder->buffer[pos], writer_id, 4);
     pos += 4U;
     
     /* writer_sn */
@@ -939,7 +939,7 @@ eth_status_t rtps_message_add_data_autosar(rtps_message_builder_t *builder,
     builder->buffer[pos] = 0;
     pos++;
     
-    memcpy(&builder->buffer[pos], data, data_len);
+    (void)memcpy(&builder->buffer[pos], data, data_len);
     pos += data_len;
     while ((pos % 4U) != 0U) { builder->buffer[pos] = 0; pos++; }
     

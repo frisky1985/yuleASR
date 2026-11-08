@@ -18,8 +18,8 @@
 /* ---- Platform stubs ---- */
 #define STD_TYPES_H
 typedef unsigned char boolean;
-#define TRUE 1
-#define FALSE 0
+#define TRUE 1U
+#define FALSE 0U
 #define NULL_PTR ((void *)0)
 typedef uint8_t uint8;
 typedef uint16_t uint16;

@@ -15,7 +15,7 @@ Std_ReturnType LdCom_Init(const LdCom_ConfigType* Config)
 {
 #if (LDCOM_DEV_ERROR_DETECT == STD_ON)
     if (Config == NULL_PTR) {
-        Det_ReportError(LDCOM_MODULE_ID, 0U, 0U, DET_E_PARAM_POINTER);
+        (void)Det_ReportError(LDCOM_MODULE_ID, 0U, 0U, DET_E_PARAM_POINTER);
         return E_NOT_OK;
     }
 #endif
@@ -48,11 +48,11 @@ Std_ReturnType LdCom_Transmit(PduIdType pduId, const PduInfoType* pduInfo)
 
 #if (LDCOM_DEV_ERROR_DETECT == STD_ON)
     if (!LdCom_Initialized) {
-        Det_ReportError(LDCOM_MODULE_ID, 0U, 1U, DET_E_UNINIT);
+        (void)Det_ReportError(LDCOM_MODULE_ID, 0U, 1U, DET_E_UNINIT);
         return E_NOT_OK;
     }
     if (pduInfo == NULL_PTR) {
-        Det_ReportError(LDCOM_MODULE_ID, 0U, 1U, DET_E_PARAM_POINTER);
+        (void)Det_ReportError(LDCOM_MODULE_ID, 0U, 1U, DET_E_PARAM_POINTER);
         return E_NOT_OK;
     }
 #endif

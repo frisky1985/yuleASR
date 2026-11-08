@@ -305,12 +305,12 @@ void dds_crypto_deinit(dds_crypto_context_t *ctx)
     /* Clear sensitive key data (静态表, 无需 free) */
     if ((ctx->sessions) != 0U) {
         for (uint32_t i = 0; i < ctx->max_sessions; i++) {
-            memset(ctx->sessions[i].key_materials, 0, sizeof(ctx->sessions[i].key_materials));
+            (void)memset(ctx->sessions[i].key_materials, 0, sizeof(ctx->sessions[i].key_materials));
         }
     }
 
     if ((ctx->key_manager.key_sessions) != 0U) {
-        memset(ctx->key_manager.key_sessions, 0,
+        (void)memset(ctx->key_manager.key_sessions, 0,
                sizeof(dds_crypto_session_keys_t) * ctx->key_manager.max_sessions);
     }
 
@@ -351,17 +351,17 @@ uint64_t dds_crypto_create_session(dds_crypto_context_t *ctx,
         return 0;
     }
 
-    memset(session, 0, sizeof(dds_crypto_session_t));
+    (void)memset(session, 0, sizeof(dds_crypto_session_t));
     session->session_id = generate_session_id();
-    memcpy(&session->local_guid, local_guid, sizeof(rtps_guid_t));
-    memcpy(&session->remote_guid, remote_guid, sizeof(rtps_guid_t));
+    (void)memcpy(&session->local_guid, local_guid, sizeof(rtps_guid_t));
+    (void)memcpy(&session->remote_guid, remote_guid, sizeof(rtps_guid_t));
 
     /* Derive session keys from shared secret */
     dds_crypto_key_material_msg_t key_material;
-    dds_crypto_derive_session_keys(ctx, shared_secret, secret_len, &key_material);
+    (void)dds_crypto_derive_session_keys(ctx, shared_secret, secret_len, &key_material);
 
-    memcpy(session->key_materials[0].key, key_material.sender_key, DDS_CRYPTO_AES_256_KEY_SIZE);
-    memcpy(session->key_materials[0].salt, key_material.master_salt, 8);
+    (void)memcpy(session->key_materials[0].key, key_material.sender_key, DDS_CRYPTO_AES_256_KEY_SIZE);
+    (void)memcpy(session->key_materials[0].salt, key_material.master_salt, 8);
     session->key_materials[0].key_len = DDS_CRYPTO_AES_256_KEY_SIZE;
     session->key_materials[0].key_id = session->session_id;
     session->key_materials[0].valid = true;
@@ -382,7 +382,7 @@ void dds_crypto_close_session(dds_crypto_context_t *ctx, uint64_t session_id)
 
     for (uint32_t i = 0; i < ctx->max_sessions; i++) {
         if ((ctx->sessions[i].session_id == session_id) && ctx->sessions[i].established) {
-            memset(ctx->sessions[i].key_materials, 0, sizeof(ctx->sessions[i].key_materials));
+            (void)memset(ctx->sessions[i].key_materials, 0, sizeof(ctx->sessions[i].key_materials));
             ctx->sessions[i].established = false;
             ctx->active_sessions--;
             break;
@@ -430,9 +430,9 @@ dds_crypto_status_t dds_crypto_get_session_keys(dds_crypto_context_t *ctx,
     }
 
     dds_crypto_key_material_t *km = &session->key_materials[session->active_key_index];
-    memcpy(key_mat->sender_key, km->key, km->key_len);
-    memcpy(key_mat->receiver_key, km->key, km->key_len);
-    memcpy(key_mat->master_salt, km->salt, 8);
+    (void)memcpy(key_mat->sender_key, km->key, km->key_len);
+    (void)memcpy(key_mat->receiver_key, km->key, km->key_len);
+    (void)memcpy(key_mat->master_salt, km->salt, 8);
     key_mat->key_seq_number = session->key_seq_number;
 
     return DDS_CRYPTO_OK;
@@ -453,8 +453,8 @@ dds_crypto_status_t dds_crypto_generate_key(dds_crypto_context_t *ctx,
     /* Generate random key using system entropy */
     FILE *fp = fopen("/dev/urandom", "rb");
     if ((fp) != 0U) {
-        fread(key, 1, key_len, fp);
-        fclose(fp);
+        (void)fread(key, 1, key_len, fp);
+        (void)fclose(fp);
     } else {
         /* Fallback to simple PRNG */
         for (uint32_t i = 0; i < key_len; i++) {
@@ -475,7 +475,7 @@ dds_crypto_status_t dds_crypto_derive_session_keys(dds_crypto_context_t *ctx,
     }
 
     /* Generate master salt */
-    dds_crypto_generate_key(ctx, key_material->master_salt, 8);
+    (void)dds_crypto_generate_key(ctx, key_material->master_salt, 8);
 
     /* Derive sender key using HKDF-like construction */
     uint8_t prk[32];
@@ -497,10 +497,10 @@ dds_crypto_status_t dds_crypto_derive_session_keys(dds_crypto_context_t *ctx,
         uint32_t input_len = 0;
 
         if (block > 0) {
-            memcpy(input, prev, 32);
+            (void)memcpy(input, prev, 32);
             input_len += 32U;
         }
-        memcpy(input + input_len, info, sizeof(info) - 1U);
+        (void)memcpy(input + input_len, info, sizeof(info) - 1U);
         input_len += sizeof(info) - 1U;
         input[input_len] = counter;
         counter++;
@@ -515,9 +515,9 @@ dds_crypto_status_t dds_crypto_derive_session_keys(dds_crypto_context_t *ctx,
         }
     }
 
-    memcpy(key_material->sender_key, okm, 32);
-    memcpy(key_material->receiver_key, okm + 32, 32);
-    memcpy(key_material->master_sender_key, okm + 64, 32);
+    (void)memcpy(key_material->sender_key, okm, 32);
+    (void)memcpy(key_material->receiver_key, okm + 32, 32);
+    (void)memcpy(key_material->master_sender_key, okm + 64, 32);
 
     return DDS_CRYPTO_OK;
 }
@@ -545,8 +545,8 @@ dds_crypto_status_t dds_crypto_update_session_key(dds_crypto_context_t *ctx,
     uint32_t new_index = (unsigned int)(((unsigned int)(session->active_key_index) + 1U)) % DDS_CRYPTO_MAX_KEYS_PER_SESSION;
 
     /* Generate new key material */
-    dds_crypto_generate_key(ctx, session->key_materials[new_index].key, DDS_CRYPTO_AES_256_KEY_SIZE);
-    dds_crypto_generate_key(ctx, session->key_materials[new_index].salt, 8);
+    (void)dds_crypto_generate_key(ctx, session->key_materials[new_index].key, DDS_CRYPTO_AES_256_KEY_SIZE);
+    (void)dds_crypto_generate_key(ctx, session->key_materials[new_index].salt, 8);
     session->key_materials[new_index].key_len = DDS_CRYPTO_AES_256_KEY_SIZE;
     session->key_materials[new_index].key_id = session->session_id + session->key_seq_number;
     session->key_materials[new_index].valid = true;
@@ -578,7 +578,7 @@ uint32_t dds_crypto_check_key_expiry(dds_crypto_context_t *ctx, uint64_t current
             dds_crypto_key_material_t *km = &session->key_materials[session->active_key_index];
 
             if (current_time > (km->creation_time + DDS_CRYPTO_MAX_KEY_LIFETIME_MS)) {
-                dds_crypto_update_session_key(ctx, session->session_id);
+                (void)dds_crypto_update_session_key(ctx, session->session_id);
                 updated_count++;
             }
         }
@@ -596,7 +596,7 @@ dds_crypto_status_t dds_crypto_generate_iv(dds_crypto_context_t *ctx,
     }
 
     /* IV = salt (8 bytes) || sequence number (4 bytes) */
-    memcpy(iv, session->key_materials[session->active_key_index].salt, 8);
+    (void)memcpy(iv, session->key_materials[session->active_key_index].salt, 8);
 
     iv[8] = (session->iv_seq >> 24) & 0xFFU;
     iv[9] = (session->iv_seq >> 16) & 0xFFU;
@@ -616,7 +616,7 @@ static void ghash(const uint8_t *H, const uint8_t *aad, uint32_t aad_len,
                   const uint8_t *ciphertext, uint32_t ct_len, uint8_t *tag)
 {
     /* Simplified GHASH implementation */
-    memset(tag, 0, 16);
+    (void)memset(tag, 0, 16);
 
     /* XOR AAD length and ciphertext length into tag */
     uint64_t aad_bits = (uint64_t)aad_len * 8U;
@@ -659,7 +659,7 @@ dds_crypto_status_t dds_crypto_encrypt_aes_gcm(dds_crypto_context_t *ctx,
 
     /* CTR mode encryption (simplified) */
     uint8_t counter[16];
-    memcpy(counter, iv, 12);
+    (void)memcpy(counter, iv, 12);
     counter[12] = 0;
     counter[13] = 0;
     counter[14] = 0;
@@ -710,7 +710,7 @@ dds_crypto_status_t dds_crypto_encrypt_aes_gcm(dds_crypto_context_t *ctx,
 
     /* Compute authentication tag (simplified) */
     uint8_t H[16] = {0};
-    memcpy(H, key, ((unsigned int)(key_len) < 16U) ? (unsigned int)(key_len) : 16U);
+    (void)memcpy(H, key, ((unsigned int)(key_len) < 16U) ? (unsigned int)(key_len) : 16U);
     ghash(H, aad, aad_len, ciphertext, plaintext_len, tag);
 
     ctx->total_encrypted += plaintext_len;
@@ -736,7 +736,7 @@ dds_crypto_status_t dds_crypto_decrypt_aes_gcm(dds_crypto_context_t *ctx,
     /* Verify tag first */
     uint8_t computed_tag[16];
     uint8_t H[16] = {0};
-    memcpy(H, key, ((unsigned int)(key_len) < 16U) ? (unsigned int)(key_len) : 16U);
+    (void)memcpy(H, key, ((unsigned int)(key_len) < 16U) ? (unsigned int)(key_len) : 16U);
     ghash(H, aad, aad_len, ciphertext, ciphertext_len, computed_tag);
 
     if (memcmp(computed_tag, tag, 16) != 0) {
@@ -856,7 +856,7 @@ dds_crypto_status_t dds_crypto_encrypt_rtps_data(dds_crypto_context_t *ctx,
 
     /* Create transformation header */
     dds_crypto_transformation_header_t *header = (dds_crypto_transformation_header_t*)output_buffer;
-    dds_crypto_create_transform_header(ctx, session,
+    (void)dds_crypto_create_transform_header(ctx, session,
                                        (ctx->algorithm == DDS_CRYPTO_ALG_AES_256_GCM) ?
                                        DDS_CRYPTO_TRANSFORM_AES256_GCM :
                                        DDS_CRYPTO_TRANSFORM_AES128_GCM,
@@ -864,8 +864,8 @@ dds_crypto_status_t dds_crypto_encrypt_rtps_data(dds_crypto_context_t *ctx,
 
     /* Generate IV */
     uint8_t iv[DDS_CRYPTO_GCM_IV_SIZE];
-    dds_crypto_generate_iv(ctx, session, iv);
-    memcpy(header->initialization_vector, iv, DDS_CRYPTO_GCM_IV_SIZE);
+    (void)dds_crypto_generate_iv(ctx, session, iv);
+    (void)memcpy(header->initialization_vector, iv, DDS_CRYPTO_GCM_IV_SIZE);
 
     /* Encrypt data */
     uint8_t *ciphertext = output_buffer + sizeof(dds_crypto_transformation_header_t);
@@ -883,7 +883,7 @@ dds_crypto_status_t dds_crypto_encrypt_rtps_data(dds_crypto_context_t *ctx,
     }
 
     /* Append tag */
-    memcpy(ciphertext + plaintext_len, tag, DDS_CRYPTO_GCM_TAG_SIZE);
+    (void)memcpy(ciphertext + plaintext_len, tag, DDS_CRYPTO_GCM_TAG_SIZE);
 
     *output_len = sizeof(dds_crypto_transformation_header_t) + plaintext_len + DDS_CRYPTO_GCM_TAG_SIZE;
 
@@ -937,7 +937,7 @@ dds_crypto_status_t dds_crypto_decrypt_rtps_data(dds_crypto_context_t *ctx,
 
     /* Extract IV from header */
     uint8_t iv[DDS_CRYPTO_GCM_IV_SIZE];
-    memcpy(iv, header->initialization_vector, DDS_CRYPTO_GCM_IV_SIZE);
+    (void)memcpy(iv, header->initialization_vector, DDS_CRYPTO_GCM_IV_SIZE);
 
     /* Extract ciphertext and tag */
     uint8_t *ciphertext = (uint8_t*)input_buffer + sizeof(dds_crypto_transformation_header_t);
@@ -987,7 +987,7 @@ dds_crypto_status_t dds_crypto_compute_message_mac(dds_crypto_context_t *ctx,
 
     /* Use GMAC for message authentication */
     uint8_t iv[DDS_CRYPTO_GCM_IV_SIZE];
-    dds_crypto_generate_iv(ctx, session, iv);
+    (void)dds_crypto_generate_iv(ctx, session, iv);
 
     return dds_crypto_compute_gmac(ctx, km->key, km->key_len, iv,
                                    message, message_len,

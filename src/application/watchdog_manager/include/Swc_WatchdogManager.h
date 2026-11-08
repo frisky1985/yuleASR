@@ -203,6 +203,7 @@ extern boolean Swc_WatchdogManager_IsGlobalStatusCorrect(void);
  */
 extern void Swc_WatchdogManager_HandleExpiration(void);
 
+
 #define RTE_STOP_SEC_CODE
 #include "MemMap.h"
 

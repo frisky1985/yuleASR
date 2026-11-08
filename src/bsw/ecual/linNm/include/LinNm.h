@@ -421,4 +421,5 @@ void Nm_RemoteSleepCancellation(NetworkHandleType nmNetworkHandle);
  */
 void Nm_SynchronizationPoint(NetworkHandleType nmNetworkHandle);
 
+
 #endif /* LINNM_H */

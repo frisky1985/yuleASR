@@ -50,15 +50,15 @@ dds_access_context_t* dds_access_init(const dds_security_config_t *config)
 
     /* Copy configuration paths */
     if ((uint8_t)config->permissions_ca_cert_path[0] != 0U) {
-        strncpy(ctx->permissions_ca_cert_path, config->permissions_ca_cert_path,
+        (void)strncpy(ctx->permissions_ca_cert_path, config->permissions_ca_cert_path,
                 sizeof(ctx->permissions_ca_cert_path) - 1U);
     }
     if ((uint8_t)config->permissions_xml_path[0] != 0U) {
-        strncpy(ctx->permissions_file_path, config->permissions_xml_path,
+        (void)strncpy(ctx->permissions_file_path, config->permissions_xml_path,
                 sizeof(ctx->permissions_file_path) - 1U);
     }
     if ((uint8_t)config->governance_xml_path[0] != 0U) {
-        strncpy(ctx->governance_file_path, config->governance_xml_path,
+        (void)strncpy(ctx->governance_file_path, config->governance_xml_path,
                 sizeof(ctx->governance_file_path) - 1U);
     }
 
@@ -81,7 +81,7 @@ dds_access_context_t* dds_access_init(const dds_security_config_t *config)
         if ((fp) != 0U) {
             ctx->permissions_ca_cert.length = fread(
                 ctx->permissions_ca_cert.data, 1, DDS_SECURITY_MAX_CERT_SIZE, fp);
-            fclose(fp);
+            (void)fclose(fp);
         }
     }
 
@@ -125,8 +125,8 @@ static char* xml_find_tag(const char *xml, const char *tag, uint32_t *content_le
 
     char open_tag[64];
     char close_tag[64];
-    Debug_Snprintf(open_tag, sizeof(open_tag), "<%s", tag);
-    Debug_Snprintf(close_tag, sizeof(close_tag), "</%s>", tag);
+    (void)Debug_Snprintf(open_tag, sizeof(open_tag), "<%s", tag);
+    (void)Debug_Snprintf(close_tag, sizeof(close_tag), "</%s>", tag);
 
     const char *start = strstr(xml, open_tag);
     if (!start) {
@@ -156,7 +156,7 @@ static void xml_extract_value(const char *content, uint32_t content_len,
     }
 
     uint32_t copy_len = content_len < (output_size - 1U) ? content_len : (output_size - 1U);
-    memcpy(output, content, copy_len);
+    (void)memcpy(output, content, copy_len);
     output[copy_len] = '\0';
 
     /* Trim whitespace */
@@ -167,7 +167,7 @@ static void xml_extract_value(const char *content, uint32_t content_len,
     while ((end > start) && isspace((unsigned char)*end)) { *end = '\0'; end--; }
 
     if (start != output) {
-        memmove(output, start, strlen(start) + 1U);
+        (void)memmove(output, start, strlen(start) + 1U);
     }
 }
 
@@ -179,7 +179,7 @@ dds_access_status_t dds_access_parse_permissions_xml(dds_access_context_t *ctx,
         return DDS_ACCESS_ERROR_INVALID_CONFIG;
     }
 
-    memset(config, 0, sizeof(dds_permissions_config_t));
+    (void)memset(config, 0, sizeof(dds_permissions_config_t));
 
     /* Read XML file */
     FILE *fp = fopen(xml_path, "rb");
@@ -187,12 +187,12 @@ dds_access_status_t dds_access_parse_permissions_xml(dds_access_context_t *ctx,
         return DDS_ACCESS_ERROR_INVALID_CONFIG;
     }
 
-    fseek(fp, 0, SEEK_END);
+    (void)fseek(fp, 0, SEEK_END);
     long file_size = ftell(fp);
-    fseek(fp, 0, SEEK_SET);
+    (void)fseek(fp, 0, SEEK_SET);
 
     if ((file_size <= 0) || (file_size > DDS_SECURITY_MAX_PERMISSIONS_SIZE)) {
-        fclose(fp);
+        (void)fclose(fp);
         return DDS_ACCESS_ERROR_INVALID_CONFIG;
     }
 
@@ -200,9 +200,9 @@ dds_access_status_t dds_access_parse_permissions_xml(dds_access_context_t *ctx,
     char *xml_data = s_xml_scratch;
     (void)memset(xml_data, 0, DDS_SECURITY_MAX_PERMISSIONS_SIZE + 1U);
 
-    fread(xml_data, 1, file_size, fp);
+    (void)fread(xml_data, 1, file_size, fp);
     xml_data[file_size] = '\0';
-    fclose(fp);
+    (void)fclose(fp);
 
     /* Parse version */
     uint32_t version_len;
@@ -242,12 +242,12 @@ dds_access_status_t dds_access_parse_permissions_xml(dds_access_context_t *ctx,
             if ((from_tag) != 0U) {
                 char from_str[32];
                 xml_extract_value(from_tag, from_len, from_str, sizeof(from_str));
-                strncpy(subject->validity_from, from_str, sizeof(subject->validity_from) - 1U);
+                (void)strncpy(subject->validity_from, from_str, sizeof(subject->validity_from) - 1U);
             }
             if ((to_tag) != 0U) {
                 char to_str[32];
                 xml_extract_value(to_tag, to_len, to_str, sizeof(to_str));
-                strncpy(subject->validity_until, to_str, sizeof(subject->validity_until) - 1U);
+                (void)strncpy(subject->validity_until, to_str, sizeof(subject->validity_until) - 1U);
             }
         }
 
@@ -336,7 +336,7 @@ dds_access_status_t dds_access_parse_governance_xml(dds_access_context_t *ctx,
         return DDS_ACCESS_ERROR_INVALID_CONFIG;
     }
 
-    memset(config, 0, sizeof(dds_governance_config_t));
+    (void)memset(config, 0, sizeof(dds_governance_config_t));
 
     /* Read XML file */
     FILE *fp = fopen(xml_path, "rb");
@@ -347,12 +347,12 @@ dds_access_status_t dds_access_parse_governance_xml(dds_access_context_t *ctx,
         return DDS_ACCESS_OK;
     }
 
-    fseek(fp, 0, SEEK_END);
+    (void)fseek(fp, 0, SEEK_END);
     long file_size = ftell(fp);
-    fseek(fp, 0, SEEK_SET);
+    (void)fseek(fp, 0, SEEK_SET);
 
     if ((file_size <= 0) || (file_size > DDS_SECURITY_MAX_PERMISSIONS_SIZE)) {
-        fclose(fp);
+        (void)fclose(fp);
         return DDS_ACCESS_ERROR_INVALID_CONFIG;
     }
 
@@ -360,9 +360,9 @@ dds_access_status_t dds_access_parse_governance_xml(dds_access_context_t *ctx,
     char *xml_data = s_xml_scratch;
     (void)memset(xml_data, 0, DDS_SECURITY_MAX_PERMISSIONS_SIZE + 1U);
 
-    fread(xml_data, 1, file_size, fp);
+    (void)fread(xml_data, 1, file_size, fp);
     xml_data[file_size] = '\0';
-    fclose(fp);
+    (void)fclose(fp);
 
     /* Parse version */
     config->version_major = DDS_PERMISSIONS_VERSION_MAJOR;
@@ -464,7 +464,7 @@ dds_access_status_t dds_access_load_participant_permissions(dds_access_context_t
     (void)memset(&s_subject_slots[slot_idx], 0, sizeof(dds_participant_permission_t));
     perms->subjects = &s_subject_slots[slot_idx];
 
-    strncpy(perms->subjects[0].subject_name, subject_name,
+    (void)strncpy(perms->subjects[0].subject_name, subject_name,
             sizeof(perms->subjects[0].subject_name) - 1U);
     perms->subject_count = 1;
     perms->validated = true;
@@ -517,7 +517,7 @@ dds_access_status_t dds_access_update_participant_permissions(dds_access_context
                                                                 uint32_t xml_len)
 {
     /* Unload and reload */
-    dds_access_unload_participant_permissions(ctx, subject_name);
+    (void)dds_access_unload_participant_permissions(ctx, subject_name);
     return dds_access_load_participant_permissions(ctx, subject_name, permissions_xml, xml_len);
 }
 
@@ -725,7 +725,7 @@ dds_access_status_t dds_access_get_domain_governance(dds_access_context_t *ctx,
 
     /* Parse governance file */
     if ((uint8_t)ctx->governance_file_path[0] != 0U) {
-        dds_access_parse_governance_xml(ctx, ctx->governance_file_path, governance);
+        (void)dds_access_parse_governance_xml(ctx, ctx->governance_file_path, governance);
     }
 
     /* Find domain-specific settings */
@@ -736,7 +736,7 @@ dds_access_status_t dds_access_get_domain_governance(dds_access_context_t *ctx,
     }
 
     /* Use defaults */
-    memset(governance, 0, sizeof(dds_governance_config_t));
+    (void)memset(governance, 0, sizeof(dds_governance_config_t));
     governance->version_major = DDS_PERMISSIONS_VERSION_MAJOR;
     governance->version_minor = DDS_PERMISSIONS_VERSION_MINOR;
 
@@ -752,7 +752,7 @@ bool dds_access_discovery_protection_enabled(dds_access_context_t *ctx,
     }
 
     dds_governance_config_t governance;
-    dds_access_get_domain_governance(ctx, domain_id, &governance);
+    (void)dds_access_get_domain_governance(ctx, domain_id, &governance);
 
     for (uint32_t i = 0; i < governance.domain_count; i++) {
         if (governance.domains[i].domain_id == domain_id) {
@@ -772,7 +772,7 @@ bool dds_access_liveliness_protection_enabled(dds_access_context_t *ctx,
     }
 
     dds_governance_config_t governance;
-    dds_access_get_domain_governance(ctx, domain_id, &governance);
+    (void)dds_access_get_domain_governance(ctx, domain_id, &governance);
 
     for (uint32_t i = 0; i < governance.domain_count; i++) {
         if (governance.domains[i].domain_id == domain_id) {
@@ -791,7 +791,7 @@ uint8_t dds_access_rtps_protection_kind(dds_access_context_t *ctx,
     }
 
     dds_governance_config_t governance;
-    dds_access_get_domain_governance(ctx, domain_id, &governance);
+    (void)dds_access_get_domain_governance(ctx, domain_id, &governance);
 
     for (uint32_t i = 0; i < governance.domain_count; i++) {
         if (governance.domains[i].domain_id == domain_id) {
@@ -815,7 +815,7 @@ dds_access_status_t dds_access_get_subject_name(const dds_security_cert_t *cert,
     }
 
     /* Simplified - extract from pre-parsed data */
-    strncpy(subject_name, cert->subject_name, max_len - 1U);
+    (void)strncpy(subject_name, cert->subject_name, max_len - 1U);
     subject_name[max_len - 1U] = '\0';
 
     return DDS_ACCESS_OK;

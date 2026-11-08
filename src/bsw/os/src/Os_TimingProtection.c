@@ -84,8 +84,7 @@ static void Os_CheckInterruptTimingFault(void);
  * Task Timing Protection
  ******************************************************************************/
 
-void Os_StartTaskExecutionTiming(TaskType TaskID)
-{
+void Os_StartTaskExecutionTiming(TaskType TaskID){
     #if (OS_EXECUTION_TIME_PROTECTION == STD_ON)
     if (TaskID < OS_TASK_COUNT)
     {
@@ -96,8 +95,7 @@ void Os_StartTaskExecutionTiming(TaskType TaskID)
     #endif
 }
 
-void Os_StopTaskExecutionTiming(TaskType TaskID)
-{
+void Os_StopTaskExecutionTiming(TaskType TaskID){
     #if (OS_EXECUTION_TIME_PROTECTION == STD_ON)
     if (TaskID < OS_TASK_COUNT)
     {
@@ -106,8 +104,7 @@ void Os_StopTaskExecutionTiming(TaskType TaskID)
     #endif
 }
 
-void Os_CheckTaskExecutionBudget(TaskType TaskID)
-{
+void Os_CheckTaskExecutionBudget(TaskType TaskID){
     #if (OS_EXECUTION_TIME_PROTECTION == STD_ON)
     uint32 ElapsedTime;
     
@@ -128,8 +125,7 @@ void Os_CheckTaskExecutionBudget(TaskType TaskID)
  * Arrival Time Protection
  ******************************************************************************/
 
-boolean Os_CheckTaskArrivalTime(TaskType TaskID)
-{
+static boolean Os_CheckTaskArrivalTime(TaskType TaskID){
     #if (OS_ARRIVAL_TIME_PROTECTION == STD_ON)
     uint32 CurrentTime;
     uint32 TimeSinceLastArrival;
@@ -164,8 +160,7 @@ boolean Os_CheckTaskArrivalTime(TaskType TaskID)
  * Resource Timing Protection
  ******************************************************************************/
 
-void Os_StartResourceTiming(ResourceType ResID)
-{
+static void Os_StartResourceTiming(ResourceType ResID){
     #if (OS_RESOURCE_LOCK_PROTECTION == STD_ON)
     if (ResID < OS_RESOURCE_COUNT)
     {
@@ -175,8 +170,7 @@ void Os_StartResourceTiming(ResourceType ResID)
     #endif
 }
 
-void Os_StopResourceTiming(ResourceType ResID)
-{
+static void Os_StopResourceTiming(ResourceType ResID){
     #if (OS_RESOURCE_LOCK_PROTECTION == STD_ON)
     if (ResID < OS_RESOURCE_COUNT)
     {
@@ -185,8 +179,7 @@ void Os_StopResourceTiming(ResourceType ResID)
     #endif
 }
 
-void Os_CheckResourceLockBudget(ResourceType ResID)
-{
+static void Os_CheckResourceLockBudget(ResourceType ResID){
     #if (OS_RESOURCE_LOCK_PROTECTION == STD_ON)
     uint32 LockDuration;
     
@@ -206,38 +199,33 @@ void Os_CheckResourceLockBudget(ResourceType ResID)
  * Interrupt Timing Protection
  ******************************************************************************/
 
-void Os_StartAllIntTiming(void)
-{
+static void Os_StartAllIntTiming(void){
     #if (OS_INTERRUPT_LOCK_PROTECTION == STD_ON)
     Os_InterruptMonitor.AllIntLockStart = OS_TIMING_GET_US();
     Os_InterruptMonitor.AllIntLocked = TRUE;
     #endif
 }
 
-void Os_StopAllIntTiming(void)
-{
+static void Os_StopAllIntTiming(void){
     #if (OS_INTERRUPT_LOCK_PROTECTION == STD_ON)
     Os_InterruptMonitor.AllIntLocked = FALSE;
     #endif
 }
 
-void Os_StartOsIntTiming(void)
-{
+static void Os_StartOsIntTiming(void){
     #if (OS_INTERRUPT_LOCK_PROTECTION == STD_ON)
     Os_InterruptMonitor.OsIntLockStart = OS_TIMING_GET_US();
     Os_InterruptMonitor.OsIntLocked = TRUE;
     #endif
 }
 
-void Os_StopOsIntTiming(void)
-{
+static void Os_StopOsIntTiming(void){
     #if (OS_INTERRUPT_LOCK_PROTECTION == STD_ON)
     Os_InterruptMonitor.OsIntLocked = FALSE;
     #endif
 }
 
-void Os_CheckInterruptLockBudgets(void)
-{
+static void Os_CheckInterruptLockBudgets(void){
     #if (OS_INTERRUPT_LOCK_PROTECTION == STD_ON)
     uint32 LockDuration;
     
@@ -309,8 +297,7 @@ static void Os_CheckInterruptTimingFault(void)
  * Main Function (called periodically)
  ******************************************************************************/
 
-void Os_TimingProtectionMainFunction(void)
-{
+void Os_TimingProtectionMainFunction(void){
     uint8 i;
     
     #if (OS_EXECUTION_TIME_PROTECTION == STD_ON)

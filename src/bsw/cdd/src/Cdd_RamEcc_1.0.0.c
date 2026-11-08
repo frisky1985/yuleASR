@@ -156,7 +156,7 @@ Std_ReturnType Cdd_RamEcc_Init(const Cdd_RamEcc_ConfigType* config)
 #if (CDD_DEV_ERROR_DETECT == STD_ON)
     if (config == NULL_PTR)
     {
-        Det_ReportError(CDD_MODULE_ID_RAMECC, 0U, CDD_RAMECC_SID_INIT, 1U);
+        (void)Det_ReportError(CDD_MODULE_ID_RAMECC, 0U, CDD_RAMECC_SID_INIT, 1U);
         return E_NOT_OK;
     }
 #endif
@@ -299,7 +299,7 @@ Std_ReturnType Cdd_RamEcc_GetErrorLog(uint8 index, Cdd_RamEcc_ErrorRecordType* e
 #if (CDD_DEV_ERROR_DETECT == STD_ON)
     if (errorInfo == NULL_PTR)
     {
-        Det_ReportError(CDD_MODULE_ID_RAMECC, 0U, CDD_RAMECC_SID_GET_ERROR_LOG, 1U);
+        (void)Det_ReportError(CDD_MODULE_ID_RAMECC, 0U, CDD_RAMECC_SID_GET_ERROR_LOG, 1U);
         return E_NOT_OK;
     }
 #endif

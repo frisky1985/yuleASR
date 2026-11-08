@@ -127,7 +127,7 @@ Std_ReturnType Cdd_Hsm_Init(const Cdd_Hsm_ConfigType* config)
 #if (CDD_DEV_ERROR_DETECT == STD_ON)
     if (config == NULL_PTR)
     {
-        Det_ReportError(CDD_MODULE_ID_HSM, 0U, CDD_HSM_SID_INIT, 1U);
+        (void)Det_ReportError(CDD_MODULE_ID_HSM, 0U, CDD_HSM_SID_INIT, 1U);
         return E_NOT_OK;
     }
 #endif
@@ -200,7 +200,7 @@ Std_ReturnType Cdd_Hsm_GenerateRandom(uint8* output, uint32 length)
 #if (CDD_DEV_ERROR_DETECT == STD_ON)
     if (output == NULL_PTR)
     {
-        Det_ReportError(CDD_MODULE_ID_HSM, 0U, CDD_HSM_SID_GENERATERANDOM, 1U);
+        (void)Det_ReportError(CDD_MODULE_ID_HSM, 0U, CDD_HSM_SID_GENERATERANDOM, 1U);
         return E_NOT_OK;
     }
 #endif
@@ -256,7 +256,7 @@ Std_ReturnType Cdd_Hsm_SecureBootVerify(
 #if (CDD_DEV_ERROR_DETECT == STD_ON)
     if ((imageHash == NULL_PTR) || (signature == NULL_PTR) || (verifyResult == NULL_PTR))
     {
-        Det_ReportError(CDD_MODULE_ID_HSM, 0U, CDD_HSM_SID_SECUREBOOTVERIFY, 1U);
+        (void)Det_ReportError(CDD_MODULE_ID_HSM, 0U, CDD_HSM_SID_SECUREBOOTVERIFY, 1U);
         return E_NOT_OK;
     }
 #endif
@@ -296,7 +296,7 @@ void Cdd_Hsm_MainFunction(void)
         {
             Cdd_Hsm_State = CDD_HSM_STATE_ERROR;
 #if (CDD_DEV_ERROR_DETECT == STD_ON)
-            Det_ReportError(CDD_MODULE_ID_HSM, 0U, CDD_HSM_SID_MAINFUNCTION, 2U);
+            (void)Det_ReportError(CDD_MODULE_ID_HSM, 0U, CDD_HSM_SID_MAINFUNCTION, 2U);
 #endif
         }
     }

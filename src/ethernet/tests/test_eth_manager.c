@@ -474,7 +474,7 @@ eth_status_t automotive_phy_read_reg(uint8_t reg_addr, uint16_t *value)
 
 /* ---- 初始化/去初始化 ---- */
 
-static int test_init_deinit(void)
+int test_init_deinit(void)
 {
     printf("  Testing init/deinit...\n");
 
@@ -529,7 +529,7 @@ static int test_init_deinit(void)
 
 /* ---- 状态机 ---- */
 
-static int test_state_machine(void)
+int test_state_machine(void)
 {
     printf("  Testing state machine...\n");
 
@@ -751,7 +751,7 @@ static int test_stats_throughput(void)
 
 /* ---- 错误处理 ---- */
 
-static int test_error_handling(void)
+int test_error_handling(void)
 {
     printf("  Testing error handling...\n");
 

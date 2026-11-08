@@ -226,13 +226,13 @@ eth_status_t automotive_phy_init(const automotive_phy_config_t *config)
     }
 
     /* 复制配置 */
-    memcpy(&g_phy_ctx.config, config, sizeof(automotive_phy_config_t));
+    (void)memcpy(&g_phy_ctx.config, config, sizeof(automotive_phy_config_t));
 
     /* 初始化统计 */
-    memset(&g_phy_ctx.stats, 0, sizeof(automotive_phy_stats_t));
+    (void)memset(&g_phy_ctx.stats, 0, sizeof(automotive_phy_stats_t));
 
     /* 初始化链路状态 */
-    memset(&g_phy_ctx.link_status, 0, sizeof(automotive_link_status_t));
+    (void)memset(&g_phy_ctx.link_status, 0, sizeof(automotive_link_status_t));
     g_phy_ctx.link_status.signal_quality = -1;
     g_phy_ctx.link_status.cable_length = -1;
 
@@ -263,15 +263,15 @@ eth_status_t automotive_phy_init(const automotive_phy_config_t *config)
 
     /* 配置主从模式 */
     if (config->enable_master_mode) {
-        automotive_phy_set_master_mode(true);
+        (void)automotive_phy_set_master_mode(true);
     }
 
     /* 配置EMC参数 */
-    automotive_phy_configure_emc(config->enable_emc_filter, config->slew_rate);
+    (void)automotive_phy_configure_emc(config->enable_emc_filter, config->slew_rate);
 
     /* 配置WOL */
     if (config->enable_wake_on_lan) {
-        automotive_phy_configure_wol(true);
+        (void)automotive_phy_configure_wol(true);
     }
 
     g_phy_ctx.initialized = true;
@@ -288,12 +288,12 @@ void automotive_phy_deinit(void)
 
     /* 禁用PHY */
     uint16_t ctrl_reg;
-    mdio_read(g_phy_ctx.config.phy_addr, PHY_REG_CONTROL, &ctrl_reg);
+    (void)mdio_read(g_phy_ctx.config.phy_addr, PHY_REG_CONTROL, &ctrl_reg);
     ctrl_reg |= PHY_CTRL_POWER_DOWN;
-    mdio_write(g_phy_ctx.config.phy_addr, PHY_REG_CONTROL, ctrl_reg);
+    (void)mdio_write(g_phy_ctx.config.phy_addr, PHY_REG_CONTROL, ctrl_reg);
 
     /* 清除状态 */
-    memset(&g_phy_ctx, 0, sizeof(automotive_phy_context_t));
+    (void)memset(&g_phy_ctx, 0, sizeof(automotive_phy_context_t));
 }
 
 eth_status_t automotive_phy_auto_negotiation(void)
@@ -350,7 +350,7 @@ eth_status_t automotive_phy_get_link_status(automotive_link_status_t *status)
     }
 
     /* 复制状态 */
-    memcpy(status, &g_phy_ctx.link_status, sizeof(automotive_link_status_t));
+    (void)memcpy(status, &g_phy_ctx.link_status, sizeof(automotive_link_status_t));
 
     return ETH_OK;
 }
@@ -390,7 +390,7 @@ eth_status_t automotive_phy_run_diagnostics(automotive_phy_diagnostics_t *diagno
     }
 
     /* 初始化诊断结果 */
-    memset(diagnostics, 0, sizeof(automotive_phy_diagnostics_t));
+    (void)memset(diagnostics, 0, sizeof(automotive_phy_diagnostics_t));
 
     /* 检查链路状态 */
     automotive_link_status_t link_status;
@@ -422,7 +422,7 @@ eth_status_t automotive_phy_get_stats(automotive_phy_stats_t *stats)
         return ETH_INVALID_PARAM;
     }
 
-    memcpy(stats, &g_phy_ctx.stats, sizeof(automotive_phy_stats_t));
+    (void)memcpy(stats, &g_phy_ctx.stats, sizeof(automotive_phy_stats_t));
     return ETH_OK;
 }
 
@@ -432,7 +432,7 @@ eth_status_t automotive_phy_clear_stats(void)
         return ETH_NOT_INIT;
     }
 
-    memset(&g_phy_ctx.stats, 0, sizeof(automotive_phy_stats_t));
+    (void)memset(&g_phy_ctx.stats, 0, sizeof(automotive_phy_stats_t));
     return ETH_OK;
 }
 
@@ -590,8 +590,8 @@ eth_status_t automotive_phy_read_mmd(uint8_t dev_addr, uint16_t reg_addr, uint16
     }
 
     /* 写入设备地址和寄存器地址 */
-    mdio_write(g_phy_ctx.config.phy_addr, 0x0D, dev_addr);
-    mdio_write(g_phy_ctx.config.phy_addr, 0x0E, reg_addr);
+    (void)mdio_write(g_phy_ctx.config.phy_addr, 0x0D, dev_addr);
+    (void)mdio_write(g_phy_ctx.config.phy_addr, 0x0E, reg_addr);
 
     /* 读取数据 */
     return mdio_read(g_phy_ctx.config.phy_addr, 0x0E, value);
@@ -604,8 +604,8 @@ eth_status_t automotive_phy_write_mmd(uint8_t dev_addr, uint16_t reg_addr, uint1
     }
 
     /* 写入设备地址和寄存器地址 */
-    mdio_write(g_phy_ctx.config.phy_addr, 0x0D, dev_addr);
-    mdio_write(g_phy_ctx.config.phy_addr, 0x0E, reg_addr);
+    (void)mdio_write(g_phy_ctx.config.phy_addr, 0x0D, dev_addr);
+    (void)mdio_write(g_phy_ctx.config.phy_addr, 0x0E, reg_addr);
 
     /* 写入数据 */
     return mdio_write(g_phy_ctx.config.phy_addr, 0x0E, value);

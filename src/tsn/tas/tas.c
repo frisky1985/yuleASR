@@ -217,7 +217,7 @@ eth_status_t tas_init(void) {
         tas_deinit();
     }
     
-    memset(&g_tas_state, 0, sizeof(g_tas_state));
+    (void)memset(&g_tas_state, 0, sizeof(g_tas_state));
     
     /* 初始化所有端口 */
     for (int i = 0; (unsigned int)((unsigned int)(i)) < TAS_MAX_PORTS; i++) {
@@ -239,11 +239,11 @@ void tas_deinit(void) {
     /* 停止所有调度器 */
     for (int i = 0; (unsigned int)((unsigned int)(i)) < TAS_MAX_PORTS; i++) {
         if (g_tas_state.ports[i].running) {
-            tas_stop_scheduler(i);
+            (void)tas_stop_scheduler(i);
         }
     }
     
-    memset(&g_tas_state, 0, sizeof(g_tas_state));
+    (void)memset(&g_tas_state, 0, sizeof(g_tas_state));
 }
 
 eth_status_t tas_config_port(uint16_t port_id, const tas_port_config_t *config) {
@@ -265,11 +265,11 @@ eth_status_t tas_config_port(uint16_t port_id, const tas_port_config_t *config) 
         return ETH_INVALID_PARAM;
     }
     
-    memcpy(&g_tas_state.ports[port_id].config, config, sizeof(tas_port_config_t));
+    (void)memcpy(&g_tas_state.ports[port_id].config, config, sizeof(tas_port_config_t));
     g_tas_state.ports[port_id].configured = true;
     
     /* 初始化队列统计 */
-    memset(g_tas_state.ports[port_id].queue_stats, 0, 
+    (void)memset(g_tas_state.ports[port_id].queue_stats, 0, 
            sizeof(tas_queue_stats_t) * TAS_MAX_QUEUES);
     
     return ETH_OK;
@@ -284,7 +284,7 @@ eth_status_t tas_get_port_config(uint16_t port_id, tas_port_config_t *config) {
         return ETH_NOT_INIT;
     }
     
-    memcpy(config, &g_tas_state.ports[port_id].config, sizeof(tas_port_config_t));
+    (void)memcpy(config, &g_tas_state.ports[port_id].config, sizeof(tas_port_config_t));
     
     return ETH_OK;
 }
@@ -302,7 +302,7 @@ eth_status_t tas_update_gcl(uint16_t port_id, const tas_gcl_config_t *gcl_config
         return ETH_INVALID_PARAM;
     }
     
-    memcpy(&g_tas_state.ports[port_id].config.gcl_config, 
+    (void)memcpy(&g_tas_state.ports[port_id].config.gcl_config, 
            gcl_config, sizeof(tas_gcl_config_t));
     
     return ETH_OK;
@@ -358,7 +358,7 @@ eth_status_t tas_start_scheduler(uint16_t port_id) {
     }
     
     if (port->config.gate_enabled && 
-        !validate_gcl_internal(&port->config.gcl_config)) {
+        static !validate_gcl_internal(&port->config.gcl_config)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -378,7 +378,7 @@ eth_status_t tas_start_scheduler(uint16_t port_id) {
     
     /* 初始化安全监控 */
     if (port->config.enable_safety_checks) {
-        tas_init_safety_monitor(port_id);
+        (void)tas_init_safety_monitor(port_id);
     }
     
     return ETH_OK;
@@ -449,7 +449,7 @@ eth_status_t tas_run_schedule_cycle(uint16_t port_id, uint64_t current_time_ns) 
     
     /* 执行安全检查 */
     if (port->config.enable_safety_checks) {
-        check_safety_conditions(port);
+        (void)check_safety_conditions(port);
     }
     
     return ETH_OK;
@@ -526,7 +526,7 @@ eth_status_t tas_get_gate_status(uint16_t port_id, tas_gate_status_t *status) {
         return ETH_INVALID_PARAM;
     }
     
-    memcpy(status, &g_tas_state.ports[port_id].gate_status, sizeof(tas_gate_status_t));
+    (void)memcpy(status, &g_tas_state.ports[port_id].gate_status, sizeof(tas_gate_status_t));
     status->current_gcl_index = g_tas_state.ports[port_id].current_gcl_index;
     
     return ETH_OK;
@@ -539,7 +539,7 @@ eth_status_t tas_get_queue_stats(uint16_t port_id, uint8_t queue_id,
         return ETH_INVALID_PARAM;
     }
     
-    memcpy(stats, &g_tas_state.ports[port_id].queue_stats[queue_id], 
+    (void)memcpy(stats, &g_tas_state.ports[port_id].queue_stats[queue_id], 
            sizeof(tas_queue_stats_t));
     
     return ETH_OK;
@@ -550,7 +550,7 @@ eth_status_t tas_get_scheduler_stats(uint16_t port_id, tas_scheduler_stats_t *st
         return ETH_INVALID_PARAM;
     }
     
-    memcpy(stats, &g_tas_state.ports[port_id].scheduler_stats, 
+    (void)memcpy(stats, &g_tas_state.ports[port_id].scheduler_stats, 
            sizeof(tas_scheduler_stats_t));
     
     return ETH_OK;
@@ -591,7 +591,7 @@ eth_status_t tas_init_safety_monitor(uint16_t port_id) {
     
     tas_safety_monitor_t *monitor = &g_tas_state.ports[port_id].safety_monitor;
     
-    memset(monitor, 0, sizeof(tas_safety_monitor_t));
+    (void)memset(monitor, 0, sizeof(tas_safety_monitor_t));
     monitor->schedule_integrity_ok = true;
     monitor->gcl_integrity_ok = true;
     monitor->expected_gate_states = g_tas_state.ports[port_id].gate_status.gate_states;
@@ -618,7 +618,7 @@ eth_status_t tas_get_safety_monitor(uint16_t port_id, tas_safety_monitor_t *moni
         return ETH_INVALID_PARAM;
     }
     
-    memcpy(monitor, &g_tas_state.ports[port_id].safety_monitor, 
+    (void)memcpy(monitor, &g_tas_state.ports[port_id].safety_monitor, 
            sizeof(tas_safety_monitor_t));
     
     return ETH_OK;
@@ -654,7 +654,7 @@ eth_status_t tas_create_automotive_gcl(tas_gcl_config_t *gcl_config, uint32_t cy
         return ETH_INVALID_PARAM;
     }
     
-    memset(gcl_config, 0, sizeof(tas_gcl_config_t));
+    (void)memset(gcl_config, 0, sizeof(tas_gcl_config_t));
     
     uint32_t cycle_time_us = cycle_time_ms * US_PER_MS;
     

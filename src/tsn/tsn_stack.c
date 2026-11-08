@@ -114,8 +114,8 @@ eth_status_t tsn_stack_init(const tsn_stack_config_t *config) {
         tsn_stack_deinit();
     }
     
-    memset(&g_tsn_context, 0, sizeof(g_tsn_context));
-    memcpy(&g_tsn_context.config, config, sizeof(tsn_stack_config_t));
+    (void)memset(&g_tsn_context, 0, sizeof(g_tsn_context));
+    (void)memcpy(&g_tsn_context.config, config, sizeof(tsn_stack_config_t));
     
     /* 初始化所有模块 */
     eth_status_t status = init_all_modules(config);
@@ -137,10 +137,10 @@ void tsn_stack_deinit(void) {
         return;
     }
     
-    tsn_stack_stop();
+    (void)tsn_stack_stop();
     deinit_all_modules();
     
-    memset(&g_tsn_context, 0, sizeof(g_tsn_context));
+    (void)memset(&g_tsn_context, 0, sizeof(g_tsn_context));
     
     Debug_Printf("TSN Stack deinitialized\n");
 }
@@ -152,7 +152,7 @@ eth_status_t tsn_stack_start(void) {
     
     /* 启动gPTP */
     for (uint8_t i = 0; i < g_tsn_context.config.gptp_config.domain_count; i++) {
-        gptp_start(i);
+        (void)gptp_start(i);
     }
     
     g_tsn_context.state = TSN_STATE_RUNNING;
@@ -170,7 +170,7 @@ eth_status_t tsn_stack_stop(void) {
     
     /* 停止gPTP */
     for (uint8_t i = 0; i < g_tsn_context.config.gptp_config.domain_count; i++) {
-        gptp_stop(i);
+        (void)gptp_stop(i);
     }
     
     g_tsn_context.state = TSN_STATE_STOPPED;
@@ -185,7 +185,7 @@ eth_status_t tsn_stack_get_status(tsn_stack_status_t *status) {
         return ETH_INVALID_PARAM;
     }
     
-    memset(status, 0, sizeof(tsn_stack_status_t));
+    (void)memset(status, 0, sizeof(tsn_stack_status_t));
     
     status->state = g_tsn_context.state;
     status->gptp_active = (g_tsn_context.state == TSN_STATE_RUNNING);
@@ -205,7 +205,7 @@ eth_status_t tsn_create_automotive_config(uint32_t port_rate_mbps,
         return ETH_INVALID_PARAM;
     }
     
-    memset(config, 0, sizeof(tsn_stack_config_t));
+    (void)memset(config, 0, sizeof(tsn_stack_config_t));
     
     /* gPTP配置 */
     config->gptp_config.domain_count = 1;
@@ -272,13 +272,13 @@ eth_status_t tsn_stack_run_cycle(void) {
     /* 运行TAS调度循环 */
     if (g_tsn_context.config.tas_enabled) {
         for (uint16_t i = 0; i < g_tsn_context.config.gptp_config.port_count; i++) {
-            tas_run_schedule_cycle(i, current_time);
+            (void)tas_run_schedule_cycle(i, current_time);
         }
     }
     
     /* 运行安全检查 */
     if (g_tsn_context.config.asil_d_enabled) {
-        tsn_stack_run_safety_checks();
+        (void)tsn_stack_run_safety_checks();
     }
     
     g_tsn_context.last_cycle_time_ns = current_time;
@@ -295,7 +295,7 @@ eth_status_t tsn_wait_for_sync(uint8_t domain_index, uint32_t timeout_ms) {
     bool synchronized = false;
     
     while (elapsed < timeout_ms) {
-        gptp_is_synchronized(domain_index, &synchronized);
+        (void)gptp_is_synchronized(domain_index, &synchronized);
         if (synchronized) {
             return ETH_OK;
         }
@@ -320,12 +320,12 @@ eth_status_t tsn_transmit_frame(uint16_t port_id, uint8_t queue_id,
     
     /* CBS检查 */
     if (g_tsn_context.config.cbs_enabled) {
-        cbs_can_transmit(port_id, queue_id, len, &can_tx);
+        (void)cbs_can_transmit(port_id, queue_id, len, &can_tx);
     }
     
     /* TAS检查 */
     if (can_tx && g_tsn_context.config.tas_enabled) {
-        tas_can_transmit(port_id, queue_id, len, &can_tx);
+        (void)tas_can_transmit(port_id, queue_id, len, &can_tx);
     }
     
     if (!can_tx) {
@@ -334,7 +334,7 @@ eth_status_t tsn_transmit_frame(uint16_t port_id, uint8_t queue_id,
     
     /* 发送帧 */
     if (g_tsn_context.config.cbs_enabled) {
-        cbs_start_transmission(port_id, queue_id, len);
+        (void)cbs_start_transmission(port_id, queue_id, len);
     }
     
     /* 实际发送在这里完成 */
@@ -342,7 +342,7 @@ eth_status_t tsn_transmit_frame(uint16_t port_id, uint8_t queue_id,
     
     if (g_tsn_context.config.cbs_enabled) {
         uint64_t tx_time = get_current_time_ns();
-        cbs_complete_transmission(port_id, queue_id, len, tx_time);
+        (void)cbs_complete_transmission(port_id, queue_id, len, tx_time);
     }
     
     return ETH_OK;
@@ -353,7 +353,7 @@ eth_status_t tsn_stack_get_stats(tsn_stack_stats_t *stats) {
         return ETH_INVALID_PARAM;
     }
     
-    memset(stats, 0, sizeof(tsn_stack_stats_t));
+    (void)memset(stats, 0, sizeof(tsn_stack_stats_t));
     
     /* gPTP统计 */
     for (uint8_t i = 0; i < g_tsn_context.config.gptp_config.domain_count; i++) {
@@ -408,7 +408,7 @@ eth_status_t tsn_stack_get_stats(tsn_stack_stats_t *stats) {
         }
     }
     
-    memcpy(&g_tsn_context.stats, stats, sizeof(tsn_stack_stats_t));
+    (void)memcpy(&g_tsn_context.stats, stats, sizeof(tsn_stack_stats_t));
     
     return ETH_OK;
 }
@@ -421,17 +421,17 @@ eth_status_t tsn_stack_clear_stats(void) {
     /* 清除各模块统计 */
     if (g_tsn_context.config.cbs_enabled) {
         for (uint16_t i = 0; i < g_tsn_context.config.gptp_config.port_count; i++) {
-            cbs_clear_stats(i);
+            (void)cbs_clear_stats(i);
         }
     }
     
     if (g_tsn_context.config.fp_enabled) {
         for (uint16_t i = 0; i < g_tsn_context.config.gptp_config.port_count; i++) {
-            fp_clear_stats(i);
+            (void)fp_clear_stats(i);
         }
     }
     
-    memset(&g_tsn_context.stats, 0, sizeof(tsn_stack_stats_t));
+    (void)memset(&g_tsn_context.stats, 0, sizeof(tsn_stack_stats_t));
     
     return ETH_OK;
 }
@@ -444,7 +444,7 @@ eth_status_t tsn_stack_run_safety_checks(void) {
     /* 运行各模块安全检查 */
     if (g_tsn_context.config.asil_d_enabled) {
         for (uint8_t i = 0; i < g_tsn_context.config.gptp_config.domain_count; i++) {
-            gptp_run_safety_checks(i);
+            (void)gptp_run_safety_checks(i);
         }
     }
     
@@ -471,7 +471,7 @@ eth_status_t tsn_stack_print_status(void) {
     Debug_Printf("  ASIL-D Safety: %s\n", g_tsn_context.config.asil_d_enabled ? "Yes" : "No");
     
     tsn_stack_stats_t stats;
-    tsn_stack_get_stats(&stats);
+    (void)tsn_stack_get_stats(&stats);
     
     Debug_Printf("\nStatistics:\n");
     Debug_Printf("  Synced Domains: %u/%u\n", stats.synced_domains, stats.total_domains);

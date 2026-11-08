@@ -291,6 +291,7 @@ extern Std_ReturnType Platform_Crc_Calculate(
     uint32* result
 );
 
+
 #define PLATFORM_LOCKSTEP_STOP_SEC_CODE
 #include "Platform_Lockstep_MemMap.h"
 

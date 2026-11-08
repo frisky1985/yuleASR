@@ -68,6 +68,7 @@ extern void Crypto_MbedTLS_MemDeInit(void);
 extern void Crypto_MbedTLS_MemGetStats(uint32* totalSizePtr,
                                        boolean* verifiedPtr);
 
+
 #define CRYPTO_STOP_SEC_CODE
 #include "MemMap.h"
 

@@ -460,7 +460,7 @@ void Xcp_SendResponse(uint8 ChannelId, const uint8* Data, uint8 Length)
     /* Prepare response */
     Xcp_TxBuffer[ChannelId][0] = XCP_PID_RES;
     if ((Data != NULL_PTR) && (Length > 0U)) {
-        memcpy(&Xcp_TxBuffer[ChannelId][1], Data, Length);
+        (void)memcpy(&Xcp_TxBuffer[ChannelId][1], Data, Length);
     }
 
 /*     pduInfo.SduDataPtr = Xcp_TxBuffer[ChannelId]; */
@@ -486,7 +486,7 @@ void Xcp_SendError(uint8 ChannelId, uint8 ErrorCode, uint8 ErrorInfo)
     errorData[1] = ErrorInfo;
 
     Xcp_TxBuffer[ChannelId][0] = XCP_PID_ERR;
-    memcpy(&Xcp_TxBuffer[ChannelId][1], errorData, 2U);
+    (void)memcpy(&Xcp_TxBuffer[ChannelId][1], errorData, 2U);
 
     /* Send error response */
     PduInfoType pduInfo;
@@ -507,7 +507,7 @@ void Xcp_SendEvent(uint8 ChannelId, uint8 EventCode, const uint8* Data, uint8 Le
     Xcp_TxBuffer[ChannelId][0] = XCP_PID_EV;
     Xcp_TxBuffer[ChannelId][1] = EventCode;
     if ((Data != NULL_PTR) && (Length > 0U)) {
-        memcpy(&Xcp_TxBuffer[ChannelId][2], Data, Length);
+        (void)memcpy(&Xcp_TxBuffer[ChannelId][2], Data, Length);
     }
 
     PduInfoType pduInfo;
@@ -1615,7 +1615,7 @@ void Xcp_DaqSample(uint16 DaqListIdx)
         /* Add timestamp if enabled */
         if ((Xcp_DaqLists[DaqListIdx].Mode & XCP_DAQ_MODE_TIMESTAMP) != 0U) {
             uint32 timestamp = Xcp_GetTimestamp();
-            memcpy(bufferPtr, &timestamp, XCP_TIMESTAMP_SIZE);
+            (void)memcpy(bufferPtr, &timestamp, XCP_TIMESTAMP_SIZE);
             bufferPtr += XCP_TIMESTAMP_SIZE;
         }
 
@@ -1638,7 +1638,7 @@ void Xcp_DaqSample(uint16 DaqListIdx)
                 if (byteLength > (XCP_MAX_DTO_SIZE - (bufferPtr - Xcp_DaqBuffer[DaqListIdx]))) {
                     byteLength = XCP_MAX_DTO_SIZE - (bufferPtr - Xcp_DaqBuffer[DaqListIdx]);
                 }
-                Xcp_ReadMemory(addr, odtEntry->AddrExt, bufferPtr, byteLength);
+                (void)Xcp_ReadMemory(addr, odtEntry->AddrExt, bufferPtr, byteLength);
                 bufferPtr += byteLength;
             }
             else {
@@ -1692,7 +1692,7 @@ void Xcp_StimProcessor(uint8 ChannelId, const uint8* Data, uint8 Length)
 
     if ((Data != NULL_PTR) && (Length > 0U) &&
         (((queueHead + 1U) % XCP_STIM_QUEUE_SIZE) != Xcp_StimQueueTail[0])) {
-        memcpy(Xcp_StimQueue[0][queueHead], Data, Length);
+        (void)memcpy(Xcp_StimQueue[0][queueHead], Data, Length);
         Xcp_StimQueueHead[0] = (queueHead + 1U) % XCP_STIM_QUEUE_SIZE;
     }
     /* Queue overflow - drop data */

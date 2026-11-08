@@ -88,7 +88,7 @@ void SomeIpIf_Init(const SomeIpIf_ConfigType* ConfigPtr)
     SomeIpIf_State.state = SOMEIPIF_UNINIT;
     SomeIpIf_State.txBufferCount = 0U;
     SomeIpIf_State.configPtr = ConfigPtr;
-    memset(SomeIpIf_State.txBuffers, 0, sizeof(SomeIpIf_State.txBuffers));
+    (void)memset(SomeIpIf_State.txBuffers, 0, sizeof(SomeIpIf_State.txBuffers));
     SomeIpIf_State.state = SOMEIPIF_INIT;
 }
 
@@ -148,7 +148,7 @@ Std_ReturnType SomeIpIf_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPt
     /* Build SOME/IP header */
     uint32 hdrLen = SomeIpIf_BuildHeader(buf->data, serviceId, methodId, 0x0001, 0x0001,
                                           (uint32)totalLen, 0x00, 0x00);
-    memcpy(&buf->data[hdrLen], PduInfoPtr->SduDataPtr, totalLen);
+    (void)memcpy(&buf->data[hdrLen], PduInfoPtr->SduDataPtr, totalLen);
     buf->length = (uint16)(hdrLen + totalLen);
     buf->pduId = TxPduId;
     SomeIpIf_State.txBufferCount++;
