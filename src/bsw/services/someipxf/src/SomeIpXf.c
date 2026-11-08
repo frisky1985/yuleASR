@@ -146,6 +146,341 @@ STATIC uint16 SomeIpXf_AlignOffset(uint16 Offset, uint16 Alignment)
     return Offset;
 }
 
+/**
+ * @brief   Add SOME/IP header to target buffer when enabled
+ */
+STATIC void SomeIpXf_AddHeader(const SomeIpXf_TransformerConfigType* transPtr,
+                               const SomeIpXf_BufferType* SourceBuffer,
+                               SomeIpXf_BufferType* TargetBuffer,
+                               uint16* headerSize)
+{
+    if ((transPtr->HeaderIncluded) != 0U)
+    {
+        if (TargetBuffer->MaxLength >= SOMEIPXF_HDR_SIZE)
+        {
+            SomeIpXf_HeaderType header;
+            header.ServiceId = transPtr->InterfaceConfig->ServiceId;
+            header.MethodId = transPtr->InterfaceConfig->MethodId;
+            header.Length = (uint32)SourceBuffer->Length;
+            header.ProtocolVersion = SOMEIPXF_PROTOCOL_VERSION;
+            header.InterfaceVersion = SOMEIPXF_INTERFACE_VERSION;
+            header.MessageType = transPtr->InterfaceConfig->MessageType;
+            header.ReturnCode = transPtr->InterfaceConfig->ReturnCode;
+
+            (void)SomeIpXf_BuildHeader(&header, TargetBuffer->Data);
+            *headerSize = SOMEIPXF_HDR_SIZE;
+        }
+    }
+}
+
+/**
+ * @brief   Serialize a fixed-size scalar data element (BOOLEAN/UINT8/UINT16/UINT32)
+ */
+STATIC Std_ReturnType SomeIpXf_SerializeScalar(uint8 DataType,
+                                               const SomeIpXf_BufferType* SourceBuffer,
+                                               SomeIpXf_BufferType* TargetBuffer,
+                                               uint32 payloadOffset)
+{
+    Std_ReturnType result = E_NOT_OK;
+
+    switch (DataType)
+    {
+        case SOMEIPXF_DT_BOOLEAN:
+            if ((SourceBuffer->Length >= 1U) && (TargetBuffer->MaxLength >= (payloadOffset + 1U)))
+            {
+                TargetBuffer->Data[payloadOffset] = (SourceBuffer->Data[0] != 0U) ? 1U : 0U;
+                TargetBuffer->Length = payloadOffset + 1U;
+                result = E_OK;
+            }
+            break;
+
+        case SOMEIPXF_DT_UINT8:
+            if ((SourceBuffer->Length >= 1U) && (TargetBuffer->MaxLength >= (payloadOffset + 1U)))
+            {
+                TargetBuffer->Data[payloadOffset] = SourceBuffer->Data[0];
+                TargetBuffer->Length = payloadOffset + 1U;
+                result = E_OK;
+            }
+            break;
+
+        case SOMEIPXF_DT_UINT16:
+            if ((SourceBuffer->Length >= 2U) && (TargetBuffer->MaxLength >= (payloadOffset + 2U)))
+            {
+                SOMEIPXF_PUT_U16_BE(TargetBuffer->Data, payloadOffset,
+                                   ((uint16)SourceBuffer->Data[0] << 8) | SourceBuffer->Data[1]);
+                TargetBuffer->Length = payloadOffset + 2U;
+                result = E_OK;
+            }
+            break;
+
+        case SOMEIPXF_DT_UINT32:
+            if ((SourceBuffer->Length >= 4U) && (TargetBuffer->MaxLength >= (payloadOffset + 4U)))
+            {
+                uint32 value = ((uint32)SourceBuffer->Data[0] << 24) |
+                              ((uint32)SourceBuffer->Data[1] << 16) |
+                              ((uint32)SourceBuffer->Data[2] << 8) |
+                              (uint32)SourceBuffer->Data[3];
+                SOMEIPXF_PUT_U32_BE(TargetBuffer->Data, payloadOffset, value);
+                TargetBuffer->Length = payloadOffset + 4U;
+                result = E_OK;
+            }
+            break;
+
+        default:
+            /* Caller guarantees scalar type */
+            break;
+    }
+
+    return result;
+}
+
+/**
+ * @brief   Serialize a variable-length data element (STRING/ARRAY, with U32 length prefix)
+ */
+STATIC Std_ReturnType SomeIpXf_SerializeOpaque(uint8 DataType,
+                                               const SomeIpXf_BufferType* SourceBuffer,
+                                               SomeIpXf_BufferType* TargetBuffer,
+                                               uint32 payloadOffset)
+{
+    Std_ReturnType result = E_NOT_OK;
+
+    if (DataType == SOMEIPXF_DT_STRING)
+    {
+        uint32 strLen = SourceBuffer->Length;
+        if (strLen > SOMEIPXF_MAX_STRING_LENGTH)
+        {
+            strLen = SOMEIPXF_MAX_STRING_LENGTH;
+        }
+
+        if (TargetBuffer->MaxLength >= (payloadOffset + strLen + 4U))
+        {
+            /* Add length field */
+            SOMEIPXF_PUT_U32_BE(TargetBuffer->Data, payloadOffset, strLen);
+            /* Copy string data */
+            (void)memcpy(&TargetBuffer->Data[payloadOffset + 4U],
+                        SourceBuffer->Data, strLen);
+            TargetBuffer->Length = payloadOffset + 4U + strLen;
+            result = E_OK;
+        }
+    }
+    else
+    {
+        /* SOMEIPXF_DT_ARRAY */
+        if (TargetBuffer->MaxLength >= (payloadOffset + SourceBuffer->Length + 4U))
+        {
+            /* Add length field */
+            SOMEIPXF_PUT_U32_BE(TargetBuffer->Data, payloadOffset,
+                               (uint32)SourceBuffer->Length);
+            /* Copy array data */
+            (void)memcpy(&TargetBuffer->Data[payloadOffset + 4U],
+                        SourceBuffer->Data, SourceBuffer->Length);
+            TargetBuffer->Length = payloadOffset + 4U + (uint32)SourceBuffer->Length;
+            result = E_OK;
+        }
+    }
+
+    return result;
+}
+
+/**
+ * @brief   Serialize one data element into target buffer at given offset
+ */
+STATIC Std_ReturnType SomeIpXf_SerializeElement(const SomeIpXf_DataElementConfigType* elemPtr,
+                                                const SomeIpXf_BufferType* SourceBuffer,
+                                                SomeIpXf_BufferType* TargetBuffer,
+                                                uint32 payloadOffset)
+{
+    Std_ReturnType result = E_NOT_OK;
+
+    switch (elemPtr->DataType)
+    {
+        case SOMEIPXF_DT_BOOLEAN:
+        case SOMEIPXF_DT_UINT8:
+        case SOMEIPXF_DT_UINT16:
+        case SOMEIPXF_DT_UINT32:
+            result = SomeIpXf_SerializeScalar(elemPtr->DataType, SourceBuffer, TargetBuffer, payloadOffset);
+            break;
+
+        case SOMEIPXF_DT_STRING:
+        case SOMEIPXF_DT_ARRAY:
+            result = SomeIpXf_SerializeOpaque(elemPtr->DataType, SourceBuffer, TargetBuffer, payloadOffset);
+            break;
+
+        default:
+            /* Unsupported data type */
+#if (SOMEIPXF_DEV_ERROR_DETECT == STD_ON)
+            SOMEIPXF_DET_REPORT_ERROR(SOMEIPXF_SID_TRANSFORM, SOMEIPXF_E_INVALID_DATA_TYPE);
+#endif
+            break;
+    }
+
+    return result;
+}
+
+/**
+ * @brief   Parse and validate SOME/IP header; headerSize stays 0 when absent/unparseable
+ */
+STATIC Std_ReturnType SomeIpXf_CheckHeader(const SomeIpXf_BufferType* SourceBuffer,
+                                           boolean headerIncluded,
+                                           uint16* headerSize)
+{
+    SomeIpXf_HeaderType header;
+
+    if (headerIncluded != FALSE)
+    {
+        if (SourceBuffer->Length >= SOMEIPXF_HDR_SIZE)
+        {
+            if (SomeIpXf_ParseHeader(SourceBuffer->Data, &header) == E_OK)
+            {
+                if (header.ProtocolVersion != SOMEIPXF_PROTOCOL_VERSION)
+                {
+#if (SOMEIPXF_DEV_ERROR_DETECT == STD_ON)
+                    SOMEIPXF_DET_REPORT_ERROR(SOMEIPXF_SID_DETRANSFORM,
+                                               SOMEIPXF_E_WRONG_PROTOCOL_VERSION);
+#endif
+                    return E_NOT_OK;
+                }
+
+                if (header.ReturnCode != SOMEIPXF_RET_CODE_OK)
+                {
+                    return E_NOT_OK;
+                }
+
+                *headerSize = SOMEIPXF_HDR_SIZE;
+            }
+        }
+    }
+
+    return E_OK;
+}
+
+/**
+ * @brief   Deserialize a fixed-size scalar data element (BOOLEAN/UINT8/UINT16/UINT32)
+ */
+STATIC Std_ReturnType SomeIpXf_DeserializeScalar(uint8 DataType,
+                                                 const SomeIpXf_BufferType* SourceBuffer,
+                                                 SomeIpXf_BufferType* TargetBuffer,
+                                                 uint32 payloadOffset)
+{
+    Std_ReturnType result = E_NOT_OK;
+
+    switch (DataType)
+    {
+        case SOMEIPXF_DT_BOOLEAN:
+            if ((SourceBuffer->Length >= (payloadOffset + 1U)) && (TargetBuffer->MaxLength >= 1U))
+            {
+                TargetBuffer->Data[0] = (SourceBuffer->Data[payloadOffset] != 0U) ? 1U : 0U;
+                TargetBuffer->Length = 1U;
+                result = E_OK;
+            }
+            break;
+
+        case SOMEIPXF_DT_UINT8:
+            if ((SourceBuffer->Length >= (payloadOffset + 1U)) && (TargetBuffer->MaxLength >= 1U))
+            {
+                TargetBuffer->Data[0] = SourceBuffer->Data[payloadOffset];
+                TargetBuffer->Length = 1U;
+                result = E_OK;
+            }
+            break;
+
+        case SOMEIPXF_DT_UINT16:
+            if ((SourceBuffer->Length >= (payloadOffset + 2U)) && (TargetBuffer->MaxLength >= 2U))
+            {
+                uint16 value = SOMEIPXF_GET_U16_BE(SourceBuffer->Data, payloadOffset);
+                TargetBuffer->Data[0] = (uint8)(value >> 8);
+                TargetBuffer->Data[1] = (uint8)(value & 0xFFU);
+                TargetBuffer->Length = 2U;
+                result = E_OK;
+            }
+            break;
+
+        case SOMEIPXF_DT_UINT32:
+            if ((SourceBuffer->Length >= (payloadOffset + 4U)) && (TargetBuffer->MaxLength >= 4U))
+            {
+                uint32 value = SOMEIPXF_GET_U32_BE(SourceBuffer->Data, payloadOffset);
+                TargetBuffer->Data[0] = (uint8)(value >> 24);
+                TargetBuffer->Data[1] = (uint8)(value >> 16);
+                TargetBuffer->Data[2] = (uint8)(value >> 8);
+                TargetBuffer->Data[3] = (uint8)(value & 0xFFU);
+                TargetBuffer->Length = 4U;
+                result = E_OK;
+            }
+            break;
+
+        default:
+            /* Caller guarantees scalar type */
+            break;
+    }
+
+    return result;
+}
+
+/**
+ * @brief   Deserialize a string data element (U32 length prefix + payload)
+ */
+STATIC Std_ReturnType SomeIpXf_DeserializeStrElem(const SomeIpXf_BufferType* SourceBuffer,
+                                                 SomeIpXf_BufferType* TargetBuffer,
+                                                 uint32 payloadOffset)
+{
+    Std_ReturnType result = E_NOT_OK;
+
+    if (SourceBuffer->Length >= (payloadOffset + 4U))
+    {
+        uint32 strLen = SOMEIPXF_GET_U32_BE(SourceBuffer->Data, payloadOffset);
+        if ((strLen <= SOMEIPXF_MAX_STRING_LENGTH) &&
+            (SourceBuffer->Length >= (payloadOffset + 4U + strLen)) &&
+            (TargetBuffer->MaxLength >= strLen))
+        {
+            (void)memcpy(TargetBuffer->Data, &SourceBuffer->Data[payloadOffset + 4U], strLen);
+            TargetBuffer->Length = strLen;
+            result = E_OK;
+        }
+    }
+
+    return result;
+}
+
+/**
+ * @brief   Deserialize one data element from source buffer at given offset
+ */
+STATIC Std_ReturnType SomeIpXf_DeserializeElement(const SomeIpXf_DataElementConfigType* elemPtr,
+                                                  const SomeIpXf_BufferType* SourceBuffer,
+                                                  SomeIpXf_BufferType* TargetBuffer,
+                                                  uint32 payloadOffset)
+{
+    Std_ReturnType result;
+
+    switch (elemPtr->DataType)
+    {
+        case SOMEIPXF_DT_BOOLEAN:
+        case SOMEIPXF_DT_UINT8:
+        case SOMEIPXF_DT_UINT16:
+        case SOMEIPXF_DT_UINT32:
+            result = SomeIpXf_DeserializeScalar(elemPtr->DataType, SourceBuffer, TargetBuffer, payloadOffset);
+            break;
+
+        case SOMEIPXF_DT_STRING:
+            result = SomeIpXf_DeserializeStrElem(SourceBuffer, TargetBuffer, payloadOffset);
+            break;
+
+        case SOMEIPXF_DT_UINT64:
+        case SOMEIPXF_DT_SINT64:
+        case SOMEIPXF_DT_FLOAT32:
+        case SOMEIPXF_DT_FLOAT64:
+            /* Unsupported on de-transform path for now */
+            result = E_NOT_OK;
+            break;
+
+        default:
+            /* Unsupported data type */
+            result = E_NOT_OK;
+            break;
+    }
+
+    return result;
+}
+
 /*==================================================================================================
 *                                      GLOBAL FUNCTIONS
 ==================================================================================================*/
@@ -260,23 +595,7 @@ Std_ReturnType SomeIpXf_Transform(uint16 TransformerId, uint16 DataElementId,
         transPtr = &SomeIpXf_InternalState.ConfigPtr->TransformerConfigs[TransformerId];
 
         /* Add SOME/IP header if enabled */
-        if ((transPtr->HeaderIncluded) != 0U)
-        {
-            if (TargetBuffer->MaxLength >= SOMEIPXF_HDR_SIZE)
-            {
-                SomeIpXf_HeaderType header;
-                header.ServiceId = transPtr->InterfaceConfig->ServiceId;
-                header.MethodId = transPtr->InterfaceConfig->MethodId;
-                header.Length = (uint32)SourceBuffer->Length;
-                header.ProtocolVersion = SOMEIPXF_PROTOCOL_VERSION;
-                header.InterfaceVersion = SOMEIPXF_INTERFACE_VERSION;
-                header.MessageType = transPtr->InterfaceConfig->MessageType;
-                header.ReturnCode = transPtr->InterfaceConfig->ReturnCode;
-
-                (void)SomeIpXf_BuildHeader(&header, TargetBuffer->Data);
-                headerSize = SOMEIPXF_HDR_SIZE;
-            }
-        }
+        SomeIpXf_AddHeader(transPtr, SourceBuffer, TargetBuffer, &headerSize);
 
         /* Serialize data element */
         if (DataElementId < transPtr->NumDataElements)
@@ -284,95 +603,7 @@ Std_ReturnType SomeIpXf_Transform(uint16 TransformerId, uint16 DataElementId,
             elemPtr = &transPtr->DataElements[DataElementId];
             payloadOffset = headerSize;
 
-            switch (elemPtr->DataType)
-            {
-                case SOMEIPXF_DT_BOOLEAN:
-                    if ((SourceBuffer->Length >= 1U) && 
-                        (TargetBuffer->MaxLength >= (payloadOffset + 1U)))
-                    {
-                        TargetBuffer->Data[payloadOffset] = SourceBuffer->Data[0] ? 1U : 0U;
-                        TargetBuffer->Length = payloadOffset + 1U;
-                        result = E_OK;
-                    }
-                    break;
-
-                case SOMEIPXF_DT_UINT8:
-                    if ((SourceBuffer->Length >= 1U) && 
-                        (TargetBuffer->MaxLength >= (payloadOffset + 1U)))
-                    {
-                        TargetBuffer->Data[payloadOffset] = SourceBuffer->Data[0];
-                        TargetBuffer->Length = payloadOffset + 1U;
-                        result = E_OK;
-                    }
-                    break;
-
-                case SOMEIPXF_DT_UINT16:
-                    if ((SourceBuffer->Length >= 2U) && 
-                        (TargetBuffer->MaxLength >= (payloadOffset + 2U)))
-                    {
-                        SOMEIPXF_PUT_U16_BE(TargetBuffer->Data, payloadOffset, 
-                                           ((uint16)SourceBuffer->Data[0] << 8) | SourceBuffer->Data[1]);
-                        TargetBuffer->Length = payloadOffset + 2U;
-                        result = E_OK;
-                    }
-                    break;
-
-                case SOMEIPXF_DT_UINT32:
-                    if ((SourceBuffer->Length >= 4U) && 
-                        (TargetBuffer->MaxLength >= (payloadOffset + 4U)))
-                    {
-                        uint32 value = ((uint32)SourceBuffer->Data[0] << 24) |
-                                      ((uint32)SourceBuffer->Data[1] << 16) |
-                                      ((uint32)SourceBuffer->Data[2] << 8) |
-                                      (uint32)SourceBuffer->Data[3];
-                        SOMEIPXF_PUT_U32_BE(TargetBuffer->Data, payloadOffset, value);
-                        TargetBuffer->Length = payloadOffset + 4U;
-                        result = E_OK;
-                    }
-                    break;
-
-                case SOMEIPXF_DT_STRING:
-                    {
-                        uint32 strLen = SourceBuffer->Length;
-                        if (strLen > SOMEIPXF_MAX_STRING_LENGTH)
-                        {
-                            strLen = SOMEIPXF_MAX_STRING_LENGTH;
-                        }
-                        
-                        if (TargetBuffer->MaxLength >= (payloadOffset + strLen + 4U))
-                        {
-                            /* Add length field */
-                            SOMEIPXF_PUT_U32_BE(TargetBuffer->Data, payloadOffset, strLen);
-                            /* Copy string data */
-                            (void)memcpy(&TargetBuffer->Data[payloadOffset + 4U], 
-                                        SourceBuffer->Data, strLen);
-                            TargetBuffer->Length = payloadOffset + 4U + strLen;
-                            result = E_OK;
-                        }
-                    }
-                    break;
-
-                case SOMEIPXF_DT_ARRAY:
-                    if (TargetBuffer->MaxLength >= (payloadOffset + SourceBuffer->Length + 4U))
-                    {
-                        /* Add length field */
-                        SOMEIPXF_PUT_U32_BE(TargetBuffer->Data, payloadOffset, 
-                                           (uint32)SourceBuffer->Length);
-                        /* Copy array data */
-                        (void)memcpy(&TargetBuffer->Data[payloadOffset + 4U], 
-                                    SourceBuffer->Data, SourceBuffer->Length);
-                        TargetBuffer->Length = payloadOffset + 4U + (uint32)SourceBuffer->Length;
-                        result = E_OK;
-                    }
-                    break;
-
-                default:
-                    /* Unsupported data type */
-#if (SOMEIPXF_DEV_ERROR_DETECT == STD_ON)
-                    SOMEIPXF_DET_REPORT_ERROR(SOMEIPXF_SID_TRANSFORM, SOMEIPXF_E_INVALID_DATA_TYPE);
-#endif
-                    break;
-            }
+            result = SomeIpXf_SerializeElement(elemPtr, SourceBuffer, TargetBuffer, payloadOffset);
 
             /* Update SOME/IP header length field */
             if ((result == E_OK) && (transPtr->HeaderIncluded))
@@ -399,7 +630,6 @@ Std_ReturnType SomeIpXf_Detransform(uint16 TransformerId, uint16 DataElementId,
     const SomeIpXf_DataElementConfigType* elemPtr;
     uint16 headerSize = 0U;
     uint32 payloadOffset = 0U;
-    SomeIpXf_HeaderType header;
 
 #if (SOMEIPXF_DEV_ERROR_DETECT == STD_ON)
     if (SomeIpXf_InternalState.State != SOMEIPXF_STATE_INIT)
@@ -425,31 +655,10 @@ Std_ReturnType SomeIpXf_Detransform(uint16 TransformerId, uint16 DataElementId,
     {
         transPtr = &SomeIpXf_InternalState.ConfigPtr->TransformerConfigs[TransformerId];
 
-        /* Parse SOME/IP header if present */
-        if ((transPtr->HeaderIncluded) != 0U)
+        /* Parse and validate SOME/IP header if present */
+        if (SomeIpXf_CheckHeader(SourceBuffer, transPtr->HeaderIncluded, &headerSize) != E_OK)
         {
-            if (SourceBuffer->Length >= SOMEIPXF_HDR_SIZE)
-            {
-                if (SomeIpXf_ParseHeader(SourceBuffer->Data, &header) == E_OK)
-                {
-                    /* Validate header */
-                    if (header.ProtocolVersion != SOMEIPXF_PROTOCOL_VERSION)
-                    {
-#if (SOMEIPXF_DEV_ERROR_DETECT == STD_ON)
-                        SOMEIPXF_DET_REPORT_ERROR(SOMEIPXF_SID_DETRANSFORM, 
-                                                   SOMEIPXF_E_WRONG_PROTOCOL_VERSION);
-#endif
-                        return E_NOT_OK;
-                    }
-
-                    if (header.ReturnCode != SOMEIPXF_RET_CODE_OK)
-                    {
-                        return E_NOT_OK;
-                    }
-
-                    headerSize = SOMEIPXF_HDR_SIZE;
-                }
-            }
+            return E_NOT_OK;
         }
 
         /* Deserialize data element */
@@ -458,82 +667,7 @@ Std_ReturnType SomeIpXf_Detransform(uint16 TransformerId, uint16 DataElementId,
             elemPtr = &transPtr->DataElements[DataElementId];
             payloadOffset = headerSize;
 
-            switch (elemPtr->DataType)
-            {
-                case SOMEIPXF_DT_BOOLEAN:
-                    if ((SourceBuffer->Length >= (payloadOffset + 1U)) && 
-                        (TargetBuffer->MaxLength >= 1U))
-                    {
-                        TargetBuffer->Data[0] = SourceBuffer->Data[payloadOffset] ? 1U : 0U;
-                        TargetBuffer->Length = 1U;
-                        result = E_OK;
-                    }
-                    break;
-
-                case SOMEIPXF_DT_UINT8:
-                    if ((SourceBuffer->Length >= (payloadOffset + 1U)) && 
-                        (TargetBuffer->MaxLength >= 1U))
-                    {
-                        TargetBuffer->Data[0] = SourceBuffer->Data[payloadOffset];
-                        TargetBuffer->Length = 1U;
-                        result = E_OK;
-                    }
-                    break;
-
-                case SOMEIPXF_DT_UINT16:
-                    if ((SourceBuffer->Length >= (payloadOffset + 2U)) && 
-                        (TargetBuffer->MaxLength >= 2U))
-                    {
-                        uint16 value = SOMEIPXF_GET_U16_BE(SourceBuffer->Data, payloadOffset);
-                        TargetBuffer->Data[0] = (uint8)(value >> 8);
-                        TargetBuffer->Data[1] = (uint8)(value & 0xFFU);
-                        TargetBuffer->Length = 2U;
-                        result = E_OK;
-                    }
-                    break;
-
-                case SOMEIPXF_DT_UINT32:
-                    if ((SourceBuffer->Length >= (payloadOffset + 4U)) && 
-                        (TargetBuffer->MaxLength >= 4U))
-                    {
-                        uint32 value = SOMEIPXF_GET_U32_BE(SourceBuffer->Data, payloadOffset);
-                        TargetBuffer->Data[0] = (uint8)(value >> 24);
-                        TargetBuffer->Data[1] = (uint8)(value >> 16);
-                        TargetBuffer->Data[2] = (uint8)(value >> 8);
-                        TargetBuffer->Data[3] = (uint8)(value & 0xFFU);
-                        TargetBuffer->Length = 4U;
-                        result = E_OK;
-                    }
-                    break;
-
-                case SOMEIPXF_DT_STRING:
-                    if (SourceBuffer->Length >= (payloadOffset + 4U))
-                    {
-                        uint32 strLen = SOMEIPXF_GET_U32_BE(SourceBuffer->Data, payloadOffset);
-                        if ((strLen <= SOMEIPXF_MAX_STRING_LENGTH) &&
-                            (SourceBuffer->Length >= (payloadOffset + 4U + strLen)) &&
-                            (TargetBuffer->MaxLength >= strLen))
-                        {
-                            (void)memcpy(TargetBuffer->Data, &SourceBuffer->Data[payloadOffset + 4U], strLen);
-                            TargetBuffer->Length = strLen;
-                            result = E_OK;
-                        }
-                    }
-                    break;
-
-                case SOMEIPXF_DT_UINT64:
-                case SOMEIPXF_DT_SINT64:
-                case SOMEIPXF_DT_FLOAT32:
-                case SOMEIPXF_DT_FLOAT64:
-                    /* Unsupported on de-transform path for now */
-                    result = E_NOT_OK;
-                    break;
-
-                default:
-                    /* Unsupported data type */
-                    result = E_NOT_OK;
-                    break;
-            }
+            result = SomeIpXf_DeserializeElement(elemPtr, SourceBuffer, TargetBuffer, payloadOffset);
         }
     }
 

@@ -204,21 +204,21 @@
 
 | 批次 | 状态 | 完成函数 | 剩余 |
 |:-----|:-----|:---------|:-----|
-| B1 | 进行中 | **3/5**：`TcpIp_LocalIsValidTransition` 33→4、`evaluate_predicate` 32→6、`lexer_read_token` 31→6 | `SomeIpXf_Detransform`(36)、`SomeIpXf_Transform`(31) |
+| B1 | ✅ 完成 | **5/5**：`TcpIp_LocalIsValidTransition` 33→4、`evaluate_predicate` 32→6、`lexer_read_token` 31→6、`SomeIpXf_Transform` 31→10、`SomeIpXf_Detransform` 36→9 | — |
 | B2 | 未开始 | 0/2 | NvM、CanTp |
 | B3 | 未开始 | 0/6 | Csm×3、csm_core、Crypto_Aes×2 |
 | B4 | 未开始 | 0/34 | — |
 | B5 | 未开始 | 0/63 | — |
 
-### 6.5 进度快照（2026-11-09）
+### 6.5 进度快照（2026-11-09，B1 完成后）
 
 | 指标 | 基线 | 当前 | 变化 |
 |:-----|-----:|-----:|:-----|
-| CCN > 30 | 13 | **10** | −3 ✅ |
-| CCN > 20 | 47 | **44** | −3 ✅ |
+| CCN > 30 | 13 | **8** | −5 ✅ |
+| CCN > 20 | 47 | **42** | −5 ✅ |
 | CCN > 10 | 355 | **354** | −1 |
-| 函数 > 50 行 | 587 | **584** | −3 ✅ |
-| 函数 > 100 行 | 63 | 63 | — |
+| 函数 > 50 行 | 587 | **586** | −1 |
+| 函数 > 100 行 | 63 | **61** | −2 ✅ |
 | ctest | 209/209 | **209/209** | 保持全绿 |
 
-> **说明**：`content_filtered_topic.c` 拆分出的 `cft_read_predicate_field`(CCN 13) 与 `cft_compare_numeric_field`(CCN 15) 属 switch 分支助手，落在 ≤15 的偏差带内，未突破"助手 ≤15"约定；主逻辑函数 `evaluate_predicate` 32→6、`lexer_read_token` 31→6。全仓 CCN>10 仅净降 1（应为 −3）即因这两个助手从原大函数中独立计数所致，属预期现象。
+> **说明**：① `content_filtered_topic.c` 拆分出的 `cft_read_predicate_field`(CCN 13) 与 `cft_compare_numeric_field`(CCN 15) 属 switch 分支助手，落在 ≤15 的偏差带内，未突破"助手 ≤15"约定；主逻辑函数 `evaluate_predicate` 32→6、`lexer_read_token` 31→6。② `SomeIpXf.c` 拆分出 8 个助手函数，其中 `SerializeScalar`/`DeserializeScalar`(CCN 14、len 57/58) 同为分支助手，落在 ≤15 偏差带内；两个主函数降至 ≤10。全仓 CCN>10 净降有限即因拆分助手从原大函数中独立计数所致，属预期现象；函数 >50 行 +2 亦为此原因（但 >100 行 −2，收益真实）。③ 修复了一处命名冲突：静态助手原名 `SomeIpXf_DeserializeString` 与公共 API 同名，改为 `SomeIpXf_DeserializeStrElem`。
