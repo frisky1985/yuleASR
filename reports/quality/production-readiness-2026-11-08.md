@@ -398,10 +398,12 @@ GitHub Dependabot REST/GraphQL 接口以当前令牌访问均无权限（`Resour
 | `tools/yuleasr-configurator/web/package-lock.json` | joi | 17.13.8 → **17.13.9** | GHSA-4528-x5fx-h6hg | 🔴 High |
 | `website/package-lock.json` | follow-redirects | 1.16.1 → **1.16.2** | GHSA-mrwp-f3q8-3g9p | 🔴 High |
 | `website/package-lock.json` | joi | 17.13.8 → **17.13.9** | GHSA-4528-x5fx-h6hg | 🔴 High |
+| `website/package-lock.json` | webpack-dev-middleware | 7.4.5 → **7.4.6** | GHSA-g84c-rxfj-3j2c | 🔴 High |
 | `website/package-lock.json` | deepmerge | 4.3.1（无修复版本） | GHSA-gcqx-w48m-w2h4 | 🟡 Low |
 | `docs/docs-site/package-lock.json` | — | 无漏洞 | — | — |
 
-- 修复方式：`npm audit fix --package-lock-only`，仅升级语义化兼容范围内的补丁版本；同步带动的 `electron-builder` 26.18.0→26.18.1、`semver`、`sanitize-filename` 等均为补丁级。
+- 修复方式：前两批用 `npm audit fix --package-lock-only`（仅升级语义化兼容范围内的补丁版本，同步带动的 `electron-builder` 26.18.0→26.18.1、`semver`、`sanitize-filename` 等均为补丁级）；`webpack-dev-middleware` 因 npm 公告库尚未收录，改用 `package.json` 的 `overrides` 固定 `^7.4.6` 后重生成锁文件（父依赖 `webpack-dev-server` 声明 `^7.4.2`，补丁级兼容）。
+- **minimatch 中危无兼容修复**：GHSA-g3hv-75wg-m249 仅在 `11.0.1` 修复（当前 9.0.9 / 10.2.6，跨大版本），经 `glob@10` 与 `app-builder-lib` 传递引入，强制 override 到 11.x 有 API 兼容风险，暂保留并纳入后续依赖大版本升级窗口。
 - **deepmerge 低危无上游修复**：OSV 标记 `last_affected 4.3.1`（4.3.1 为最终发布版），且仅经 `@docusaurus → @svgr/webpack → @svgr/plugin-svgo` 在**构建期**合并可信配置对象时使用，不接受运行时用户输入，实际不可利用；建议在 GitHub 侧以 `vulnerable_code_not_in_execution_path` 理由 dismiss。
 - **验证**：两个清单重新执行 `npm audit --registry=https://registry.npmjs.org`，`high = 0 / critical = 0`；`npm install --package-lock-only --dry-run` 一致性检查通过。
 
