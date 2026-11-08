@@ -206,19 +206,19 @@
 |:-----|:-----|:---------|:-----|
 | B1 | ✅ 完成 | **5/5**：`TcpIp_LocalIsValidTransition` 33→4、`evaluate_predicate` 32→6、`lexer_read_token` 31→6、`SomeIpXf_Transform` 31→10、`SomeIpXf_Detransform` 36→9 | — |
 | B2 | ✅ 完成 | **2/2**：`NvM_MainFunction` 60→3（拆 13 个助手）、`CanTp_ProcessRxFrame` 52→7（按帧类型拆 4 个助手 + MetaData 助手） | — |
-| B3 | 未开始 | 0/6 | Csm×3、csm_core、Crypto_Aes×2 |
+| B3 | ✅ 完成 | **6/6**：`Crypto_AesProcessEncrypt` 36→11、`Crypto_AesProcessDecrypt` 39→11（提取 9 个共用助手）、`csm_execute_crypto_op` 48→7（按作业类型拆 6 个分支助手 + AES 公共入口）、`Csm_KeyDerive` 51→7、`Csm_KeyExchangeCalcPubVal` 39→9、`Csm_KeyExchangeCalcSecret` 40→8（共享 KDF 助手：用途权限检查/输入拼接/硬件哈希+XOR 回退 + 每函数 HW/SW 助手） | — |
 | B4 | 未开始 | 0/34 | — |
 | B5 | 未开始 | 0/63 | — |
 
-### 6.5 进度快照（2026-11-09，B2 完成后）
+### 6.5 进度快照（2026-11-09，B3 完成后）
 
 | 指标 | 基线 | 当前 | 变化 |
 |:-----|-----:|-----:|:-----|
-| CCN > 30 | 13 | **6** | −7 ✅ |
-| CCN > 20 | 47 | **40** | −7 ✅ |
+| CCN > 30 | 13 | **0** | −13 ✅ 达标 |
+| CCN > 20 | 47 | **34** | −13 ✅ |
 | CCN > 10 | 355 | **354** | −1 |
-| 函数 > 50 行 | 587 | **588** | +1 |
-| 函数 > 100 行 | 63 | **59** | −4 ✅ |
+| 函数 > 50 行 | 587 | **593** | +6 |
+| 函数 > 100 行 | 63 | **53** | −10 ✅ |
 | ctest | 209/209 | **209/209** | 保持全绿 |
 
-> **说明**：① `content_filtered_topic.c` 拆分出的 `cft_read_predicate_field`(CCN 13) 与 `cft_compare_numeric_field`(CCN 15) 属 switch 分支助手，落在 ≤15 的偏差带内，未突破"助手 ≤15"约定；主逻辑函数 `evaluate_predicate` 32→6、`lexer_read_token` 31→6。② `SomeIpXf.c` 拆分出 8 个助手函数，其中 `SerializeScalar`/`DeserializeScalar`(CCN 14、len 57/58) 同为分支助手，落在 ≤15 偏差带内；两个主函数降至 ≤10。全仓 CCN>10 净降有限即因拆分助手从原大函数中独立计数所致，属预期现象；函数 >50 行 +2 亦为此原因（但 >100 行 −2，收益真实）。③ 修复了一处命名冲突：静态助手原名 `SomeIpXf_DeserializeString` 与公共 API 同名，改为 `SomeIpXf_DeserializeStrElem`。④ **B2 行为修正记录**：`NvM_MainFunction` 原实现中 READ 冗余副本 CRC 不匹配路径的 `jobComplete = FALSE;` 处于注释状态（标记 `[MISRA Advisory] Redundant`），即原行为是该路径当周期完结作业；重构严格保留此语义（`Nvm_ValidateReadCrc` 冗余路径返回 TRUE），差异曾导致 3 个 nvm_test 用例失败，修正后 209/209 全绿。⑤ `CanTp_ProcessRxFrame` 拆分出 `CanTp_StoreRxMetaData` 与 `CanTp_ProcessRxSF/FF/CF/FC` 共 5 个助手，`CanTp_ProcessRxCF`(CCN 15) 落在 ≤15 偏差带。
+> **说明**：① `content_filtered_topic.c` 拆分出的 `cft_read_predicate_field`(CCN 13) 与 `cft_compare_numeric_field`(CCN 15) 属 switch 分支助手，落在 ≤15 的偏差带内，未突破"助手 ≤15"约定；主逻辑函数 `evaluate_predicate` 32→6、`lexer_read_token` 31→6。② `SomeIpXf.c` 拆分出 8 个助手函数，其中 `SerializeScalar`/`DeserializeScalar`(CCN 14、len 57/58) 同为分支助手，落在 ≤15 偏差带内；两个主函数降至 ≤10。全仓 CCN>10 净降有限即因拆分助手从原大函数中独立计数所致，属预期现象；函数 >50 行 +2 亦为此原因（但 >100 行 −2，收益真实）。③ 修复了一处命名冲突：静态助手原名 `SomeIpXf_DeserializeString` 与公共 API 同名，改为 `SomeIpXf_DeserializeStrElem`。④ **B2 行为修正记录**：`NvM_MainFunction` 原实现中 READ 冗余副本 CRC 不匹配路径的 `jobComplete = FALSE;` 处于注释状态（标记 `[MISRA Advisory] Redundant`），即原行为是该路径当周期完结作业；重构严格保留此语义（`Nvm_ValidateReadCrc` 冗余路径返回 TRUE），差异曾导致 3 个 nvm_test 用例失败，修正后 209/209 全绿。⑤ `CanTp_ProcessRxFrame` 拆分出 `CanTp_StoreRxMetaData` 与 `CanTp_ProcessRxSF/FF/CF/FC` 共 5 个助手，`CanTp_ProcessRxCF`(CCN 15) 落在 ≤15 偏差带。⑥ **B3 加密栈语义保留记录**：`Csm_KeyDerive` 软件 KDF 成功路径中 `hashOutLen` 截断赋值被注释（`[MISRA Advisory] Redundant`），即原语义为成功路径恒按 `CSM_MAX_HASH_LENGTH` 拷贝——重构以 `Csm_KdfHash(clampHwLen=FALSE)` 严格保留；PubVal/Secret 两函数该赋值有效，走 `clampHwLen=TRUE`。三处 XOR 回退系数各异（KeyDerive `counter+j`、PubVal `j*0x37`、Secret `j*0x53`），统一由 `Csm_KdfXorFallback(mul, add)` 参数化保留。⑦ B3 拆分助手 `Csm_KeyDeriveTryHw`(14)、`Csm_KeyExchangePubValTryHw`(13)、`Csm_KeyExchangeSecretTryHw`(13) 落在 ≤15 偏差带；三个主函数均降至 ≤10。⑧ 函数 >50 行较 B2 快照 +5（588→593）为拆分助手独立计数所致，>100 行 −6（59→53）收益真实。
