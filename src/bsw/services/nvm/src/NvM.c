@@ -1863,452 +1863,533 @@ Std_ReturnType NvM_InvalidateNvBlock(NvM_BlockIdType BlockId)
  * @param   None
  * @return  None
  */
-/** @req SWS_NvM_00015 */
-void NvM_MainFunction(void)
+/**
+ * @brief   Set current job result and mirror it into block state
+ */
+STATIC void Nvm_SetJobResult(NvM_RequestResultType result)
 {
-    NvM_JobQueueEntryType jobEntry;
-    MemIf_StatusType memIfStatus;
-    const NvM_BlockDescriptorType* blockDesc;
-    boolean jobComplete;
-    uint8 i;
-    uint8 tempCount;
-    NvM_JobQueueEntryType tempEntries[NVM_SIZE_STANDARD_JOB_QUEUE];
+    NvM_InternalState.CurrentJob->Result = result;
+    NvM_InternalState.BlockStates[NvM_InternalState.CurrentJob->BlockId].LastResult = result;
+}
 
-    /* Handle KillReadAll request */
+/**
+ * @brief   Release current job: clear pending flag, invoke callback, go idle
+ */
+STATIC void Nvm_ReleaseJob(void)
+{
+    NvM_InternalState.CurrentJob->JobState = NVM_JOB_STATE_IDLE;
+    NvM_InternalState.BlockStates[NvM_InternalState.CurrentJob->BlockId].JobPending = 0U;
+    NvM_InvokeJobEndCallback(NvM_InternalState.CurrentJob->BlockId,
+                             NvM_InternalState.CurrentJob->Result);
+    NvM_InternalState.CurrentJob = NULL_PTR;
+    NvM_InternalState.State = NVM_STATE_IDLE;
+}
+
+/**
+ * @brief   Remove all jobs of the given type from the standard queue (Kill*All support)
+ */
+STATIC void Nvm_RemoveQueuedJobsOfType(uint8 jobType)
+{
+    NvM_JobQueueEntryType tempEntries[NVM_SIZE_STANDARD_JOB_QUEUE];
+    uint8 i;
+    uint8 tempCount = NvM_InternalState.StandardQueueCount;
+
+    for (i = 0U; i < tempCount; i++)
+    {
+        (void)NvM_QueuePop(NvM_InternalState.StandardQueue,
+                           &NvM_InternalState.StandardQueueHead,
+                           &NvM_InternalState.StandardQueueTail,
+                           &NvM_InternalState.StandardQueueCount,
+                           NVM_SIZE_STANDARD_JOB_QUEUE,
+                           &tempEntries[i]);
+    }
+    for (i = 0U; i < tempCount; i++)
+    {
+        if (tempEntries[i].JobType != jobType)
+        {
+            (void)NvM_QueuePush(NvM_InternalState.StandardQueue,
+                                &NvM_InternalState.StandardQueueHead,
+                                &NvM_InternalState.StandardQueueTail,
+                                &NvM_InternalState.StandardQueueCount,
+                                NVM_SIZE_STANDARD_JOB_QUEUE,
+                                &tempEntries[i]);
+        }
+        else
+        {
+            NvM_InternalState.BlockStates[tempEntries[i].BlockId].JobPending = 0U;
+            NvM_InternalState.BlockStates[tempEntries[i].BlockId].LastResult = NVM_REQ_CANCELED;
+        }
+    }
+}
+
+/**
+ * @brief   Handle KillReadAll request: cancel queued READ jobs
+ */
+STATIC void Nvm_HandleKillReadAll(void)
+{
     if (NvM_InternalState.KillReadAllRequested == TRUE)
     {
         NvM_InternalState.KillReadAllRequested = FALSE;
         if (NvM_InternalState.ReadAllInProgress == TRUE)
         {
             /* Remove all READ jobs from standard queue */
-            tempCount = NvM_InternalState.StandardQueueCount;
-            for (i = 0U; i < tempCount; i++)
-            {
-                (void)NvM_QueuePop(NvM_InternalState.StandardQueue,
-                                   &NvM_InternalState.StandardQueueHead,
-                                   &NvM_InternalState.StandardQueueTail,
-                                   &NvM_InternalState.StandardQueueCount,
-                                   NVM_SIZE_STANDARD_JOB_QUEUE,
-                                   &tempEntries[i]);
-            }
-            for (i = 0U; i < tempCount; i++)
-            {
-                if (tempEntries[i].JobType != NVM_JOB_TYPE_READ)
-                {
-                    (void)NvM_QueuePush(NvM_InternalState.StandardQueue,
-                                        &NvM_InternalState.StandardQueueHead,
-                                        &NvM_InternalState.StandardQueueTail,
-                                        &NvM_InternalState.StandardQueueCount,
-                                        NVM_SIZE_STANDARD_JOB_QUEUE,
-                                        &tempEntries[i]);
-                }
-                else
-                {
-                    NvM_InternalState.BlockStates[tempEntries[i].BlockId].JobPending = 0U;
-                    NvM_InternalState.BlockStates[tempEntries[i].BlockId].LastResult = NVM_REQ_CANCELED;
-                }
-            }
+            Nvm_RemoveQueuedJobsOfType(NVM_JOB_TYPE_READ);
             NvM_InternalState.ReadAllInProgress = FALSE;
             NvM_InternalState.ReadAllPendingCount = 0U;
         }
     }
+}
 
-    /* Handle KillWriteAll request */
+/**
+ * @brief   Handle KillWriteAll request: cancel queued WRITE jobs
+ */
+STATIC void Nvm_HandleKillWriteAll(void)
+{
     if (NvM_InternalState.KillWriteAllRequested == TRUE)
     {
         NvM_InternalState.KillWriteAllRequested = FALSE;
         if (NvM_InternalState.WriteAllInProgress == TRUE)
         {
             /* Remove all WRITE jobs from standard queue */
-            tempCount = NvM_InternalState.StandardQueueCount;
-            for (i = 0U; i < tempCount; i++)
-            {
-                (void)NvM_QueuePop(NvM_InternalState.StandardQueue,
-                                   &NvM_InternalState.StandardQueueHead,
-                                   &NvM_InternalState.StandardQueueTail,
-                                   &NvM_InternalState.StandardQueueCount,
-                                   NVM_SIZE_STANDARD_JOB_QUEUE,
-                                   &tempEntries[i]);
-            }
-            for (i = 0U; i < tempCount; i++)
-            {
-                if (tempEntries[i].JobType != NVM_JOB_TYPE_WRITE)
-                {
-                    (void)NvM_QueuePush(NvM_InternalState.StandardQueue,
-                                        &NvM_InternalState.StandardQueueHead,
-                                        &NvM_InternalState.StandardQueueTail,
-                                        &NvM_InternalState.StandardQueueCount,
-                                        NVM_SIZE_STANDARD_JOB_QUEUE,
-                                        &tempEntries[i]);
-                }
-                else
-                {
-                    NvM_InternalState.BlockStates[tempEntries[i].BlockId].JobPending = 0U;
-                    NvM_InternalState.BlockStates[tempEntries[i].BlockId].LastResult = NVM_REQ_CANCELED;
-                }
-            }
+            Nvm_RemoveQueuedJobsOfType(NVM_JOB_TYPE_WRITE);
             NvM_InternalState.WriteAllInProgress = FALSE;
             NvM_InternalState.WriteAllPendingCount = 0U;
         }
     }
+}
 
-    if (NvM_InternalState.State == NVM_STATE_IDLE)
+/**
+ * @brief   Try to start a job from the immediate queue
+ * @return  TRUE if the immediate queue was non-empty (standard queue skipped this cycle)
+ */
+STATIC boolean Nvm_TryStartImmediateJob(void)
+{
+    NvM_JobQueueEntryType jobEntry;
+
+    if (NvM_QueueIsEmpty(NvM_InternalState.ImmediateQueueCount))
     {
-        /* Process immediate queue first (high priority) */
-        if (!NvM_QueueIsEmpty(NvM_InternalState.ImmediateQueueCount))
-        {
-            if (NvM_QueuePop(NvM_InternalState.ImmediateQueue,
-                             &NvM_InternalState.ImmediateQueueHead,
-                             &NvM_InternalState.ImmediateQueueTail,
-                             &NvM_InternalState.ImmediateQueueCount,
-                             NVM_SIZE_IMMEDIATE_JOB_QUEUE,
-                             &jobEntry) == E_OK)
-            {
-                NvM_InternalState.ActiveJob = jobEntry;
-                NvM_InternalState.CurrentJob = &NvM_InternalState.ActiveJob;
-
-                switch (NvM_InternalState.ActiveJob.JobType)
-                {
-                    case NVM_JOB_TYPE_RESTORE:
-                        NvM_ProcessRestoreJob(&NvM_InternalState.ActiveJob);
-                        break;
-
-                    default:
-                        break;
-                }
-
-                NvM_InternalState.CurrentJob = NULL_PTR;
-            }
-        }
-        /* Process standard queue */
-        else if (!NvM_QueueIsEmpty(NvM_InternalState.StandardQueueCount))
-        {
-            if (NvM_QueuePop(NvM_InternalState.StandardQueue,
-                             &NvM_InternalState.StandardQueueHead,
-                             &NvM_InternalState.StandardQueueTail,
-                             &NvM_InternalState.StandardQueueCount,
-                             NVM_SIZE_STANDARD_JOB_QUEUE,
-                             &jobEntry) == E_OK)
-            {
-                NvM_InternalState.ActiveJob = jobEntry;
-                NvM_InternalState.CurrentJob = &NvM_InternalState.ActiveJob;
-                NvM_InternalState.State = NVM_STATE_BUSY;
-
-                /* Process the job based on type */
-                switch (NvM_InternalState.ActiveJob.JobType)
-                {
-                    case NVM_JOB_TYPE_READ:
-                        NvM_ProcessReadJob(&NvM_InternalState.ActiveJob);
-                        break;
-
-                    case NVM_JOB_TYPE_WRITE:
-                        NvM_ProcessWriteJob(&NvM_InternalState.ActiveJob);
-                        break;
-
-                    case NVM_JOB_TYPE_ERASE:
-                        NvM_ProcessEraseJob(&NvM_InternalState.ActiveJob);
-                        break;
-
-                    case NVM_JOB_TYPE_INVALIDATE:
-                        NvM_ProcessInvalidateJob(&NvM_InternalState.ActiveJob);
-                        break;
-
-                    default:
-                        NvM_InternalState.CurrentJob = NULL_PTR;
-                        NvM_InternalState.State = NVM_STATE_IDLE;
-                        break;
-                }
-            }
-        }
+        return FALSE;
     }
-    else if (NvM_InternalState.State == NVM_STATE_BUSY)
+
+    if (NvM_QueuePop(NvM_InternalState.ImmediateQueue,
+                     &NvM_InternalState.ImmediateQueueHead,
+                     &NvM_InternalState.ImmediateQueueTail,
+                     &NvM_InternalState.ImmediateQueueCount,
+                     NVM_SIZE_IMMEDIATE_JOB_QUEUE,
+                     &jobEntry) == E_OK)
     {
-        /* Check if current job is complete */
-        if (NvM_InternalState.CurrentJob != NULL_PTR)
+        NvM_InternalState.ActiveJob = jobEntry;
+        NvM_InternalState.CurrentJob = &NvM_InternalState.ActiveJob;
+
+        switch (NvM_InternalState.ActiveJob.JobType)
         {
-            blockDesc = NvM_GetBlockDescriptor(NvM_InternalState.CurrentJob->BlockId);
+            case NVM_JOB_TYPE_RESTORE:
+                NvM_ProcessRestoreJob(&NvM_InternalState.ActiveJob);
+                break;
 
-            if (blockDesc != NULL_PTR)
-            {
-                memIfStatus = MemIf_GetStatus(blockDesc->DeviceId);
+            default:
+                break;
+        }
 
-                if (memIfStatus == MEMIF_IDLE)
-                {
-                    MemIf_JobResultType jobResult = MemIf_GetJobResult(blockDesc->DeviceId);
-                    jobComplete = TRUE;
+        NvM_InternalState.CurrentJob = NULL_PTR;
+    }
 
-                    if (jobResult == MEMIF_JOB_OK)
-                    {
-                        /* Job completed successfully */
-                        if (NvM_InternalState.CurrentJob->JobType == NVM_JOB_TYPE_READ)
-                        {
-#if (NVM_CALC_RAM_BLOCK_CRC == STD_ON)
-                            /* Validate CRC if configured */
-                            if (blockDesc->BlockUseCrc == TRUE)
-                            {
-                                uint8 crcSize = NvM_GetCrcSize(blockDesc->CrcType);
-                                uint32 storedCrc = 0U;
-                                uint32 calcCrc;
-                                boolean crcMatch = FALSE;
-                                uint8 idx;
-                                const uint8* readFrame;
+    return TRUE;
+}
 
-                                /* CRC frame may be staged internally, not in caller RAM */
-                                readFrame = NvM_GetReadFrame(blockDesc,
-                                                             NvM_InternalState.CurrentJob->DataPtr);
+/**
+ * @brief   Try to start a job from the standard queue
+ */
+STATIC void Nvm_StartStandardJob(void)
+{
+    NvM_JobQueueEntryType jobEntry;
 
-                                calcCrc = NvM_CalculateCrc(readFrame,
-                                                           blockDesc->NvBlockLength,
-                                                           blockDesc->CrcType);
+    if (NvM_QueueIsEmpty(NvM_InternalState.StandardQueueCount))
+    {
+        return;
+    }
 
-                                /* Extract stored CRC from tail of data buffer */
-                                for (idx = 0U; idx < crcSize; idx++)
-                                {
-                                    storedCrc = (storedCrc << 8U) |
-                                                readFrame[blockDesc->NvBlockLength + idx];
-                                }
+    if (NvM_QueuePop(NvM_InternalState.StandardQueue,
+                     &NvM_InternalState.StandardQueueHead,
+                     &NvM_InternalState.StandardQueueTail,
+                     &NvM_InternalState.StandardQueueCount,
+                     NVM_SIZE_STANDARD_JOB_QUEUE,
+                     &jobEntry) == E_OK)
+    {
+        NvM_InternalState.ActiveJob = jobEntry;
+        NvM_InternalState.CurrentJob = &NvM_InternalState.ActiveJob;
+        NvM_InternalState.State = NVM_STATE_BUSY;
 
-                                if (crcSize == 1U)
-                                {
-                                    crcMatch = ((uint8)calcCrc == (uint8)storedCrc);
-                                }
-                                else if (crcSize == 2U)
-                                {
-                                    crcMatch = ((uint16)calcCrc == (uint16)storedCrc);
-                                }
-                                else if (crcSize == 4U)
-                                {
-                                    crcMatch = (calcCrc == storedCrc);
-                                }
-                                else
-                                {
-                                    crcMatch = TRUE;
-                                }
+        /* Process the job based on type */
+        switch (NvM_InternalState.ActiveJob.JobType)
+        {
+            case NVM_JOB_TYPE_READ:
+                NvM_ProcessReadJob(&NvM_InternalState.ActiveJob);
+                break;
 
-                                if (crcMatch == FALSE)
-                                {
-                                    /* CRC mismatch - try redundant copy or ROM fallback */
-                                    if ((blockDesc->ManagementType == NVM_BLOCK_REDUNDANT) &&
-                                        (NvM_InternalState.CurrentJob->CopyIndex == 0U))
-                                    {
-                                        NvM_InternalState.CurrentJob->CopyIndex = 1U;
-                                        NvM_ReadRedundantBlock(NvM_InternalState.CurrentJob);
-/* [MISRA Advisory] Redundant:                                         jobComplete = FALSE; */
-                                    }
-                                    else
-                                    {
-                                        NvM_CopyRomDataToRam(NvM_InternalState.CurrentJob->BlockId,
-                                                             NvM_InternalState.CurrentJob->DataPtr);
-                                        NvM_InternalState.CurrentJob->Result = NVM_REQ_INTEGRITY_FAILED;
-                                        NvM_InternalState.BlockStates[NvM_InternalState.CurrentJob->BlockId].LastResult = NVM_REQ_INTEGRITY_FAILED;
-                                        jobComplete = TRUE;
-                                    }
-                                }
-                                else
-                                {
-                                    /* CRC OK */
-                                    NvM_InternalState.CurrentJob->Result = NVM_REQ_OK;
-                                    NvM_InternalState.BlockStates[NvM_InternalState.CurrentJob->BlockId].LastResult = NVM_REQ_OK;
-                                    jobComplete = TRUE;
-                                }
-                            }
-                            else
-#endif
-                            {
-                                NvM_InternalState.CurrentJob->Result = NVM_REQ_OK;
-                                NvM_InternalState.BlockStates[NvM_InternalState.CurrentJob->BlockId].LastResult = NVM_REQ_OK;
-                                jobComplete = TRUE;
-                            }
-                        }
-                        else if (NvM_InternalState.CurrentJob->JobType == NVM_JOB_TYPE_WRITE)
-                        {
-                            if ((blockDesc->ManagementType == NVM_BLOCK_REDUNDANT) &&
-                                (NvM_InternalState.CurrentJob->CopyIndex == 0U))
-                            {
-                                /* Write second redundant copy */
-                                NvM_InternalState.CurrentJob->CopyIndex = 1U;
-                                NvM_WriteRedundantBlock(NvM_InternalState.CurrentJob);
-                                jobComplete = FALSE;
-                            }
-                            else
-                            {
-                                /* Increment write counter on successful write */
-                                if (NvM_InternalState.BlockStates[NvM_InternalState.CurrentJob->BlockId].WriteCounter < 0xFFU)
-                                {
-                                    NvM_InternalState.BlockStates[NvM_InternalState.CurrentJob->BlockId].WriteCounter++;
-                                }
-                                NvM_InternalState.BlockStates[NvM_InternalState.CurrentJob->BlockId].DataChanged = FALSE;
+            case NVM_JOB_TYPE_WRITE:
+                NvM_ProcessWriteJob(&NvM_InternalState.ActiveJob);
+                break;
 
-                                if (blockDesc->BlockWriteOnce == TRUE)
-                                {
-                                    NvM_InternalState.BlockStates[NvM_InternalState.CurrentJob->BlockId].WriteOnceDone = TRUE;
-                                }
+            case NVM_JOB_TYPE_ERASE:
+                NvM_ProcessEraseJob(&NvM_InternalState.ActiveJob);
+                break;
 
-                                NvM_InternalState.CurrentJob->Result = NVM_REQ_OK;
-                                NvM_InternalState.BlockStates[NvM_InternalState.CurrentJob->BlockId].LastResult = NVM_REQ_OK;
-                                jobComplete = TRUE;
-                            }
-                        }
-                        else
-                        {
-                            NvM_InternalState.CurrentJob->Result = NVM_REQ_OK;
-                            NvM_InternalState.BlockStates[NvM_InternalState.CurrentJob->BlockId].LastResult = NVM_REQ_OK;
-                            jobComplete = TRUE;
-                        }
-                    }
-                    else
-                    {
-                        /* Job failed - check retry count */
-                        uint16 maxRetries;
+            case NVM_JOB_TYPE_INVALIDATE:
+                NvM_ProcessInvalidateJob(&NvM_InternalState.ActiveJob);
+                break;
 
-                        if (NvM_InternalState.CurrentJob->JobType == NVM_JOB_TYPE_READ)
-                        {
-                            maxRetries = NvM_InternalState.ConfigPtr->MaxNumberOfReadRetries;
-                        }
-                        else
-                        {
-                            maxRetries = NvM_InternalState.ConfigPtr->MaxNumberOfWriteRetries;
-                        }
-
-                        if (NvM_InternalState.CurrentJob->RetryCount < maxRetries)
-                        {
-                            NvM_InternalState.CurrentJob->RetryCount++;
-                            jobComplete = FALSE;
-
-                            /* Re-submit the job */
-                            switch (NvM_InternalState.CurrentJob->JobType)
-                            {
-                                case NVM_JOB_TYPE_READ:
-                                    NvM_ProcessReadJob(NvM_InternalState.CurrentJob);
-                                    break;
-
-                                case NVM_JOB_TYPE_WRITE:
-                                    NvM_ProcessWriteJob(NvM_InternalState.CurrentJob);
-                                    break;
-
-                                case NVM_JOB_TYPE_ERASE:
-                                    NvM_ProcessEraseJob(NvM_InternalState.CurrentJob);
-                                    break;
-
-                                case NVM_JOB_TYPE_INVALIDATE:
-                                    NvM_ProcessInvalidateJob(NvM_InternalState.CurrentJob);
-                                    break;
-
-                                default:
-                                    jobComplete = TRUE;
-                                    break;
-                            }
-                        }
-                        else
-                        {
-                            /* Max retries exceeded */
-                            if (NvM_InternalState.CurrentJob->JobType == NVM_JOB_TYPE_READ)
-                            {
-                                NvM_CopyRomDataToRam(NvM_InternalState.CurrentJob->BlockId,
-                                                     NvM_InternalState.CurrentJob->DataPtr);
-                                NvM_InternalState.CurrentJob->Result = NVM_REQ_RESTORED_FROM_ROM;
-                                NvM_InternalState.BlockStates[NvM_InternalState.CurrentJob->BlockId].LastResult = NVM_REQ_RESTORED_FROM_ROM;
-                            }
-                            else
-                            {
-                                NvM_InternalState.CurrentJob->Result = NVM_REQ_NOT_OK;
-                                NvM_InternalState.BlockStates[NvM_InternalState.CurrentJob->BlockId].LastResult = NVM_REQ_NOT_OK;
-                            }
-                            jobComplete = TRUE;
-                        }
-                    }
-
-                    if (jobComplete == TRUE)
-                    {
-                        /* CRC payload was staged internally; publish it to caller RAM */
-                        if ((NvM_InternalState.CurrentJob->JobType == NVM_JOB_TYPE_READ) &&
-                            (NvM_InternalState.CurrentJob->Result == NVM_REQ_OK))
-                        {
-                            NvM_ReleaseReadFrame(blockDesc, NvM_InternalState.CurrentJob->DataPtr);
-                        }
-
-                        NvM_UpdateBatchOperationStatus(NvM_InternalState.CurrentJob->JobType);
-
-                        NvM_InternalState.CurrentJob->JobState = NVM_JOB_STATE_IDLE;
-                        NvM_InternalState.BlockStates[NvM_InternalState.CurrentJob->BlockId].JobPending = 0U;
-                        NvM_InvokeJobEndCallback(NvM_InternalState.CurrentJob->BlockId,
-                                                 NvM_InternalState.CurrentJob->Result);
-                        NvM_InternalState.CurrentJob = NULL_PTR;
-                        NvM_InternalState.State = NVM_STATE_IDLE;
-                    }
-                }
-                else if ((memIfStatus != MEMIF_BUSY) && (memIfStatus != MEMIF_BUSY_INTERNAL))
-                {
-                    /* Unexpected error state - treat as failure with retry */
-                    uint16 maxRetries;
-
-                    if (NvM_InternalState.CurrentJob->JobType == NVM_JOB_TYPE_READ)
-                    {
-                        maxRetries = NvM_InternalState.ConfigPtr->MaxNumberOfReadRetries;
-                    }
-                    else
-                    {
-                        maxRetries = NvM_InternalState.ConfigPtr->MaxNumberOfWriteRetries;
-                    }
-
-                    if (NvM_InternalState.CurrentJob->RetryCount < maxRetries)
-                    {
-                        NvM_InternalState.CurrentJob->RetryCount++;
-                        /* Re-submit */
-                        switch (NvM_InternalState.CurrentJob->JobType)
-                        {
-                            case NVM_JOB_TYPE_READ:
-                                NvM_ProcessReadJob(NvM_InternalState.CurrentJob);
-                                break;
-                            case NVM_JOB_TYPE_WRITE:
-                                NvM_ProcessWriteJob(NvM_InternalState.CurrentJob);
-                                break;
-                            case NVM_JOB_TYPE_ERASE:
-                                NvM_ProcessEraseJob(NvM_InternalState.CurrentJob);
-                                break;
-                            case NVM_JOB_TYPE_INVALIDATE:
-                                NvM_ProcessInvalidateJob(NvM_InternalState.CurrentJob);
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        NvM_UpdateBatchOperationStatus(NvM_InternalState.CurrentJob->JobType);
-
-                        if (NvM_InternalState.CurrentJob->JobType == NVM_JOB_TYPE_READ)
-                        {
-                            NvM_CopyRomDataToRam(NvM_InternalState.CurrentJob->BlockId,
-                                                 NvM_InternalState.CurrentJob->DataPtr);
-                            NvM_InternalState.CurrentJob->Result = NVM_REQ_RESTORED_FROM_ROM;
-                            NvM_InternalState.BlockStates[NvM_InternalState.CurrentJob->BlockId].LastResult = NVM_REQ_RESTORED_FROM_ROM;
-                        }
-                        else
-                        {
-                            NvM_InternalState.CurrentJob->Result = NVM_REQ_NOT_OK;
-                            NvM_InternalState.BlockStates[NvM_InternalState.CurrentJob->BlockId].LastResult = NVM_REQ_NOT_OK;
-                        }
-                        NvM_InternalState.CurrentJob->JobState = NVM_JOB_STATE_IDLE;
-                        NvM_InternalState.BlockStates[NvM_InternalState.CurrentJob->BlockId].JobPending = 0U;
-                        NvM_InvokeJobEndCallback(NvM_InternalState.CurrentJob->BlockId,
-                                                 NvM_InternalState.CurrentJob->Result);
-                        NvM_InternalState.CurrentJob = NULL_PTR;
-                        NvM_InternalState.State = NVM_STATE_IDLE;
-                    }
-                }
-                /* else: still busy, wait for next cycle */
-            }
-            else
-            {
+            default:
                 NvM_InternalState.CurrentJob = NULL_PTR;
                 NvM_InternalState.State = NVM_STATE_IDLE;
-            }
+                break;
+        }
+    }
+}
+
+/**
+ * @brief   Start the next queued job (immediate queue has priority)
+ */
+STATIC void Nvm_StartQueuedJob(void)
+{
+    /* Process immediate queue first (high priority) */
+    if (Nvm_TryStartImmediateJob() == TRUE)
+    {
+        return;
+    }
+    /* Process standard queue */
+    Nvm_StartStandardJob();
+}
+
+#if (NVM_CALC_RAM_BLOCK_CRC == STD_ON)
+/**
+ * @brief   Validate CRC of a finished READ job; fall back to redundant copy or ROM on mismatch
+ * @return  TRUE if the job is complete, FALSE if a redundant read was re-submitted
+ */
+STATIC boolean Nvm_ValidateReadCrc(const NvM_BlockDescriptorType* blockDesc)
+{
+    uint8 crcSize = NvM_GetCrcSize(blockDesc->CrcType);
+    uint32 storedCrc = 0U;
+    uint32 calcCrc;
+    boolean crcMatch = FALSE;
+    uint8 idx;
+    const uint8* readFrame;
+
+    /* CRC frame may be staged internally, not in caller RAM */
+    readFrame = NvM_GetReadFrame(blockDesc,
+                                 NvM_InternalState.CurrentJob->DataPtr);
+
+    calcCrc = NvM_CalculateCrc(readFrame,
+                               blockDesc->NvBlockLength,
+                               blockDesc->CrcType);
+
+    /* Extract stored CRC from tail of data buffer */
+    for (idx = 0U; idx < crcSize; idx++)
+    {
+        storedCrc = (storedCrc << 8U) |
+                    readFrame[blockDesc->NvBlockLength + idx];
+    }
+
+    if (crcSize == 1U)
+    {
+        crcMatch = ((uint8)calcCrc == (uint8)storedCrc);
+    }
+    else if (crcSize == 2U)
+    {
+        crcMatch = ((uint16)calcCrc == (uint16)storedCrc);
+    }
+    else if (crcSize == 4U)
+    {
+        crcMatch = (calcCrc == storedCrc);
+    }
+    else
+    {
+        crcMatch = TRUE;
+    }
+
+    if (crcMatch == TRUE)
+    {
+        /* CRC OK */
+        Nvm_SetJobResult(NVM_REQ_OK);
+        return TRUE;
+    }
+
+    /* CRC mismatch - try redundant copy or ROM fallback */
+    if ((blockDesc->ManagementType == NVM_BLOCK_REDUNDANT) &&
+        (NvM_InternalState.CurrentJob->CopyIndex == 0U))
+    {
+        NvM_InternalState.CurrentJob->CopyIndex = 1U;
+        NvM_ReadRedundantBlock(NvM_InternalState.CurrentJob);
+        /* Behavior-preserving: original code had jobComplete=FALSE commented out,
+         * i.e. the job was finalized in this cycle despite the redundant re-read. */
+        return TRUE;
+    }
+
+    NvM_CopyRomDataToRam(NvM_InternalState.CurrentJob->BlockId,
+                         NvM_InternalState.CurrentJob->DataPtr);
+    Nvm_SetJobResult(NVM_REQ_INTEGRITY_FAILED);
+    return TRUE;
+}
+#endif
+
+/**
+ * @brief   Handle successful completion of a READ job (incl. CRC validation)
+ * @return  TRUE if the job is complete
+ */
+STATIC boolean Nvm_HandleReadJobDone(const NvM_BlockDescriptorType* blockDesc)
+{
+#if (NVM_CALC_RAM_BLOCK_CRC == STD_ON)
+    /* Validate CRC if configured */
+    if (blockDesc->BlockUseCrc == TRUE)
+    {
+        return Nvm_ValidateReadCrc(blockDesc);
+    }
+#else
+    (void)blockDesc;
+#endif
+    Nvm_SetJobResult(NVM_REQ_OK);
+    return TRUE;
+}
+
+/**
+ * @brief   Handle successful completion of a WRITE job (incl. redundant second copy)
+ * @return  TRUE if the job is complete
+ */
+STATIC boolean Nvm_HandleWriteJobDone(const NvM_BlockDescriptorType* blockDesc)
+{
+    if ((blockDesc->ManagementType == NVM_BLOCK_REDUNDANT) &&
+        (NvM_InternalState.CurrentJob->CopyIndex == 0U))
+    {
+        /* Write second redundant copy */
+        NvM_InternalState.CurrentJob->CopyIndex = 1U;
+        NvM_WriteRedundantBlock(NvM_InternalState.CurrentJob);
+        return FALSE;
+    }
+
+    /* Increment write counter on successful write */
+    if (NvM_InternalState.BlockStates[NvM_InternalState.CurrentJob->BlockId].WriteCounter < 0xFFU)
+    {
+        NvM_InternalState.BlockStates[NvM_InternalState.CurrentJob->BlockId].WriteCounter++;
+    }
+    NvM_InternalState.BlockStates[NvM_InternalState.CurrentJob->BlockId].DataChanged = FALSE;
+
+    if (blockDesc->BlockWriteOnce == TRUE)
+    {
+        NvM_InternalState.BlockStates[NvM_InternalState.CurrentJob->BlockId].WriteOnceDone = TRUE;
+    }
+
+    Nvm_SetJobResult(NVM_REQ_OK);
+    return TRUE;
+}
+
+/**
+ * @brief   Handle successful completion of the current job
+ * @return  TRUE if the job is complete, FALSE if a follow-up operation was re-submitted
+ */
+STATIC boolean Nvm_HandleJobSuccess(const NvM_BlockDescriptorType* blockDesc)
+{
+    /* Job completed successfully */
+    if (NvM_InternalState.CurrentJob->JobType == NVM_JOB_TYPE_READ)
+    {
+        return Nvm_HandleReadJobDone(blockDesc);
+    }
+
+    if (NvM_InternalState.CurrentJob->JobType == NVM_JOB_TYPE_WRITE)
+    {
+        return Nvm_HandleWriteJobDone(blockDesc);
+    }
+
+    Nvm_SetJobResult(NVM_REQ_OK);
+    return TRUE;
+}
+
+/**
+ * @brief   Get the configured retry limit for the current job type
+ */
+STATIC uint16 Nvm_GetMaxRetries(void)
+{
+    if (NvM_InternalState.CurrentJob->JobType == NVM_JOB_TYPE_READ)
+    {
+        return NvM_InternalState.ConfigPtr->MaxNumberOfReadRetries;
+    }
+    return NvM_InternalState.ConfigPtr->MaxNumberOfWriteRetries;
+}
+
+/**
+ * @brief   Re-submit the current job after a failure
+ * @return  TRUE if the job was re-submitted, FALSE for unknown job type
+ */
+STATIC boolean Nvm_ResubmitJob(void)
+{
+    switch (NvM_InternalState.CurrentJob->JobType)
+    {
+        case NVM_JOB_TYPE_READ:
+            NvM_ProcessReadJob(NvM_InternalState.CurrentJob);
+            break;
+
+        case NVM_JOB_TYPE_WRITE:
+            NvM_ProcessWriteJob(NvM_InternalState.CurrentJob);
+            break;
+
+        case NVM_JOB_TYPE_ERASE:
+            NvM_ProcessEraseJob(NvM_InternalState.CurrentJob);
+            break;
+
+        case NVM_JOB_TYPE_INVALIDATE:
+            NvM_ProcessInvalidateJob(NvM_InternalState.CurrentJob);
+            break;
+
+        default:
+            return FALSE;
+    }
+    return TRUE;
+}
+
+/**
+ * @brief   Set the final result after max retries exceeded (ROM restore for READ)
+ */
+STATIC void Nvm_SetMaxRetryResult(void)
+{
+    if (NvM_InternalState.CurrentJob->JobType == NVM_JOB_TYPE_READ)
+    {
+        NvM_CopyRomDataToRam(NvM_InternalState.CurrentJob->BlockId,
+                             NvM_InternalState.CurrentJob->DataPtr);
+        Nvm_SetJobResult(NVM_REQ_RESTORED_FROM_ROM);
+    }
+    else
+    {
+        Nvm_SetJobResult(NVM_REQ_NOT_OK);
+    }
+}
+
+/**
+ * @brief   Handle a failed job: retry with re-submission or finish with final result
+ * @return  TRUE if the job is complete, FALSE if it was re-submitted
+ */
+STATIC boolean Nvm_RetryOrFailJob(void)
+{
+    uint16 maxRetries = Nvm_GetMaxRetries();
+
+    if (NvM_InternalState.CurrentJob->RetryCount < maxRetries)
+    {
+        NvM_InternalState.CurrentJob->RetryCount++;
+
+        /* Re-submit the job; unknown job type means the job is complete */
+        return (Nvm_ResubmitJob() == FALSE) ? TRUE : FALSE;
+    }
+
+    /* Max retries exceeded */
+    Nvm_SetMaxRetryResult();
+    return TRUE;
+}
+
+/**
+ * @brief   Finalize a completed job: publish staged CRC frame, update batch status, release
+ */
+STATIC void Nvm_FinishJob(const NvM_BlockDescriptorType* blockDesc)
+{
+    /* CRC payload was staged internally; publish it to caller RAM */
+    if ((NvM_InternalState.CurrentJob->JobType == NVM_JOB_TYPE_READ) &&
+        (NvM_InternalState.CurrentJob->Result == NVM_REQ_OK))
+    {
+        NvM_ReleaseReadFrame(blockDesc, NvM_InternalState.CurrentJob->DataPtr);
+    }
+
+    NvM_UpdateBatchOperationStatus(NvM_InternalState.CurrentJob->JobType);
+    Nvm_ReleaseJob();
+}
+
+/**
+ * @brief   Handle unexpected MemIf error state: treat as failure with retry
+ */
+STATIC void Nvm_HandleJobErrorState(void)
+{
+    uint16 maxRetries = Nvm_GetMaxRetries();
+
+    if (NvM_InternalState.CurrentJob->RetryCount < maxRetries)
+    {
+        NvM_InternalState.CurrentJob->RetryCount++;
+        /* Re-submit */
+        (void)Nvm_ResubmitJob();
+    }
+    else
+    {
+        NvM_UpdateBatchOperationStatus(NvM_InternalState.CurrentJob->JobType);
+        Nvm_SetMaxRetryResult();
+        Nvm_ReleaseJob();
+    }
+}
+
+/**
+ * @brief   Process the NVM_STATE_BUSY state: poll MemIf and complete/retry the active job
+ */
+STATIC void Nvm_HandleBusyState(void)
+{
+    MemIf_StatusType memIfStatus;
+    const NvM_BlockDescriptorType* blockDesc;
+    boolean jobComplete;
+
+    /* Check if current job is complete */
+    if (NvM_InternalState.CurrentJob == NULL_PTR)
+    {
+        NvM_InternalState.State = NVM_STATE_IDLE;
+        return;
+    }
+
+    blockDesc = NvM_GetBlockDescriptor(NvM_InternalState.CurrentJob->BlockId);
+
+    if (blockDesc == NULL_PTR)
+    {
+        NvM_InternalState.CurrentJob = NULL_PTR;
+        NvM_InternalState.State = NVM_STATE_IDLE;
+        return;
+    }
+
+    memIfStatus = MemIf_GetStatus(blockDesc->DeviceId);
+
+    if (memIfStatus == MEMIF_IDLE)
+    {
+        MemIf_JobResultType jobResult = MemIf_GetJobResult(blockDesc->DeviceId);
+        jobComplete = TRUE;
+
+        if (jobResult == MEMIF_JOB_OK)
+        {
+            jobComplete = Nvm_HandleJobSuccess(blockDesc);
         }
         else
         {
-            NvM_InternalState.State = NVM_STATE_IDLE;
+            /* Job failed - check retry count */
+            jobComplete = Nvm_RetryOrFailJob();
         }
+
+        if (jobComplete == TRUE)
+        {
+            Nvm_FinishJob(blockDesc);
+        }
+    }
+    else if ((memIfStatus != MEMIF_BUSY) && (memIfStatus != MEMIF_BUSY_INTERNAL))
+    {
+        Nvm_HandleJobErrorState();
+    }
+    else
+    {
+        /* else: still busy, wait for next cycle */
+    }
+}
+
+/** @req SWS_NvM_00015 */
+void NvM_MainFunction(void)
+{
+    Nvm_HandleKillReadAll();
+    Nvm_HandleKillWriteAll();
+
+    if (NvM_InternalState.State == NVM_STATE_IDLE)
+    {
+        Nvm_StartQueuedJob();
+    }
+    else if (NvM_InternalState.State == NVM_STATE_BUSY)
+    {
+        Nvm_HandleBusyState();
     }
     else
     {

@@ -1001,6 +1001,250 @@ void CanTp_GetVersionInfo(Std_VersionInfoType* versioninfo)
 }
 
 /**
+ * @brief Persist received addressing MetaData (MIXED / NORMALFIXED formats)
+ */
+static void CanTp_StoreRxMetaData(const CanTp_RxNsduConfigType* rxNsduConfig,
+                                  boolean MetaDataValid, const uint8* MetaData)
+{
+    if ((MetaDataValid == TRUE) && (rxNsduConfig != NULL_PTR) &&
+        ((rxNsduConfig->CanTpRxAddressingFormat == CANTP_MIXED) ||
+         (rxNsduConfig->CanTpRxAddressingFormat == CANTP_NORMALFIXED))) {
+        for (uint8 i = 0U; i < CANTP_RX_QUEUE_MAX_METADATA; i++) {
+            CanTp_LastRxMetaData[i] = MetaData[i];
+        }
+        CanTp_LastRxMetaDataValid = TRUE;
+    }
+}
+
+/**
+ * @brief Handle a received Single Frame
+ */
+static void CanTp_ProcessRxSF(const uint8* SduDataPtr, PduLengthType SduLength, boolean paddingActive)
+{
+    const uint8 sfDl = SduDataPtr[0] & CANTP_PCI_SF_DL_MASK;
+
+    /* Padding validation: the bytes after 1 + SF_DL must carry the
+     * configured padding value (ISO 15765-2). Report-only unless
+     * CANTP_REJECT_INVALID_PADDING is enabled. */
+    if ((paddingActive == TRUE) &&
+                        (CanTp_CheckRxPaddingFrom(SduDataPtr, SduLength, (PduLengthType)sfDl + 1U) == FALSE)) {
+        (void)Det_ReportRuntimeError(CANTP_MODULE_ID, 0U, CANTP_SID_RXINDICATION, CANTP_E_RX_UNEXP_PADDING);
+#if (CANTP_REJECT_INVALID_PADDING == STD_ON)
+        return;  /* Drop the frame: no channel is allocated */
+#endif
+    }
+
+    /* Find free channel */
+    const CanTp_ChannelType channel = CanTp_FindFreeChannel();
+    if (channel != CANTP_INVALID_CHANNEL_ID) {
+        const boolean channelFd = CanTp_IsChannelFd(channel);
+
+        if (CanTp_CheckRxFrameDL(CANTP_PCI_TYPE_SF, SduLength, (uint16)sfDl, channelFd, paddingActive) == TRUE) {
+            CanTp_ChannelRuntimeType* runtime = &CanTp_ChannelRuntime[channel];
+            runtime->State = CANTP_CH_RX_SF;
+            runtime->DataLength = sfDl;
+
+            /* Copy data */
+            for (uint8 i = 0U; i < sfDl; i++) {
+                runtime->Buffer[i] = SduDataPtr[i + 1U];
+            }
+
+            /* Forward to PduR */
+            PduInfoType pduInfo;
+            pduInfo.SduDataPtr = runtime->Buffer;
+            pduInfo.SduLength = sfDl;
+            pduInfo.MetaDataPtr = NULL_PTR;
+
+            PduR_RxIndication(CANTP_RX_DIAG_PHYSICAL, &pduInfo);
+
+            CanTp_ResetChannel(channel);
+        } else {
+            /* DLC / SF_DL validation failed: report and drop the frame */
+            (void)Det_ReportRuntimeError(CANTP_MODULE_ID, 0U, CANTP_SID_RXINDICATION, CANTP_E_RX_SF_UNEXPECTED_LEN);
+        }
+    }
+}
+
+/**
+ * @brief Handle a received First Frame
+ */
+static void CanTp_ProcessRxFF(const uint8* SduDataPtr, PduLengthType SduLength,
+                              const CanTp_RxNsduConfigType* rxNsduConfig, boolean paddingActive,
+                              boolean MetaDataValid, const uint8* MetaData)
+{
+    const uint16 ffDl = (uint16)(((uint16)(SduDataPtr[0] & CANTP_PCI_FF_DL_MASK) << 8) | (uint16)SduDataPtr[1]);
+
+    /* Find free channel */
+    const CanTp_ChannelType channel = CanTp_FindFreeChannel();
+    if (channel != CANTP_INVALID_CHANNEL_ID) {
+        const boolean channelFd = CanTp_IsChannelFd(channel);
+
+        /* FF DL and frame length must be consistent with the channel capability */
+        if (CanTp_CheckRxFrameDL(CANTP_PCI_TYPE_FF, SduLength, ffDl, channelFd, paddingActive) == TRUE) {
+            if (rxNsduConfig == NULL_PTR) {
+                return;  /* Invalid configuration */
+            }
+
+            CanTp_ChannelRuntimeType* runtime = &CanTp_ChannelRuntime[channel];
+            runtime->State = CANTP_CH_RX_FF;
+            runtime->DataLength = ffDl;
+            runtime->DataIndex = CANTP_MAX_FF_DATA_LEN;
+            runtime->SequenceNumber = 1U;
+            runtime->RxNsduConfig = rxNsduConfig;  /* Store config pointer */
+
+            /* Store the addressing MetaData in the channel runtime */
+            if ((MetaDataValid == TRUE) &&
+                ((rxNsduConfig->CanTpRxAddressingFormat == CANTP_MIXED) ||
+                 (rxNsduConfig->CanTpRxAddressingFormat == CANTP_NORMALFIXED))) {
+                for (uint8 i = 0U; i < CANTP_RX_QUEUE_MAX_METADATA; i++) {
+                    runtime->RxMetaData[i] = MetaData[i];
+                }
+                runtime->RxMetaDataValid = TRUE;
+            }
+
+            /* Copy first 6 bytes */
+            for (uint8 i = 0U; i < CANTP_MAX_FF_DATA_LEN; i++) {
+                runtime->Buffer[i] = SduDataPtr[i + 2U];
+            }
+
+            /* Send Flow Control - Continue To Send */
+            CanTp_SendFlowControl(channel, CANTP_FLOWSTATUS_CTS, CANTP_BS_DEFAULT, CANTP_STMIN_DEFAULT);
+            runtime->State = CANTP_CH_RX_CF;
+            runtime->Timer = rxNsduConfig->CanTpNcr;  /* N_Cr from config table */
+        } else {
+            /* DLC / FF_DL validation failed: report and drop the frame */
+            (void)Det_ReportRuntimeError(CANTP_MODULE_ID, 0U, CANTP_SID_RXINDICATION, CANTP_E_RX_FF_UNEXPECTED_LEN);
+        }
+    }
+}
+
+/**
+ * @brief Handle a received Consecutive Frame
+ */
+static void CanTp_ProcessRxCF(uint8 pci, const uint8* SduDataPtr, PduLengthType SduLength)
+{
+    const uint8 sn = pci & CANTP_PCI_CF_SN_MASK;
+
+    /* Find active receive channel */
+    for (uint8 i = 0U; i < CANTP_MAX_CHANNEL_CNT; i++) {
+        CanTp_ChannelRuntimeType* runtime = &CanTp_ChannelRuntime[i];
+
+        if ((runtime->State == CANTP_CH_RX_CF) && (runtime->SequenceNumber == sn)) {
+            const uint16 remainingBytes = runtime->DataLength - runtime->DataIndex;
+            const uint8 bytesToCopy = (remainingBytes > CANTP_MAX_CF_DATA_LEN) ?
+                                      CANTP_MAX_CF_DATA_LEN : (uint8)remainingBytes;
+            const boolean channelFd = CanTp_IsChannelFd((CanTp_ChannelType)i);
+            const boolean rxPaddingActive = (runtime->RxNsduConfig != NULL_PTR) ?
+                                            ((runtime->RxNsduConfig->CanTpRxPaddingActivation == TRUE) ? TRUE : FALSE) :
+                                            ((CANTP_PADDING_BYTE == STD_ON) ? TRUE : FALSE);
+
+            if (CanTp_CheckRxFrameDL(CANTP_PCI_TYPE_CF, SduLength, (uint16)bytesToCopy, channelFd, rxPaddingActive) == TRUE) {
+                /* Padding validation: the bytes after PCI + copied
+                 * payload must carry the configured padding value.
+                 * Report-only unless CANTP_REJECT_INVALID_PADDING is
+                 * enabled (FC frames are exempt per ISO 15765-2). */
+                if ((rxPaddingActive == TRUE) &&
+                                    (CanTp_CheckRxPaddingFrom(SduDataPtr, SduLength, (PduLengthType)bytesToCopy + 1U) == FALSE)) {
+                    (void)Det_ReportRuntimeError(CANTP_MODULE_ID, 0U, CANTP_SID_RXINDICATION, CANTP_E_RX_UNEXP_PADDING);
+#if (CANTP_REJECT_INVALID_PADDING == STD_ON)
+                    return;  /* Drop the frame: reception not advanced */
+#endif
+                }
+
+                /* Copy data */
+                for (uint8 j = 0U; j < bytesToCopy; j++) {
+                    runtime->Buffer[runtime->DataIndex + j] = SduDataPtr[j + 1U];
+                }
+
+                runtime->DataIndex += bytesToCopy;
+                runtime->SequenceNumber = (runtime->SequenceNumber + 1U) & 0x0FU;
+                /* Reset N_Cr timer from config if available, otherwise use default */
+                if (runtime->RxNsduConfig != NULL_PTR) {
+                    runtime->Timer = runtime->RxNsduConfig->CanTpNcr;
+                } else {
+                    runtime->Timer = CANTP_NCR_DEFAULT;
+                }
+
+                /* Check if reception complete */
+                if (runtime->DataIndex >= runtime->DataLength) {
+                    /* Forward to PduR */
+                    PduInfoType pduInfo;
+                    pduInfo.SduDataPtr = runtime->Buffer;
+                    pduInfo.SduLength = runtime->DataLength;
+                    pduInfo.MetaDataPtr = NULL_PTR;
+
+                    PduR_RxIndication(CANTP_RX_DIAG_PHYSICAL, &pduInfo);
+
+                    CanTp_ResetChannel((CanTp_ChannelType)i);
+                }
+            } else {
+                /* DLC validation failed: report and drop the frame */
+                (void)Det_ReportRuntimeError(CANTP_MODULE_ID, 0U, CANTP_SID_RXINDICATION, CANTP_E_RX_CF_UNEXPECTED_LEN);
+            }
+            return;
+        }
+    }
+}
+
+/**
+ * @brief Handle a received Flow Control frame
+ */
+static void CanTp_ProcessRxFC(const uint8* SduDataPtr, PduLengthType SduLength)
+{
+    const uint8 fs = SduDataPtr[0] & CANTP_PCI_FC_FS_MASK;
+
+    /* Find active transmit channel waiting for FC */
+    for (uint8 i = 0U; i < CANTP_MAX_CHANNEL_CNT; i++) {
+        CanTp_ChannelRuntimeType* runtime = &CanTp_ChannelRuntime[i];
+
+        if (runtime->State == CANTP_CH_TX_WAIT_FC) {
+            const boolean channelFd = CanTp_IsChannelFd((CanTp_ChannelType)i);
+            const boolean txPaddingActive = (runtime->TxNsduConfig != NULL_PTR) ?
+                                            ((runtime->TxNsduConfig->CanTpTxPaddingActivation == TRUE) ? TRUE : FALSE) :
+                                            ((CANTP_PADDING_BYTE == STD_ON) ? TRUE : FALSE);
+
+            if (CanTp_CheckRxFrameDL(CANTP_PCI_TYPE_FC, SduLength, 0U, channelFd, txPaddingActive) == TRUE) {
+                const uint8 bs = SduDataPtr[1];
+                const uint8 stmin = SduDataPtr[2];
+
+                if (fs == (uint8)CANTP_FLOWSTATUS_CTS) {
+                    /* Continue To Send */
+                    runtime->BlockSize = bs;
+                    runtime->STmin = stmin;
+                    runtime->State = CANTP_CH_TX_CF;
+                    /* Use N_Cs from config if available */
+                    if (runtime->TxNsduConfig != NULL_PTR) {
+                        runtime->Timer = runtime->TxNsduConfig->CanTpNcs;
+                    } else {
+                        runtime->Timer = CANTP_NCS_DEFAULT;
+                    }
+
+                    /* Send first Consecutive Frame */
+                    CanTp_SendConsecutiveFrame((CanTp_ChannelType)i);
+                } else if (fs == (uint8)CANTP_FLOWSTATUS_WT) {
+                    /* Wait */
+                    /* Use N_Bs from config if available */
+                    if (runtime->TxNsduConfig != NULL_PTR) {
+                        runtime->Timer = runtime->TxNsduConfig->CanTpNbs;
+                    } else {
+                        runtime->Timer = CANTP_NBS_DEFAULT;
+                    }
+                } else if (fs == (uint8)CANTP_FLOWSTATUS_OVFLW) {
+                    /* Overflow - abort transmission */
+                    CanTp_ResetChannel((CanTp_ChannelType)i);
+                } else {
+                    /* Reserved flow status: ignore */
+                }
+            } else {
+                /* DLC validation failed: report and drop the frame */
+                (void)Det_ReportRuntimeError(CANTP_MODULE_ID, 0U, CANTP_SID_RXINDICATION, CANTP_E_RX_FC_UNEXPECTED_LEN);
+            }
+            return;
+        }
+    }
+}
+
+/**
  * @brief Process one dequeued Rx frame (protocol handling, task context)
  * @param RxPduId      CAN IF Rx PDU ID of the dequeued frame
  * @param SduDataPtr   frame payload (guaranteed non-NULL, at least 1 byte)
@@ -1025,231 +1269,30 @@ static void CanTp_ProcessRxFrame(PduIdType RxPduId, const uint8* SduDataPtr, Pdu
                                   ((CANTP_PADDING_BYTE == STD_ON) ? TRUE : FALSE);
 
     /* Persist received addressing MetaData (MIXED / NORMALFIXED formats) */
-    if ((MetaDataValid == TRUE) && (rxNsduConfig != NULL_PTR) &&
-        ((rxNsduConfig->CanTpRxAddressingFormat == CANTP_MIXED) ||
-         (rxNsduConfig->CanTpRxAddressingFormat == CANTP_NORMALFIXED))) {
-        for (uint8 i = 0U; i < CANTP_RX_QUEUE_MAX_METADATA; i++) {
-            CanTp_LastRxMetaData[i] = MetaData[i];
-        }
-        CanTp_LastRxMetaDataValid = TRUE;
-    }
+    CanTp_StoreRxMetaData(rxNsduConfig, MetaDataValid, MetaData);
 
     switch (frameType) {
         case CANTP_PCI_TYPE_SF: {
             /* Single Frame received */
-            const uint8 sfDl = pci & CANTP_PCI_SF_DL_MASK;
-
-            /* Padding validation: the bytes after 1 + SF_DL must carry the
-             * configured padding value (ISO 15765-2). Report-only unless
-             * CANTP_REJECT_INVALID_PADDING is enabled. */
-            if ((paddingActive == TRUE) &&
-                                (CanTp_CheckRxPaddingFrom(SduDataPtr, SduLength, (PduLengthType)sfDl + 1U) == FALSE)) {
-                (void)Det_ReportRuntimeError(CANTP_MODULE_ID, 0U, CANTP_SID_RXINDICATION, CANTP_E_RX_UNEXP_PADDING);
-#if (CANTP_REJECT_INVALID_PADDING == STD_ON)
-                break;  /* Drop the frame: no channel is allocated */
-#endif
-            }
-
-            /* Find free channel */
-            const CanTp_ChannelType channel = CanTp_FindFreeChannel();
-            if (channel != CANTP_INVALID_CHANNEL_ID) {
-                const boolean channelFd = CanTp_IsChannelFd(channel);
-
-                if (CanTp_CheckRxFrameDL(CANTP_PCI_TYPE_SF, SduLength, (uint16)sfDl, channelFd, paddingActive) == TRUE) {
-                    CanTp_ChannelRuntimeType* runtime = &CanTp_ChannelRuntime[channel];
-                    runtime->State = CANTP_CH_RX_SF;
-                    runtime->DataLength = sfDl;
-
-                    /* Copy data */
-                    for (uint8 i = 0U; i < sfDl; i++) {
-                        runtime->Buffer[i] = SduDataPtr[i + 1U];
-                    }
-
-                    /* Forward to PduR */
-                    PduInfoType pduInfo;
-                    pduInfo.SduDataPtr = runtime->Buffer;
-                    pduInfo.SduLength = sfDl;
-                    pduInfo.MetaDataPtr = NULL_PTR;
-
-                    PduR_RxIndication(CANTP_RX_DIAG_PHYSICAL, &pduInfo);
-
-                    CanTp_ResetChannel(channel);
-                } else {
-                    /* DLC / SF_DL validation failed: report and drop the frame */
-                    (void)Det_ReportRuntimeError(CANTP_MODULE_ID, 0U, CANTP_SID_RXINDICATION, CANTP_E_RX_SF_UNEXPECTED_LEN);
-                }
-            }
+            CanTp_ProcessRxSF(SduDataPtr, SduLength, paddingActive);
             break;
         }
 
         case CANTP_PCI_TYPE_FF: {
             /* First Frame received */
-            const uint16 ffDl = (uint16)(((uint16)(pci & CANTP_PCI_FF_DL_MASK) << 8) | (uint16)SduDataPtr[1]);
-
-            /* Find free channel */
-            const CanTp_ChannelType channel = CanTp_FindFreeChannel();
-            if (channel != CANTP_INVALID_CHANNEL_ID) {
-                const boolean channelFd = CanTp_IsChannelFd(channel);
-
-                /* FF DL and frame length must be consistent with the channel capability */
-                if (CanTp_CheckRxFrameDL(CANTP_PCI_TYPE_FF, SduLength, ffDl, channelFd, paddingActive) == TRUE) {
-                    if (rxNsduConfig == NULL_PTR) {
-                        break;  /* Invalid configuration */
-                    }
-
-                    CanTp_ChannelRuntimeType* runtime = &CanTp_ChannelRuntime[channel];
-                    runtime->State = CANTP_CH_RX_FF;
-                    runtime->DataLength = ffDl;
-                    runtime->DataIndex = CANTP_MAX_FF_DATA_LEN;
-                    runtime->SequenceNumber = 1U;
-                    runtime->RxNsduConfig = rxNsduConfig;  /* Store config pointer */
-
-                    /* Store the addressing MetaData in the channel runtime */
-                    if ((MetaDataValid == TRUE) &&
-                        ((rxNsduConfig->CanTpRxAddressingFormat == CANTP_MIXED) ||
-                         (rxNsduConfig->CanTpRxAddressingFormat == CANTP_NORMALFIXED))) {
-                        for (uint8 i = 0U; i < CANTP_RX_QUEUE_MAX_METADATA; i++) {
-                            runtime->RxMetaData[i] = MetaData[i];
-                        }
-                        runtime->RxMetaDataValid = TRUE;
-                    }
-
-                    /* Copy first 6 bytes */
-                    for (uint8 i = 0U; i < CANTP_MAX_FF_DATA_LEN; i++) {
-                        runtime->Buffer[i] = SduDataPtr[i + 2U];
-                    }
-
-                    /* Send Flow Control - Continue To Send */
-                    CanTp_SendFlowControl(channel, CANTP_FLOWSTATUS_CTS, CANTP_BS_DEFAULT, CANTP_STMIN_DEFAULT);
-                    runtime->State = CANTP_CH_RX_CF;
-                    runtime->Timer = rxNsduConfig->CanTpNcr;  /* N_Cr from config table */
-                } else {
-                    /* DLC / FF_DL validation failed: report and drop the frame */
-                    (void)Det_ReportRuntimeError(CANTP_MODULE_ID, 0U, CANTP_SID_RXINDICATION, CANTP_E_RX_FF_UNEXPECTED_LEN);
-                }
-            }
+            CanTp_ProcessRxFF(SduDataPtr, SduLength, rxNsduConfig, paddingActive, MetaDataValid, MetaData);
             break;
         }
 
         case CANTP_PCI_TYPE_CF: {
             /* Consecutive Frame received */
-            const uint8 sn = pci & CANTP_PCI_CF_SN_MASK;
-
-            /* Find active receive channel */
-            for (uint8 i = 0U; i < CANTP_MAX_CHANNEL_CNT; i++) {
-                CanTp_ChannelRuntimeType* runtime = &CanTp_ChannelRuntime[i];
-
-                if ((runtime->State == CANTP_CH_RX_CF) && (runtime->SequenceNumber == sn)) {
-                    const uint16 remainingBytes = runtime->DataLength - runtime->DataIndex;
-                    const uint8 bytesToCopy = (remainingBytes > CANTP_MAX_CF_DATA_LEN) ?
-                                              CANTP_MAX_CF_DATA_LEN : (uint8)remainingBytes;
-                    const boolean channelFd = CanTp_IsChannelFd((CanTp_ChannelType)i);
-                    const boolean rxPaddingActive = (runtime->RxNsduConfig != NULL_PTR) ?
-                                                    ((runtime->RxNsduConfig->CanTpRxPaddingActivation == TRUE) ? TRUE : FALSE) :
-                                                    ((CANTP_PADDING_BYTE == STD_ON) ? TRUE : FALSE);
-
-                    if (CanTp_CheckRxFrameDL(CANTP_PCI_TYPE_CF, SduLength, (uint16)bytesToCopy, channelFd, rxPaddingActive) == TRUE) {
-                        /* Padding validation: the bytes after PCI + copied
-                         * payload must carry the configured padding value.
-                         * Report-only unless CANTP_REJECT_INVALID_PADDING is
-                         * enabled (FC frames are exempt per ISO 15765-2). */
-                        if ((rxPaddingActive == TRUE) &&
-                                            (CanTp_CheckRxPaddingFrom(SduDataPtr, SduLength, (PduLengthType)bytesToCopy + 1U) == FALSE)) {
-                            (void)Det_ReportRuntimeError(CANTP_MODULE_ID, 0U, CANTP_SID_RXINDICATION, CANTP_E_RX_UNEXP_PADDING);
-#if (CANTP_REJECT_INVALID_PADDING == STD_ON)
-                            break;  /* Drop the frame: reception not advanced */
-#endif
-                        }
-
-                        /* Copy data */
-                        for (uint8 j = 0U; j < bytesToCopy; j++) {
-                            runtime->Buffer[runtime->DataIndex + j] = SduDataPtr[j + 1U];
-                        }
-
-                        runtime->DataIndex += bytesToCopy;
-                        runtime->SequenceNumber = (runtime->SequenceNumber + 1U) & 0x0FU;
-                        /* Reset N_Cr timer from config if available, otherwise use default */
-                        if (runtime->RxNsduConfig != NULL_PTR) {
-                            runtime->Timer = runtime->RxNsduConfig->CanTpNcr;
-                        } else {
-                            runtime->Timer = CANTP_NCR_DEFAULT;
-                        }
-
-                        /* Check if reception complete */
-                        if (runtime->DataIndex >= runtime->DataLength) {
-                            /* Forward to PduR */
-                            PduInfoType pduInfo;
-                            pduInfo.SduDataPtr = runtime->Buffer;
-                            pduInfo.SduLength = runtime->DataLength;
-                            pduInfo.MetaDataPtr = NULL_PTR;
-
-                            PduR_RxIndication(CANTP_RX_DIAG_PHYSICAL, &pduInfo);
-
-                            CanTp_ResetChannel((CanTp_ChannelType)i);
-                        }
-                    } else {
-                        /* DLC validation failed: report and drop the frame */
-                        (void)Det_ReportRuntimeError(CANTP_MODULE_ID, 0U, CANTP_SID_RXINDICATION, CANTP_E_RX_CF_UNEXPECTED_LEN);
-                    }
-                    break;
-                }
-            }
+            CanTp_ProcessRxCF(pci, SduDataPtr, SduLength);
             break;
         }
 
         case CANTP_PCI_TYPE_FC: {
             /* Flow Control received */
-            const uint8 fs = pci & CANTP_PCI_FC_FS_MASK;
-
-            /* Find active transmit channel waiting for FC */
-            for (uint8 i = 0U; i < CANTP_MAX_CHANNEL_CNT; i++) {
-                CanTp_ChannelRuntimeType* runtime = &CanTp_ChannelRuntime[i];
-
-                if (runtime->State == CANTP_CH_TX_WAIT_FC) {
-                    const boolean channelFd = CanTp_IsChannelFd((CanTp_ChannelType)i);
-                    const boolean txPaddingActive = (runtime->TxNsduConfig != NULL_PTR) ?
-                                                    ((runtime->TxNsduConfig->CanTpTxPaddingActivation == TRUE) ? TRUE : FALSE) :
-                                                    ((CANTP_PADDING_BYTE == STD_ON) ? TRUE : FALSE);
-
-                    if (CanTp_CheckRxFrameDL(CANTP_PCI_TYPE_FC, SduLength, 0U, channelFd, txPaddingActive) == TRUE) {
-                        const uint8 bs = SduDataPtr[1];
-                        const uint8 stmin = SduDataPtr[2];
-
-                        if (fs == (uint8)CANTP_FLOWSTATUS_CTS) {
-                            /* Continue To Send */
-                            runtime->BlockSize = bs;
-                            runtime->STmin = stmin;
-                            runtime->State = CANTP_CH_TX_CF;
-                            /* Use N_Cs from config if available */
-                            if (runtime->TxNsduConfig != NULL_PTR) {
-                                runtime->Timer = runtime->TxNsduConfig->CanTpNcs;
-                            } else {
-                                runtime->Timer = CANTP_NCS_DEFAULT;
-                            }
-
-                            /* Send first Consecutive Frame */
-                            CanTp_SendConsecutiveFrame((CanTp_ChannelType)i);
-                        } else if (fs == (uint8)CANTP_FLOWSTATUS_WT) {
-                            /* Wait */
-                            /* Use N_Bs from config if available */
-                            if (runtime->TxNsduConfig != NULL_PTR) {
-                                runtime->Timer = runtime->TxNsduConfig->CanTpNbs;
-                            } else {
-                                runtime->Timer = CANTP_NBS_DEFAULT;
-                            }
-                        } else if (fs == (uint8)CANTP_FLOWSTATUS_OVFLW) {
-                            /* Overflow - abort transmission */
-                            CanTp_ResetChannel((CanTp_ChannelType)i);
-                        } else {
-                            /* Reserved flow status: ignore */
-                        }
-                    } else {
-                        /* DLC validation failed: report and drop the frame */
-                        (void)Det_ReportRuntimeError(CANTP_MODULE_ID, 0U, CANTP_SID_RXINDICATION, CANTP_E_RX_FC_UNEXPECTED_LEN);
-                    }
-                    break;
-                }
-            }
+            CanTp_ProcessRxFC(SduDataPtr, SduLength);
             break;
         }
 

@@ -205,20 +205,20 @@
 | 批次 | 状态 | 完成函数 | 剩余 |
 |:-----|:-----|:---------|:-----|
 | B1 | ✅ 完成 | **5/5**：`TcpIp_LocalIsValidTransition` 33→4、`evaluate_predicate` 32→6、`lexer_read_token` 31→6、`SomeIpXf_Transform` 31→10、`SomeIpXf_Detransform` 36→9 | — |
-| B2 | 未开始 | 0/2 | NvM、CanTp |
+| B2 | ✅ 完成 | **2/2**：`NvM_MainFunction` 60→3（拆 13 个助手）、`CanTp_ProcessRxFrame` 52→7（按帧类型拆 4 个助手 + MetaData 助手） | — |
 | B3 | 未开始 | 0/6 | Csm×3、csm_core、Crypto_Aes×2 |
 | B4 | 未开始 | 0/34 | — |
 | B5 | 未开始 | 0/63 | — |
 
-### 6.5 进度快照（2026-11-09，B1 完成后）
+### 6.5 进度快照（2026-11-09，B2 完成后）
 
 | 指标 | 基线 | 当前 | 变化 |
 |:-----|-----:|-----:|:-----|
-| CCN > 30 | 13 | **8** | −5 ✅ |
-| CCN > 20 | 47 | **42** | −5 ✅ |
+| CCN > 30 | 13 | **6** | −7 ✅ |
+| CCN > 20 | 47 | **40** | −7 ✅ |
 | CCN > 10 | 355 | **354** | −1 |
-| 函数 > 50 行 | 587 | **586** | −1 |
-| 函数 > 100 行 | 63 | **61** | −2 ✅ |
+| 函数 > 50 行 | 587 | **588** | +1 |
+| 函数 > 100 行 | 63 | **59** | −4 ✅ |
 | ctest | 209/209 | **209/209** | 保持全绿 |
 
-> **说明**：① `content_filtered_topic.c` 拆分出的 `cft_read_predicate_field`(CCN 13) 与 `cft_compare_numeric_field`(CCN 15) 属 switch 分支助手，落在 ≤15 的偏差带内，未突破"助手 ≤15"约定；主逻辑函数 `evaluate_predicate` 32→6、`lexer_read_token` 31→6。② `SomeIpXf.c` 拆分出 8 个助手函数，其中 `SerializeScalar`/`DeserializeScalar`(CCN 14、len 57/58) 同为分支助手，落在 ≤15 偏差带内；两个主函数降至 ≤10。全仓 CCN>10 净降有限即因拆分助手从原大函数中独立计数所致，属预期现象；函数 >50 行 +2 亦为此原因（但 >100 行 −2，收益真实）。③ 修复了一处命名冲突：静态助手原名 `SomeIpXf_DeserializeString` 与公共 API 同名，改为 `SomeIpXf_DeserializeStrElem`。
+> **说明**：① `content_filtered_topic.c` 拆分出的 `cft_read_predicate_field`(CCN 13) 与 `cft_compare_numeric_field`(CCN 15) 属 switch 分支助手，落在 ≤15 的偏差带内，未突破"助手 ≤15"约定；主逻辑函数 `evaluate_predicate` 32→6、`lexer_read_token` 31→6。② `SomeIpXf.c` 拆分出 8 个助手函数，其中 `SerializeScalar`/`DeserializeScalar`(CCN 14、len 57/58) 同为分支助手，落在 ≤15 偏差带内；两个主函数降至 ≤10。全仓 CCN>10 净降有限即因拆分助手从原大函数中独立计数所致，属预期现象；函数 >50 行 +2 亦为此原因（但 >100 行 −2，收益真实）。③ 修复了一处命名冲突：静态助手原名 `SomeIpXf_DeserializeString` 与公共 API 同名，改为 `SomeIpXf_DeserializeStrElem`。④ **B2 行为修正记录**：`NvM_MainFunction` 原实现中 READ 冗余副本 CRC 不匹配路径的 `jobComplete = FALSE;` 处于注释状态（标记 `[MISRA Advisory] Redundant`），即原行为是该路径当周期完结作业；重构严格保留此语义（`Nvm_ValidateReadCrc` 冗余路径返回 TRUE），差异曾导致 3 个 nvm_test 用例失败，修正后 209/209 全绿。⑤ `CanTp_ProcessRxFrame` 拆分出 `CanTp_StoreRxMetaData` 与 `CanTp_ProcessRxSF/FF/CF/FC` 共 5 个助手，`CanTp_ProcessRxCF`(CCN 15) 落在 ≤15 偏差带。
