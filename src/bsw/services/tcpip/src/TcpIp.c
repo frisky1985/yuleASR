@@ -273,68 +273,57 @@ static void TcpIp_LocalUpdateConnState(TcpIp_SocketEntryType* entry)
 }
 
 /**
+ * @brief Build a bit mask for one TCP state (bit N == TCPIP_TCPSTATE_N).
+ */
+#define TCPIP_STATE_BIT(s)  ((uint16)((uint16)1U << (uint16)(s)))
+
+/**
+ * @brief Allowed destination states per source state (RFC 793-ish subset).
+ *
+ * Index is the source state (TCPIP_TCPSTATE_*); the value is the set of
+ * reachable destination states encoded as a bit mask.
+ */
+static const uint16 TcpIp_ValidTransitionMask[] =
+{
+    /* CLOSED       */ (uint16)(TCPIP_STATE_BIT(TCPIP_TCPSTATE_LISTEN) |
+                                TCPIP_STATE_BIT(TCPIP_TCPSTATE_SYN_SENT)),
+    /* LISTEN       */ (uint16)(TCPIP_STATE_BIT(TCPIP_TCPSTATE_SYN_RECEIVED) |
+                                TCPIP_STATE_BIT(TCPIP_TCPSTATE_CLOSED)),
+    /* SYN_SENT     */ (uint16)(TCPIP_STATE_BIT(TCPIP_TCPSTATE_ESTABLISHED) |
+                                TCPIP_STATE_BIT(TCPIP_TCPSTATE_CLOSED)),
+    /* SYN_RECEIVED */ (uint16)(TCPIP_STATE_BIT(TCPIP_TCPSTATE_ESTABLISHED) |
+                                TCPIP_STATE_BIT(TCPIP_TCPSTATE_CLOSED)),
+    /* ESTABLISHED  */ (uint16)(TCPIP_STATE_BIT(TCPIP_TCPSTATE_FIN_WAIT_1) |
+                                TCPIP_STATE_BIT(TCPIP_TCPSTATE_CLOSE_WAIT) |
+                                TCPIP_STATE_BIT(TCPIP_TCPSTATE_CLOSED)),
+    /* FIN_WAIT_1   */ (uint16)(TCPIP_STATE_BIT(TCPIP_TCPSTATE_FIN_WAIT_2) |
+                                TCPIP_STATE_BIT(TCPIP_TCPSTATE_CLOSING) |
+                                TCPIP_STATE_BIT(TCPIP_TCPSTATE_CLOSED)),
+    /* FIN_WAIT_2   */ (uint16)(TCPIP_STATE_BIT(TCPIP_TCPSTATE_TIME_WAIT) |
+                                TCPIP_STATE_BIT(TCPIP_TCPSTATE_CLOSED)),
+    /* CLOSE_WAIT   */ (uint16)(TCPIP_STATE_BIT(TCPIP_TCPSTATE_LAST_ACK)),
+    /* CLOSING      */ (uint16)(TCPIP_STATE_BIT(TCPIP_TCPSTATE_TIME_WAIT)),
+    /* LAST_ACK     */ (uint16)(TCPIP_STATE_BIT(TCPIP_TCPSTATE_CLOSED)),
+    /* TIME_WAIT    */ (uint16)(TCPIP_STATE_BIT(TCPIP_TCPSTATE_CLOSED))
+};
+
+/**
  * @brief Validate a TCP state transition (RFC 793-ish subset).
  */
 static boolean TcpIp_LocalIsValidTransition(TcpIp_TcpStateType From, TcpIp_TcpStateType To)
 {
-    boolean valid = FALSE;
-
     if (From == To)
     {
-        valid = TRUE;   /* idempotent */
+        return TRUE;    /* idempotent */
     }
-    else
+
+    if ((From > TCPIP_TCPSTATE_TIME_WAIT) || (To > TCPIP_TCPSTATE_TIME_WAIT))
     {
-        switch (From)
-        {
-            case TCPIP_TCPSTATE_CLOSED:
-                valid = ((To == TCPIP_TCPSTATE_LISTEN) ||
-                         (To == TCPIP_TCPSTATE_SYN_SENT)) ? TRUE : FALSE;
-                break;
-            case TCPIP_TCPSTATE_LISTEN:
-                valid = ((To == TCPIP_TCPSTATE_SYN_RECEIVED) ||
-                         (To == TCPIP_TCPSTATE_CLOSED)) ? TRUE : FALSE;
-                break;
-            case TCPIP_TCPSTATE_SYN_SENT:
-                valid = ((To == TCPIP_TCPSTATE_ESTABLISHED) ||
-                         (To == TCPIP_TCPSTATE_CLOSED)) ? TRUE : FALSE;
-                break;
-            case TCPIP_TCPSTATE_SYN_RECEIVED:
-                valid = ((To == TCPIP_TCPSTATE_ESTABLISHED) ||
-                         (To == TCPIP_TCPSTATE_CLOSED)) ? TRUE : FALSE;
-                break;
-            case TCPIP_TCPSTATE_ESTABLISHED:
-                valid = ((To == TCPIP_TCPSTATE_FIN_WAIT_1) ||
-                         (To == TCPIP_TCPSTATE_CLOSE_WAIT) ||
-                         (To == TCPIP_TCPSTATE_CLOSED)) ? TRUE : FALSE;
-                break;
-            case TCPIP_TCPSTATE_FIN_WAIT_1:
-                valid = ((To == TCPIP_TCPSTATE_FIN_WAIT_2) ||
-                         (To == TCPIP_TCPSTATE_CLOSING) ||
-                         (To == TCPIP_TCPSTATE_CLOSED)) ? TRUE : FALSE;
-                break;
-            case TCPIP_TCPSTATE_FIN_WAIT_2:
-                valid = ((To == TCPIP_TCPSTATE_TIME_WAIT) ||
-                         (To == TCPIP_TCPSTATE_CLOSED)) ? TRUE : FALSE;
-                break;
-            case TCPIP_TCPSTATE_CLOSE_WAIT:
-                valid = (To == TCPIP_TCPSTATE_LAST_ACK) ? TRUE : FALSE;
-                break;
-            case TCPIP_TCPSTATE_CLOSING:
-                valid = (To == TCPIP_TCPSTATE_TIME_WAIT) ? TRUE : FALSE;
-                break;
-            case TCPIP_TCPSTATE_LAST_ACK:
-                valid = (To == TCPIP_TCPSTATE_CLOSED) ? TRUE : FALSE;
-                break;
-            case TCPIP_TCPSTATE_TIME_WAIT:
-                valid = (To == TCPIP_TCPSTATE_CLOSED) ? TRUE : FALSE;
-                break;
-            default:
-                valid = FALSE;
-                break;
-        }
+        return FALSE;
     }
-    return valid;
+
+    return (boolean)((((uint16)TcpIp_ValidTransitionMask[From] >> (uint16)To) &
+                      (uint16)1U) != (uint16)0U);
 }
 
 /**

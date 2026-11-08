@@ -161,3 +161,64 @@
 | PR-1.3 | 重复模块定主 | 9 个模块选 canonical | PR-0.2 |
 | PR-3.1 | MISRA required 导出 | CSV 导出 58 条 required 违规 | PR-0.1 |
 | PR-4.1 | 失败用例修复 | 3 个 ctest 失败修复 | PR-0.1 |
+
+---
+
+## 6. 复杂度整改排期（2026-11-08 立项）
+
+> 依据：`reports/quality/production-readiness-2026-11-08.md` §3.4 / §5.9。
+> 文件规模（170 个 >500 行）已按项目决策记为偏差豁免，**不在本排期范围**。
+
+### 6.1 基线与目标
+
+| 指标 | 基线（lizard，2026-11-08） | 目标 | 门禁 |
+|:-----|:--------------------------|:-----|:-----|
+| CCN > 30 | 13 | **0** | 阻断 |
+| CCN > 20 | 47 | ≤ 10（其余转偏差） | 阻断 |
+| CCN > 10 | 355 | 只降不升（棘轮） | 偏差 |
+| 函数 > 100 行 | 63 | **0** | 阻断 |
+| 函数 > 50 行 | 587 | 只降不升（棘轮） | 偏差 |
+| 新增函数 | — | 主逻辑函数 CCN ≤ 10；分支拆分产生的取值/比较助手 ≤ 15 | 硬门禁 |
+
+### 6.2 批次划分（按风险，非单纯按 CCN 排序）
+
+| 批次 | 范围 | 函数数 | 风险 | 认证/测试依赖 |
+|:-----|:-----|-----:|:-----|:--------------|
+| **B1** | 解析/判断类低风险：`TcpIp_LocalIsValidTransition`(33)、`evaluate_predicate`(32)、`lexer_read_token`(31)、`SomeIpXf_Detransform`(36)、`SomeIpXf_Transform`(31) | 5 | 低 | 现有单测即可 |
+| **B2** | 核心状态机：`NvM_MainFunction`(60, 451 行)、`CanTp_ProcessRxFrame`(52, 244 行) | 2 | 高 | 需先补状态迁移单测 |
+| **B3** | 加密栈：`Csm_KeyDerive`(51)、`Csm_KeyExchangeCalcSecret`(40)、`Csm_KeyExchangeCalcPubVal`(39)、`csm_execute_crypto_op`(48)、`Crypto_AesProcessDecrypt`(39)、`Crypto_AesProcessEncrypt`(36) | 6 | 高 | 需加密向量回归 |
+| **B4** | CCN 21–30：34 个（含 `content_filtered_topic`、`TcpIp`、`RamTst`、`EthTrcv`、`bl_secure_boot`、`isotp_core`、`Mqtt_Tls`、`LinSlave`、`e2e_dds_integration` 等） | 34 | 中 | 按模块单测 |
+| **B5** | 函数 > 100 行：63 个（与 B1–B4 有重叠，去重后按文件拆函数） | 63 | 低 | 机械拆分 |
+
+**执行顺序**：B1 → B2 → B3 → B4 → B5。理由：B1 见效快、风险低，可先建立重构与验证范式；B2/B3 是安全相关核心栈，必须在单测补强后再动；B5 在复杂度收敛后做机械拆分，避免重复改动。
+
+### 6.3 每批验收（缺一不可）
+
+1. `lizard src --csv` 复测：目标函数 CCN 达标，全仓 >10 / >50 行计数**不上升**（棘轮）
+2. `ctest --test-dir build-native`：**209/209 全绿**
+3. ASan/UBSan 构建无新增报错
+4. `git diff` 仅含目标函数及其调用点，无行为变更（纯等价重构）
+5. 报告 §3.4 / §5.9 数据同步更新
+
+### 6.4 状态跟踪
+
+| 批次 | 状态 | 完成函数 | 剩余 |
+|:-----|:-----|:---------|:-----|
+| B1 | 进行中 | **3/5**：`TcpIp_LocalIsValidTransition` 33→4、`evaluate_predicate` 32→6、`lexer_read_token` 31→6 | `SomeIpXf_Detransform`(36)、`SomeIpXf_Transform`(31) |
+| B2 | 未开始 | 0/2 | NvM、CanTp |
+| B3 | 未开始 | 0/6 | Csm×3、csm_core、Crypto_Aes×2 |
+| B4 | 未开始 | 0/34 | — |
+| B5 | 未开始 | 0/63 | — |
+
+### 6.5 进度快照（2026-11-09）
+
+| 指标 | 基线 | 当前 | 变化 |
+|:-----|-----:|-----:|:-----|
+| CCN > 30 | 13 | **10** | −3 ✅ |
+| CCN > 20 | 47 | **44** | −3 ✅ |
+| CCN > 10 | 355 | **354** | −1 |
+| 函数 > 50 行 | 587 | **584** | −3 ✅ |
+| 函数 > 100 行 | 63 | 63 | — |
+| ctest | 209/209 | **209/209** | 保持全绿 |
+
+> **说明**：`content_filtered_topic.c` 拆分出的 `cft_read_predicate_field`(CCN 13) 与 `cft_compare_numeric_field`(CCN 15) 属 switch 分支助手，落在 ≤15 的偏差带内，未突破"助手 ≤15"约定；主逻辑函数 `evaluate_predicate` 32→6、`lexer_read_token` 31→6。全仓 CCN>10 仅净降 1（应为 −3）即因这两个助手从原大函数中独立计数所致，属预期现象。

@@ -137,79 +137,64 @@ static void lexer_skip_whitespace(cft_lexer_t *lexer) {
     }
 }
 
-static bool lexer_read_token(cft_lexer_t *lexer) {
-    lexer_skip_whitespace(lexer);
-    
-    if (lexer->pos >= lexer->len) { return false; }
-    
-    lexer->token_len = 0;
-    
-    // 标识符或关键字
-    if (isalpha((unsigned char)lexer->input[lexer->pos]) || (lexer->input[lexer->pos] == '_')) {
-        while ((lexer->pos < lexer->len) && 
-                              (isalnum((unsigned char)lexer->input[lexer->pos]) || (lexer->input[lexer->pos] == '_'))) {
-            if (lexer->token_len < sizeof(lexer->token) - 1U) {
-                lexer->token[lexer->token_len] = lexer->input[lexer->pos];
-                lexer->token_len++;
-            }
-            lexer->pos++;
-        }
-        lexer->token[lexer->token_len] = '\0';
-        return true;
+static void lexer_append_char(cft_lexer_t *lexer, char c) {
+    if (lexer->token_len < sizeof(lexer->token) - 1U) {
+        lexer->token[lexer->token_len] = c;
+        lexer->token_len++;
     }
-    
-    // 数字
-    if ((isdigit((unsigned char)lexer->input[lexer->pos])) != 0) {
-        while ((lexer->pos < lexer->len) && isdigit((unsigned char)lexer->input[lexer->pos])) {
-            if (lexer->token_len < sizeof(lexer->token) - 1U) {
-                lexer->token[lexer->token_len] = lexer->input[lexer->pos];
-                lexer->token_len++;
-            }
-            lexer->pos++;
-        }
-        // 小数点
-        if ((lexer->pos < lexer->len) && (lexer->input[lexer->pos] == '.')) {
-            lexer->token[lexer->token_len] = lexer->input[lexer->pos];
-            lexer->pos++;
-            lexer->token_len++;
-            while ((lexer->pos < lexer->len) && isdigit((unsigned char)lexer->input[lexer->pos])) {
-                if (lexer->token_len < sizeof(lexer->token) - 1U) {
-                    lexer->token[lexer->token_len] = lexer->input[lexer->pos];
-                    lexer->token_len++;
-                }
-                lexer->pos++;
-            }
-        }
-        lexer->token[lexer->token_len] = '\0';
-        return true;
-    }
-    
-    // 字符串
-    if (lexer->input[lexer->pos] == '\'') {
+}
+
+static bool lexer_read_ident(cft_lexer_t *lexer) {
+    while ((lexer->pos < lexer->len) &&
+           (isalnum((unsigned char)lexer->input[lexer->pos]) != 0 ||
+            lexer->input[lexer->pos] == '_')) {
+        lexer_append_char(lexer, lexer->input[lexer->pos]);
         lexer->pos++;
-        while ((lexer->pos < lexer->len) && (lexer->input[lexer->pos] != '\'')) {
-            if (lexer->token_len < sizeof(lexer->token) - 1U) {
-                lexer->token[lexer->token_len] = lexer->input[lexer->pos];
-                lexer->token_len++;
-            }
-            lexer->pos++;
-        }
-        if (lexer->pos < lexer->len) { lexer->pos++; }
-        lexer->token[lexer->token_len] = '\0';
-        return true;
     }
-    
-    // 单字符操作符
+    lexer->token[lexer->token_len] = '\0';
+    return true;
+}
+
+static void lexer_read_digits(cft_lexer_t *lexer) {
+    while ((lexer->pos < lexer->len) &&
+           (isdigit((unsigned char)lexer->input[lexer->pos]) != 0)) {
+        lexer_append_char(lexer, lexer->input[lexer->pos]);
+        lexer->pos++;
+    }
+}
+
+static bool lexer_read_number(cft_lexer_t *lexer) {
+    lexer_read_digits(lexer);
+    if ((lexer->pos < lexer->len) && (lexer->input[lexer->pos] == '.')) {
+        lexer_append_char(lexer, lexer->input[lexer->pos]);
+        lexer->pos++;
+        lexer_read_digits(lexer);
+    }
+    lexer->token[lexer->token_len] = '\0';
+    return true;
+}
+
+static bool lexer_read_string(cft_lexer_t *lexer) {
+    lexer->pos++;
+    while ((lexer->pos < lexer->len) && (lexer->input[lexer->pos] != '\'')) {
+        lexer_append_char(lexer, lexer->input[lexer->pos]);
+        lexer->pos++;
+    }
+    if (lexer->pos < lexer->len) { lexer->pos++; }
+    lexer->token[lexer->token_len] = '\0';
+    return true;
+}
+
+static bool lexer_read_operator(cft_lexer_t *lexer) {
     char c = lexer->input[lexer->pos];
     lexer->token[0] = c;
     lexer->token[1] = '\0';
     lexer->token_len = 1;
     lexer->pos++;
-    
-    // 双字符操作符
+
     if (lexer->pos < lexer->len) {
         char next = lexer->input[lexer->pos];
-        if (((c == '=') && (next == '=')) || 
+        if (((c == '=') && (next == '=')) ||
             ((c == '!') && (next == '=')) ||
             ((c == '<') && (next == '=')) ||
             ((c == '>') && (next == '='))) {
@@ -219,8 +204,33 @@ static bool lexer_read_token(cft_lexer_t *lexer) {
             lexer->pos++;
         }
     }
-    
     return true;
+}
+
+static bool lexer_read_token(cft_lexer_t *lexer) {
+    lexer_skip_whitespace(lexer);
+    
+    if (lexer->pos >= lexer->len) { return false; }
+    
+    lexer->token_len = 0;
+    
+    // 标识符或关键字
+    if (isalpha((unsigned char)lexer->input[lexer->pos]) || (lexer->input[lexer->pos] == '_')) {
+        return lexer_read_ident(lexer);
+    }
+
+    // 数字
+    if ((isdigit((unsigned char)lexer->input[lexer->pos])) != 0) {
+        return lexer_read_number(lexer);
+    }
+
+    // 字符串
+    if (lexer->input[lexer->pos] == '\'') {
+        return lexer_read_string(lexer);
+    }
+
+    // 操作符
+    return lexer_read_operator(lexer);
 }
 
 static cft_operator_t get_operator(const char *token) {
@@ -493,6 +503,81 @@ static const cft_field_accessor_t* find_field_accessor(const cft_type_descriptor
  * AST求值实现
  * ============================================================================ */
 
+/* Read a predicate field from the sample, normalized for comparison. */
+static bool cft_read_predicate_field(const void *sample,
+                                     const cft_field_accessor_t *accessor,
+                                     int64_t *i64_out,
+                                     double *f64_out,
+                                     char *str_out)
+{
+    bool bool_tmp = false;
+
+    switch (accessor->type) {
+        case CFT_TYPE_INT8:
+        case CFT_TYPE_INT16:
+        case CFT_TYPE_INT32:
+        case CFT_TYPE_INT64:
+            (void)cft_get_field_value(sample, accessor, i64_out);
+            *f64_out = (double)*i64_out;
+            return true;
+        case CFT_TYPE_UINT8:
+        case CFT_TYPE_UINT16:
+        case CFT_TYPE_UINT32:
+        case CFT_TYPE_UINT64:
+            (void)cft_get_field_value(sample, accessor, i64_out);
+            *f64_out = (double)(uint64_t)*i64_out;
+            return true;
+        case CFT_TYPE_FLOAT32:
+        case CFT_TYPE_FLOAT64:
+            (void)cft_get_field_value(sample, accessor, f64_out);
+            *i64_out = (int64_t)*f64_out;
+            return true;
+        case CFT_TYPE_BOOLEAN:
+            (void)cft_get_field_value(sample, accessor, &bool_tmp);
+            return true;
+        case CFT_TYPE_STRING:
+            (void)cft_get_field_value(sample, accessor, str_out);
+            return true;
+        default:
+            return false;
+    }
+}
+
+/* Compare a string-typed field against the predicate operand. */
+static bool cft_compare_string_field(cft_operator_t op, const char *field, const char *cmp)
+{
+    switch (op) {
+        case CFT_OP_EQ:   return strcmp(field, cmp) == 0;
+        case CFT_OP_NE:   return strcmp(field, cmp) != 0;
+        case CFT_OP_LIKE: return match_like(field, cmp);
+        default:          return false;
+    }
+}
+
+/* Compare a numeric-typed field against the predicate operand. */
+static bool cft_compare_numeric_field(cft_operator_t op,
+                                      int64_t field_i64,
+                                      double field_f64,
+                                      const cft_predicate_t *pred)
+{
+    int64_t cmp_i64 = pred->value.i64_val;
+    double cmp_f64 = pred->value.f64_val;
+
+    switch (op) {
+        case CFT_OP_EQ: return (field_i64 == cmp_i64) || (field_f64 == cmp_f64);
+        case CFT_OP_NE: return (field_i64 != cmp_i64) && (field_f64 != cmp_f64);
+        case CFT_OP_LT: return (field_i64 < cmp_i64) || (field_f64 < cmp_f64);
+        case CFT_OP_LE: return (field_i64 <= cmp_i64) || (field_f64 <= cmp_f64);
+        case CFT_OP_GT: return (field_i64 > cmp_i64) || (field_f64 > cmp_f64);
+        case CFT_OP_GE: return (field_i64 >= cmp_i64) || (field_f64 >= cmp_f64);
+        case CFT_OP_BETWEEN:
+            return (field_i64 >= pred->value.range.min_val) &&
+                   (field_i64 <= pred->value.range.max_val);
+        default:
+            return false;
+    }
+}
+
 static bool evaluate_predicate(const cft_predicate_t *pred,
                                const void *sample,
                                const cft_type_descriptor_t *type_desc,
@@ -503,72 +588,22 @@ static bool evaluate_predicate(const cft_predicate_t *pred,
     // 获取字段值
     int64_t field_i64 = 0;
     double field_f64 = 0.0;
-    bool field_bool = false;
     char field_str[256] = {0};
     
-    switch (accessor->type) {
-        case CFT_TYPE_INT8:
-        case CFT_TYPE_INT16:
-        case CFT_TYPE_INT32:
-        case CFT_TYPE_INT64:
-            (void)cft_get_field_value(sample, accessor, &field_i64);
-            field_f64 = (double)field_i64;
-            break;
-        case CFT_TYPE_UINT8:
-        case CFT_TYPE_UINT16:
-        case CFT_TYPE_UINT32:
-        case CFT_TYPE_UINT64:
-            (void)cft_get_field_value(sample, accessor, &field_i64);
-            field_f64 = (double)(uint64_t)field_i64;
-            break;
-        case CFT_TYPE_FLOAT32:
-        case CFT_TYPE_FLOAT64:
-            (void)cft_get_field_value(sample, accessor, &field_f64);
-            field_i64 = (int64_t)field_f64;
-            break;
-        case CFT_TYPE_BOOLEAN:
-            (void)cft_get_field_value(sample, accessor, &field_bool);
-            break;
-        case CFT_TYPE_STRING:
-            (void)cft_get_field_value(sample, accessor, field_str);
-            break;
-        default:
-            return false;
+    if (!cft_read_predicate_field(sample, accessor, &field_i64, &field_f64, field_str)) {
+        return false;
     }
     
     // 获取比较值
-    int64_t cmp_i64 = pred->value.i64_val;
-    double cmp_f64 = pred->value.f64_val;
     const char *cmp_str = pred->is_param ? params[pred->param_index] : pred->value.str_val;
     
-    // 执行比较
-    switch (pred->op) {
-        case CFT_OP_EQ:
-            if (accessor->type == CFT_TYPE_STRING) {
-                return strcmp(field_str, cmp_str) == 0;
-            }
-            return (field_i64 == cmp_i64) || (field_f64 == cmp_f64);
-        case CFT_OP_NE:
-            if (accessor->type == CFT_TYPE_STRING) {
-                return strcmp(field_str, cmp_str) != 0;
-            }
-            return (field_i64 != cmp_i64) && (field_f64 != cmp_f64);
-        case CFT_OP_LT:
-            return (field_i64 < cmp_i64) || (field_f64 < cmp_f64);
-        case CFT_OP_LE:
-            return (field_i64 <= cmp_i64) || (field_f64 <= cmp_f64);
-        case CFT_OP_GT:
-            return (field_i64 > cmp_i64) || (field_f64 > cmp_f64);
-        case CFT_OP_GE:
-            return (field_i64 >= cmp_i64) || (field_f64 >= cmp_f64);
-        case CFT_OP_LIKE:
-            return match_like(field_str, cmp_str);
-        case CFT_OP_BETWEEN:
-            return (field_i64 >= pred->value.range.min_val) && 
-                   (field_i64 <= pred->value.range.max_val);
-        default:
-            return false;
+    if (pred->op == CFT_OP_LIKE) {
+        return match_like(field_str, cmp_str);
     }
+    if (accessor->type == CFT_TYPE_STRING) {
+        return cft_compare_string_field(pred->op, field_str, cmp_str);
+    }
+    return cft_compare_numeric_field(pred->op, field_i64, field_f64, pred);
 }
 
 static bool evaluate_ast(const cft_ast_node_t *node,
