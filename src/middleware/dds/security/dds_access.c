@@ -171,6 +171,168 @@ static void xml_extract_value(const char *content, uint32_t content_len,
     }
 }
 
+/**
+ * @brief 读取 XML 文件到静态暂存缓冲
+ * @return 读取字节数; 打开失败或尺寸非法返回 -1
+ */
+static long read_permissions_file(const char *xml_path, char *xml_data)
+{
+    FILE *fp = fopen(xml_path, "rb");
+    if (!fp) {
+        return -1;
+    }
+
+    (void)fseek(fp, 0, SEEK_END);
+    long file_size = ftell(fp);
+    (void)fseek(fp, 0, SEEK_SET);
+
+    if ((file_size <= 0) || (file_size > DDS_SECURITY_MAX_PERMISSIONS_SIZE)) {
+        (void)fclose(fp);
+        return -1;
+    }
+
+    (void)memset(xml_data, 0, DDS_SECURITY_MAX_PERMISSIONS_SIZE + 1U);
+    (void)fread(xml_data, 1, file_size, fp);
+    xml_data[file_size] = '\0';
+    (void)fclose(fp);
+    return file_size;
+}
+
+/**
+ * @brief 解析域内 publish 主题权限列表
+ */
+static void parse_publish_rules(struct dds_access_subject *subject,
+                                uint32_t domain_idx,
+                                const char *domain_tag)
+{
+    const char *pub_search = domain_tag;
+    while (subject->domains[domain_idx].publish_count < DDS_ACCESS_MAX_TOPICS) {
+        uint32_t pub_len;
+        char *pub_tag = xml_find_tag(pub_search, "publish", &pub_len);
+        if (!pub_tag) { break; }
+
+        uint32_t topic_len;
+        char *topic_tag = xml_find_tag(pub_tag, "topic", &topic_len);
+        if ((topic_tag) != 0U) {
+            xml_extract_value(topic_tag, topic_len,
+                              subject->domains[domain_idx].publish[
+                                  subject->domains[domain_idx].publish_count].topic_pattern,
+                              128);
+        }
+
+        subject->domains[domain_idx].publish_count++;
+        pub_search = pub_tag + pub_len;
+    }
+}
+
+/**
+ * @brief 解析域内 subscribe 主题权限列表
+ */
+static void parse_subscribe_rules(struct dds_access_subject *subject,
+                                  uint32_t domain_idx,
+                                  const char *domain_tag)
+{
+    const char *sub_search = domain_tag;
+    while (subject->domains[domain_idx].subscribe_count < DDS_ACCESS_MAX_TOPICS) {
+        uint32_t sub_len;
+        char *sub_tag = xml_find_tag(sub_search, "subscribe", &sub_len);
+        if (!sub_tag) { break; }
+
+        uint32_t topic_len;
+        char *topic_tag = xml_find_tag(sub_tag, "topic", &topic_len);
+        if ((topic_tag) != 0U) {
+            xml_extract_value(topic_tag, topic_len,
+                              subject->domains[domain_idx].subscribe[
+                                  subject->domains[domain_idx].subscribe_count].topic_pattern,
+                              128);
+        }
+
+        subject->domains[domain_idx].subscribe_count++;
+        sub_search = sub_tag + sub_len;
+    }
+}
+
+/**
+ * @brief 解析单个 subject 的域权限列表
+ */
+static void parse_domain_rules(struct dds_access_subject *subject,
+                               const char *subject_tag)
+{
+    const char *domain_search = subject_tag;
+    while (subject->domain_count < DDS_ACCESS_MAX_DOMAINS) {
+        uint32_t domain_len;
+        char *domain_tag = xml_find_tag(domain_search, "domain", &domain_len);
+        if (!domain_tag) { break; }
+
+        uint32_t domain_idx = subject->domain_count;
+
+        /* Parse domain ID */
+        uint32_t id_len;
+        char *id_tag = xml_find_tag(domain_tag, "id", &id_len);
+        if ((id_tag) != 0U) {
+            char id_str[16];
+            xml_extract_value(id_tag, id_len, id_str, sizeof(id_str));
+            subject->domains[domain_idx].domain_id = atoi(id_str);
+        }
+
+        parse_publish_rules(subject, domain_idx, domain_tag);
+        parse_subscribe_rules(subject, domain_idx, domain_tag);
+
+        subject->domain_count++;
+        domain_search = domain_tag + domain_len;
+    }
+}
+
+/**
+ * @brief 解析单个 subject 条目 (名称/有效期/域权限)
+ * @return 下一搜索位置; 无更多 subject 时返回 NULL
+ */
+static const char *parse_subject_entry(dds_permissions_config_t *config,
+                                       const char *search_pos)
+{
+    uint32_t subject_len;
+    char *subject_tag = xml_find_tag(search_pos, "subject", &subject_len);
+    if (subject_tag == 0U) {
+        return NULL;
+    }
+
+    struct dds_access_subject *subject = &config->subjects[config->subject_count];
+
+    /* Parse subject name */
+    uint32_t name_len;
+    char *name_tag = xml_find_tag(subject_tag, "subject_name", &name_len);
+    if ((name_tag) != 0U) {
+        xml_extract_value(name_tag, name_len,
+                          subject->subject_name,
+                          sizeof(subject->subject_name));
+    }
+
+    /* Parse validity */
+    uint32_t validity_len;
+    char *validity_tag = xml_find_tag(subject_tag, "validity", &validity_len);
+    if ((validity_tag) != 0U) {
+        uint32_t from_len, to_len;
+        char *from_tag = xml_find_tag(validity_tag, "not_before", &from_len);
+        char *to_tag = xml_find_tag(validity_tag, "not_after", &to_len);
+        if ((from_tag) != 0U) {
+            char from_str[32];
+            xml_extract_value(from_tag, from_len, from_str, sizeof(from_str));
+            (void)strncpy(subject->validity_from, from_str, sizeof(subject->validity_from) - 1U);
+        }
+        if ((to_tag) != 0U) {
+            char to_str[32];
+            xml_extract_value(to_tag, to_len, to_str, sizeof(to_str));
+            (void)strncpy(subject->validity_until, to_str, sizeof(subject->validity_until) - 1U);
+        }
+    }
+
+    /* Parse domain permissions */
+    parse_domain_rules(subject, subject_tag);
+
+    config->subject_count++;
+    return subject_tag + subject_len;
+}
+
 dds_access_status_t dds_access_parse_permissions_xml(dds_access_context_t *ctx,
                                                       const char *xml_path,
                                                       dds_permissions_config_t *config)
@@ -181,28 +343,11 @@ dds_access_status_t dds_access_parse_permissions_xml(dds_access_context_t *ctx,
 
     (void)memset(config, 0, sizeof(dds_permissions_config_t));
 
-    /* Read XML file */
-    FILE *fp = fopen(xml_path, "rb");
-    if (!fp) {
-        return DDS_ACCESS_ERROR_INVALID_CONFIG;
-    }
-
-    (void)fseek(fp, 0, SEEK_END);
-    long file_size = ftell(fp);
-    (void)fseek(fp, 0, SEEK_SET);
-
-    if ((file_size <= 0) || (file_size > DDS_SECURITY_MAX_PERMISSIONS_SIZE)) {
-        (void)fclose(fp);
-        return DDS_ACCESS_ERROR_INVALID_CONFIG;
-    }
-
-    /* 使用静态暂存缓冲 (固定上限 DDS_SECURITY_MAX_PERMISSIONS_SIZE) */
+    /* Read XML file (静态暂存缓冲, 固定上限 DDS_SECURITY_MAX_PERMISSIONS_SIZE) */
     char *xml_data = s_xml_scratch;
-    (void)memset(xml_data, 0, DDS_SECURITY_MAX_PERMISSIONS_SIZE + 1U);
-
-    (void)fread(xml_data, 1, file_size, fp);
-    xml_data[file_size] = '\0';
-    (void)fclose(fp);
+    if (read_permissions_file(xml_path, xml_data) < 0) {
+        return DDS_ACCESS_ERROR_INVALID_CONFIG;
+    }
 
     /* Parse version */
     uint32_t version_len;
@@ -215,107 +360,10 @@ dds_access_status_t dds_access_parse_permissions_xml(dds_access_context_t *ctx,
 
     /* Parse subjects */
     const char *search_pos = xml_data;
-    uint32_t subject_len;
-
     while (config->subject_count < DDS_ACCESS_MAX_SUBJECTS) {
-        char *subject_tag = xml_find_tag(search_pos, "subject", &subject_len);
-        if (!subject_tag) { break; }
-
-        struct dds_access_subject *subject = &config->subjects[config->subject_count];
-
-        /* Parse subject name */
-        uint32_t name_len;
-        char *name_tag = xml_find_tag(subject_tag, "subject_name", &name_len);
-        if ((name_tag) != 0U) {
-            xml_extract_value(name_tag, name_len,
-                              subject->subject_name,
-                              sizeof(subject->subject_name));
-        }
-
-        /* Parse validity */
-        uint32_t validity_len;
-        char *validity_tag = xml_find_tag(subject_tag, "validity", &validity_len);
-        if ((validity_tag) != 0U) {
-            uint32_t from_len, to_len;
-            char *from_tag = xml_find_tag(validity_tag, "not_before", &from_len);
-            char *to_tag = xml_find_tag(validity_tag, "not_after", &to_len);
-            if ((from_tag) != 0U) {
-                char from_str[32];
-                xml_extract_value(from_tag, from_len, from_str, sizeof(from_str));
-                (void)strncpy(subject->validity_from, from_str, sizeof(subject->validity_from) - 1U);
-            }
-            if ((to_tag) != 0U) {
-                char to_str[32];
-                xml_extract_value(to_tag, to_len, to_str, sizeof(to_str));
-                (void)strncpy(subject->validity_until, to_str, sizeof(subject->validity_until) - 1U);
-            }
-        }
-
-        /* Parse domain permissions */
-        const char *domain_search = subject_tag;
-        uint32_t domain_len;
-
-        while (subject->domain_count < DDS_ACCESS_MAX_DOMAINS) {
-            char *domain_tag = xml_find_tag(domain_search, "domain", &domain_len);
-            if (!domain_tag) { break; }
-
-            /* Parse domain ID */
-            uint32_t id_len;
-            char *id_tag = xml_find_tag(domain_tag, "id", &id_len);
-            if ((id_tag) != 0U) {
-                char id_str[16];
-                xml_extract_value(id_tag, id_len, id_str, sizeof(id_str));
-                subject->domains[subject->domain_count].domain_id = atoi(id_str);
-            }
-
-            /* Parse publish permissions */
-            const char *pub_search = domain_tag;
-            uint32_t pub_len;
-
-            while (subject->domains[subject->domain_count].publish_count < DDS_ACCESS_MAX_TOPICS) {
-                char *pub_tag = xml_find_tag(pub_search, "publish", &pub_len);
-                if (!pub_tag) { break; }
-
-                uint32_t topic_len;
-                char *topic_tag = xml_find_tag(pub_tag, "topic", &topic_len);
-                if ((topic_tag) != 0U) {
-                    xml_extract_value(topic_tag, topic_len,
-                                      subject->domains[subject->domain_count].publish[
-                                          subject->domains[subject->domain_count].publish_count].topic_pattern,
-                                      128);
-                }
-
-                subject->domains[subject->domain_count].publish_count++;
-                pub_search = pub_tag + pub_len;
-            }
-
-            /* Parse subscribe permissions */
-            const char *sub_search = domain_tag;
-            uint32_t sub_len;
-
-            while (subject->domains[subject->domain_count].subscribe_count < DDS_ACCESS_MAX_TOPICS) {
-                char *sub_tag = xml_find_tag(sub_search, "subscribe", &sub_len);
-                if (!sub_tag) { break; }
-
-                uint32_t topic_len;
-                char *topic_tag = xml_find_tag(sub_tag, "topic", &topic_len);
-                if ((topic_tag) != 0U) {
-                    xml_extract_value(topic_tag, topic_len,
-                                      subject->domains[subject->domain_count].subscribe[
-                                          subject->domains[subject->domain_count].subscribe_count].topic_pattern,
-                                      128);
-                }
-
-                subject->domains[subject->domain_count].subscribe_count++;
-                sub_search = sub_tag + sub_len;
-            }
-
-            subject->domain_count++;
-            domain_search = domain_tag + domain_len;
-        }
-
-        config->subject_count++;
-        search_pos = subject_tag + subject_len;
+        const char *next_pos = parse_subject_entry(config, search_pos);
+        if (next_pos == NULL) { break; }
+        search_pos = next_pos;
     }
 
     /* 静态暂存缓冲无需释放 */

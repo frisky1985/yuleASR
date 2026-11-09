@@ -633,6 +633,76 @@ static void ghash(const uint8_t *H, const uint8_t *aad, uint32_t aad_len,
     }
 }
 
+/**
+ * @brief AES 单块加密: 计数器块经轮密钥加密后输出 16B 密钥流
+ */
+static void aes_encrypt_counter_block(const uint8_t *round_key, int nr,
+                                      const uint8_t counter[16],
+                                      uint8_t keystream[16])
+{
+    uint8_t state[4][4];
+
+    /* Load counter into state */
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            state[j][i] = counter[(i * 4) + j];
+        }
+    }
+
+    /* AES encrypt counter */
+    add_round_key(state, round_key, 0);
+    for (int round = 1; round < nr; round++) {
+        sub_bytes(state);
+        shift_rows(state);
+        mix_columns(state);
+        add_round_key(state, round_key, round);
+    }
+    sub_bytes(state);
+    shift_rows(state);
+    add_round_key(state, round_key, nr);
+
+    /* Extract keystream */
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            keystream[(i * 4) + j] = state[j][i];
+        }
+    }
+}
+
+/**
+ * @brief CTR 模式加密: 计数器初始化 → 逐块加密异或 → 计数器递增
+ */
+static void aes_ctr_crypt(const uint8_t *round_key, uint32_t key_len,
+                          const uint8_t *iv,
+                          const uint8_t *plaintext, uint32_t plaintext_len,
+                          uint8_t *ciphertext)
+{
+    /* CTR mode encryption (simplified) */
+    uint8_t counter[16];
+    (void)memcpy(counter, iv, 12);
+    counter[12] = 0;
+    counter[13] = 0;
+    counter[14] = 0;
+    counter[15] = 1;
+
+    int nr = (key_len == 16U) ? 10 : (key_len == 24U) ? 12 : 14;
+
+    for (uint32_t block = 0; block < plaintext_len; block += 16U) {
+        uint8_t keystream[16] = {0};
+        aes_encrypt_counter_block(round_key, nr, counter, keystream);
+
+        /* XOR with plaintext */
+        for (uint32_t i = 0; (i < 16U) && ((block + i) < plaintext_len); i++) {
+            ciphertext[block + i] = plaintext[block + i] ^ keystream[i];
+        }
+
+        /* Increment counter */
+        for (int i = 15; i >= 12; i--) {
+            if (++counter[i] != 0) { break; }
+        }
+    }
+}
+
 dds_crypto_status_t dds_crypto_encrypt_aes_gcm(dds_crypto_context_t *ctx,
                                                const uint8_t *key,
                                                uint32_t key_len,
@@ -657,56 +727,7 @@ dds_crypto_status_t dds_crypto_encrypt_aes_gcm(dds_crypto_context_t *ctx,
     uint8_t round_key[240];
     aes_key_expansion(round_key, key, key_len * 8U);
 
-    /* CTR mode encryption (simplified) */
-    uint8_t counter[16];
-    (void)memcpy(counter, iv, 12);
-    counter[12] = 0;
-    counter[13] = 0;
-    counter[14] = 0;
-    counter[15] = 1;
-
-    for (uint32_t block = 0; block < plaintext_len; block += 16U) {
-        uint8_t keystream[16] = {0};
-        uint8_t state[4][4];
-
-        /* Load counter into state */
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                state[j][i] = counter[(i * 4) + j];
-            }
-        }
-
-        /* AES encrypt counter */
-        add_round_key(state, round_key, 0);
-
-        int nr = (key_len == 16U) ? 10 : (key_len == 24U) ? 12 : 14;
-        for (int round = 1; round < nr; round++) {
-            sub_bytes(state);
-            shift_rows(state);
-            mix_columns(state);
-            add_round_key(state, round_key, round);
-        }
-        sub_bytes(state);
-        shift_rows(state);
-        add_round_key(state, round_key, nr);
-
-        /* Extract keystream */
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                keystream[(i * 4) + j] = state[j][i];
-            }
-        }
-
-        /* XOR with plaintext */
-        for (uint32_t i = 0; (i < 16U) && ((block + i) < plaintext_len); i++) {
-            ciphertext[block + i] = plaintext[block + i] ^ keystream[i];
-        }
-
-        /* Increment counter */
-        for (int i = 15; i >= 12; i--) {
-            if (++counter[i] != 0) { break; }
-        }
-    }
+    aes_ctr_crypt(round_key, key_len, iv, plaintext, plaintext_len, ciphertext);
 
     /* Compute authentication tag (simplified) */
     uint8_t H[16] = {0};

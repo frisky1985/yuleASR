@@ -382,61 +382,51 @@ Std_ReturnType E2E_DDS_Publish(
 }
 
 /**
- * @brief Subscribe to data with E2E protection via DDS
+ * @brief 校验订阅/检查入口参数 (模块已初始化 + 句柄有效 + 数据/结果指针非空)
  */
-Std_ReturnType E2E_DDS_Subscribe(
-    E2E_DDS_TopicHandleType* handle,
-    const uint8_t* data,
-    uint32_t length,
-    E2E_DDS_ResultType* result)
+static bool E2E_DDS_ArgsValid(const E2E_DDS_TopicHandleType* handle,
+                              const uint8_t* data,
+                              const E2E_DDS_ResultType* result)
 {
-    if (!E2E_DDS_IsInitialized() || (handle == NULL) || !handle->initialized ||
-        (data == NULL) || (result == NULL)) {
-        return E_NOT_OK;
-    }
+    return E2E_DDS_IsInitialized() && (handle != NULL) && handle->initialized &&
+           (data != NULL) && (result != NULL);
+}
 
-    uint16_t e2eStatus = E2E_ERROR_NONE;
-    E2E_PCheckStatusType checkStatus = E2E_P_OK;
-
-    /* Perform E2E check */
-    Std_ReturnType ret = E2E_Check(&handle->e2eContext, data, length, &e2eStatus, handle->config.e2eProfile);
-    if (ret != E_OK) {
-        *result = E2E_DDS_ERROR_INIT;
-        return E_NOT_OK;
-    }
-
-    /* Get check status from profile state */
+/**
+ * @brief 从 profile 状态中取本次检查结果
+ */
+static E2E_PCheckStatusType E2E_DDS_GetPCheckStatus(const E2E_DDS_TopicHandleType* handle)
+{
     switch (handle->config.e2eProfile) {
         case E2E_PROFILE_01:
-            checkStatus = handle->e2eContext.state.p01.status;
-            break;
+            return handle->e2eContext.state.p01.status;
         case E2E_PROFILE_02:
-            checkStatus = handle->e2eContext.state.p02.status;
-            break;
+            return handle->e2eContext.state.p02.status;
         case E2E_PROFILE_04:
-            checkStatus = handle->e2eContext.state.p04.status;
-            break;
+            return handle->e2eContext.state.p04.status;
         case E2E_PROFILE_05:
-            checkStatus = handle->e2eContext.state.p05.status;
-            break;
+            return handle->e2eContext.state.p05.status;
         case E2E_PROFILE_06:
-            checkStatus = handle->e2eContext.state.p06.status;
-            break;
+            return handle->e2eContext.state.p06.status;
         case E2E_PROFILE_07:
-            checkStatus = handle->e2eContext.state.p07.status;
-            break;
+            return handle->e2eContext.state.p07.status;
         case E2E_PROFILE_11:
-            checkStatus = handle->e2eContext.state.p11.status;
-            break;
+            return handle->e2eContext.state.p11.status;
         case E2E_PROFILE_22:
-            checkStatus = handle->e2eContext.state.p22.status;
-            break;
+            return handle->e2eContext.state.p22.status;
         default:
-            checkStatus = E2E_P_ERROR;
-            break;
+            return E2E_P_ERROR;
     }
+}
 
-    /* Map E2E status to DDS result */
+/**
+ * @brief 订阅路径结果映射: 检查状态 → DDS 结果并维护收包/错误计数
+ */
+static void E2E_DDS_MapSubscribeResult(E2E_DDS_TopicHandleType* handle,
+                                       E2E_PCheckStatusType checkStatus,
+                                       uint16_t e2eStatus,
+                                       E2E_DDS_ResultType* result)
+{
     switch (checkStatus) {
         case E2E_P_OK:
             *result = E2E_DDS_OK;
@@ -462,6 +452,105 @@ Std_ReturnType E2E_DDS_Subscribe(
             handle->errorCounter++;
             break;
     }
+}
+
+/**
+ * @brief 状态机使能时的检查路径: 构建 SM 配置并映射 SM 状态到 DDS 结果
+ */
+static Std_ReturnType E2E_DDS_CheckStateMachine(E2E_DDS_TopicHandleType* handle,
+                                                E2E_PCheckStatusType profileResult,
+                                                uint32_t timestamp,
+                                                E2E_DDS_ResultType* result)
+{
+    E2E_SM_ConfigType smConfig;
+    (void)memset(&smConfig, 0, sizeof(E2E_SM_ConfigType));
+    smConfig.profile = handle->config.e2eProfile;
+    smConfig.timeoutMs = handle->config.timeoutMs;
+    smConfig.enableWindowCheck = TRUE;
+    smConfig.window.windowSize = handle->config.windowSize;
+    smConfig.window.maxErrorThreshold = handle->config.maxErrorThreshold;
+    smConfig.window.minOkThreshold = E2E_SM_OK_THRESHOLD;
+    smConfig.window.syncCounterThreshold = E2E_SM_SYNC_THRESHOLD;
+
+    E2E_SM_StateType oldState = handle->smState.state;
+    E2E_SM_CheckResultType smResult;
+
+    Std_ReturnType ret = E2E_SM_Check(&handle->smState, &smConfig, profileResult, timestamp, &smResult);
+    if (ret != E_OK) {
+        *result = E2E_DDS_ERROR_STATE_MACHINE;
+        return E_NOT_OK;
+    }
+
+    /* Invoke state change callback */
+    if ((g_callbacks.stateCallback != NULL) && (oldState != smResult.state)) {
+        g_callbacks.stateCallback(handle->topicId, oldState, smResult.state);
+    }
+
+    /* Map SM state to result */
+    if (smResult.isValid) {
+        *result = E2E_DDS_OK;
+        handle->rxCounter++;
+    } else if (smResult.state == E2E_SM_INVALID) {
+        *result = E2E_DDS_ERROR_SEQUENCE;
+        handle->errorCounter++;
+    } else if (smResult.state == E2E_SM_SYNC) {
+        *result = E2E_DDS_ERROR_SEQUENCE;
+    } else {
+        *result = E2E_DDS_ERROR_STATE_MACHINE;
+    }
+    return E_OK;
+}
+
+/**
+ * @brief 状态机未使能时的直接映射: profile 结果 → DDS 结果
+ */
+static void E2E_DDS_MapProfileResultDirect(E2E_DDS_TopicHandleType* handle,
+                                           E2E_PCheckStatusType profileResult,
+                                           E2E_DDS_ResultType* result)
+{
+    switch (profileResult) {
+        case E2E_P_OK:
+            *result = E2E_DDS_OK;
+            handle->rxCounter++;
+            break;
+        case E2E_P_REPEATED:
+        case E2E_P_WRONGSEQUENCE:
+            *result = E2E_DDS_ERROR_SEQUENCE;
+            handle->errorCounter++;
+            break;
+        case E2E_P_ERROR:
+        default:
+            *result = E2E_DDS_ERROR_CRC;
+            handle->errorCounter++;
+            break;
+    }
+}
+
+/**
+ * @brief Subscribe to data with E2E protection via DDS
+ */
+Std_ReturnType E2E_DDS_Subscribe(
+    E2E_DDS_TopicHandleType* handle,
+    const uint8_t* data,
+    uint32_t length,
+    E2E_DDS_ResultType* result)
+{
+    if (!E2E_DDS_ArgsValid(handle, data, result)) {
+        return E_NOT_OK;
+    }
+
+    uint16_t e2eStatus = E2E_ERROR_NONE;
+
+    /* Perform E2E check */
+    Std_ReturnType ret = E2E_Check(&handle->e2eContext, data, length, &e2eStatus, handle->config.e2eProfile);
+    if (ret != E_OK) {
+        *result = E2E_DDS_ERROR_INIT;
+        return E_NOT_OK;
+    }
+
+    /* Map E2E status to DDS result */
+    E2E_PCheckStatusType checkStatus = E2E_DDS_GetPCheckStatus(handle);
+    E2E_DDS_MapSubscribeResult(handle, checkStatus, e2eStatus, result);
 
     handle->lastRxTimestamp = 0; /* TODO: Get actual timestamp */
 
@@ -483,12 +572,9 @@ Std_ReturnType E2E_DDS_Check(
     uint32_t timestamp,
     E2E_DDS_ResultType* result)
 {
-    if (!E2E_DDS_IsInitialized() || (handle == NULL) || !handle->initialized ||
-        (data == NULL) || (result == NULL)) {
+    if (!E2E_DDS_ArgsValid(handle, data, result)) {
         return E_NOT_OK;
     }
-
-    E2E_PCheckStatusType profileResult;
 
     /* First do E2E profile check */
     uint16_t e2eStatus = E2E_ERROR_NONE;
@@ -498,96 +584,17 @@ Std_ReturnType E2E_DDS_Check(
         return E_NOT_OK;
     }
 
-    /* Get profile result from state */
-    switch (handle->config.e2eProfile) {
-        case E2E_PROFILE_01:
-            profileResult = handle->e2eContext.state.p01.status;
-            break;
-        case E2E_PROFILE_02:
-            profileResult = handle->e2eContext.state.p02.status;
-            break;
-        case E2E_PROFILE_04:
-            profileResult = handle->e2eContext.state.p04.status;
-            break;
-        case E2E_PROFILE_05:
-            profileResult = handle->e2eContext.state.p05.status;
-            break;
-        case E2E_PROFILE_06:
-            profileResult = handle->e2eContext.state.p06.status;
-            break;
-        case E2E_PROFILE_07:
-            profileResult = handle->e2eContext.state.p07.status;
-            break;
-        case E2E_PROFILE_11:
-            profileResult = handle->e2eContext.state.p11.status;
-            break;
-        case E2E_PROFILE_22:
-            profileResult = handle->e2eContext.state.p22.status;
-            break;
-        default:
-            profileResult = E2E_P_ERROR;
-            break;
-    }
+    E2E_PCheckStatusType profileResult = E2E_DDS_GetPCheckStatus(handle);
 
     /* If state machine enabled, process through it */
     if (handle->config.enableStateMachine) {
-        E2E_SM_ConfigType smConfig;
-        (void)memset(&smConfig, 0, sizeof(E2E_SM_ConfigType));
-        smConfig.profile = handle->config.e2eProfile;
-        smConfig.timeoutMs = handle->config.timeoutMs;
-        smConfig.enableWindowCheck = TRUE;
-        smConfig.window.windowSize = handle->config.windowSize;
-        smConfig.window.maxErrorThreshold = handle->config.maxErrorThreshold;
-        smConfig.window.minOkThreshold = E2E_SM_OK_THRESHOLD;
-        smConfig.window.syncCounterThreshold = E2E_SM_SYNC_THRESHOLD;
-
-        E2E_SM_StateType oldState = handle->smState.state;
-        E2E_SM_CheckResultType smResult;
-
-        ret = E2E_SM_Check(&handle->smState, &smConfig, profileResult, timestamp, &smResult);
+        ret = E2E_DDS_CheckStateMachine(handle, profileResult, timestamp, result);
         if (ret != E_OK) {
-            *result = E2E_DDS_ERROR_STATE_MACHINE;
             return E_NOT_OK;
-        }
-
-        /* Invoke state change callback */
-        if ((g_callbacks.stateCallback != NULL) && (oldState != smResult.state)) {
-            g_callbacks.stateCallback(handle->topicId, oldState, smResult.state);
-        }
-
-        /* Map SM state to result */
-        if (smResult.isValid) {
-            *result = E2E_DDS_OK;
-            handle->rxCounter++;
-        } else if (smResult.state == E2E_SM_INVALID) {
-            *result = E2E_DDS_ERROR_SEQUENCE;
-            handle->errorCounter++;
-        } else if (smResult.state == E2E_SM_SYNC) {
-            *result = E2E_DDS_ERROR_SEQUENCE;
-        } else {
-            *result = E2E_DDS_ERROR_STATE_MACHINE;
         }
     } else {
         /* Direct profile result mapping */
-        switch (profileResult) {
-            case E2E_P_OK:
-                *result = E2E_DDS_OK;
-                handle->rxCounter++;
-                break;
-            case E2E_P_REPEATED:
-                *result = E2E_DDS_ERROR_SEQUENCE;
-                handle->errorCounter++;
-                break;
-            case E2E_P_WRONGSEQUENCE:
-                *result = E2E_DDS_ERROR_SEQUENCE;
-                handle->errorCounter++;
-                break;
-            case E2E_P_ERROR:
-            default:
-                *result = E2E_DDS_ERROR_CRC;
-                handle->errorCounter++;
-                break;
-        }
+        E2E_DDS_MapProfileResultDirect(handle, profileResult, result);
     }
 
     /* Invoke error callback if error */

@@ -29,6 +29,106 @@ static bool g_initialized = FALSE;
  ******************************************************************************/
 
 /**
+ * @brief NODATA 态迁移: 收到首帧数据
+ */
+static E2E_SM_StateType E2E_SM_NextNoData(E2E_PCheckStatusType checkResult)
+{
+    if (checkResult == E2E_P_OK) {
+        return E2E_SM_INIT;
+    }
+    if (checkResult == E2E_P_ERROR) {
+        return E2E_SM_INVALID;
+    }
+    return E2E_SM_NODATA;
+}
+
+/**
+ * @brief INIT 态迁移: 等待同步/校验
+ */
+static E2E_SM_StateType E2E_SM_NextInit(
+    E2E_PCheckStatusType checkResult,
+    const E2E_SM_InternalStateType* state,
+    const E2E_SM_ConfigType* config)
+{
+    if (checkResult == E2E_P_OK) {
+        if (E2E_SM_IsWindowOkThresholdMet(state, &config->window)) {
+            return E2E_SM_VALID;
+        }
+        return E2E_SM_INIT;
+    }
+    if (checkResult == E2E_P_ERROR) {
+        if (E2E_SM_IsWindowErrorThresholdExceeded(state, &config->window)) {
+            return E2E_SM_INVALID;
+        }
+        return E2E_SM_INIT;
+    }
+    return E2E_SM_INIT;
+}
+
+/**
+ * @brief VALID 态迁移: 正常运行
+ */
+static E2E_SM_StateType E2E_SM_NextValid(
+    E2E_PCheckStatusType checkResult,
+    const E2E_SM_InternalStateType* state,
+    const E2E_SM_ConfigType* config)
+{
+    if (checkResult == E2E_P_OK) {
+        return E2E_SM_VALID;
+    }
+    if (checkResult == E2E_P_ERROR) {
+        if (E2E_SM_IsWindowErrorThresholdExceeded(state, &config->window)) {
+            return E2E_SM_INVALID;
+        }
+        return E2E_SM_SYNC;
+    }
+    if ((checkResult == E2E_P_REPEATED) || (checkResult == E2E_P_WRONGSEQUENCE)) {
+        return E2E_SM_SYNC;
+    }
+    return E2E_SM_VALID;
+}
+
+/**
+ * @brief INVALID 态迁移: 错误态尝试恢复
+ */
+static E2E_SM_StateType E2E_SM_NextInvalid(
+    E2E_PCheckStatusType checkResult,
+    const E2E_SM_InternalStateType* state,
+    const E2E_SM_ConfigType* config)
+{
+    if (checkResult == E2E_P_OK) {
+        if (E2E_SM_IsWindowOkThresholdMet(state, &config->window)) {
+            return E2E_SM_VALID;
+        }
+        return E2E_SM_SYNC;
+    }
+    return E2E_SM_INVALID;
+}
+
+/**
+ * @brief SYNC 态迁移: 同步进行中
+ */
+static E2E_SM_StateType E2E_SM_NextSync(
+    E2E_PCheckStatusType checkResult,
+    const E2E_SM_InternalStateType* state,
+    const E2E_SM_ConfigType* config)
+{
+    if (checkResult == E2E_P_OK) {
+        if (state->syncCounter >= config->window.syncCounterThreshold) {
+            return E2E_SM_VALID;
+        }
+        return E2E_SM_SYNC;
+    }
+    if (checkResult == E2E_P_ERROR) {
+        if (E2E_SM_IsWindowErrorThresholdExceeded(state, &config->window)) {
+            return E2E_SM_INVALID;
+        }
+        return E2E_SM_SYNC;
+    }
+    return E2E_SM_SYNC;
+}
+
+/**
  * @brief Get next state based on current state and check result
  */
 static E2E_SM_StateType E2E_SM_GetNextState(
@@ -44,66 +144,23 @@ static E2E_SM_StateType E2E_SM_GetNextState(
 
         case E2E_SM_NODATA:
             /* First data received */
-            if (checkResult == E2E_P_OK) {
-                return E2E_SM_INIT;
-            } else if (checkResult == E2E_P_ERROR) {
-                return E2E_SM_INVALID;
-            }
-            return E2E_SM_NODATA;
+            return E2E_SM_NextNoData(checkResult);
 
         case E2E_SM_INIT:
             /* Waiting for sync/validation */
-            if (checkResult == E2E_P_OK) {
-                if (E2E_SM_IsWindowOkThresholdMet(state, &config->window)) {
-                    return E2E_SM_VALID;
-                }
-                return E2E_SM_INIT;
-            } else if (checkResult == E2E_P_ERROR) {
-                if (E2E_SM_IsWindowErrorThresholdExceeded(state, &config->window)) {
-                    return E2E_SM_INVALID;
-                }
-                return E2E_SM_INIT;
-            }
-            return E2E_SM_INIT;
+            return E2E_SM_NextInit(checkResult, state, config);
 
         case E2E_SM_VALID:
             /* Normal operation */
-            if (checkResult == E2E_P_OK) {
-                return E2E_SM_VALID;
-            } else if (checkResult == E2E_P_ERROR) {
-                if (E2E_SM_IsWindowErrorThresholdExceeded(state, &config->window)) {
-                    return E2E_SM_INVALID;
-                }
-                return E2E_SM_SYNC;
-            } else if ((checkResult == E2E_P_REPEATED) || (checkResult == E2E_P_WRONGSEQUENCE)) {
-                return E2E_SM_SYNC;
-            }
-            return E2E_SM_VALID;
+            return E2E_SM_NextValid(checkResult, state, config);
 
         case E2E_SM_INVALID:
             /* Error state, trying to recover */
-            if (checkResult == E2E_P_OK) {
-                if (E2E_SM_IsWindowOkThresholdMet(state, &config->window)) {
-                    return E2E_SM_VALID;
-                }
-                return E2E_SM_SYNC;
-            }
-            return E2E_SM_INVALID;
+            return E2E_SM_NextInvalid(checkResult, state, config);
 
         case E2E_SM_SYNC:
             /* Synchronization in progress */
-            if (checkResult == E2E_P_OK) {
-                if (state->syncCounter >= config->window.syncCounterThreshold) {
-                    return E2E_SM_VALID;
-                }
-                return E2E_SM_SYNC;
-            } else if (checkResult == E2E_P_ERROR) {
-                if (E2E_SM_IsWindowErrorThresholdExceeded(state, &config->window)) {
-                    return E2E_SM_INVALID;
-                }
-                return E2E_SM_SYNC;
-            }
-            return E2E_SM_SYNC;
+            return E2E_SM_NextSync(checkResult, state, config);
 
         default:
             return E2E_SM_INVALID;
