@@ -705,6 +705,34 @@ static int test_rollback_save_load_record(void)
     return 0;
 }
 
+/* 构造两证书链: 根证书 (index 1) + 叶子证书 (index 0), 供主测试函数做分支变异 */
+static void test_sb_build_cert_chain(bl_cert_chain_t *chain)
+{
+    memset(chain, 0, sizeof(*chain));
+    chain->num_certs = 2;
+
+    /* 根证书 (index 1) */
+    chain->certs[1].data = (uint8_t*)"root_cert_data";
+    chain->certs[1].size = 14;
+    chain->certs[1].sign_type = BL_SB_SIGN_ECDSA_P256_SHA256;
+    chain->certs[1].valid_from = 0;
+    chain->certs[1].valid_until = 0xFFFFFFFFFFFFFFFFULL;
+    chain->certs[1].is_ca = true;
+    chain->certs[1].public_key_len = 64;
+    memset(chain->certs[1].public_key, 0xBB, 64);
+    memset(chain->certs[1].signature, 0x11, 64);
+
+    /* 叶子证书 (index 0) */
+    chain->certs[0].data = (uint8_t*)"leaf_cert_data";
+    chain->certs[0].size = 14;
+    chain->certs[0].sign_type = BL_SB_SIGN_ECDSA_P256_SHA256;
+    chain->certs[0].valid_from = 0;
+    chain->certs[0].valid_until = 0xFFFFFFFFFFFFFFFFULL;
+    chain->certs[0].public_key_len = 64;
+    memset(chain->certs[0].public_key, 0xCC, 64);
+    memset(chain->certs[0].signature, 0x22, 64);
+}
+
 static int test_secure_boot_cert_chain(void)
 {
     printf("  Testing secure boot cert chain verification...\n");
@@ -726,29 +754,7 @@ static int test_secure_boot_cert_chain(void)
     uint8_t root_key[64] = {0xAA};
 
     bl_cert_chain_t chain;
-    memset(&chain, 0, sizeof(chain));
-    chain.num_certs = 2;
-
-    /* 根证书 (index 1) */
-    chain.certs[1].data = (uint8_t*)"root_cert_data";
-    chain.certs[1].size = 14;
-    chain.certs[1].sign_type = BL_SB_SIGN_ECDSA_P256_SHA256;
-    chain.certs[1].valid_from = 0;
-    chain.certs[1].valid_until = 0xFFFFFFFFFFFFFFFFULL;
-    chain.certs[1].is_ca = true;
-    chain.certs[1].public_key_len = 64;
-    memset(chain.certs[1].public_key, 0xBB, 64);
-    memset(chain.certs[1].signature, 0x11, 64);
-
-    /* 叶子证书 (index 0) */
-    chain.certs[0].data = (uint8_t*)"leaf_cert_data";
-    chain.certs[0].size = 14;
-    chain.certs[0].sign_type = BL_SB_SIGN_ECDSA_P256_SHA256;
-    chain.certs[0].valid_from = 0;
-    chain.certs[0].valid_until = 0xFFFFFFFFFFFFFFFFULL;
-    chain.certs[0].public_key_len = 64;
-    memset(chain.certs[0].public_key, 0xCC, 64);
-    memset(chain.certs[0].signature, 0x22, 64);
+    test_sb_build_cert_chain(&chain);
 
     mock_time_ms = 1000;
     bl_time_set_provider(mock_get_time_ms);
@@ -1068,13 +1074,11 @@ static void write_v2_record(uint32_t addr, uint32_t counter, uint32_t seq,
     (void)mock_flash_program(addr, (const uint8_t *)&rec, sizeof(rec));
 }
 
-static int test_antrollback_health_gate(void)
+/* ── ① 门控关闭 (默认): N 次制行为不变 (向后兼容回归) ── */
+static int test_arb_hg_stage1_gate_off(void)
 {
-    printf("  Testing anti-rollback health gate (RS-OTA-05)...\n");
+    uint32_t c = 0U;
 
-    uint32_t c = 0U, pv = 0U, pc = 0U;
-
-    /* ── ① 门控关闭 (默认): N 次制行为不变 (向后兼容回归) ── */
     memset(mock_flash, 0xFF, sizeof(mock_flash));
     bl_antrollback_context_t arb;
     TEST_ASSERT_EQ(Boot_AntiRollback_Init(&arb, &mock_flash_driver, TEST_ARB_ADDR, 4U),
@@ -1094,9 +1098,17 @@ static int test_antrollback_health_gate(void)
     TEST_ASSERT_EQ(Boot_AntiRollback_Read(&arb, &c), BL_ANTIROLLBACK_OK);
     TEST_ASSERT_EQ(c, 5U);
     Boot_AntiRollback_Deinit(&arb);
+    return 0;
+}
 
-    /* ── ② 门控开启 + 不确认 → 计数累计但不提交 (pending 保持) ── */
+/* ── ② 门控开启 + 不确认 → 计数累计但不提交 (pending 保持)
+ * ── ③ 门控开启 + ConfirmHealth(true) (版本匹配) → 达 N 次提交 ── */
+static int test_arb_hg_stage2_3_pending_then_confirm(void)
+{
+    uint32_t c = 0U, pv = 0U, pc = 0U;
+
     memset(mock_flash, 0xFF, sizeof(mock_flash));
+    bl_antrollback_context_t arb;
     TEST_ASSERT_EQ(Boot_AntiRollback_Init(&arb, &mock_flash_driver, TEST_ARB_ADDR, 4U),
                    BL_ANTIROLLBACK_OK);
     Boot_AntiRollback_SetConfirmBoots(&arb, 3U);
@@ -1121,9 +1133,16 @@ static int test_antrollback_health_gate(void)
     TEST_ASSERT_EQ(Boot_AntiRollback_GetPending(&arb, &pv, &pc), BL_ANTIROLLBACK_OK);
     TEST_ASSERT_EQ(pv, 0U);
     Boot_AntiRollback_Deinit(&arb);
+    return 0;
+}
 
-    /* ── ④ 门控开启 + ConfirmHealth 版本不匹配 → 不落盘 (防误确认) ── */
+/* ── ④ 门控开启 + ConfirmHealth 版本不匹配 → 不落盘 (防误确认) ── */
+static int test_arb_hg_stage4_version_mismatch(void)
+{
+    uint32_t c = 0U;
+
     memset(mock_flash, 0xFF, sizeof(mock_flash));
+    bl_antrollback_context_t arb;
     TEST_ASSERT_EQ(Boot_AntiRollback_Init(&arb, &mock_flash_driver, TEST_ARB_ADDR, 4U),
                    BL_ANTIROLLBACK_OK);
     Boot_AntiRollback_SetConfirmBoots(&arb, 1U);
@@ -1139,9 +1158,16 @@ static int test_antrollback_health_gate(void)
     TEST_ASSERT_EQ(Boot_AntiRollback_Read(&arb, &c), BL_ANTIROLLBACK_OK);
     TEST_ASSERT_EQ(c, 10U);                       /* 确认后提交 */
     Boot_AntiRollback_Deinit(&arb);
+    return 0;
+}
 
-    /* ── ⑤ ConfirmHealth(false) → 不提交 (pending 保持, 等待回滚) ── */
+/* ── ⑤ ConfirmHealth(false) → 不提交 (pending 保持, 等待回滚) ── */
+static int test_arb_hg_stage5_confirm_false(void)
+{
+    uint32_t c = 0U, pv = 0U, pc = 0U;
+
     memset(mock_flash, 0xFF, sizeof(mock_flash));
+    bl_antrollback_context_t arb;
     TEST_ASSERT_EQ(Boot_AntiRollback_Init(&arb, &mock_flash_driver, TEST_ARB_ADDR, 4U),
                    BL_ANTIROLLBACK_OK);
     Boot_AntiRollback_SetConfirmBoots(&arb, 2U);
@@ -1161,9 +1187,16 @@ static int test_antrollback_health_gate(void)
     TEST_ASSERT_EQ(Boot_AntiRollback_Read(&arb, &c), BL_ANTIROLLBACK_OK);
     TEST_ASSERT_EQ(c, 12U);
     Boot_AntiRollback_Deinit(&arb);
+    return 0;
+}
 
-    /* ── ⑥ 持久化: 门控开启 + 已确认标记跨重启恢复 ── */
+/* ── ⑥ 持久化: 门控开启 + 已确认标记跨重启恢复 + 未初始化/NULL 参数 ── */
+static int test_arb_hg_stage6_persist_and_null(void)
+{
+    uint32_t c = 0U;
+
     memset(mock_flash, 0xFF, sizeof(mock_flash));
+    bl_antrollback_context_t arb;
     TEST_ASSERT_EQ(Boot_AntiRollback_Init(&arb, &mock_flash_driver, TEST_ARB_ADDR, 4U),
                    BL_ANTIROLLBACK_OK);
     Boot_AntiRollback_SetConfirmBoots(&arb, 2U);
@@ -1192,6 +1225,28 @@ static int test_antrollback_health_gate(void)
     TEST_ASSERT_EQ(Boot_AntiRollback_ConfirmHealth(NULL, 1U, true),
                    BL_ANTIROLLBACK_ERROR_INVALID_PARAM);
     Boot_AntiRollback_SetHealthCheckMode(&bad, true);   /* 无操作, 不崩溃 */
+    return 0;
+}
+
+static int test_antrollback_health_gate(void)
+{
+    printf("  Testing anti-rollback health gate (RS-OTA-05)...\n");
+
+    if (test_arb_hg_stage1_gate_off() != 0) {
+        return -1;
+    }
+    if (test_arb_hg_stage2_3_pending_then_confirm() != 0) {
+        return -1;
+    }
+    if (test_arb_hg_stage4_version_mismatch() != 0) {
+        return -1;
+    }
+    if (test_arb_hg_stage5_confirm_false() != 0) {
+        return -1;
+    }
+    if (test_arb_hg_stage6_persist_and_null() != 0) {
+        return -1;
+    }
 
     printf("  PASSED\n");
     return 0;
@@ -1472,6 +1527,28 @@ static int test_upgrade_log_save_load(void)
  * 验签 3 步强化测试 (G4 / RS-OTA-04) + 抗回滚集成 (G1)
  * ============================================================================ */
 
+/* 构造合法固件镜像: 头部 (magic+CRC, 版本绑定签名格式) + payload */
+static void test_sb_build_strict_image(const uint8_t *sig, uint8_t *image)
+{
+    uint8_t payload[16] = {0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,
+                           0x09,0x0A,0x0B,0x0C,0x0D,0x0E,0x0F,0x10};
+
+    bl_firmware_header_t hdr;
+    memset(&hdr, 0, sizeof(hdr));
+    hdr.magic = BL_SB_FIRMWARE_MAGIC;
+    hdr.header_version = BL_SB_HEADER_VERSION;
+    hdr.firmware_version = 0x100;
+    hdr.security_flags = BL_SB_FLAG_VERSION_BOUND_SIGNATURE;
+    hdr.sign_type = BL_SB_SIGN_ECDSA_P256_SHA256;
+    hdr.hash_type = BL_SB_HASH_SHA256;
+    memcpy(hdr.signature, sig, BL_SB_SIGNATURE_SIZE);
+    hdr.header_crc32 = test_crc32((const uint8_t *)&hdr,
+                                  (uint32_t)offsetof(bl_firmware_header_t, header_crc32));
+
+    memcpy(image, &hdr, sizeof(hdr));
+    memcpy(image + sizeof(hdr), payload, sizeof(payload));
+}
+
 static int test_secure_boot_strict_verify(void)
 {
     printf("  Testing secure boot 3-step strict verification...\n");
@@ -1546,21 +1623,8 @@ static int test_secure_boot_strict_verify(void)
 
     /* verify_strict 完整流程: 构造合法头部 (magic+CRC, 版本绑定格式),
      * 伪造签名 → 步骤① 先行失败 (INVALID_SIGNATURE), 后续步骤不执行 */
-    bl_firmware_header_t hdr;
-    memset(&hdr, 0, sizeof(hdr));
-    hdr.magic = BL_SB_FIRMWARE_MAGIC;
-    hdr.header_version = BL_SB_HEADER_VERSION;
-    hdr.firmware_version = 0x100;
-    hdr.security_flags = BL_SB_FLAG_VERSION_BOUND_SIGNATURE;
-    hdr.sign_type = BL_SB_SIGN_ECDSA_P256_SHA256;
-    hdr.hash_type = BL_SB_HASH_SHA256;
-    memcpy(hdr.signature, sig, BL_SB_SIGNATURE_SIZE);
-    hdr.header_crc32 = test_crc32((const uint8_t *)&hdr,
-                                  (uint32_t)offsetof(bl_firmware_header_t, header_crc32));
-
     uint8_t image[sizeof(bl_firmware_header_t) + sizeof(payload)];
-    memcpy(image, &hdr, sizeof(hdr));
-    memcpy(image + sizeof(hdr), payload, sizeof(payload));
+    test_sb_build_strict_image(sig, image);
     TEST_ASSERT_EQ(bl_secure_boot_verify_strict(&ctx, image, sizeof(image)),
                    BL_SB_ERROR_INVALID_SIGNATURE);
     TEST_ASSERT_EQ(bl_secure_boot_get_state(&ctx), BL_SB_STATE_VERIFICATION_FAILED);

@@ -217,6 +217,40 @@ static void test_function_group_not_initialized(void)
     FG_MainFunction();
 }
 
+/* 运行态查询: 初始 OFF 稳定态 + 稳定性接口 (由主测试函数在 Configure 后调用) */
+static void test_fg_basic_runtime_queries(void)
+{
+    FG_RuntimeType runtime;
+
+    CHECK(FG_GetRuntimeState(FUNCTION_GROUP_POWER_MODE, &runtime) == E_OK);
+    CHECK(runtime.name == FUNCTION_GROUP_POWER_MODE);
+    CHECK(runtime.currentState == FUNCTION_GROUP_STATE_OFF);
+    CHECK(runtime.isStable == true);
+    CHECK(FG_GetRuntimeState(FUNCTION_GROUP_COUNT, &runtime) == E_NOT_OK);
+    CHECK(FG_GetRuntimeState(FUNCTION_GROUP_POWER_MODE, NULL) == E_NOT_OK);
+
+    CHECK(FG_IsStable(FUNCTION_GROUP_POWER_MODE) == true);
+    CHECK(FG_IsStable(FUNCTION_GROUP_COUNT) == false);
+    CHECK(FG_WaitForStable(FUNCTION_GROUP_POWER_MODE, 0U) == E_OK);
+    CHECK(FG_WaitForStable(FUNCTION_GROUP_COUNT, 10U) == E_NOT_OK);
+}
+
+/* 成员状态通知: 活跃成员计数增减 */
+static void test_fg_basic_member_notify(void)
+{
+    /* 成员状态通知 */
+    CHECK(FG_GetActiveMemberCount(FUNCTION_GROUP_POWER_MODE) == 0U);
+    CHECK(FG_NotifyMemberState(FUNCTION_GROUP_POWER_MODE, "nope", true) == E_NOT_OK);
+    CHECK(FG_NotifyMemberState(FUNCTION_GROUP_COUNT, "m1", true) == E_NOT_OK);
+    CHECK(FG_NotifyMemberState(FUNCTION_GROUP_POWER_MODE, NULL, true) == E_NOT_OK);
+    CHECK(FG_NotifyMemberState(FUNCTION_GROUP_POWER_MODE, "m1", true) == E_OK);
+    CHECK(FG_GetActiveMemberCount(FUNCTION_GROUP_POWER_MODE) == 1U);
+    CHECK(FG_NotifyMemberState(FUNCTION_GROUP_POWER_MODE, "m1", true) == E_OK);
+    CHECK(FG_GetActiveMemberCount(FUNCTION_GROUP_POWER_MODE) == 1U);
+    CHECK(FG_NotifyMemberState(FUNCTION_GROUP_POWER_MODE, "m1", false) == E_OK);
+    CHECK(FG_GetActiveMemberCount(FUNCTION_GROUP_POWER_MODE) == 0U);
+}
+
 static void test_function_group_basic(void)
 {
     FG_ConfigType cfg;
@@ -281,17 +315,7 @@ static void test_function_group_basic(void)
     CHECK(FG_Configure(FUNCTION_GROUP_COUNT, &cfg) == E_NOT_OK);
     CHECK(FG_Configure(FUNCTION_GROUP_POWER_MODE, &cfg) == E_OK);
 
-    CHECK(FG_GetRuntimeState(FUNCTION_GROUP_POWER_MODE, &runtime) == E_OK);
-    CHECK(runtime.name == FUNCTION_GROUP_POWER_MODE);
-    CHECK(runtime.currentState == FUNCTION_GROUP_STATE_OFF);
-    CHECK(runtime.isStable == true);
-    CHECK(FG_GetRuntimeState(FUNCTION_GROUP_COUNT, &runtime) == E_NOT_OK);
-    CHECK(FG_GetRuntimeState(FUNCTION_GROUP_POWER_MODE, NULL) == E_NOT_OK);
-
-    CHECK(FG_IsStable(FUNCTION_GROUP_POWER_MODE) == true);
-    CHECK(FG_IsStable(FUNCTION_GROUP_COUNT) == false);
-    CHECK(FG_WaitForStable(FUNCTION_GROUP_POWER_MODE, 0U) == E_OK);
-    CHECK(FG_WaitForStable(FUNCTION_GROUP_COUNT, 10U) == E_NOT_OK);
+    test_fg_basic_runtime_queries();
 
     /* 启动 -> STARTING, 迁移期间不可配置 */
     CHECK(FG_Start(FUNCTION_GROUP_COUNT) == E_NOT_OK);
@@ -303,17 +327,7 @@ static void test_function_group_basic(void)
     CHECK(FG_Configure(FUNCTION_GROUP_POWER_MODE, &cfg) == E_NOT_OK);
     CHECK(FG_Start(FUNCTION_GROUP_POWER_MODE) == E_OK);
 
-    /* 成员状态通知 */
-    CHECK(FG_GetActiveMemberCount(FUNCTION_GROUP_POWER_MODE) == 0U);
-    CHECK(FG_NotifyMemberState(FUNCTION_GROUP_POWER_MODE, "nope", true) == E_NOT_OK);
-    CHECK(FG_NotifyMemberState(FUNCTION_GROUP_COUNT, "m1", true) == E_NOT_OK);
-    CHECK(FG_NotifyMemberState(FUNCTION_GROUP_POWER_MODE, NULL, true) == E_NOT_OK);
-    CHECK(FG_NotifyMemberState(FUNCTION_GROUP_POWER_MODE, "m1", true) == E_OK);
-    CHECK(FG_GetActiveMemberCount(FUNCTION_GROUP_POWER_MODE) == 1U);
-    CHECK(FG_NotifyMemberState(FUNCTION_GROUP_POWER_MODE, "m1", true) == E_OK);
-    CHECK(FG_GetActiveMemberCount(FUNCTION_GROUP_POWER_MODE) == 1U);
-    CHECK(FG_NotifyMemberState(FUNCTION_GROUP_POWER_MODE, "m1", false) == E_OK);
-    CHECK(FG_GetActiveMemberCount(FUNCTION_GROUP_POWER_MODE) == 0U);
+    test_fg_basic_member_notify();
 
     /* 停止 */
     CHECK(FG_Stop(FUNCTION_GROUP_COUNT) == E_NOT_OK);
@@ -472,19 +486,15 @@ static void test_sm_interface_basic(void)
     CHECK(SM_Interface_Deinit() == E_OK);
 }
 
-static void test_sm_interface_requests(void)
+/* 状态迁移/功能组请求: 提交、完成回调、确认、拒绝、失败 */
+static void test_sm_req_stage_submit(uint32_t client)
 {
-    uint32_t client = 0U;
     SM_RequestHandle handle;
     SM_RequestHandle handle2;
     SM_RequestHandle handle3;
     SM_RequestHandle handle4;
     SM_RequestHandle handle5;
     SM_RequestStatus status;
-
-    CHECK(StateMachine_Init() == E_OK);
-    CHECK(SM_Interface_Init() == E_OK);
-    CHECK(SM_RegisterClient("sm-client", &client) == E_OK);
 
     /* 状态迁移请求 -> 被接受 -> 确认 */
     handle = SM_CreateStateRequest(client, MACHINE_STATE_STARTUP);
@@ -545,7 +555,11 @@ static void test_sm_interface_requests(void)
 
     CHECK(SM_SubmitRequest(9999U) == E_NOT_OK);
     CHECK(SM_SetCompletionCallback(9999U, completion_cb) == E_NOT_OK);
+}
 
+/* 请求槽耗尽: MainFunction 不清未超时 PENDING 请求, 逐一取消 */
+static void test_sm_req_stage_slots(uint32_t client)
+{
     /* 请求槽耗尽 */
     SM_RequestHandle handles[SM_INTERFACE_MAX_REQUESTS];
     for (uint32_t i = 0U; i < SM_INTERFACE_MAX_REQUESTS; ++i) {
@@ -565,7 +579,11 @@ static void test_sm_interface_requests(void)
         CHECK(SM_CancelRequest(handles[i]) == E_OK);
     }
     CHECK(SM_GetActiveRequestCount() == 0U);
+}
 
+/* 按客户端取消 / 注销客户端取消 / Deinit 清理挂起请求 */
+static void test_sm_req_stage_cancel(uint32_t client)
+{
     /* 按客户端取消 */
     CHECK(SM_CreateFGStateRequest(client, FUNCTION_GROUP_UPDATE,
                                   FUNCTION_GROUP_STATE_ON) != 0U);
@@ -588,6 +606,21 @@ static void test_sm_interface_requests(void)
     CHECK(SM_CreateFGStateRequest(client, FUNCTION_GROUP_UPDATE,
                                   FUNCTION_GROUP_STATE_ON) != 0U);
     CHECK(SM_Interface_Deinit() == E_OK);
+}
+
+static void test_sm_interface_requests(void)
+{
+    uint32_t client = 0U;
+
+    CHECK(StateMachine_Init() == E_OK);
+    CHECK(SM_Interface_Init() == E_OK);
+    CHECK(SM_RegisterClient("sm-client", &client) == E_OK);
+
+    test_sm_req_stage_submit(client);
+
+    test_sm_req_stage_slots(client);
+
+    test_sm_req_stage_cancel(client);
 
     CHECK(StateMachine_Deinit() == E_OK);
 }
