@@ -106,6 +106,12 @@ static boolean EthSwt_LocalIsWatermarkValid(const EthSwt_FlowControlConfigType* 
 static void EthSwt_LocalForwardToPort(EthSwt_PortIdType SrcPort, EthSwt_PortIdType DstPort,
                                       uint16 Length, boolean Tagged);
 static void EthSwt_LocalAccountTx(EthSwt_PortIdType SrcPort, uint16 Length, boolean Tagged);
+/* EthSwt_ForwardFrameVlan 等价重构助手 */
+static boolean EthSwt_VlanIngressAccepted(EthSwt_PortIdType SrcPort, uint8 vlanIdx, boolean tagged);
+static void EthSwt_TxAccountAndFlowControl(EthSwt_PortIdType SrcPort, uint16 Length, boolean tagged);
+static void EthSwt_MirrorFrame(EthSwt_PortIdType SrcPort, uint16 Length);
+static void EthSwt_ForwardToEgress(EthSwt_PortIdType SrcPort, uint8 DstPortMask, uint8 vlanIdx,
+                                   boolean tagged, uint16 Length);
 
 /*==================================================================================================
  *                                    LOCAL FUNCTIONS
@@ -880,14 +886,103 @@ Std_ReturnType EthSwt_ForwardFrame(EthSwt_PortIdType SrcPort, uint8 DstPortMask,
  *        forwarded unfiltered (legacy behaviour).
  */
 /** @req SWS_EthSwt_00019 */
+/**
+ * @brief VLAN 入口过滤: 源端口成员检查 + DropUntagged (等价重构助手)
+ * @return FALSE=帧已被过滤消费 (RxFilteredFrames 已更新, 调用方直接返回 E_OK)
+ */
+static boolean EthSwt_VlanIngressAccepted(EthSwt_PortIdType SrcPort, uint8 vlanIdx, boolean tagged)
+{
+    if (vlanIdx != ETHSWT_NO_VLAN_INDEX)
+    {
+        if (EthSwt_LocalPortInVlan(EthSwt_InternalState.Vlans[vlanIdx].PortMask, SrcPort) == FALSE)
+        {
+            EthSwt_InternalState.Ports[SrcPort].Stats.RxFilteredFrames++;
+            return FALSE;    /* frame consumed, filtered out */
+        }
+        /* Drop-untagged: untagged frames dropped on VLANs that require tags */
+        if ((tagged == FALSE) && (EthSwt_InternalState.Vlans[vlanIdx].DropUntagged != FALSE))
+        {
+            EthSwt_InternalState.Ports[SrcPort].Stats.RxFilteredFrames++;
+            return FALSE;
+        }
+    }
+    return TRUE;
+}
+
+/**
+ * @brief TX 计数与流控暂停触发 (等价重构助手)
+ */
+static void EthSwt_TxAccountAndFlowControl(EthSwt_PortIdType SrcPort, uint16 Length, boolean tagged)
+{
+    /* TX accounting + flow control pause trigger */
+    EthSwt_LocalAccountTx(SrcPort, Length, tagged);
+
+    if ((EthSwt_InternalState.Ports[SrcPort].FlowControl.TxPauseEnable != FALSE) &&
+        (EthSwt_InternalState.Ports[SrcPort].PauseActive == FALSE))
+    {
+        EthSwt_InternalState.Ports[SrcPort].TxQueueDepth++;
+        if (EthSwt_InternalState.Ports[SrcPort].TxQueueDepth >=
+            EthSwt_InternalState.Ports[SrcPort].FlowControl.HighWatermark)
+        {
+            EthSwt_InternalState.Ports[SrcPort].PauseActive = TRUE;
+            EthSwt_InternalState.Ports[SrcPort].Stats.TxPauseFrames++;
+        }
+    }
+}
+
+/**
+ * @brief 镜像端口复制 (等价重构助手)
+ */
+static void EthSwt_MirrorFrame(EthSwt_PortIdType SrcPort, uint16 Length)
+{
+    /* Mirroring: copy to mirror destination port */
+    if ((EthSwt_InternalState.Mirror.MirrorEnabled != FALSE) &&
+        (EthSwt_InternalState.Mirror.MirrorDestinationPort != SrcPort) &&
+        (ETHSWT_IS_VALID_PORT(EthSwt_InternalState.Mirror.MirrorDestinationPort)) &&
+        (EthSwt_LocalPortInVlan(EthSwt_InternalState.Mirror.MirrorSourcePortMask, SrcPort) != FALSE))
+    {
+        EthSwt_PortIdType mport = EthSwt_InternalState.Mirror.MirrorDestinationPort;
+        if (EthSwt_InternalState.Ports[mport].Enable == ETHSWT_PORT_ENABLED)
+        {
+            EthSwt_InternalState.Ports[mport].Stats.RxFrames++;
+            EthSwt_InternalState.Ports[mport].Stats.RxBytes += Length;
+            EthSwt_InternalState.Ports[mport].Stats.MirroredFrames++;
+        }
+    }
+}
+
+/**
+ * @brief 出口转发: 目的端口 VLAN 成员过滤 (等价重构助手)
+ */
+static void EthSwt_ForwardToEgress(EthSwt_PortIdType SrcPort, uint8 DstPortMask, uint8 vlanIdx,
+                                   boolean tagged, uint16 Length)
+{
+    uint8 i;
+
+    /* Egress: forward to destination ports with member filtering */
+    for (i = 0U; i < ETHSWT_MAX_PORTS; i++)
+    {
+        if ((EthSwt_LocalPortInVlan(DstPortMask, i)) != 0U)
+        {
+            /* Egress filtering: destination port must be a member of the VLAN */
+            if ((vlanIdx != ETHSWT_NO_VLAN_INDEX) &&
+                (EthSwt_LocalPortInVlan(EthSwt_InternalState.Vlans[vlanIdx].PortMask, i) == FALSE))
+            {
+                EthSwt_InternalState.Ports[SrcPort].Stats.TxFilteredFrames++;
+                continue;
+            }
+            EthSwt_LocalForwardToPort(SrcPort, i, Length, tagged);
+        }
+    }
+}
+
+/** @req SWS_EthSwt_00019 */
 Std_ReturnType EthSwt_ForwardFrameVlan(EthSwt_PortIdType SrcPort, uint16 VlanId, uint8 DstPortMask,
                                        const uint8* FrameData, uint16 Length)
 {
-    uint8  i;
     uint8  vlanIdx;
     uint16 effectiveVlan;
     boolean tagged;
-    boolean srcMember;
 
 #if (ETHSWT_DEV_ERROR_DETECT == STD_ON)
     if (!ETHSWT_IS_INIT())
@@ -920,71 +1015,22 @@ Std_ReturnType EthSwt_ForwardFrameVlan(EthSwt_PortIdType SrcPort, uint16 VlanId,
         tagged = TRUE;
     }
 
-    vlanIdx  = EthSwt_LocalFindVlan(effectiveVlan);
-    srcMember = TRUE;
+    vlanIdx = EthSwt_LocalFindVlan(effectiveVlan);
 
     /* Ingress filtering: source port must be a member of the VLAN */
-    if (vlanIdx != ETHSWT_NO_VLAN_INDEX)
+    if (!EthSwt_VlanIngressAccepted(SrcPort, vlanIdx, tagged))
     {
-        srcMember = EthSwt_LocalPortInVlan(EthSwt_InternalState.Vlans[vlanIdx].PortMask, SrcPort);
-        if (srcMember == FALSE)
-        {
-            EthSwt_InternalState.Ports[SrcPort].Stats.RxFilteredFrames++;
-            return E_OK;    /* frame consumed, filtered out */
-        }
-        /* Drop-untagged: untagged frames dropped on VLANs that require tags */
-        if ((tagged == FALSE) && (EthSwt_InternalState.Vlans[vlanIdx].DropUntagged != FALSE))
-        {
-            EthSwt_InternalState.Ports[SrcPort].Stats.RxFilteredFrames++;
-            return E_OK;
-        }
+        return E_OK;    /* frame consumed, filtered out */
     }
 
     /* TX accounting + flow control pause trigger */
-    EthSwt_LocalAccountTx(SrcPort, Length, tagged);
-
-    if ((EthSwt_InternalState.Ports[SrcPort].FlowControl.TxPauseEnable != FALSE) &&
-        (EthSwt_InternalState.Ports[SrcPort].PauseActive == FALSE))
-    {
-        EthSwt_InternalState.Ports[SrcPort].TxQueueDepth++;
-        if (EthSwt_InternalState.Ports[SrcPort].TxQueueDepth >=
-            EthSwt_InternalState.Ports[SrcPort].FlowControl.HighWatermark)
-        {
-            EthSwt_InternalState.Ports[SrcPort].PauseActive = TRUE;
-            EthSwt_InternalState.Ports[SrcPort].Stats.TxPauseFrames++;
-        }
-    }
+    EthSwt_TxAccountAndFlowControl(SrcPort, Length, tagged);
 
     /* Mirroring: copy to mirror destination port */
-    if ((EthSwt_InternalState.Mirror.MirrorEnabled != FALSE) &&
-        (EthSwt_InternalState.Mirror.MirrorDestinationPort != SrcPort) &&
-        (ETHSWT_IS_VALID_PORT(EthSwt_InternalState.Mirror.MirrorDestinationPort)) &&
-        (EthSwt_LocalPortInVlan(EthSwt_InternalState.Mirror.MirrorSourcePortMask, SrcPort) != FALSE))
-    {
-        EthSwt_PortIdType mport = EthSwt_InternalState.Mirror.MirrorDestinationPort;
-        if (EthSwt_InternalState.Ports[mport].Enable == ETHSWT_PORT_ENABLED)
-        {
-            EthSwt_InternalState.Ports[mport].Stats.RxFrames++;
-            EthSwt_InternalState.Ports[mport].Stats.RxBytes += Length;
-            EthSwt_InternalState.Ports[mport].Stats.MirroredFrames++;
-        }
-    }
+    EthSwt_MirrorFrame(SrcPort, Length);
 
     /* Egress: forward to destination ports with member filtering */
-    for (i = 0U; i < ETHSWT_MAX_PORTS; i++)
-    {
-        if ((EthSwt_LocalPortInVlan(DstPortMask, i)) != 0U)
-        {
-            /* Egress filtering: destination port must be a member of the VLAN */
-            if ((vlanIdx != ETHSWT_NO_VLAN_INDEX) &&
-                (EthSwt_LocalPortInVlan(EthSwt_InternalState.Vlans[vlanIdx].PortMask, i) == FALSE))
-            {
-                EthSwt_InternalState.Ports[SrcPort].Stats.TxFilteredFrames++;
-                continue;
-            }
-            EthSwt_LocalForwardToPort(SrcPort, i, Length, tagged);
-        }
-    }
+    EthSwt_ForwardToEgress(SrcPort, DstPortMask, vlanIdx, tagged, Length);
 
     return E_OK;
 }

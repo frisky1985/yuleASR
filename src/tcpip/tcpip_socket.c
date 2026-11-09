@@ -540,97 +540,140 @@ tcpip_error_t tcpip_socket_get_tx_space(tcpip_socket_id_t socket_id,
  * Socket option configuration API implementation
  * ============================================================================ */
 
+/* tcpip_socket_setopt 选项应用助手 (等价重构): 单个选项的长度/套接字类型
+ * 校验与设置逻辑逐路径保留, 未匹配选项返回 TCPIP_ERROR_PARAM;
+ * 内层 if 未命中时 result 保持不变 (与原 switch-case 落空语义一致) */
+static void tcpip_socket_opt_bool(tcpip_socket_id_t socket_id, uint8_t option,
+                                  const void *value, uint8_t value_len,
+                                  tcpip_error_t *result)
+{
+    const bool *bool_val = (const bool *)value;
+
+    switch (option)
+    {
+        case TCPIP_SOCK_OPT_BROADCAST:
+            if ((value_len == sizeof(bool)) &&
+                (g_sockets[socket_id].type == TCPIP_SOCK_DGRAM))
+            {
+                *result = tcpip_udp_set_broadcast(socket_id, *bool_val);
+            }
+            break;
+
+        case TCPIP_SOCK_OPT_KEEPALIVE:
+            if (value_len == sizeof(bool))
+            {
+                (void)tcpip_tcp_set_keepalive(socket_id, *bool_val, 7200u, 75u, 9u);
+                *result = TCPIP_OK;
+            }
+            break;
+
+        case TCPIP_SOCK_OPT_NODELAY:
+            if ((value_len == sizeof(bool)) &&
+                (g_sockets[socket_id].type == TCPIP_SOCK_STREAM))
+            {
+                *result = tcpip_tcp_set_nagle(socket_id, !(*bool_val));
+            }
+            break;
+
+        default:
+            break;
+    }
+}
+
+static void tcpip_socket_opt_scalar(tcpip_socket_id_t socket_id, uint8_t option,
+                                    const void *value, uint8_t value_len,
+                                    tcpip_error_t *result)
+{
+    switch (option)
+    {
+        case TCPIP_SOCK_OPT_RCVTIMEO:
+            if (value_len == sizeof(uint32_t))
+            {
+                g_sockets[socket_id].rx_timeout_ms = *((const uint32_t *)value);
+                *result = TCPIP_OK;
+            }
+            break;
+
+        case TCPIP_SOCK_OPT_SNDTIMEO:
+            if (value_len == sizeof(uint32_t))
+            {
+                g_sockets[socket_id].tx_timeout_ms = *((const uint32_t *)value);
+                *result = TCPIP_OK;
+            }
+            break;
+
+        case TCPIP_SOCK_OPT_RCVBUF:
+            if (value_len == sizeof(uint16_t))
+            {
+                g_sockets[socket_id].rx_buf_size = *((const uint16_t *)value);
+                *result = TCPIP_OK;
+            }
+            break;
+
+        case TCPIP_SOCK_OPT_SNDBUF:
+            if (value_len == sizeof(uint16_t))
+            {
+                g_sockets[socket_id].tx_buf_size = *((const uint16_t *)value);
+                *result = TCPIP_OK;
+            }
+            break;
+
+        case TCPIP_SOCK_OPT_MCAST_TTL:
+            if ((value_len == sizeof(uint8_t)) &&
+                (g_sockets[socket_id].type == TCPIP_SOCK_DGRAM))
+            {
+                *result = tcpip_udp_set_mcast_ttl(socket_id, *((const uint8_t *)value));
+            }
+            break;
+
+        default:
+            break;
+    }
+}
+
+static tcpip_error_t tcpip_socket_opt_apply(tcpip_socket_id_t socket_id,
+                                            uint8_t option,
+                                            const void *value,
+                                            uint8_t value_len)
+{
+    tcpip_error_t result = TCPIP_OK;
+
+    switch (option)
+    {
+        case TCPIP_SOCK_OPT_BROADCAST:
+        case TCPIP_SOCK_OPT_KEEPALIVE:
+        case TCPIP_SOCK_OPT_NODELAY:
+            tcpip_socket_opt_bool(socket_id, option, value, value_len, &result);
+            break;
+
+        case TCPIP_SOCK_OPT_RCVTIMEO:
+        case TCPIP_SOCK_OPT_SNDTIMEO:
+        case TCPIP_SOCK_OPT_RCVBUF:
+        case TCPIP_SOCK_OPT_SNDBUF:
+        case TCPIP_SOCK_OPT_MCAST_TTL:
+            tcpip_socket_opt_scalar(socket_id, option, value, value_len, &result);
+            break;
+
+        default:
+            result = TCPIP_ERROR_PARAM;
+            break;
+    }
+
+    return result;
+}
+
 tcpip_error_t tcpip_socket_setopt(tcpip_socket_id_t socket_id,
                                    uint8_t option,
                                    const void *value,
                                    uint8_t value_len)
 {
     tcpip_error_t result;
-    const bool *bool_val;
-    const uint16_t *u16_val;
-    const uint32_t *u32_val;
 
     result = tcpip_socket_validate_params(socket_id);
-    
+
     if ((result == TCPIP_OK) && (value != NULL))
     {
-        switch (option)
-        {
-            case TCPIP_SOCK_OPT_BROADCAST:
-                if ((value_len == sizeof(bool)) && 
-                    (g_sockets[socket_id].type == TCPIP_SOCK_DGRAM))
-                {
-                    bool_val = (const bool *)value;
-                    result = tcpip_udp_set_broadcast(socket_id, *bool_val);
-                }
-                break;
-                
-            case TCPIP_SOCK_OPT_KEEPALIVE:
-                if (value_len == sizeof(bool))
-                {
-                    bool_val = (const bool *)value;
-                    (void)tcpip_tcp_set_keepalive(socket_id, *bool_val, 7200u, 75u, 9u);
-                    result = TCPIP_OK;
-                }
-                break;
-                
-            case TCPIP_SOCK_OPT_RCVTIMEO:
-                if (value_len == sizeof(uint32_t))
-                {
-                    u32_val = (const uint32_t *)value;
-                    g_sockets[socket_id].rx_timeout_ms = *u32_val;
-                    result = TCPIP_OK;
-                }
-                break;
-                
-            case TCPIP_SOCK_OPT_SNDTIMEO:
-                if (value_len == sizeof(uint32_t))
-                {
-                    u32_val = (const uint32_t *)value;
-                    g_sockets[socket_id].tx_timeout_ms = *u32_val;
-                    result = TCPIP_OK;
-                }
-                break;
-                
-            case TCPIP_SOCK_OPT_RCVBUF:
-                if (value_len == sizeof(uint16_t))
-                {
-                    u16_val = (const uint16_t *)value;
-                    g_sockets[socket_id].rx_buf_size = *u16_val;
-                    result = TCPIP_OK;
-                }
-                break;
-                
-            case TCPIP_SOCK_OPT_SNDBUF:
-                if (value_len == sizeof(uint16_t))
-                {
-                    u16_val = (const uint16_t *)value;
-                    g_sockets[socket_id].tx_buf_size = *u16_val;
-                    result = TCPIP_OK;
-                }
-                break;
-                
-            case TCPIP_SOCK_OPT_NODELAY:
-                if ((value_len == sizeof(bool)) && 
-                    (g_sockets[socket_id].type == TCPIP_SOCK_STREAM))
-                {
-                    bool_val = (const bool *)value;
-                    result = tcpip_tcp_set_nagle(socket_id, !(*bool_val));
-                }
-                break;
-                
-            case TCPIP_SOCK_OPT_MCAST_TTL:
-                if ((value_len == sizeof(uint8_t)) &&
-                    (g_sockets[socket_id].type == TCPIP_SOCK_DGRAM))
-                {
-                    result = tcpip_udp_set_mcast_ttl(socket_id, *((const uint8_t *)value));
-                }
-                break;
-                
-            default:
-                result = TCPIP_ERROR_PARAM;
-                break;
-        }
+        result = tcpip_socket_opt_apply(socket_id, option, value, value_len);
     }
     else
     {

@@ -104,6 +104,14 @@ static Std_ReturnType EthTrcv_SetModeTJA1100(uint8 TrcvIdx, EthTrcv_ModeType Mod
 static Std_ReturnType EthTrcv_SetModeRTL8211(uint8 TrcvIdx, EthTrcv_ModeType Mode);
 static Std_ReturnType EthTrcv_SetModeGeneric(uint8 TrcvIdx, EthTrcv_ModeType Mode);
 static void EthTrcv_ReportDetError(uint8 ApiId, uint8 ErrorId);
+/* EthTrcv_UpdateLinkState 等价重构助手 */
+static void EthTrcv_HandleLinkUp(uint8 TrcvIdx, uint16 Bmsr);
+static void EthTrcv_HandleLinkDown(EthTrcv_TrcvRuntimeType* TrcvRuntime);
+static void EthTrcv_UpdateSpeedDuplex(uint8 TrcvIdx, uint16 Bmsr);
+static void EthTrcv_ParseRtl8211Physr(uint8 TrcvIdx, EthTrcv_TrcvRuntimeType* TrcvRuntime);
+static void EthTrcv_ParseLan8720Scsr(uint8 TrcvIdx, EthTrcv_TrcvRuntimeType* TrcvRuntime);
+static void EthTrcv_ParseTja1100Status(uint8 TrcvIdx, EthTrcv_TrcvRuntimeType* TrcvRuntime);
+static void EthTrcv_ParseGenericAnlpar(uint8 TrcvIdx, uint16 Bmsr, EthTrcv_TrcvRuntimeType* TrcvRuntime);
 /*================================================================================================== * LOCAL FUNCTIONS
  * *==================================================================================================*/
 /** * @brief Reports DET error if development error detection is enabled */
@@ -440,135 +448,192 @@ static Std_ReturnType EthTrcv_SetModeGeneric(uint8 TrcvIdx, EthTrcv_ModeType Mod
     Status = EthTrcv_WritePhyRegister(TrcvIdx, ETHTRCV_PHY_REG_BMCR, Bmcr);
     return Status;
 }
+/** * @brief Link up: apply debounce, confirm ACTIVE and parse PHY speed/duplex (等价重构助手) */
+static void EthTrcv_HandleLinkUp(uint8 TrcvIdx, uint16 Bmsr)
+{
+    EthTrcv_TrcvRuntimeType* TrcvRuntime = &EthTrcv_Global.Trcv[TrcvIdx];
+
+    /* Link is up - apply debounce */
+    if (TrcvRuntime->LinkDebounceCounter < ETHTRCV_LINK_DEBOUNCE_COUNT)
+    {
+        TrcvRuntime->LinkDebounceCounter++;
+    }
+    if (TrcvRuntime->LinkDebounceCounter >= ETHTRCV_LINK_DEBOUNCE_COUNT)
+    {
+        if (TrcvRuntime->LinkState != ETHTRCV_LINK_STATE_ACTIVE)
+        {
+            TrcvRuntime->LinkState = ETHTRCV_LINK_STATE_ACTIVE;
+            TrcvRuntime->LinkChangePending = TRUE;
+#if (ETHTRCV_STATS_ENABLE == STD_ON)
+            TrcvRuntime->LinkUpCounter++;
+#endif
+        }
+        /* Read speed and duplex from PHY-specific registers */
+        EthTrcv_UpdateSpeedDuplex(TrcvIdx, Bmsr);
+    }
+}
+
+/** * @brief Link down: reset debounce and mark DOWN (等价重构助手) */
+static void EthTrcv_HandleLinkDown(EthTrcv_TrcvRuntimeType* TrcvRuntime)
+{
+    /* Link is down - reset debounce */
+    TrcvRuntime->LinkDebounceCounter = 0U;
+    if (TrcvRuntime->LinkState != ETHTRCV_LINK_STATE_DOWN)
+    {
+        TrcvRuntime->LinkState = ETHTRCV_LINK_STATE_DOWN;
+        TrcvRuntime->LinkChangePending = TRUE;
+#if (ETHTRCV_STATS_ENABLE == STD_ON)
+        TrcvRuntime->LinkDownCounter++;
+#endif
+    }
+}
+
+/** * @brief Parse speed/duplex according to detected PHY type (等价重构助手) */
+static void EthTrcv_UpdateSpeedDuplex(uint8 TrcvIdx, uint16 Bmsr)
+{
+    EthTrcv_TrcvRuntimeType* TrcvRuntime = &EthTrcv_Global.Trcv[TrcvIdx];
+
+    switch (EthTrcv_Global.Trcv[TrcvIdx].DetectedType)
+    {
+        case ETHTRCV_TYPE_RTL8211:
+        case ETHTRCV_TYPE_RTL8211E:
+            EthTrcv_ParseRtl8211Physr(TrcvIdx, TrcvRuntime);
+            break;
+        case ETHTRCV_TYPE_LAN8720:
+        case ETHTRCV_TYPE_LAN8742:
+            EthTrcv_ParseLan8720Scsr(TrcvIdx, TrcvRuntime);
+            break;
+        case ETHTRCV_TYPE_TJA1100:
+        case ETHTRCV_TYPE_TJA1101:
+            EthTrcv_ParseTja1100Status(TrcvIdx, TrcvRuntime);
+            break;
+        default: /* Generic PHY - try to parse from BMSR */
+            EthTrcv_ParseGenericAnlpar(TrcvIdx, Bmsr, TrcvRuntime);
+            break;
+    }
+}
+
+/** * @brief RTL8211/8211E: parse PHYSR speed and duplex (等价重构助手) */
+static void EthTrcv_ParseRtl8211Physr(uint8 TrcvIdx, EthTrcv_TrcvRuntimeType* TrcvRuntime)
+{
+    Std_ReturnType Status;
+    uint16 Physr = 0U;
+
+    Status = EthTrcv_ReadPhyRegister(TrcvIdx, ETHTRCV_RTL8211_REG_PHYSR, &Physr);
+    if (Status == E_OK)
+    {
+        /* Parse speed from PHYSR */
+        switch (Physr & ETHTRCV_RTL8211_PHYSR_SPEED_MASK)
+        {
+            case ETHTRCV_RTL8211_PHYSR_SPEED_10:
+                TrcvRuntime->BaudRate = ETHTRCV_BAUD_RATE_10MBIT;
+                break;
+            case ETHTRCV_RTL8211_PHYSR_SPEED_100:
+                TrcvRuntime->BaudRate = ETHTRCV_BAUD_RATE_100MBIT;
+                break;
+            case ETHTRCV_RTL8211_PHYSR_SPEED_1000:
+                TrcvRuntime->BaudRate = ETHTRCV_BAUD_RATE_1000MBIT;
+                break;
+            default:
+                TrcvRuntime->BaudRate = ETHTRCV_BAUD_RATE_10MBIT;
+                break;
+        }
+        /* Parse duplex mode */
+        TrcvRuntime->DuplexMode = (Physr & ETHTRCV_RTL8211_PHYSR_DUPLEX) ? ETHTRCV_DUPLEX_MODE_FULL
+                                                                         : ETHTRCV_DUPLEX_MODE_HALF;
+    }
+}
+
+/** * @brief LAN8720/8742: parse SCSR speed and duplex (等价重构助手) */
+static void EthTrcv_ParseLan8720Scsr(uint8 TrcvIdx, EthTrcv_TrcvRuntimeType* TrcvRuntime)
+{
+    Std_ReturnType Status;
+    uint16 Physr = 0U;
+
+    Status = EthTrcv_ReadPhyRegister(TrcvIdx, ETHTRCV_LAN8720_REG_SCSR, &Physr);
+    if (Status == E_OK)
+    {
+        TrcvRuntime->BaudRate =
+            (Physr & ETHTRCV_LAN8720_SCSR_SPEED) ? ETHTRCV_BAUD_RATE_100MBIT : ETHTRCV_BAUD_RATE_10MBIT;
+        TrcvRuntime->DuplexMode =
+            (Physr & ETHTRCV_LAN8720_SCSR_DUPLEX) ? ETHTRCV_DUPLEX_MODE_FULL : ETHTRCV_DUPLEX_MODE_HALF;
+    }
+}
+
+/** * @brief TJA1100/1101: fixed 100Mbps full duplex (等价重构助手) */
+static void EthTrcv_ParseTja1100Status(uint8 TrcvIdx, EthTrcv_TrcvRuntimeType* TrcvRuntime)
+{
+    Std_ReturnType Status;
+    uint16 Physr = 0U;
+
+    Status = EthTrcv_ReadPhyRegister(TrcvIdx, ETHTRCV_TJA1100_REG_COMM_STATUS, &Physr);
+    if (Status == E_OK)
+    {
+        /* TJA1100 is always 100Mbps full duplex for 100BASE-T1 */
+        TrcvRuntime->BaudRate = ETHTRCV_BAUD_RATE_100MBIT;
+        TrcvRuntime->DuplexMode = ETHTRCV_DUPLEX_MODE_FULL;
+    }
+}
+
+/** * @brief Generic PHY: parse ANLPAR after auto-negotiation (等价重构助手) */
+static void EthTrcv_ParseGenericAnlpar(uint8 TrcvIdx, uint16 Bmsr, EthTrcv_TrcvRuntimeType* TrcvRuntime)
+{
+    Std_ReturnType Status;
+    uint16 Physr = 0U;
+
+    if ((Bmsr & ETHTRCV_BMSR_ANEG_COMPLETE) != 0U)
+    {
+        /* Auto-negotiation completed - read ANLPAR for details */
+        Status = EthTrcv_ReadPhyRegister(TrcvIdx, ETHTRCV_PHY_REG_ANLPAR, &Physr);
+        if (Status == E_OK)
+        {
+            /* Determine speed from negotiated capabilities */
+            if ((Physr & (ETHTRCV_BMSR_100BASETX_FULL | ETHTRCV_BMSR_100BASETX_HALF)) != 0U)
+            {
+                TrcvRuntime->BaudRate = ETHTRCV_BAUD_RATE_100MBIT;
+            }
+            else if ((Physr & (ETHTRCV_BMSR_10BASET_FULL | ETHTRCV_BMSR_10BASET_HALF)) != 0U)
+            {
+                TrcvRuntime->BaudRate = ETHTRCV_BAUD_RATE_10MBIT;
+            }
+            else
+            {
+                TrcvRuntime->BaudRate = ETHTRCV_BAUD_RATE_10MBIT;
+            }
+            /* Determine duplex */
+            if ((Physr & (ETHTRCV_BMSR_100BASETX_FULL | ETHTRCV_BMSR_10BASET_FULL)) != 0U)
+            {
+                TrcvRuntime->DuplexMode = ETHTRCV_DUPLEX_MODE_FULL;
+            }
+            else
+            {
+                TrcvRuntime->DuplexMode = ETHTRCV_DUPLEX_MODE_HALF;
+            }
+        }
+    }
+}
+
 /** * @brief Updates the link state for a transceiver */
 static Std_ReturnType EthTrcv_UpdateLinkState(uint8 TrcvIdx)
 {
     Std_ReturnType Status;
     uint16 Bmsr = 0U;
-    uint16 Physr = 0U;
-    const EthTrcv_TrcvConfigType* TrcvCfg = &EthTrcv_TrcvConfig[TrcvIdx];
-    EthTrcv_TrcvRuntimeType* TrcvRuntime = &EthTrcv_Global.Trcv[TrcvIdx];
+
     /* Read Basic Status Register */
     Status = EthTrcv_ReadPhyRegister(TrcvIdx, ETHTRCV_PHY_REG_BMSR, &Bmsr);
     if (Status != E_OK)
     {
         return E_NOT_OK;
     }
+
     /* Determine link state */
     if ((Bmsr & ETHTRCV_BMSR_LINK_STATUS) != 0U)
     {
-        /* Link is up - apply debounce */
-        if (TrcvRuntime->LinkDebounceCounter < ETHTRCV_LINK_DEBOUNCE_COUNT)
-        {
-            TrcvRuntime->LinkDebounceCounter++;
-        }
-        if (TrcvRuntime->LinkDebounceCounter >= ETHTRCV_LINK_DEBOUNCE_COUNT)
-        {
-            if (TrcvRuntime->LinkState != ETHTRCV_LINK_STATE_ACTIVE)
-            {
-                TrcvRuntime->LinkState = ETHTRCV_LINK_STATE_ACTIVE;
-                TrcvRuntime->LinkChangePending = TRUE;
-#if (ETHTRCV_STATS_ENABLE == STD_ON)
-                TrcvRuntime->LinkUpCounter++;
-#endif
-            }
-            /* Read speed and duplex from PHY-specific registers */
-            switch (EthTrcv_Global.Trcv[TrcvIdx].DetectedType)
-            {
-                case ETHTRCV_TYPE_RTL8211:
-                case ETHTRCV_TYPE_RTL8211E:
-                    Status = EthTrcv_ReadPhyRegister(TrcvIdx, ETHTRCV_RTL8211_REG_PHYSR, &Physr);
-                    if (Status == E_OK)
-                    {
-                        /* Parse speed from PHYSR */
-                        switch (Physr & ETHTRCV_RTL8211_PHYSR_SPEED_MASK)
-                        {
-                            case ETHTRCV_RTL8211_PHYSR_SPEED_10:
-                                TrcvRuntime->BaudRate = ETHTRCV_BAUD_RATE_10MBIT;
-                                break;
-                            case ETHTRCV_RTL8211_PHYSR_SPEED_100:
-                                TrcvRuntime->BaudRate = ETHTRCV_BAUD_RATE_100MBIT;
-                                break;
-                            case ETHTRCV_RTL8211_PHYSR_SPEED_1000:
-                                TrcvRuntime->BaudRate = ETHTRCV_BAUD_RATE_1000MBIT;
-                                break;
-                            default:
-                                TrcvRuntime->BaudRate = ETHTRCV_BAUD_RATE_10MBIT;
-                                break;
-                        }
-                        /* Parse duplex mode */
-                        TrcvRuntime->DuplexMode = (Physr & ETHTRCV_RTL8211_PHYSR_DUPLEX) ? ETHTRCV_DUPLEX_MODE_FULL
-                                                                                         : ETHTRCV_DUPLEX_MODE_HALF;
-                    }
-                    break;
-                case ETHTRCV_TYPE_LAN8720:
-                case ETHTRCV_TYPE_LAN8742:
-                    Status = EthTrcv_ReadPhyRegister(TrcvIdx, ETHTRCV_LAN8720_REG_SCSR, &Physr);
-                    if (Status == E_OK)
-                    {
-                        TrcvRuntime->BaudRate =
-                            (Physr & ETHTRCV_LAN8720_SCSR_SPEED) ? ETHTRCV_BAUD_RATE_100MBIT : ETHTRCV_BAUD_RATE_10MBIT;
-                        TrcvRuntime->DuplexMode =
-                            (Physr & ETHTRCV_LAN8720_SCSR_DUPLEX) ? ETHTRCV_DUPLEX_MODE_FULL : ETHTRCV_DUPLEX_MODE_HALF;
-                    }
-                    break;
-                case ETHTRCV_TYPE_TJA1100:
-                case ETHTRCV_TYPE_TJA1101:
-                    Status = EthTrcv_ReadPhyRegister(TrcvIdx, ETHTRCV_TJA1100_REG_COMM_STATUS, &Physr);
-                    if (Status == E_OK)
-                    {
-                        /* TJA1100 is always 100Mbps full duplex for 100BASE-T1 */
-                        TrcvRuntime->BaudRate = ETHTRCV_BAUD_RATE_100MBIT;
-                        TrcvRuntime->DuplexMode = ETHTRCV_DUPLEX_MODE_FULL;
-                    }
-                    break;
-                default: /* Generic PHY - try to parse from BMSR */
-                    if ((Bmsr & ETHTRCV_BMSR_ANEG_COMPLETE) != 0U)
-                    {
-                        /* Auto-negotiation completed - read ANLPAR for details */
-                        Status = EthTrcv_ReadPhyRegister(TrcvIdx, ETHTRCV_PHY_REG_ANLPAR, &Physr);
-                        if (Status == E_OK)
-                        {
-                            /* Determine speed from negotiated capabilities */
-                            if ((Physr & (ETHTRCV_BMSR_100BASETX_FULL | ETHTRCV_BMSR_100BASETX_HALF)) != 0U)
-                            {
-                                TrcvRuntime->BaudRate = ETHTRCV_BAUD_RATE_100MBIT;
-                            }
-                            else if ((Physr & (ETHTRCV_BMSR_10BASET_FULL | ETHTRCV_BMSR_10BASET_HALF)) != 0U)
-                            {
-                                TrcvRuntime->BaudRate = ETHTRCV_BAUD_RATE_10MBIT;
-                            }
-                            else
-                            {
-                                TrcvRuntime->BaudRate = ETHTRCV_BAUD_RATE_10MBIT;
-                            }
-                            /* Determine duplex */
-                            if ((Physr & (ETHTRCV_BMSR_100BASETX_FULL | ETHTRCV_BMSR_10BASET_FULL)) != 0U)
-                            {
-                                TrcvRuntime->DuplexMode = ETHTRCV_DUPLEX_MODE_FULL;
-                            }
-                            else
-                            {
-                                TrcvRuntime->DuplexMode = ETHTRCV_DUPLEX_MODE_HALF;
-                            }
-                        }
-                    }
-                    break;
-            }
-        }
+        EthTrcv_HandleLinkUp(TrcvIdx, Bmsr);
     }
     else
     {
-        /* Link is down - reset debounce */
-        TrcvRuntime->LinkDebounceCounter = 0U;
-        if (TrcvRuntime->LinkState != ETHTRCV_LINK_STATE_DOWN)
-        {
-            TrcvRuntime->LinkState = ETHTRCV_LINK_STATE_DOWN;
-            TrcvRuntime->LinkChangePending = TRUE;
-#if (ETHTRCV_STATS_ENABLE == STD_ON)
-            TrcvRuntime->LinkDownCounter++;
-#endif
-        }
+        EthTrcv_HandleLinkDown(&EthTrcv_Global.Trcv[TrcvIdx]);
     }
     return E_OK;
 }

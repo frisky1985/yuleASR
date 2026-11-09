@@ -402,6 +402,79 @@ void Can_EnableControllerInterrupts(uint8 Controller)
     REG_WRITE32(baseAddr + CAN_IMASK1, imaskValue);
 }
 
+/* Can_Write 等价重构助手: DLC 校验与 FD/经典帧负载写入逐路径保留 */
+
+#if (CAN_DEV_ERROR_DETECT == STD_ON)
+/** @brief FD/经典帧 DLC 校验 (等价重构助手, 仅 DET 使能时调用) */
+static Can_ReturnType Can_WriteCheckDlc(uint8 controller, const Can_PduType* PduInfo)
+{
+    if (PduInfo->FdFrame == TRUE) {
+        /* FD frames require a controller baudrate config with FD enabled;
+         * same lookup as Can_Init (BaudrateConfigs[0]) via the stored config */
+        const Can_ControllerConfigType* ctrlConfig = &Can_ConfigPtr->Controllers[controller];
+        const Can_BaudrateConfigType* fdConfig = &ctrlConfig->BaudrateConfigs[0];
+        if (fdConfig->FdEnabled != TRUE) {
+            (void)Det_ReportError(CAN_MODULE_ID, 0U, CAN_SID_WRITECANID, CAN_E_PARAM_DLC);
+            return CAN_NOT_OK;
+        }
+        if (Can_IsValidFdLength(PduInfo->CanDlc) != TRUE) {
+            (void)Det_ReportError(CAN_MODULE_ID, 0U, CAN_SID_WRITECANID, CAN_E_PARAM_DLC);
+            return CAN_NOT_OK;
+        }
+    } else if (PduInfo->CanDlc > 8U) {
+        /* Classic frames remain limited to the 0..8 DLC range */
+        (void)Det_ReportError(CAN_MODULE_ID, 0U, CAN_SID_WRITECANID, CAN_E_PARAM_DLC);
+        return CAN_NOT_OK;
+    }
+    return CAN_OK;
+}
+#endif
+
+/** @brief FD 帧负载与 CS 写入 (等价重构助手) */
+static void Can_WriteFdPayload(uint32 mbAddr, const Can_PduType* PduInfo)
+{
+    uint32 csValue;
+
+    /* FD payload: up to 16 data words (64 bytes) at consecutive mailbox
+     * offsets after the two classic words; DLC field carries the FD code */
+    for (uint8 word = 0U; word < 16U; word++) {
+        uint32 dataWord = 0U;
+        for (uint8 byte = 0U; byte < 4U; byte++) {
+            uint8 index = (uint8)((word * 4U) + byte);
+            if (index < PduInfo->CanDlc) {
+                dataWord |= (uint32)(PduInfo->SduPtr[index]) << (byte * 8U);
+            }
+        }
+        REG_WRITE32(mbAddr + 8U + ((uint32)word * 4U), dataWord);
+    }
+
+    /* Write CS (code and FD DLC code) */
+    csValue = CAN_MB_CODE_TX_ACTIVE | ((uint32)Can_FdLengthToDlcCode(PduInfo->CanDlc) << 16);
+    REG_WRITE32(mbAddr + 0U, csValue);
+}
+
+/** @brief 经典帧负载与 CS 写入 (等价重构助手) */
+static void Can_WriteClassicPayload(uint32 mbAddr, const Can_PduType* PduInfo)
+{
+    uint32 csValue;
+
+    /* Write data */
+    uint32 dataWord0 = 0U;
+    uint32 dataWord1 = 0U;
+    for (uint8 i = 0U; (i < PduInfo->CanDlc) && (i < 4U); i++) {
+        dataWord0 |= (uint32)(PduInfo->SduPtr[i]) << (i * 8U);
+    }
+    for (uint8 i = 4U; (i < PduInfo->CanDlc) && (i < 8U); i++) {
+        dataWord1 |= (uint32)(PduInfo->SduPtr[i]) << ((i - 4U) * 8U);
+    }
+    REG_WRITE32(mbAddr + 8U, dataWord0);
+    REG_WRITE32(mbAddr + 12U, dataWord1);
+
+    /* Write CS (code and DLC) */
+    csValue = CAN_MB_CODE_TX_ACTIVE | ((uint32)(PduInfo->CanDlc & 0x0FU) << 16);
+    REG_WRITE32(mbAddr + 0U, csValue);
+}
+
 /** @req SWS_Can_00006 */
 Can_ReturnType Can_Write(Can_HwHandleType Hth, const Can_PduType* PduInfo)
 {
@@ -426,22 +499,7 @@ Can_ReturnType Can_Write(Can_HwHandleType Hth, const Can_PduType* PduInfo)
     uint32 mbAddr = baseAddr + CAN_MB_BASE + (mbIndex * 16U);
 
     #if (CAN_DEV_ERROR_DETECT == STD_ON)
-    if (PduInfo->FdFrame == TRUE) {
-        /* FD frames require a controller baudrate config with FD enabled;
-         * same lookup as Can_Init (BaudrateConfigs[0]) via the stored config */
-        const Can_ControllerConfigType* ctrlConfig = &Can_ConfigPtr->Controllers[controller];
-        const Can_BaudrateConfigType* fdConfig = &ctrlConfig->BaudrateConfigs[0];
-        if (fdConfig->FdEnabled != TRUE) {
-            (void)Det_ReportError(CAN_MODULE_ID, 0U, CAN_SID_WRITECANID, CAN_E_PARAM_DLC);
-            return CAN_NOT_OK;
-        }
-        if (Can_IsValidFdLength(PduInfo->CanDlc) != TRUE) {
-            (void)Det_ReportError(CAN_MODULE_ID, 0U, CAN_SID_WRITECANID, CAN_E_PARAM_DLC);
-            return CAN_NOT_OK;
-        }
-    } else if (PduInfo->CanDlc > 8U) {
-        /* Classic frames remain limited to the 0..8 DLC range */
-        (void)Det_ReportError(CAN_MODULE_ID, 0U, CAN_SID_WRITECANID, CAN_E_PARAM_DLC);
+    if (Can_WriteCheckDlc(controller, PduInfo) != CAN_OK) {
         return CAN_NOT_OK;
     }
     #endif
@@ -462,38 +520,9 @@ Can_ReturnType Can_Write(Can_HwHandleType Hth, const Can_PduType* PduInfo)
     REG_WRITE32(mbAddr + 4U, idValue);
 
     if (PduInfo->FdFrame == TRUE) {
-        /* FD payload: up to 16 data words (64 bytes) at consecutive mailbox
-         * offsets after the two classic words; DLC field carries the FD code */
-        for (uint8 word = 0U; word < 16U; word++) {
-            uint32 dataWord = 0U;
-            for (uint8 byte = 0U; byte < 4U; byte++) {
-                uint8 index = (uint8)((word * 4U) + byte);
-                if (index < PduInfo->CanDlc) {
-                    dataWord |= (uint32)(PduInfo->SduPtr[index]) << (byte * 8U);
-                }
-            }
-            REG_WRITE32(mbAddr + 8U + ((uint32)word * 4U), dataWord);
-        }
-
-        /* Write CS (code and FD DLC code) */
-        csValue = CAN_MB_CODE_TX_ACTIVE | ((uint32)Can_FdLengthToDlcCode(PduInfo->CanDlc) << 16);
-        REG_WRITE32(mbAddr + 0U, csValue);
+        Can_WriteFdPayload(mbAddr, PduInfo);
     } else {
-        /* Write data */
-        uint32 dataWord0 = 0U;
-        uint32 dataWord1 = 0U;
-        for (uint8 i = 0U; (i < PduInfo->CanDlc) && (i < 4U); i++) {
-            dataWord0 |= (uint32)(PduInfo->SduPtr[i]) << (i * 8U);
-        }
-        for (uint8 i = 4U; (i < PduInfo->CanDlc) && (i < 8U); i++) {
-            dataWord1 |= (uint32)(PduInfo->SduPtr[i]) << ((i - 4U) * 8U);
-        }
-        REG_WRITE32(mbAddr + 8U, dataWord0);
-        REG_WRITE32(mbAddr + 12U, dataWord1);
-
-        /* Write CS (code and DLC) */
-        csValue = CAN_MB_CODE_TX_ACTIVE | ((uint32)(PduInfo->CanDlc & 0x0FU) << 16);
-        REG_WRITE32(mbAddr + 0U, csValue);
+        Can_WriteClassicPayload(mbAddr, PduInfo);
     }
 
 #ifdef QEMU_CAN_LOOPBACK

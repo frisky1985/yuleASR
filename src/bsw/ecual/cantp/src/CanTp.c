@@ -1377,6 +1377,81 @@ void CanTp_TxConfirmation(PduIdType TxPduId)
     (void)TxPduId;
 }
 
+/* CanTp_MainFunction 通道处理等价重构助手: 定时器/超时/STmin 发送逐路径保留 */
+
+/**
+ * @brief 通道定时器递减 (等价重构助手)
+ */
+static void CanTp_ProcessChannelTimers(CanTp_ChannelRuntimeType* runtime)
+{
+    /* Decrement timers */
+    if (runtime->Timer > 0U) {
+        runtime->Timer--;
+    }
+    if ((runtime->StMinActive == TRUE) && (runtime->StMinTimerMs > 0U)) {
+        runtime->StMinTimerMs--;
+    }
+}
+
+/**
+ * @brief 通道超时检查: N_As/N_Bs/N_Cs/N_Cr (等价重构助手)
+ */
+static void CanTp_HandleChannelTimeout(CanTp_ChannelRuntimeType* runtime, uint8 chIdx)
+{
+    /* Check for timeouts */
+    if (runtime->Timer == 0U) {
+        switch (runtime->State) {
+            case CANTP_CH_TX_SF:
+            case CANTP_CH_TX_FF:
+                /* N_As timeout */
+                CanTp_ResetChannel((CanTp_ChannelType)chIdx);
+                break;
+
+            case CANTP_CH_TX_WAIT_FC:
+                /* N_Bs timeout */
+                CanTp_ResetChannel((CanTp_ChannelType)chIdx);
+                break;
+
+            case CANTP_CH_TX_CF:
+                /* N_Cs timeout: abort only if a next CF is still gated by the STmin separation */
+                if ((runtime->DataIndex < runtime->DataLength) &&
+                    (runtime->StMinActive == TRUE) &&
+                    (runtime->StMinTimerMs > 0U)) {
+                    CanTp_ResetChannel((CanTp_ChannelType)chIdx);
+                }
+                break;
+
+            case CANTP_CH_RX_CF:
+                /* N_Cr timeout */
+                CanTp_ResetChannel((CanTp_ChannelType)chIdx);
+                break;
+
+            default:
+                break;
+        }
+    }
+}
+
+/**
+ * @brief STmin 分隔时间到达后发送下一连续帧并重装 N_Cs (等价重构助手)
+ */
+static void CanTp_SendNextCfIfDue(CanTp_ChannelRuntimeType* runtime, uint8 chIdx)
+{
+    /* Send the next Consecutive Frame once the STmin separation time has elapsed */
+    if ((runtime->State == CANTP_CH_TX_CF) &&
+        (runtime->StMinActive == TRUE) &&
+        (runtime->StMinTimerMs == 0U) &&
+        (runtime->DataIndex < runtime->DataLength)) {
+        CanTp_SendConsecutiveFrame((CanTp_ChannelType)chIdx);
+        /* Use N_Cs from config if available */
+        if (runtime->TxNsduConfig != NULL_PTR) {
+            runtime->Timer = runtime->TxNsduConfig->CanTpNcs;
+        } else {
+            runtime->Timer = CANTP_NCS_DEFAULT;
+        }
+    }
+}
+
 /**
  * @brief CanTp_MainFunction - AUTOSAR CAN Transport Layer API
  * @details Implements the AUTOSAR CanTp_MainFunction function for CAN TP segmentation/reassembly
@@ -1397,60 +1472,9 @@ void CanTp_MainFunction(void)
             continue;
         }
 
-        /* Decrement timers */
-        if (runtime->Timer > 0U) {
-            runtime->Timer--;
-        }
-        if ((runtime->StMinActive == TRUE) && (runtime->StMinTimerMs > 0U)) {
-            runtime->StMinTimerMs--;
-        }
-
-        /* Check for timeouts */
-        if (runtime->Timer == 0U) {
-            switch (runtime->State) {
-                case CANTP_CH_TX_SF:
-                case CANTP_CH_TX_FF:
-                    /* N_As timeout */
-                    CanTp_ResetChannel((CanTp_ChannelType)i);
-                    break;
-
-                case CANTP_CH_TX_WAIT_FC:
-                    /* N_Bs timeout */
-                    CanTp_ResetChannel((CanTp_ChannelType)i);
-                    break;
-
-                case CANTP_CH_TX_CF:
-                    /* N_Cs timeout: abort only if a next CF is still gated by the STmin separation */
-                    if ((runtime->DataIndex < runtime->DataLength) &&
-                        (runtime->StMinActive == TRUE) &&
-                        (runtime->StMinTimerMs > 0U)) {
-                        CanTp_ResetChannel((CanTp_ChannelType)i);
-                    }
-                    break;
-
-                case CANTP_CH_RX_CF:
-                    /* N_Cr timeout */
-                    CanTp_ResetChannel((CanTp_ChannelType)i);
-                    break;
-
-                default:
-                    break;
-            }
-        }
-
-        /* Send the next Consecutive Frame once the STmin separation time has elapsed */
-        if ((runtime->State == CANTP_CH_TX_CF) &&
-            (runtime->StMinActive == TRUE) &&
-            (runtime->StMinTimerMs == 0U) &&
-            (runtime->DataIndex < runtime->DataLength)) {
-            CanTp_SendConsecutiveFrame((CanTp_ChannelType)i);
-            /* Use N_Cs from config if available */
-            if (runtime->TxNsduConfig != NULL_PTR) {
-                runtime->Timer = runtime->TxNsduConfig->CanTpNcs;
-            } else {
-                runtime->Timer = CANTP_NCS_DEFAULT;
-            }
-        }
+        CanTp_ProcessChannelTimers(runtime);
+        CanTp_HandleChannelTimeout(runtime, i);
+        CanTp_SendNextCfIfDue(runtime, i);
     }
 
     /* Drain the Rx frame queue: the protocol handling of received frames runs

@@ -644,92 +644,140 @@ void Mqtt_UpdateState(Mqtt_InternalConnectionType* conn,
     }
 }
 
+/* Mqtt_ProcessStateMachine 状态处理助手 (等价重构): 各状态事件逻辑逐路径保留 */
+
+/**
+ * @brief CONNECTING 状态: 发送 CONNECT 报文 (等价重构助手)
+ */
+static Mqtt_ReturnType Mqtt_StateConnecting(Mqtt_InternalConnectionType* conn)
+{
+    Mqtt_ReturnType result;
+
+    /* 发送CONNECT报文 */
+    result = Mqtt_EncodeConnect(conn);
+    if (result == MQTT_OK) {
+        result = Mqtt_SendPacket(conn, conn->sendBuffer, conn->sendLength);
+        if (result == MQTT_OK) {
+            /* 等待CONNACK */
+        }
+    }
+    return result;
+}
+
+/**
+ * @brief CONNECTED 状态: 处理接收数据 (等价重构助手)
+ */
+static Mqtt_ReturnType Mqtt_StateConnected(Mqtt_InternalConnectionType* conn)
+{
+    /* 处理接收数据 */
+    Mqtt_ReturnType result = Mqtt_ReceivePacket(conn);
+
+    /* 检查保活 */
+    /* 保活逻辑通过 Mqtt_Ping API 由上层定时调用实现 */
+    return result;
+}
+
+/**
+ * @brief DISCONNECTING 状态: 关闭 TLS 与 TCP 连接 (等价重构助手)
+ */
+static void Mqtt_StateDisconnecting(Mqtt_InternalConnectionType* conn)
+{
+    /* 关闭TLS连接 */
+#if (MQTT_SUPPORT_TLS == STD_ON)
+    if (conn->useTls && (conn->tlsContext != NULL_PTR)) {
+        (void)Mqtt_Tls_Close(conn->tlsContext);
+        Mqtt_Tls_DestroyContext(conn->tlsContext);
+        conn->tlsContext = NULL_PTR;
+    }
+#endif
+    /* 关闭TCP连接 */
+    if (conn->socketId != TCPIP_SOCKETID_INVALID) {
+        TcpIp_SocketClose(conn->socketId);
+        conn->socketId = TCPIP_SOCKETID_INVALID;
+    }
+    Mqtt_UpdateState(conn, MQTT_STATE_DISCONNECTED);
+}
+
+/**
+ * @brief TCP_CONNECTING 状态: 检查 TCP 连接结果或超时 (等价重构助手)
+ */
+static void Mqtt_StateTcpConnecting(Mqtt_InternalConnectionType* conn)
+{
+    /* 检查TCP连接是否完成 */
+    if ((TcpIp_IsConnected(conn->socketId)) != 0U) {
+#if (MQTT_SUPPORT_TLS == STD_ON)
+        if ((conn->useTls) != 0U) {
+            /* 开始TLS握手 */
+            Mqtt_UpdateState(conn, MQTT_STATE_TLS_HANDSHAKING);
+        } else
+#endif
+        {
+            /* 直接发送MQTT CONNECT报文 */
+            Mqtt_UpdateState(conn, MQTT_STATE_MQTT_CONNECTING);
+        }
+    } else if ((Mqtt_CheckTimeout(conn, conn->config.connectTimeoutMs)) != 0U) {
+        Mqtt_UpdateState(conn, MQTT_STATE_DISCONNECTING);
+    }
+}
+
+#if (MQTT_SUPPORT_TLS == STD_ON)
+/**
+ * @brief TLS_HANDSHAKING 状态: 执行 TLS 握手或超时 (等价重构助手)
+ */
+static void Mqtt_StateTlsHandshaking(Mqtt_InternalConnectionType* conn)
+{
+    /* 执行TLS握手 */
+    {
+        Mqtt_ReturnType tlsResult;
+        tlsResult = Mqtt_Tls_PerformHandshake(conn->tlsContext,
+                                               conn->socketId,
+                                               NULL_PTR);
+        if (tlsResult == MQTT_OK) {
+            /* TLS握手成功，发送MQTT CONNECT报文 */
+            Mqtt_UpdateState(conn, MQTT_STATE_MQTT_CONNECTING);
+        } else if ((Mqtt_CheckTimeout(conn, MQTT_TLS_HANDSHAKE_TIMEOUT_MS)) != 0U) {
+            Mqtt_UpdateState(conn, MQTT_STATE_DISCONNECTING);
+        }
+    }
+}
+#endif
+
 Mqtt_ReturnType Mqtt_ProcessStateMachine(Mqtt_InternalConnectionType* conn)
 {
     Mqtt_ReturnType result = MQTT_OK;
-    
+
     switch (conn->state) {
         case MQTT_STATE_UNINIT:
         case MQTT_STATE_DISCONNECTED:
             /* 无需处理 */
             break;
-            
+
         case MQTT_STATE_CONNECTING:
-            /* 发送CONNECT报文 */
-            result = Mqtt_EncodeConnect(conn);
-            if (result == MQTT_OK) {
-                result = Mqtt_SendPacket(conn, conn->sendBuffer, conn->sendLength);
-                if (result == MQTT_OK) {
-                    /* 等待CONNACK */
-                }
-            }
+            result = Mqtt_StateConnecting(conn);
             break;
-            
+
         case MQTT_STATE_CONNECTED:
-            /* 处理接收数据 */
-            result = Mqtt_ReceivePacket(conn);
-            
-            /* 检查保活 */
-            /* 保活逻辑通过 Mqtt_Ping API 由上层定时调用实现 */
+            result = Mqtt_StateConnected(conn);
             break;
-            
+
         case MQTT_STATE_DISCONNECTING:
-            /* 关闭TLS连接 */
-#if (MQTT_SUPPORT_TLS == STD_ON)
-            if (conn->useTls && (conn->tlsContext != NULL_PTR)) {
-                (void)Mqtt_Tls_Close(conn->tlsContext);
-                Mqtt_Tls_DestroyContext(conn->tlsContext);
-                conn->tlsContext = NULL_PTR;
-            }
-#endif
-            /* 关闭TCP连接 */
-            if (conn->socketId != TCPIP_SOCKETID_INVALID) {
-                TcpIp_SocketClose(conn->socketId);
-                conn->socketId = TCPIP_SOCKETID_INVALID;
-            }
-            Mqtt_UpdateState(conn, MQTT_STATE_DISCONNECTED);
+            Mqtt_StateDisconnecting(conn);
             break;
-            
+
     case MQTT_STATE_TCP_CONNECTING:
-        /* 检查TCP连接是否完成 */
-        if ((TcpIp_IsConnected(conn->socketId)) != 0U) {
-#if (MQTT_SUPPORT_TLS == STD_ON)
-            if ((conn->useTls) != 0U) {
-                /* 开始TLS握手 */
-                Mqtt_UpdateState(conn, MQTT_STATE_TLS_HANDSHAKING);
-            } else
-#endif
-            {
-                /* 直接发送MQTT CONNECT报文 */
-                Mqtt_UpdateState(conn, MQTT_STATE_MQTT_CONNECTING);
-            }
-        } else if ((Mqtt_CheckTimeout(conn, conn->config.connectTimeoutMs)) != 0U) {
-            Mqtt_UpdateState(conn, MQTT_STATE_DISCONNECTING);
-        }
+        Mqtt_StateTcpConnecting(conn);
         break;
-        
+
 #if (MQTT_SUPPORT_TLS == STD_ON)
     case MQTT_STATE_TLS_HANDSHAKING:
-        /* 执行TLS握手 */
-        {
-            Mqtt_ReturnType tlsResult;
-            tlsResult = Mqtt_Tls_PerformHandshake(conn->tlsContext, 
-                                                   conn->socketId, 
-                                                   NULL_PTR);
-            if (tlsResult == MQTT_OK) {
-                /* TLS握手成功，发送MQTT CONNECT报文 */
-                Mqtt_UpdateState(conn, MQTT_STATE_MQTT_CONNECTING);
-            } else if ((Mqtt_CheckTimeout(conn, MQTT_TLS_HANDSHAKE_TIMEOUT_MS)) != 0U) {
-                Mqtt_UpdateState(conn, MQTT_STATE_DISCONNECTING);
-            }
-        }
+        Mqtt_StateTlsHandshaking(conn);
         break;
 #endif
-            
+
         default:
             break;
     }
-    
+
     return result;
 }
 
