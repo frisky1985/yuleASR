@@ -1001,42 +1001,24 @@ Std_ReturnType Csm_KeyElementIdsGet(
  * 4. DET错误检查全覆盖
  * @req SWS_Csm_00016
  */
-Std_ReturnType Csm_KeyGenerate(uint32 keyId)
+/**
+ * @brief 通过硬件服务层配置作业生成密钥 (CryIf 失败后的回退路径)
+ * @param[out] handled TRUE 表示调用已完成 (异步入队或同步成功), 调用方直接返回;
+ *                     FALSE 表示未匹配作业或同步失败, 调用方继续软件回退
+ * @return handled=TRUE 时为最终返回值; 否则无效
+ * @note 异步入队失败按原实现直接返回入队结果, 不做软件回退
+ */
+static Std_ReturnType Csm_KeyGenerateViaConfigJob(uint32 keyId, uint8 keyIdx, boolean *handled)
 {
-    uint8 keyIdx;
-    uint8 keyBuf[CSM_MAX_KEY_LENGTH];
-    uint32 keyLength;
-    Std_ReturnType cryIfResult;
     uint8 jobIdx;
-    
-    CSM_CHECK_INITIALIZED(CSM_API_KEY_GENERATE);
-    
-    if (E_OK != Csm_FindKeyIndex(keyId, &keyIdx))
-    {
-        Csm_ReportError(CSM_API_KEY_GENERATE, CSM_E_PARAM_KEY_ID);
-        return E_NOT_OK;
-    }
-    
-    /* 检查密钥是否已存在且有效 */
-    if (Csm_Keys[keyIdx].status == CSM_KEY_STATUS_VALID)
-    {
-        return E_OK;
-    }
-    
-    /* 尝试通过CryIf生成密钥 */
-    cryIfResult = CryIf_KeyGenerate((CryIf_KeyIdType)keyId);
-    if (cryIfResult == E_OK)
-    {
-        /* CryIf成功，直接从密钥存储加载 */
-        Csm_UpdateKeyStatus(keyIdx, CSM_KEY_STATUS_VALID);
-        return E_OK;
-    }
-    
-    /* 尝试通过硬件服务层生成 */
+    Std_ReturnType result = E_NOT_OK;
+    uint8 i;
+
+    *handled = FALSE;
+
     if (Csm_CurrentConfig != NULL_PTR && Csm_CurrentConfig->jobs != NULL_PTR)
     {
         /* 查找关联的作业配置 */
-        uint8 i;
         for (i = 0; i < Csm_CurrentConfig->numJobs && i < CSM_MAX_JOBS; i++)
         {
             if (Csm_CurrentConfig->jobs[i].keyId == keyId &&
@@ -1049,12 +1031,13 @@ Std_ReturnType Csm_KeyGenerate(uint32 keyId)
                     Csm_Jobs[jobIdx].keyId = keyId;
                     Csm_Jobs[jobIdx].inputLength = 0U;
                     Csm_Jobs[jobIdx].outputLength = CSM_MAX_KEY_LENGTH;
-                    
+
                     /* 异步: 入队处理 */
                     if (Csm_CurrentConfig->jobs[i].asynchronous)
                     {
                         Csm_Jobs[jobIdx].state = CSM_JOB_STATE_QUEUED;
-                        return Csm_QueueJob(Csm_CurrentConfig->jobs[i].jobId,
+                        *handled = TRUE;
+                        result = Csm_QueueJob(Csm_CurrentConfig->jobs[i].jobId,
                                             Csm_CurrentConfig->jobs[i].priority);
                     }
                     else
@@ -1070,7 +1053,7 @@ Std_ReturnType Csm_KeyGenerate(uint32 keyId)
                             Csm_Jobs[jobIdx].outputData,
                             &Csm_Jobs[jobIdx].resultLength);
                         Csm_ActiveJobCount--;
-                        
+
                         if (hwResult == E_OK && Csm_Jobs[jobIdx].resultLength > 0U)
                         {
                             /* 将生成的密钥材料存入密钥元素 */
@@ -1085,19 +1068,29 @@ Std_ReturnType Csm_KeyGenerate(uint32 keyId)
                             }
                             Csm_UpdateKeyStatus(keyIdx, CSM_KEY_STATUS_VALID);
                             Csm_ResetJob(jobIdx);
-                            return E_OK;
+                            *handled = TRUE;
+                            result = E_OK;
                         }
-                        Csm_ResetJob(jobIdx);
+                        else
+                        {
+                            Csm_ResetJob(jobIdx);
+                        }
                     }
                 }
                 break;
             }
         }
     }
-    
-    /* 软件回退: 使用随机数生成器生成密钥材料 */
-    /* 确定密钥长度 (从配置或默认值) */
-    keyLength = CSM_MAX_KEY_LENGTH;
+    return result;
+}
+
+/**
+ * @brief 软件回退时的密钥长度确定 (配置元素 maxLength 兜底 CSM_MAX_KEY_LENGTH)
+ */
+static uint32 Csm_KeyGetConfigLength(uint32 keyId)
+{
+    uint32 keyLength = CSM_MAX_KEY_LENGTH;
+
     if (Csm_CurrentConfig != NULL_PTR && Csm_CurrentConfig->keys != NULL_PTR)
     {
         uint8 i;
@@ -1119,14 +1112,59 @@ Std_ReturnType Csm_KeyGenerate(uint32 keyId)
             }
         }
     }
-    
+    return keyLength;
+}
+
+Std_ReturnType Csm_KeyGenerate(uint32 keyId)
+{
+    uint8 keyIdx;
+    uint8 keyBuf[CSM_MAX_KEY_LENGTH];
+    uint32 keyLength;
+    Std_ReturnType cryIfResult;
+    boolean handled = FALSE;
+    Std_ReturnType hwResult;
+
+    CSM_CHECK_INITIALIZED(CSM_API_KEY_GENERATE);
+
+    if (E_OK != Csm_FindKeyIndex(keyId, &keyIdx))
+    {
+        Csm_ReportError(CSM_API_KEY_GENERATE, CSM_E_PARAM_KEY_ID);
+        return E_NOT_OK;
+    }
+
+    /* 检查密钥是否已存在且有效 */
+    if (Csm_Keys[keyIdx].status == CSM_KEY_STATUS_VALID)
+    {
+        return E_OK;
+    }
+
+    /* 尝试通过CryIf生成密钥 */
+    cryIfResult = CryIf_KeyGenerate((CryIf_KeyIdType)keyId);
+    if (cryIfResult == E_OK)
+    {
+        /* CryIf成功，直接从密钥存储加载 */
+        Csm_UpdateKeyStatus(keyIdx, CSM_KEY_STATUS_VALID);
+        return E_OK;
+    }
+
+    /* 尝试通过硬件服务层生成 */
+    hwResult = Csm_KeyGenerateViaConfigJob(keyId, keyIdx, &handled);
+    if (handled)
+    {
+        return hwResult;
+    }
+
+    /* 软件回退: 使用随机数生成器生成密钥材料 */
+    /* 确定密钥长度 (从配置或默认值) */
+    keyLength = Csm_KeyGetConfigLength(keyId);
+
     /* 生成随机密钥数据 */
     if (E_OK != Csm_Cfg_RandomGenerate(keyBuf, keyLength))
     {
         Csm_ReportError(CSM_API_KEY_GENERATE, CSM_E_ENTROPY_EXHAUSTION);
         return E_NOT_OK;
     }
-    
+
     /* 存入密钥元素 */
 (void)Mcal_MemCopy(Csm_Keys[keyIdx].elements[0].data, keyBuf, keyLength);
     Csm_Keys[keyIdx].elements[0].length = keyLength;
@@ -1135,10 +1173,10 @@ Std_ReturnType Csm_KeyGenerate(uint32 keyId)
     {
         Csm_Keys[keyIdx].numElements = 1U;
     }
-    
+
     /* 标记密钥为有效 */
     Csm_UpdateKeyStatus(keyIdx, CSM_KEY_STATUS_VALID);
-    
+
     return E_OK;
 }
 

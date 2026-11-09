@@ -308,6 +308,130 @@ void S32K312_Hsm_DeInit(void)
 /**********************************************************************************************************************
  * S32K312_Hsm_SelfTest
  *********************************************************************************************************************/
+/**
+ * @brief 自检特性标识 (门控判别用)
+ */
+typedef enum {
+    S32K312_HSM_FEATURE_SHA,
+    S32K312_HSM_FEATURE_TRNG,
+    S32K312_HSM_FEATURE_AES
+} S32K312_Hsm_FeatureType;
+
+/**
+ * @brief 自检门控: 前置结果通过且对应功能启用
+ * @details 未启用的测试不改变 result (中性跳过), 与原实现一致
+ */
+static boolean S32K312_Hsm_TestGateEnabled(S32K312_Hsm_FeatureType feature,
+                                           Std_ReturnType priorResult)
+{
+    if ((priorResult != E_OK) || (S32K312_Hsm_ConfigPtr == NULL_PTR)) {
+        return FALSE;
+    }
+    switch (feature) {
+        case S32K312_HSM_FEATURE_SHA:
+            return S32K312_Hsm_ConfigPtr->enableSha;
+        case S32K312_HSM_FEATURE_TRNG:
+            return S32K312_Hsm_ConfigPtr->enableTrng;
+        case S32K312_HSM_FEATURE_AES:
+            return S32K312_Hsm_ConfigPtr->enableAes;
+        default:
+            return FALSE;
+    }
+}
+
+/**
+ * @brief Test 1: SHA-256 Known Answer Test ("abc" 标准向量)
+ */
+static Std_ReturnType S32K312_Hsm_SelfTestSha256Kat(void)
+{
+    uint8 digest[S32K312_HSM_SHA256_DIGEST_SIZE];
+    uint32 i;
+    Std_ReturnType result;
+
+    /* Known test vector: "abc" */
+    const uint8 expectedDigest[S32K312_HSM_SHA256_DIGEST_SIZE] = {
+        0xBA, 0x78, 0x16, 0xBF, 0x8F, 0x01, 0xCF, 0xEA,
+        0x41, 0x41, 0x40, 0xDE, 0x5D, 0xAE, 0x22, 0x23,
+        0xB0, 0x03, 0x61, 0xA3, 0x96, 0x17, 0x7A, 0x9C,
+        0xB4, 0x10, 0xFF, 0x61, 0xF2, 0x00, 0x15, 0xAD
+    };
+    const uint8 testInput[3] = {'a', 'b', 'c'};
+
+    result = S32K312_Hsm_Sha256(testInput, 3U, digest);
+    if (result == E_OK) {
+        for (i = 0U; i < S32K312_HSM_SHA256_DIGEST_SIZE; i++) {
+            if (digest[i] != expectedDigest[i]) {
+                result = E_NOT_OK;
+                break;
+            }
+        }
+    }
+
+    if (result != E_OK) {
+        S32K312_Hsm_LastError = S32K312_HSM_ERROR_HARDWARE;
+        S32K312_Hsm_ReportError(S32K312_HSM_SID_SELFTEST, S32K312_HSM_ERROR_HARDWARE);
+    }
+    return result;
+}
+
+/**
+ * @brief Test 2: TRNG Health Test
+ */
+static Std_ReturnType S32K312_Hsm_SelfTestTrng(void)
+{
+    Std_ReturnType result = Crypto_HwTrng_SelfTest();
+    if (result != E_OK) {
+        S32K312_Hsm_ReportError(S32K312_HSM_SID_SELFTEST, S32K312_HSM_ERROR_HARDWARE);
+    }
+    return result;
+}
+
+/**
+ * @brief Test 3: AES Known Answer Test (ECB, FIPS-197 标准向量)
+ */
+static Std_ReturnType S32K312_Hsm_SelfTestAesEcbKat(void)
+{
+    uint32 i;
+    Std_ReturnType result;
+
+    S32K312_HsmAesContextType aesCtx;
+    const uint8 aesKey[S32K312_HSM_AES_KEY_SIZE_128] = {
+        0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
+        0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F
+    };
+    const uint8 aesPlaintext[S32K312_HSM_AES_BLOCK_SIZE] = {
+        0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77,
+        0x88, 0x99, 0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF
+    };
+    const uint8 expectedCiphertext[S32K312_HSM_AES_BLOCK_SIZE] = {
+        0x69, 0xC4, 0xE0, 0xD8, 0x6A, 0x7B, 0x04, 0x30,
+        0xD8, 0xCD, 0xB7, 0x80, 0x70, 0xB4, 0xC5, 0x5A
+    };
+    uint8 ciphertext[S32K312_HSM_AES_BLOCK_SIZE];
+
+    result = S32K312_Hsm_AesInit(&aesCtx, aesKey, S32K312_HSM_AES_KEY_SIZE_128,
+                                  S32K312_HSM_AES_MODE_ECB, NULL_PTR);
+    if (result == E_OK) {
+        result = S32K312_Hsm_AesEcbEncrypt(&aesCtx, aesPlaintext, ciphertext,
+                                            S32K312_HSM_AES_BLOCK_SIZE);
+    }
+
+    if (result == E_OK) {
+        for (i = 0U; i < S32K312_HSM_AES_BLOCK_SIZE; i++) {
+            if (ciphertext[i] != expectedCiphertext[i]) {
+                result = E_NOT_OK;
+                break;
+            }
+        }
+    }
+
+    if (result != E_OK) {
+        S32K312_Hsm_LastError = S32K312_HSM_ERROR_HARDWARE;
+        S32K312_Hsm_ReportError(S32K312_HSM_SID_SELFTEST, S32K312_HSM_ERROR_HARDWARE);
+    }
+    return result;
+}
+
 /** @req SWS_Crypto_00102 */
 Std_ReturnType S32K312_Hsm_SelfTest(void)
 {
@@ -315,88 +439,30 @@ Std_ReturnType S32K312_Hsm_SelfTest(void)
     uint8 testData[64];
     uint8 digest[S32K312_HSM_SHA256_DIGEST_SIZE];
     uint32 i;
-    
+
     if (S32K312_Hsm_State != S32K312_HSM_STATE_READY) {
         return E_NOT_OK;
     }
-    
+
     /* Set busy state */
     S32K312_Hsm_State = S32K312_HSM_STATE_BUSY;
-    
-    /* Test 1: SHA-256 Known Answer Test */
-    if ((S32K312_Hsm_ConfigPtr != NULL_PTR) && (S32K312_Hsm_ConfigPtr->enableSha)) {
-        /* Known test vector: "abc" */
-        const uint8 expectedDigest[S32K312_HSM_SHA256_DIGEST_SIZE] = {
-            0xBA, 0x78, 0x16, 0xBF, 0x8F, 0x01, 0xCF, 0xEA,
-            0x41, 0x41, 0x40, 0xDE, 0x5D, 0xAE, 0x22, 0x23,
-            0xB0, 0x03, 0x61, 0xA3, 0x96, 0x17, 0x7A, 0x9C,
-            0xB4, 0x10, 0xFF, 0x61, 0xF2, 0x00, 0x15, 0xAD
-        };
-        const uint8 testInput[3] = {'a', 'b', 'c'};
-        
-        result = S32K312_Hsm_Sha256(testInput, 3U, digest);
-        if (result == E_OK) {
-            for (i = 0U; i < S32K312_HSM_SHA256_DIGEST_SIZE; i++) {
-                if (digest[i] != expectedDigest[i]) {
-                    result = E_NOT_OK;
-                    break;
-                }
-            }
-        }
-        
-        if (result != E_OK) {
-            S32K312_Hsm_LastError = S32K312_HSM_ERROR_HARDWARE;
-            S32K312_Hsm_ReportError(S32K312_HSM_SID_SELFTEST, S32K312_HSM_ERROR_HARDWARE);
-        }
+
+    /* Test 1: SHA-256 Known Answer Test
+     * (result 初值 E_NOT_OK: Test1 未启用时整体判失败, 与原实现一致) */
+    if (S32K312_Hsm_TestGateEnabled(S32K312_HSM_FEATURE_SHA, E_OK)) {
+        result = S32K312_Hsm_SelfTestSha256Kat();
     }
-    
+
     /* Test 2: TRNG Health Test */
-    if ((result == E_OK) && (S32K312_Hsm_ConfigPtr != NULL_PTR) && (S32K312_Hsm_ConfigPtr->enableTrng)) {
-        result = Crypto_HwTrng_SelfTest();
-        if (result != E_OK) {
-            S32K312_Hsm_ReportError(S32K312_HSM_SID_SELFTEST, S32K312_HSM_ERROR_HARDWARE);
-        }
+    if (S32K312_Hsm_TestGateEnabled(S32K312_HSM_FEATURE_TRNG, result)) {
+        result = S32K312_Hsm_SelfTestTrng();
     }
-    
+
     /* Test 3: AES Known Answer Test (ECB) */
-    if ((result == E_OK) && (S32K312_Hsm_ConfigPtr != NULL_PTR) && (S32K312_Hsm_ConfigPtr->enableAes)) {
-        S32K312_HsmAesContextType aesCtx;
-        const uint8 aesKey[S32K312_HSM_AES_KEY_SIZE_128] = {
-            0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
-            0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F
-        };
-        const uint8 aesPlaintext[S32K312_HSM_AES_BLOCK_SIZE] = {
-            0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77,
-            0x88, 0x99, 0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF
-        };
-        const uint8 expectedCiphertext[S32K312_HSM_AES_BLOCK_SIZE] = {
-            0x69, 0xC4, 0xE0, 0xD8, 0x6A, 0x7B, 0x04, 0x30,
-            0xD8, 0xCD, 0xB7, 0x80, 0x70, 0xB4, 0xC5, 0x5A
-        };
-        uint8 ciphertext[S32K312_HSM_AES_BLOCK_SIZE];
-        
-        result = S32K312_Hsm_AesInit(&aesCtx, aesKey, S32K312_HSM_AES_KEY_SIZE_128,
-                                      S32K312_HSM_AES_MODE_ECB, NULL_PTR);
-        if (result == E_OK) {
-            result = S32K312_Hsm_AesEcbEncrypt(&aesCtx, aesPlaintext, ciphertext, 
-                                                S32K312_HSM_AES_BLOCK_SIZE);
-        }
-        
-        if (result == E_OK) {
-            for (i = 0U; i < S32K312_HSM_AES_BLOCK_SIZE; i++) {
-                if (ciphertext[i] != expectedCiphertext[i]) {
-                    result = E_NOT_OK;
-                    break;
-                }
-            }
-        }
-        
-        if (result != E_OK) {
-            S32K312_Hsm_LastError = S32K312_HSM_ERROR_HARDWARE;
-            S32K312_Hsm_ReportError(S32K312_HSM_SID_SELFTEST, S32K312_HSM_ERROR_HARDWARE);
-        }
+    if (S32K312_Hsm_TestGateEnabled(S32K312_HSM_FEATURE_AES, result)) {
+        result = S32K312_Hsm_SelfTestAesEcbKat();
     }
-    
+
     /* Clear test data */
     for (i = 0U; i < 64U; i++) {
 /*         testData[i] = 0U; */
@@ -404,14 +470,14 @@ Std_ReturnType S32K312_Hsm_SelfTest(void)
     for (i = 0U; i < S32K312_HSM_SHA256_DIGEST_SIZE; i++) {
 /*         digest[i] = 0U; */
     }
-    
+
     /* Restore state */
     if (result == E_OK) {
         S32K312_Hsm_State = S32K312_HSM_STATE_READY;
     } else {
         S32K312_Hsm_State = S32K312_HSM_STATE_ERROR;
     }
-    
+
     return result;
 }
 
@@ -813,6 +879,155 @@ Std_ReturnType S32K312_Hsm_AesCbcDecrypt(const S32K312_HsmAesContextType* contex
     return S32K312_Hsm_AesEcbDecrypt(context, ciphertext, plaintext, length);
 }
 
+/**
+ * @brief GCM 加密入口参数校验 (指针/密钥装载/硬件就绪/配置使能)
+ */
+static boolean S32K312_Hsm_AesGcmArgsValid(const S32K312_HsmAesContextType* context,
+                                           const uint8* plaintext,
+                                           uint32 plaintextLength,
+                                           const uint8* iv,
+                                           const uint8* tag)
+{
+    return (context != NULL_PTR) && (iv != NULL_PTR) && (tag != NULL_PTR) &&
+           ((plaintext != NULL_PTR) || (plaintextLength == 0U)) &&
+           (context->keyLoaded) &&
+           (S32K312_Hsm_State == S32K312_HSM_STATE_READY) &&
+           (S32K312_Hsm_ConfigPtr != NULL_PTR) && (S32K312_Hsm_ConfigPtr->enableAes);
+}
+
+/**
+ * @brief 装载密钥字与 96bit GCM IV (计数器初值 1)
+ */
+static void S32K312_Hsm_AesGcmLoadKeyIv(const S32K312_HsmAesContextType* context,
+                                        const uint8* iv)
+{
+    uint32 i;
+
+    /* Load key */
+    uint32 wordCount = context->keyLength / 4U;
+    for (i = 0U; i < wordCount; i++) {
+        S32K312_Hsm_AesRegs->KEY[i] =
+            ((uint32)context->key[i * 4U] << 24) |
+            ((uint32)context->key[i * 4U + 1U] << 16) |
+            ((uint32)context->key[i * 4U + 2U] << 8) |
+            (uint32)context->key[i * 4U + 3U];
+    }
+
+    /* Load IV (96 bits for GCM) */
+    for (i = 0U; i < 3U; i++) {
+        S32K312_Hsm_AesRegs->IV[i] =
+            ((uint32)iv[i * 4U] << 24) |
+            ((uint32)iv[i * 4U + 1U] << 16) |
+            ((uint32)iv[i * 4U + 2U] << 8) |
+            (uint32)iv[i * 4U + 3U];
+    }
+    S32K312_Hsm_AesRegs->IV[3] = 0x00000001U; /* Counter initial value */
+}
+
+/**
+ * @brief 逐块写入明文并启动硬件加密, 回读密文
+ * @return 硬件就绪等待失败时返回其错误码并中止后续块
+ */
+static Std_ReturnType S32K312_Hsm_AesGcmProcessBlocks(uint32 ctrlReg,
+                                                      const uint8* plaintext,
+                                                      uint32 plaintextLength,
+                                                      uint8* ciphertext)
+{
+    uint32 blocks = plaintextLength / S32K312_HSM_AES_BLOCK_SIZE;
+    uint32 j;
+    uint32 k;
+    Std_ReturnType result = E_OK;
+
+    for (j = 0U; j < blocks; j++) {
+        uint32 offset = j * S32K312_HSM_AES_BLOCK_SIZE;
+
+        for (k = 0U; k < 4U; k++) {
+            S32K312_Hsm_AesRegs->DATA_IN[k] =
+                ((uint32)plaintext[offset + k * 4U] << 24) |
+                ((uint32)plaintext[offset + k * 4U + 1U] << 16) |
+                ((uint32)plaintext[offset + k * 4U + 2U] << 8) |
+                (uint32)plaintext[offset + k * 4U + 3U];
+        }
+
+        S32K312_Hsm_AesRegs->CTRL = ctrlReg | S32K312_HSM_AES_CTRL_START;
+
+        result = S32K312_Hsm_WaitForAesReady(S32K312_HSM_TIMEOUT_AES);
+        if (result != E_OK) {
+            break;
+        }
+
+        for (k = 0U; k < 4U; k++) {
+            uint32 data = S32K312_Hsm_AesRegs->DATA_OUT[k];
+            ciphertext[offset + k * 4U] = (uint8)(data >> 24);
+            ciphertext[offset + k * 4U + 1U] = (uint8)(data >> 16);
+            ciphertext[offset + k * 4U + 2U] = (uint8)(data >> 8);
+            ciphertext[offset + k * 4U + 3U] = (uint8)(data);
+        }
+    }
+    return result;
+}
+
+/**
+ * @brief 回读 16B 认证标签
+ */
+static void S32K312_Hsm_AesGcmReadTag(uint8* tag)
+{
+    uint32 i;
+    for (i = 0U; i < 4U; i++) {
+        uint32 data = S32K312_Hsm_AesRegs->TAG_OUT[i];
+        tag[i * 4U] = (uint8)(data >> 24);
+        tag[i * 4U + 1U] = (uint8)(data >> 16);
+        tag[i * 4U + 2U] = (uint8)(data >> 8);
+        tag[i * 4U + 3U] = (uint8)(data);
+    }
+}
+
+/**
+ * @brief GCM 硬件执行序列: 装载密钥/IV → AAD → 逐块加密 → 读 TAG
+ */
+static Std_ReturnType S32K312_Hsm_AesGcmRunHw(const S32K312_HsmAesContextType* context,
+                                              uint32 ctrlReg,
+                                              const uint8* aad,
+                                              uint32 aadLength,
+                                              const uint8* iv,
+                                              const uint8* plaintext,
+                                              uint32 plaintextLength,
+                                              uint8* ciphertext,
+                                              uint8* tag)
+{
+    Std_ReturnType result;
+
+    if (S32K312_Hsm_AesRegs == NULL_PTR) {
+        return E_NOT_OK;
+    }
+
+    result = S32K312_Hsm_WaitForAesReady(S32K312_HSM_TIMEOUT_AES);
+    if (result != E_OK) {
+        return result;
+    }
+
+    S32K312_Hsm_AesGcmLoadKeyIv(context, iv);
+
+    /* Process AAD if present */
+    if ((aad != NULL_PTR) && (aadLength > 0U)) {
+        S32K312_Hsm_AesRegs->AAD_LEN = aadLength;
+        /* AAD processing would happen here in full implementation */
+    }
+
+    /* Process plaintext if present */
+    if ((plaintext != NULL_PTR) && (plaintextLength > 0U)) {
+        result = S32K312_Hsm_AesGcmProcessBlocks(ctrlReg, plaintext,
+                                                 plaintextLength, ciphertext);
+        if (result != E_OK) {
+            return result;
+        }
+    }
+
+    /* Read authentication tag */
+    S32K312_Hsm_AesGcmReadTag(tag);
+    return E_OK;
+}
+
 /**********************************************************************************************************************
  * S32K312_Hsm_AesGcmEncrypt
  *********************************************************************************************************************/
@@ -828,118 +1043,28 @@ Std_ReturnType S32K312_Hsm_AesGcmEncrypt(const S32K312_HsmAesContextType* contex
 {
     Std_ReturnType result = E_NOT_OK;
     uint32 ctrlReg;
-    uint32 i;
-    
-    if ((context == NULL_PTR) || (iv == NULL_PTR) || (tag == NULL_PTR)) {
+
+    if (!S32K312_Hsm_AesGcmArgsValid(context, plaintext, plaintextLength, iv, tag)) {
         return E_NOT_OK;
     }
-    
-    if ((plaintext == NULL_PTR) && (plaintextLength > 0U)) {
-        return E_NOT_OK;
-    }
-    
-    if (!context->keyLoaded) {
-        return E_NOT_OK;
-    }
-    
-    if (S32K312_Hsm_State != S32K312_HSM_STATE_READY) {
-        return E_NOT_OK;
-    }
-    
-    if ((S32K312_Hsm_ConfigPtr == NULL_PTR) || (!S32K312_Hsm_ConfigPtr->enableAes)) {
-        return E_NOT_OK;
-    }
-    
+
     S32K312_Hsm_State = S32K312_HSM_STATE_BUSY;
-    
+
     /* Setup control register for GCM encryption */
-    ctrlReg = S32K312_HSM_AES_CTRL_ENABLE | S32K312_HSM_AES_CTRL_MODE_GCM | 
+    ctrlReg = S32K312_HSM_AES_CTRL_ENABLE | S32K312_HSM_AES_CTRL_MODE_GCM |
               S32K312_HSM_AES_CTRL_ENCRYPT;
-    
+
     if (context->keyLength == S32K312_HSM_AES_KEY_SIZE_256) {
         ctrlReg |= S32K312_HSM_AES_CTRL_KEYLEN_256;
     }
-    
-    result = S32K312_Hsm_WaitForAesReady(S32K312_HSM_TIMEOUT_AES);
-    if (result == E_OK) {
-        if (S32K312_Hsm_AesRegs != NULL_PTR) {
-            /* Load key */
-            uint32 wordCount = context->keyLength / 4U;
-            for (i = 0U; i < wordCount; i++) {
-                S32K312_Hsm_AesRegs->KEY[i] = 
-                    ((uint32)context->key[i * 4U] << 24) |
-                    ((uint32)context->key[i * 4U + 1U] << 16) |
-                    ((uint32)context->key[i * 4U + 2U] << 8) |
-                    (uint32)context->key[i * 4U + 3U];
-            }
-            
-            /* Load IV (96 bits for GCM) */
-            for (i = 0U; i < 3U; i++) {
-                S32K312_Hsm_AesRegs->IV[i] =
-                    ((uint32)iv[i * 4U] << 24) |
-                    ((uint32)iv[i * 4U + 1U] << 16) |
-                    ((uint32)iv[i * 4U + 2U] << 8) |
-                    (uint32)iv[i * 4U + 3U];
-            }
-            S32K312_Hsm_AesRegs->IV[3] = 0x00000001U; /* Counter initial value */
-            
-            /* Process AAD if present */
-            if ((aad != NULL_PTR) && (aadLength > 0U)) {
-                S32K312_Hsm_AesRegs->AAD_LEN = aadLength;
-                /* AAD processing would happen here in full implementation */
-            }
-            
-            /* Process plaintext if present */
-            if ((plaintext != NULL_PTR) && (plaintextLength > 0U)) {
-                uint32 blocks = plaintextLength / S32K312_HSM_AES_BLOCK_SIZE;
-                uint32 j;
-                
-                for (j = 0U; j < blocks; j++) {
-                    uint32 offset = j * S32K312_HSM_AES_BLOCK_SIZE;
-                    uint32 k;
-                    
-                    for (k = 0U; k < 4U; k++) {
-                        S32K312_Hsm_AesRegs->DATA_IN[k] =
-                            ((uint32)plaintext[offset + k * 4U] << 24) |
-                            ((uint32)plaintext[offset + k * 4U + 1U] << 16) |
-                            ((uint32)plaintext[offset + k * 4U + 2U] << 8) |
-                            (uint32)plaintext[offset + k * 4U + 3U];
-                    }
-                    
-                    S32K312_Hsm_AesRegs->CTRL = ctrlReg | S32K312_HSM_AES_CTRL_START;
-                    
-                    result = S32K312_Hsm_WaitForAesReady(S32K312_HSM_TIMEOUT_AES);
-                    if (result != E_OK) {
-                        break;
-                    }
-                    
-                    for (k = 0U; k < 4U; k++) {
-                        uint32 data = S32K312_Hsm_AesRegs->DATA_OUT[k];
-                        ciphertext[offset + k * 4U] = (uint8)(data >> 24);
-                        ciphertext[offset + k * 4U + 1U] = (uint8)(data >> 16);
-                        ciphertext[offset + k * 4U + 2U] = (uint8)(data >> 8);
-                        ciphertext[offset + k * 4U + 3U] = (uint8)(data);
-                    }
-                }
-            }
-            
-            /* Read authentication tag */
-            if (result == E_OK) {
-                for (i = 0U; i < 4U; i++) {
-                    uint32 data = S32K312_Hsm_AesRegs->TAG_OUT[i];
-                    tag[i * 4U] = (uint8)(data >> 24);
-                    tag[i * 4U + 1U] = (uint8)(data >> 16);
-                    tag[i * 4U + 2U] = (uint8)(data >> 8);
-                    tag[i * 4U + 3U] = (uint8)(data);
-                }
-            }
-        }
-    }
-    
+
+    result = S32K312_Hsm_AesGcmRunHw(context, ctrlReg, aad, aadLength, iv,
+                                     plaintext, plaintextLength, ciphertext, tag);
+
     if (result == E_OK) {
         S32K312_Hsm_OperationCount++;
     }
-    
+
     S32K312_Hsm_State = S32K312_HSM_STATE_READY;
     return result;
 }

@@ -146,8 +146,10 @@ static void Csm_Cfg_HmacSha256(
  * @param outputLen 输入: 输出容量; 输出: 实际长度
  * @return E_OK / E_NOT_OK
  */
-static Std_ReturnType Csm_Cfg_Aes128Cbc(
-    boolean encrypt,
+/**
+ * @brief AES-128-CBC 加密 + PKCS7 填充 (等价重构助手)
+ */
+static Std_ReturnType Csm_Cfg_Aes128CbcEncrypt(
     const uint8* key,
     const uint8* iv,
     const uint8* input,
@@ -162,6 +164,101 @@ static Std_ReturnType Csm_Cfg_Aes128Cbc(
     int ret;
     mbedtls_aes_context aes;
 
+    /* PKCS7 填充: 总是补 1..16 字节 */
+    padLen = CSM_CFG_AES_BLOCK_LEN - (inputLen % CSM_CFG_AES_BLOCK_LEN);
+    totalLen = inputLen + padLen;
+
+    if ((inputLen > CSM_MAX_DATA_LENGTH) || (totalLen > CSM_MAX_DATA_LENGTH) ||
+        (*outputLen < totalLen))
+    {
+        return E_NOT_OK;
+    }
+
+    if ((inputLen > 0U) && (input != NULL_PTR))
+    {
+        (void)memcpy(padded, input, inputLen);
+    }
+    for (i = 0U; i < padLen; i++)
+    {
+        padded[inputLen + i] = (uint8)padLen;
+    }
+
+    mbedtls_aes_init(&aes);
+    ret = mbedtls_aes_setkey_enc(&aes, key, 128U);
+    if (ret == 0)
+    {
+        ret = mbedtls_aes_crypt_cbc(&aes, MBEDTLS_AES_ENCRYPT, totalLen,
+                                    (unsigned char*)iv, padded, output);
+    }
+    mbedtls_aes_free(&aes);
+
+    if (ret != 0)
+    {
+        return E_NOT_OK;
+    }
+    *outputLen = totalLen;
+    return E_OK;
+}
+
+/**
+ * @brief AES-128-CBC 解密 + PKCS7 去填充 (等价重构助手)
+ */
+static Std_ReturnType Csm_Cfg_Aes128CbcDecrypt(
+    const uint8* key,
+    const uint8* iv,
+    const uint8* input,
+    uint32 inputLen,
+    uint8* output,
+    uint32* outputLen)
+{
+    uint32 padLen;
+    int ret;
+    mbedtls_aes_context aes;
+
+    /* 解密: 输入须为块对齐且 >= 1 块 */
+    if ((inputLen == 0U) || ((inputLen % CSM_CFG_AES_BLOCK_LEN) != 0U) ||
+        (inputLen > CSM_MAX_DATA_LENGTH) || (*outputLen < inputLen) ||
+        (input == NULL_PTR))
+    {
+        return E_NOT_OK;
+    }
+
+    mbedtls_aes_init(&aes);
+    ret = mbedtls_aes_setkey_dec(&aes, key, 128U);
+    if (ret == 0)
+    {
+        ret = mbedtls_aes_crypt_cbc(&aes, MBEDTLS_AES_DECRYPT, inputLen,
+                                    (unsigned char*)iv, input, output);
+    }
+    mbedtls_aes_free(&aes);
+
+    if (ret != 0)
+    {
+        return E_NOT_OK;
+    }
+
+    /* PKCS7 去填充 */
+    padLen = output[inputLen - 1U];
+    if ((padLen == 0U) || (padLen > CSM_CFG_AES_BLOCK_LEN) || (padLen > inputLen))
+    {
+        return E_NOT_OK;   /* 填充非法 */
+    }
+    *outputLen = inputLen - padLen;
+    return E_OK;
+}
+
+/**
+ * @brief AES-128-CBC 加解密入口 (参数校验 + 方向派发)
+ */
+static Std_ReturnType Csm_Cfg_Aes128Cbc(
+    boolean encrypt,
+    const uint8* key,
+    const uint8* iv,
+    const uint8* input,
+    uint32 inputLen,
+    uint8* output,
+    uint32* outputLen)
+{
     if ((output == NULL_PTR) || (outputLen == NULL_PTR) || (iv == NULL_PTR))
     {
         return E_NOT_OK;
@@ -169,74 +266,9 @@ static Std_ReturnType Csm_Cfg_Aes128Cbc(
 
     if (encrypt)
     {
-        /* PKCS7 填充: 总是补 1..16 字节 */
-        padLen = CSM_CFG_AES_BLOCK_LEN - (inputLen % CSM_CFG_AES_BLOCK_LEN);
-        totalLen = inputLen + padLen;
-
-        if ((inputLen > CSM_MAX_DATA_LENGTH) || (totalLen > CSM_MAX_DATA_LENGTH) ||
-            (*outputLen < totalLen))
-        {
-            return E_NOT_OK;
-        }
-
-        if ((inputLen > 0U) && (input != NULL_PTR))
-        {
-            (void)memcpy(padded, input, inputLen);
-        }
-        for (i = 0U; i < padLen; i++)
-        {
-            padded[inputLen + i] = (uint8)padLen;
-        }
-
-        mbedtls_aes_init(&aes);
-        ret = mbedtls_aes_setkey_enc(&aes, key, 128U);
-        if (ret == 0)
-        {
-            ret = mbedtls_aes_crypt_cbc(&aes, MBEDTLS_AES_ENCRYPT, totalLen,
-                                        (unsigned char*)iv, padded, output);
-        }
-        mbedtls_aes_free(&aes);
-
-        if (ret != 0)
-        {
-            return E_NOT_OK;
-        }
-        *outputLen = totalLen;
-        return E_OK;
+        return Csm_Cfg_Aes128CbcEncrypt(key, iv, input, inputLen, output, outputLen);
     }
-    else
-    {
-        /* 解密: 输入须为块对齐且 >= 1 块 */
-        if ((inputLen == 0U) || ((inputLen % CSM_CFG_AES_BLOCK_LEN) != 0U) ||
-            (inputLen > CSM_MAX_DATA_LENGTH) || (*outputLen < inputLen) ||
-            (input == NULL_PTR))
-        {
-            return E_NOT_OK;
-        }
-
-        mbedtls_aes_init(&aes);
-        ret = mbedtls_aes_setkey_dec(&aes, key, 128U);
-        if (ret == 0)
-        {
-            ret = mbedtls_aes_crypt_cbc(&aes, MBEDTLS_AES_DECRYPT, inputLen,
-                                        (unsigned char*)iv, input, output);
-        }
-        mbedtls_aes_free(&aes);
-
-        if (ret != 0)
-        {
-            return E_NOT_OK;
-        }
-
-        /* PKCS7 去填充 */
-        padLen = output[inputLen - 1U];
-        if ((padLen == 0U) || (padLen > CSM_CFG_AES_BLOCK_LEN) || (padLen > inputLen))
-        {
-            return E_NOT_OK;   /* 填充非法 */
-        }
-        *outputLen = inputLen - padLen;
-        return E_OK;
-    }
+    return Csm_Cfg_Aes128CbcDecrypt(key, iv, input, inputLen, output, outputLen);
 }
 
 /*==================================================================================================

@@ -704,18 +704,16 @@ Std_ReturnType Crypto_MbedTLS_KeyDerive(Crypto_KeyIdType srcKeyId, Crypto_KeyIdT
  *********************************************************************************************************************/
 
 /**********************************************************************************************************************
- * Crypto_MbedTLS_ProcessJob
+ * Crypto_MbedTLS_JobGcmService / JobExtendedService / JobDirectService
  *********************************************************************************************************************/
-/** @req SWS_Crypto_00086 */
-Std_ReturnType Crypto_MbedTLS_ProcessJob(Crypto_JobType* job)
+/**
+ * @brief GCM 服务处理 (ENCRYPT / DECRYPT)
+ * @details 空指针守卫三元表达式为恒等转换 (指针转换对 NULL 无影响), 按原样保留
+ */
+static Std_ReturnType Crypto_MbedTLS_JobGcmService(Crypto_JobType* job)
 {
     Std_ReturnType result = E_NOT_OK;
-    
-    if ((job == NULL_PTR) || (job->jobPrimitiveInfo == NULL_PTR) || 
-        (job->jobPrimitiveInputOutput == NULL_PTR)) {
-        return E_NOT_OK;
-    }
-    
+
     switch (job->jobPrimitiveInfo->service) {
         case CRYPTO_SERVICE_ENCRYPT:
             /* AES-GCM Encryption */
@@ -723,33 +721,100 @@ Std_ReturnType Crypto_MbedTLS_ProcessJob(Crypto_JobType* job)
                 job->cryptoKeyId,
                 job->jobPrimitiveInputOutput->input8Ptr,
                 job->jobPrimitiveInputOutput->inputLength,
-                job->jobPrimitiveInputOutput->secondaryInputPtr != NULL_PTR ? 
+                job->jobPrimitiveInputOutput->secondaryInputPtr != NULL_PTR ?
                     (const uint8*)job->jobPrimitiveInputOutput->secondaryInputPtr : NULL_PTR,
                 job->jobPrimitiveInputOutput->secondaryInputLength,
-                job->jobPrimitiveInputOutput->tertiaryInputPtr != NULL_PTR ? 
+                job->jobPrimitiveInputOutput->tertiaryInputPtr != NULL_PTR ?
                     (const uint8*)job->jobPrimitiveInputOutput->tertiaryInputPtr : NULL_PTR,
                 job->jobPrimitiveInputOutput->output8Ptr,
                 job->jobPrimitiveInputOutput->secondaryOutputPtr != NULL_PTR ?
                     (uint8*)job->jobPrimitiveInputOutput->secondaryOutputPtr : NULL_PTR
             );
             break;
-            
+
         case CRYPTO_SERVICE_DECRYPT:
+        default:
             /* AES-GCM Decryption */
             result = Crypto_MbedTLS_AES_GCM_Decrypt(
                 job->cryptoKeyId,
                 job->jobPrimitiveInputOutput->input8Ptr,
                 job->jobPrimitiveInputOutput->inputLength,
-                job->jobPrimitiveInputOutput->secondaryInputPtr != NULL_PTR ? 
+                job->jobPrimitiveInputOutput->secondaryInputPtr != NULL_PTR ?
                     (const uint8*)job->jobPrimitiveInputOutput->secondaryInputPtr : NULL_PTR,
                 job->jobPrimitiveInputOutput->secondaryInputLength,
-                job->jobPrimitiveInputOutput->tertiaryInputPtr != NULL_PTR ? 
+                job->jobPrimitiveInputOutput->tertiaryInputPtr != NULL_PTR ?
                     (const uint8*)job->jobPrimitiveInputOutput->tertiaryInputPtr : NULL_PTR,
                 job->jobPrimitiveInputOutput->input8Ptr + job->jobPrimitiveInputOutput->inputLength,  /* Tag appended */
                 job->jobPrimitiveInputOutput->output8Ptr
             );
             break;
-            
+    }
+    return result;
+}
+
+/**
+ * @brief 扩展服务处理 (VERIFY / KEYDERIVE / RANDOMGENERATE)
+ */
+static Std_ReturnType Crypto_MbedTLS_JobExtendedService(Crypto_JobType* job)
+{
+    Std_ReturnType result = E_NOT_OK;
+
+    switch (job->jobPrimitiveInfo->service) {
+        case CRYPTO_SERVICE_VERIFY:
+            /* ECDSA Verify */
+            result = Crypto_MbedTLS_ECDSA_Verify(
+                job->cryptoKeyId,
+                job->jobPrimitiveInputOutput->input8Ptr,
+                job->jobPrimitiveInputOutput->inputLength,
+                job->jobPrimitiveInputOutput->secondaryInputPtr != NULL_PTR ?
+                    (const uint8*)job->jobPrimitiveInputOutput->secondaryInputPtr : NULL_PTR,
+                job->jobPrimitiveInputOutput->secondaryInputLength
+            );
+            if (result == E_OK) {
+                if (job->jobPrimitiveInputOutput->verifyPtr != NULL_PTR) {
+                    *job->jobPrimitiveInputOutput->verifyPtr = CRYPTO_VERIFICATION_PASSED;
+                }
+            }
+            break;
+
+        case CRYPTO_SERVICE_RANDOMGENERATE:
+            /* Random Generation */
+            result = Crypto_MbedTLS_RandomGenerate(
+                job->jobPrimitiveInputOutput->output8Ptr,
+                job->jobPrimitiveInputOutput->outputLengthPtr != NULL_PTR ?
+                    *job->jobPrimitiveInputOutput->outputLengthPtr : 0U
+            );
+            break;
+
+        case CRYPTO_SERVICE_KEYDERIVE:
+        default:
+            /* HKDF */
+            result = Crypto_MbedTLS_HKDF(
+                job->cryptoKeyId,
+                job->jobPrimitiveInputOutput->secondaryInputPtr != NULL_PTR ?
+                    (const uint8*)job->jobPrimitiveInputOutput->secondaryInputPtr : NULL_PTR,
+                job->jobPrimitiveInputOutput->secondaryInputLength,
+                job->jobPrimitiveInputOutput->tertiaryInputPtr != NULL_PTR ?
+                    (const uint8*)job->jobPrimitiveInputOutput->tertiaryInputPtr : NULL_PTR,
+                job->jobPrimitiveInputOutput->tertiaryInputLength,
+                job->jobPrimitiveInputOutput->output8Ptr,
+                job->jobPrimitiveInputOutput->outputLengthPtr != NULL_PTR ?
+                    *job->jobPrimitiveInputOutput->outputLengthPtr : 0U
+            );
+            break;
+    }
+    return result;
+}
+
+/**
+ * @brief 直传服务处理 (HASH / MACGENERATE / SIGN / KEYEXCHANGECALCSECRET)
+ * @details 入口 default 路由到此处, 未知服务同样返回 E_NOT_OK
+ */
+static Std_ReturnType Crypto_MbedTLS_JobDirectService(Crypto_JobType* job)
+{
+    Std_ReturnType result = E_NOT_OK;
+
+    switch (job->jobPrimitiveInfo->service) {
         case CRYPTO_SERVICE_HASH:
             /* SHA-256 */
             result = Crypto_MbedTLS_SHA256(
@@ -758,7 +823,7 @@ Std_ReturnType Crypto_MbedTLS_ProcessJob(Crypto_JobType* job)
                 job->jobPrimitiveInputOutput->output8Ptr
             );
             break;
-            
+
         case CRYPTO_SERVICE_MACGENERATE:
             /* HMAC */
             result = Crypto_MbedTLS_HMAC(
@@ -768,7 +833,7 @@ Std_ReturnType Crypto_MbedTLS_ProcessJob(Crypto_JobType* job)
                 job->jobPrimitiveInputOutput->output8Ptr
             );
             break;
-            
+
         case CRYPTO_SERVICE_SIGN:
             /* ECDSA Sign */
             result = Crypto_MbedTLS_ECDSA_Sign(
@@ -779,33 +844,7 @@ Std_ReturnType Crypto_MbedTLS_ProcessJob(Crypto_JobType* job)
                 job->jobPrimitiveInputOutput->outputLength8Ptr
             );
             break;
-            
-        case CRYPTO_SERVICE_VERIFY:
-            /* ECDSA Verify */
-            result = Crypto_MbedTLS_ECDSA_Verify(
-                job->cryptoKeyId,
-                job->jobPrimitiveInputOutput->input8Ptr,
-                job->jobPrimitiveInputOutput->inputLength,
-                job->jobPrimitiveInputOutput->secondaryInputPtr != NULL_PTR ? 
-                    (const uint8*)job->jobPrimitiveInputOutput->secondaryInputPtr : NULL_PTR,
-                job->jobPrimitiveInputOutput->secondaryInputLength
-            );
-            if (result == E_OK) {
-                if (job->jobPrimitiveInputOutput->verifyPtr != NULL_PTR) {
-                    *job->jobPrimitiveInputOutput->verifyPtr = CRYPTO_VERIFICATION_PASSED;
-                }
-            }
-            break;
-            
-        case CRYPTO_SERVICE_RANDOMGENERATE:
-            /* Random Generation */
-            result = Crypto_MbedTLS_RandomGenerate(
-                job->jobPrimitiveInputOutput->output8Ptr,
-                job->jobPrimitiveInputOutput->outputLengthPtr != NULL_PTR ?
-                    *job->jobPrimitiveInputOutput->outputLengthPtr : 0U
-            );
-            break;
-            
+
         case CRYPTO_SERVICE_KEYEXCHANGECALCSECRET:
             /* ECDH Key Exchange */
             result = Crypto_MbedTLS_ECDH_CalcSecret(
@@ -814,28 +853,47 @@ Std_ReturnType Crypto_MbedTLS_ProcessJob(Crypto_JobType* job)
                 job->jobPrimitiveInputOutput->inputLength
             );
             break;
-            
-        case CRYPTO_SERVICE_KEYDERIVE:
-            /* HKDF */
-            result = Crypto_MbedTLS_HKDF(
-                job->cryptoKeyId,
-                job->jobPrimitiveInputOutput->secondaryInputPtr != NULL_PTR ? 
-                    (const uint8*)job->jobPrimitiveInputOutput->secondaryInputPtr : NULL_PTR,
-                job->jobPrimitiveInputOutput->secondaryInputLength,
-                job->jobPrimitiveInputOutput->tertiaryInputPtr != NULL_PTR ? 
-                    (const uint8*)job->jobPrimitiveInputOutput->tertiaryInputPtr : NULL_PTR,
-                job->jobPrimitiveInputOutput->tertiaryInputLength,
-                job->jobPrimitiveInputOutput->output8Ptr,
-                job->jobPrimitiveInputOutput->outputLengthPtr != NULL_PTR ?
-                    *job->jobPrimitiveInputOutput->outputLengthPtr : 0U
-            );
-            break;
-            
+
         default:
             result = E_NOT_OK;
             break;
     }
-    
+    return result;
+}
+
+/**********************************************************************************************************************
+ * Crypto_MbedTLS_ProcessJob
+ *********************************************************************************************************************/
+/** @req SWS_Crypto_00086 */
+Std_ReturnType Crypto_MbedTLS_ProcessJob(Crypto_JobType* job)
+{
+    Std_ReturnType result = E_NOT_OK;
+
+    if ((job == NULL_PTR) || (job->jobPrimitiveInfo == NULL_PTR) ||
+        (job->jobPrimitiveInputOutput == NULL_PTR)) {
+        return E_NOT_OK;
+    }
+
+    switch (job->jobPrimitiveInfo->service) {
+        case CRYPTO_SERVICE_ENCRYPT:
+        case CRYPTO_SERVICE_DECRYPT:
+            /* AES-GCM Encryption / Decryption */
+            result = Crypto_MbedTLS_JobGcmService(job);
+            break;
+
+        case CRYPTO_SERVICE_VERIFY:
+        case CRYPTO_SERVICE_KEYDERIVE:
+        case CRYPTO_SERVICE_RANDOMGENERATE:
+            /* Verify / HKDF / Random Generation */
+            result = Crypto_MbedTLS_JobExtendedService(job);
+            break;
+
+        default:
+            /* HASH / MACGENERATE / SIGN / KEYEXCHANGECALCSECRET 及未知服务 */
+            result = Crypto_MbedTLS_JobDirectService(job);
+            break;
+    }
+
     return result;
 }
 
