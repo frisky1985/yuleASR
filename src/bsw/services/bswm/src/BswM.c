@@ -246,27 +246,31 @@ static void BswM_EvalCompute(const BswM_ExpressionConfigType* expr, boolean* val
  * set) so a wider configuration degrades to the legacy full-scan behavior
  * instead of losing the rule.
  */
+/* BswM_CollectRulePorts 显式工作栈帧 (MISRA 17.2 迭代遍历) */
+typedef struct {
+    uint16 index;
+    uint8  phase; /* 0 = expand, 1 = combine */
+    uint8  depth;
+} BswM_ColFrame;
+
+/* BswM_CollectRulePorts 等价重构助手 */
+static boolean BswM_ColValidate(uint16 ExpressionIndex, uint8 Depth);
+static void BswM_ColExpand(const BswM_ExpressionConfigType* expr, const BswM_ColFrame* frame,
+                           BswM_ColFrame* workStack, uint8* wsp);
+static void BswM_ColCombine(const BswM_ExpressionConfigType* expr,
+                            uint32* maskStack, uint8* msp);
+
 static uint32 BswM_CollectRulePorts(uint16 ExpressionIndex, uint8 Depth)
 {
     /* Iterative tree walk (MISRA 17.2: no recursion).
      * Collects the OR of all leaf port-index bitmasks. */
-    typedef struct {
-        uint16 index;
-        uint8  phase; /* 0 = expand, 1 = combine */
-        uint8  depth;
-    } BswM_ColFrame;
-
     BswM_ColFrame workStack[(BSWM_EXPR_MAX_DEPTH * 2U) + 2U];
     uint32        maskStack[(BSWM_EXPR_MAX_DEPTH * 2U) + 2U];
     uint8         wsp = 0U;
     uint8         msp = 0U;
     uint32        mask = 0UL;
 
-    if ((BswM_State.configPtr == NULL_PTR) || (Depth > BSWM_EXPR_MAX_DEPTH)) {
-        return 0UL;
-    }
-    if ((ExpressionIndex >= BswM_State.configPtr->NumExpressions) ||
-        (BswM_State.configPtr->Expressions == NULL_PTR)) {
+    if (!BswM_ColValidate(ExpressionIndex, Depth)) {
         return 0UL;
     }
 
@@ -289,66 +293,9 @@ static uint32 BswM_CollectRulePorts(uint16 ExpressionIndex, uint8 Depth)
         expr = &BswM_State.configPtr->Expressions[frame.index];
 
         if (frame.phase == 0U) {
-            workStack[wsp].index = frame.index;
-            workStack[wsp].phase = 1U;
-            workStack[wsp].depth = frame.depth;
-            wsp++;
-            switch (expr->ExpressionType) {
-                case BSWM_EXPR_LOGICAL_AND:
-                case BSWM_EXPR_LOGICAL_OR:
-                    workStack[wsp].index = expr->RightIndex;
-                    workStack[wsp].phase = 0U;
-                    workStack[wsp].depth = (uint8)(frame.depth + 1U);
-                    wsp++;
-                    workStack[wsp].index = expr->LeftIndex;
-                    workStack[wsp].phase = 0U;
-                    workStack[wsp].depth = (uint8)(frame.depth + 1U);
-                    wsp++;
-                    break;
-                case BSWM_EXPR_LOGICAL_NOT:
-                    workStack[wsp].index = expr->LeftIndex;
-                    workStack[wsp].phase = 0U;
-                    workStack[wsp].depth = (uint8)(frame.depth + 1U);
-                    wsp++;
-                    break;
-                default:
-                    break;
-            }
+            BswM_ColExpand(expr, &frame, workStack, &wsp);
         } else {
-            uint32 m;
-            switch (expr->ExpressionType) {
-                case BSWM_EXPR_MODE_EQUALS:
-                case BSWM_EXPR_MODE_NOT_EQUALS:
-                    if (expr->PortIndex < BSWM_MAX_MODE_REQUEST_PORTS) {
-                        m = (1UL << expr->PortIndex);
-                    } else {
-                        m = 0xFFFFFFFFUL;
-                    }
-                    maskStack[msp] = m;
-                    msp++;
-                    break;
-
-                case BSWM_EXPR_LOGICAL_AND:
-                case BSWM_EXPR_LOGICAL_OR: {
-                    uint32 right = maskStack[--msp];
-                    uint32 left  = maskStack[--msp];
-                    maskStack[msp] = (left | right);
-                    msp++;
-                    break;
-                }
-
-                case BSWM_EXPR_LOGICAL_NOT: {
-                    uint32 child = maskStack[--msp];
-                    maskStack[msp] = child;
-                    msp++;
-                    break;
-                }
-
-                default:
-                    maskStack[msp] = 0UL;
-                    msp++;
-                    break;
-            }
+            BswM_ColCombine(expr, maskStack, &msp);
         }
     }
 
@@ -356,6 +303,99 @@ static uint32 BswM_CollectRulePorts(uint16 ExpressionIndex, uint8 Depth)
         mask = maskStack[msp - 1U];
     }
     return mask;
+}
+
+/**
+ * @brief BswM_CollectRulePorts 入口校验 (等价重构助手)
+ */
+static boolean BswM_ColValidate(uint16 ExpressionIndex, uint8 Depth)
+{
+    if ((BswM_State.configPtr == NULL_PTR) || (Depth > BSWM_EXPR_MAX_DEPTH)) {
+        return FALSE;
+    }
+    if ((ExpressionIndex >= BswM_State.configPtr->NumExpressions) ||
+        (BswM_State.configPtr->Expressions == NULL_PTR)) {
+        return FALSE;
+    }
+    return TRUE;
+}
+
+/**
+ * @brief Phase 0: 重压自身 (phase 1) 并按表达式类型压入子节点 (等价重构助手)
+ * @note  子节点压栈沿用原实现, 不做二次容量检查 (与原代码一致)
+ */
+static void BswM_ColExpand(const BswM_ExpressionConfigType* expr, const BswM_ColFrame* frame,
+                           BswM_ColFrame* workStack, uint8* wsp)
+{
+    /* Phase 0: re-push self as phase 1, then push children (right-first so left pops first) */
+    workStack[*wsp].index = frame->index;
+    workStack[*wsp].phase = 1U;
+    workStack[*wsp].depth = frame->depth;
+    (*wsp)++;
+    switch (expr->ExpressionType) {
+        case BSWM_EXPR_LOGICAL_AND:
+        case BSWM_EXPR_LOGICAL_OR:
+            workStack[*wsp].index = expr->RightIndex;
+            workStack[*wsp].phase = 0U;
+            workStack[*wsp].depth = (uint8)(frame->depth + 1U);
+            (*wsp)++;
+            workStack[*wsp].index = expr->LeftIndex;
+            workStack[*wsp].phase = 0U;
+            workStack[*wsp].depth = (uint8)(frame->depth + 1U);
+            (*wsp)++;
+            break;
+        case BSWM_EXPR_LOGICAL_NOT:
+            workStack[*wsp].index = expr->LeftIndex;
+            workStack[*wsp].phase = 0U;
+            workStack[*wsp].depth = (uint8)(frame->depth + 1U);
+            (*wsp)++;
+            break;
+        default:
+            break;
+    }
+}
+
+/**
+ * @brief Phase 1: 从掩码栈合并子节点掩码 (等价重构助手)
+ */
+static void BswM_ColCombine(const BswM_ExpressionConfigType* expr,
+                            uint32* maskStack, uint8* msp)
+{
+    /* Phase 1: combine leaf port masks / child masks from maskStack */
+    uint32 m;
+    switch (expr->ExpressionType) {
+        case BSWM_EXPR_MODE_EQUALS:
+        case BSWM_EXPR_MODE_NOT_EQUALS:
+            if (expr->PortIndex < BSWM_MAX_MODE_REQUEST_PORTS) {
+                m = (1UL << expr->PortIndex);
+            } else {
+                m = 0xFFFFFFFFUL;
+            }
+            maskStack[*msp] = m;
+            (*msp)++;
+            break;
+
+        case BSWM_EXPR_LOGICAL_AND:
+        case BSWM_EXPR_LOGICAL_OR: {
+            uint32 right = maskStack[--(*msp)];
+            uint32 left  = maskStack[--(*msp)];
+            maskStack[*msp] = (left | right);
+            (*msp)++;
+            break;
+        }
+
+        case BSWM_EXPR_LOGICAL_NOT: {
+            uint32 child = maskStack[--(*msp)];
+            maskStack[*msp] = child;
+            (*msp)++;
+            break;
+        }
+
+        default:
+            maskStack[*msp] = 0UL;
+            (*msp)++;
+            break;
+    }
 }
 
 /**

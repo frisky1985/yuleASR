@@ -129,110 +129,124 @@ Std_ReturnType HeapProtection_DeInit(void)
  * Function Implementations - Safe Memory Allocation
  ******************************************************************************/
 
+/* HeapProtection_Malloc 等价重构助手: guard zones + zero/pattern fill */
+static void* HeapProtection_PrepUserArea(HeapBlockHeaderType *block, uint32_t len, uint8_t flags)
+{
+    void *user_ptr;
+
+    /* Initialize guard zones if enabled */
+    if (g_config.flags & HEAP_FLAG_USE_GUARDS) {
+        HeapProtection_InitGuards(block);
+    }
+
+    /* Get user pointer */
+    user_ptr = HeapProtection_GetUserPtr(block);
+
+    /* Initialize memory */
+    if (flags & HEAP_FLAG_ZERO_ON_ALLOC) {
+        (void)memset(user_ptr, 0, len);
+    } else {
+        /* Fill with allocation pattern */
+        HeapProtection_FillPattern(user_ptr, len, HEAP_FILL_PATTERN_ALLOC);
+    }
+
+    return user_ptr;
+}
+
+/* HeapProtection_Malloc 等价重构助手: accounting statistics update */
+static void HeapProtection_CommitAllocStats(HeapBlockHeaderType *block)
+{
+    /* Update statistics */
+    g_heap_info.stats.alloc_count++;
+    g_heap_info.stats.used_size += block->total_size;
+    g_heap_info.stats.free_size -= block->total_size;
+    g_heap_info.stats.block_count++;
+
+    if (g_heap_info.stats.used_size > g_heap_info.stats.peak_used) {
+        g_heap_info.stats.peak_used = g_heap_info.stats.used_size;
+    }
+}
+
+/* HeapProtection_Malloc 等价重构助手: reuse an existing free list block */
+static void* HeapProtection_TakeFreeBlock(HeapBlockHeaderType *block, uint8_t flags)
+{
+    void *user_ptr;
+
+    /* Reuse existing free block */
+    block->state = HEAP_BLOCK_STATE_ALLOCATED;
+    block->magic = HEAP_BLOCK_MAGIC_ALLOC;
+    block->flags = flags;
+    block->alloc_id = g_alloc_counter++;
+    block->alloc_time = 0;  /* Should get from OS */
+
+    /* Update checksum */
+    UpdateBlockChecksum(block);
+
+    /* Initialize user area (length is the block size, may exceed request) */
+    user_ptr = HeapProtection_PrepUserArea(block, block->size, flags);
+
+    HeapProtection_CommitAllocStats(block);
+
+    return user_ptr;
+}
+
+/* HeapProtection_Malloc 等价重构助手: carve a fresh block from heap space */
+static void* HeapProtection_AllocFromHeap(uint32_t size, uint8_t flags)
+{
+    HeapBlockHeaderType *block;
+    void *user_ptr;
+
+    /* Calculate new block address */
+    block = (HeapBlockHeaderType *)(g_config.start_addr +
+             (g_config.size - g_heap_info.stats.free_size));
+
+    /* Initialize block header */
+    InitBlockHeader(block, size, flags);
+    block->alloc_id = g_alloc_counter++;
+    block->alloc_time = 0;
+
+    /* Link into block list */
+    LinkBlock(block);
+
+    user_ptr = HeapProtection_PrepUserArea(block, size, flags);
+
+    HeapProtection_CommitAllocStats(block);
+
+    return user_ptr;
+}
+
 void* HeapProtection_Malloc(uint32_t size, uint8_t flags)
 {
     HeapBlockHeaderType *block;
-    HeapBlockHeaderType *new_block;
     uint32_t alloc_size;
-    uint32_t remaining;
-    void *user_ptr;
-    
+
     if (!g_initialized || size == (uint32_t)0 || g_heap_info.locked) {
         g_heap_info.stats.fail_count++;
         return NULL;
     }
-    
+
     /* Check if size exceeds heap */
     alloc_size = HEAP_OVERHEAD + ((size + HEAP_PROT_ALIGNMENT - 1) & ~(HEAP_PROT_ALIGNMENT - 1));
     if (alloc_size > g_heap_info.stats.free_size) {
         g_heap_info.stats.fail_count++;
         return NULL;
     }
-    
+
     /* Try to find free block */
     block = FindFreeBlock(size);
     if (block != NULL) {
-        /* Reuse existing free block */
-        block->state = HEAP_BLOCK_STATE_ALLOCATED;
-        block->magic = HEAP_BLOCK_MAGIC_ALLOC;
-        block->flags = flags;
-        block->alloc_id = g_alloc_counter++;
-        block->alloc_time = 0;  /* Should get from OS */
-        
-        /* Update checksum */
-        UpdateBlockChecksum(block);
-        
-        /* Initialize guard zones if enabled */
-        if (g_config.flags & HEAP_FLAG_USE_GUARDS) {
-            HeapProtection_InitGuards(block);
-        }
-        
-        /* Zero memory if requested */
-        user_ptr = HeapProtection_GetUserPtr(block);
-        if (flags & HEAP_FLAG_ZERO_ON_ALLOC) {
-            (void)memset(user_ptr, 0, block->size);
-        } else {
-            /* Fill with allocation pattern */
-            HeapProtection_FillPattern(user_ptr, block->size, HEAP_FILL_PATTERN_ALLOC);
-        }
-        
-        /* Update statistics */
-        g_heap_info.stats.alloc_count++;
-        g_heap_info.stats.used_size += block->total_size;
-        g_heap_info.stats.free_size -= block->total_size;
-        g_heap_info.stats.block_count++;
-        
-        if (g_heap_info.stats.used_size > g_heap_info.stats.peak_used) {
-            g_heap_info.stats.peak_used = g_heap_info.stats.used_size;
-        }
-        
-        return user_ptr;
+        return HeapProtection_TakeFreeBlock(block, flags);
     }
-    
-    /* Allocate from heap space */
+
+    /* Allocate from heap space.
+     * NOTE: this free_size check is redundant with the alloc_size check above
+     * (kept as-is for behavioral equivalence with the original code). */
     if (g_heap_info.stats.free_size < alloc_size) {
         g_heap_info.stats.fail_count++;
         return NULL;
     }
-    
-    /* Calculate new block address */
-    block = (HeapBlockHeaderType *)(g_config.start_addr + 
-             (g_config.size - g_heap_info.stats.free_size));
-    
-    /* Initialize block header */
-    InitBlockHeader(block, size, flags);
-    block->alloc_id = g_alloc_counter++;
-    block->alloc_time = 0;
-    
-    /* Link into block list */
-    LinkBlock(block);
-    
-    /* Initialize guard zones if enabled */
-    if (g_config.flags & HEAP_FLAG_USE_GUARDS) {
-        HeapProtection_InitGuards(block);
-    }
-    
-    /* Get user pointer */
-    user_ptr = HeapProtection_GetUserPtr(block);
-    
-    /* Initialize memory */
-    if (flags & HEAP_FLAG_ZERO_ON_ALLOC) {
-        (void)memset(user_ptr, 0, size);
-    } else {
-        HeapProtection_FillPattern(user_ptr, size, HEAP_FILL_PATTERN_ALLOC);
-    }
-    
-    /* Update statistics */
-    g_heap_info.stats.alloc_count++;
-    g_heap_info.stats.used_size += block->total_size;
-    g_heap_info.stats.free_size -= block->total_size;
-    g_heap_info.stats.block_count++;
-    
-    if (g_heap_info.stats.used_size > g_heap_info.stats.peak_used) {
-        g_heap_info.stats.peak_used = g_heap_info.stats.used_size;
-    }
-    
-    return user_ptr;
+
+    return HeapProtection_AllocFromHeap(size, flags);
 }
 
 void* HeapProtection_Calloc(uint32_t num, uint32_t size, uint8_t flags)

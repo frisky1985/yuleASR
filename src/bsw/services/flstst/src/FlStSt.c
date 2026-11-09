@@ -90,6 +90,9 @@ static FlStSt_InternalStateType FlStSt_InternalState;
  *==================================================================================================*/
 static const FlStSt_SectorType* FlStSt_LocalFindSector(uint16 SectorId);
 static void FlStSt_LocalRunMarchCStep(FlStSt_TestRunType* test);
+static boolean FlStSt_MarchReadOk(FlStSt_TestRunType* test, uint32 Addr, uint8 Expected, uint8 Actual);
+static boolean FlStSt_MarchProcessAddr(FlStSt_TestRunType* test, uint32 Addr);
+static void FlStSt_MarchAdvanceStep(FlStSt_TestRunType* test);
 static uint8 FlStSt_LocalReadByte(uint32 Address);
 static void FlStSt_LocalWriteByte(uint32 Address, uint8 Value);
 
@@ -147,8 +150,6 @@ static void FlStSt_LocalRunMarchCStep(FlStSt_TestRunType* test)
     uint32 start;
     uint32 end;
     uint32 addr;
-    uint8 expected;
-    uint8 actual;
     uint32 processed = 0U;
 
     if ((test->Sector == NULL_PTR) || (!test->Active))
@@ -163,65 +164,99 @@ static void FlStSt_LocalRunMarchCStep(FlStSt_TestRunType* test)
     {
         addr = start + processed;
 
-        switch (test->MarchStep)
+        if (!FlStSt_MarchProcessAddr(test, addr))
         {
-            case FLSTST_MARCH_STEP_W0:
-                /* Write background pattern */
-                FlStSt_LocalWriteByte(addr, test->BackgroundValue);
-                break;
-
-            case FLSTST_MARCH_STEP_R0_W1:
-                expected = test->BackgroundValue;
-                actual   = FlStSt_LocalReadByte(addr);
-                if (actual != expected)
-                {
-                    test->Result        = FLSTST_RESULT_FAILED;
-                    test->FailedAddress = addr;
-                    test->ExpectedValue = expected;
-                    test->ActualValue   = actual;
-                    test->Active        = FALSE;
-                    return;
-                }
-                FlStSt_LocalWriteByte(addr, (uint8)(~test->BackgroundValue));
-                break;
-
-            case FLSTST_MARCH_STEP_R1_W0:
-                expected = (uint8)(~test->BackgroundValue);
-                actual   = FlStSt_LocalReadByte(addr);
-                if (actual != expected)
-                {
-                    test->Result        = FLSTST_RESULT_FAILED;
-                    test->FailedAddress = addr;
-                    test->ExpectedValue = expected;
-                    test->ActualValue   = actual;
-                    test->Active        = FALSE;
-                    return;
-                }
-                FlStSt_LocalWriteByte(addr, test->BackgroundValue);
-                break;
-
-            case FLSTST_MARCH_STEP_R0:
-                expected = test->BackgroundValue;
-                actual   = FlStSt_LocalReadByte(addr);
-                if (actual != expected)
-                {
-                    test->Result        = FLSTST_RESULT_FAILED;
-                    test->FailedAddress = addr;
-                    test->ExpectedValue = expected;
-                    test->ActualValue   = actual;
-                    test->Active        = FALSE;
-                    return;
-                }
-                break;
-
-            default:
-                break;
+            /* Read mismatch: test aborted inside the step handler */
+            return;
         }
         processed++;
     }
 
     test->CurrentOffset += processed;
 
+    FlStSt_MarchAdvanceStep(test);
+
+    if ((test->Active) != 0U)
+    {
+        test->Phase = FLSTST_PHASE_MARCH_C_UP;
+    }
+}
+
+/**
+ * @brief Record a March C read-mismatch failure on the test run (等价重构助手)
+ * @return TRUE if the read value matched the expected pattern
+ */
+static boolean FlStSt_MarchReadOk(FlStSt_TestRunType* test, uint32 Addr, uint8 Expected, uint8 Actual)
+{
+    if (Actual == Expected)
+    {
+        return TRUE;
+    }
+    test->Result        = FLSTST_RESULT_FAILED;
+    test->FailedAddress = Addr;
+    test->ExpectedValue = Expected;
+    test->ActualValue   = Actual;
+    test->Active        = FALSE;
+    return FALSE;
+}
+
+/**
+ * @brief Apply the current March C step to a single address (等价重构助手)
+ * @return TRUE to continue the sweep, FALSE when the test failed and must stop
+ */
+static boolean FlStSt_MarchProcessAddr(FlStSt_TestRunType* test, uint32 Addr)
+{
+    uint8 expected;
+    uint8 actual;
+
+    switch (test->MarchStep)
+    {
+        case FLSTST_MARCH_STEP_W0:
+            /* Write background pattern */
+            FlStSt_LocalWriteByte(Addr, test->BackgroundValue);
+            break;
+
+        case FLSTST_MARCH_STEP_R0_W1:
+            expected = test->BackgroundValue;
+            actual   = FlStSt_LocalReadByte(Addr);
+            if (!FlStSt_MarchReadOk(test, Addr, expected, actual))
+            {
+                return FALSE;
+            }
+            FlStSt_LocalWriteByte(Addr, (uint8)(~test->BackgroundValue));
+            break;
+
+        case FLSTST_MARCH_STEP_R1_W0:
+            expected = (uint8)(~test->BackgroundValue);
+            actual   = FlStSt_LocalReadByte(Addr);
+            if (!FlStSt_MarchReadOk(test, Addr, expected, actual))
+            {
+                return FALSE;
+            }
+            FlStSt_LocalWriteByte(Addr, test->BackgroundValue);
+            break;
+
+        case FLSTST_MARCH_STEP_R0:
+            expected = test->BackgroundValue;
+            actual   = FlStSt_LocalReadByte(Addr);
+            if (!FlStSt_MarchReadOk(test, Addr, expected, actual))
+            {
+                return FALSE;
+            }
+            break;
+
+        default:
+            break;
+    }
+    return TRUE;
+}
+
+/**
+ * @brief Advance to the next March C step when the sweep reaches the sector
+ *        end, including descending-order offset setup (等价重构助手)
+ */
+static void FlStSt_MarchAdvanceStep(FlStSt_TestRunType* test)
+{
     /* Check if the current step is complete across the entire sector */
     if (test->CurrentOffset >= test->Sector->Size)
     {
@@ -245,11 +280,6 @@ static void FlStSt_LocalRunMarchCStep(FlStSt_TestRunType* test)
             test->Active = FALSE;
             test->Result = FLSTST_RESULT_PASSED;
         }
-    }
-
-    if ((test->Active) != 0U)
-    {
-        test->Phase = FLSTST_PHASE_MARCH_C_UP;
     }
 }
 

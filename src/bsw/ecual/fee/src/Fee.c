@@ -1521,6 +1521,91 @@ static void Fee_ProcessReadJob(void)
 }
 
 /**
+ * @brief Builds the block header (magic/ids/CRCs) for a write job (等价重构助手)
+ */
+static void Fee_BuildWriteHeader(Fee_BlockHeaderType* header)
+{
+    /* Build block header */
+    header->MagicNumber = FEE_BLOCK_HEADER_MAGIC_VALID;
+    header->BlockId = Fee_CurrentJob.BlockId;
+    header->BlockSize = Fee_CurrentJob.DataLength;
+    header->WriteCycleCount = Fee_BlockInfo[Fee_CurrentJob.BlockId].WriteCycleCounter + 1u;
+    header->BlockState = FEE_BLOCK_STATE_VALID;
+    header->Reserved[0] = 0u;
+    header->Reserved[1] = 0u;
+    header->Reserved[2] = 0u;
+
+    /* Calculate CRCs */
+    header->BlockCrc = Fee_CalculateCrc16(Fee_CurrentJob.DataBufferPtr, Fee_CurrentJob.DataLength);
+    header->HeaderCrc = Fee_CalculateHeaderCrc(header);
+}
+
+/**
+ * @brief Copies header+data into the work buffer and pads to page boundary (等价重构助手)
+ */
+static void Fee_FillWorkBuffer(Fee_BlockHeaderType* header, uint32 totalSize)
+{
+    uint32 padSize;
+    uint32 offset;
+    uint32 i;
+
+    /* Prepare write buffer */
+    Fee_Memcpy(Fee_WorkBuffer, (uint8*)header, sizeof(Fee_BlockHeaderType));
+    Fee_Memcpy(&Fee_WorkBuffer[sizeof(Fee_BlockHeaderType)],
+               Fee_CurrentJob.DataBufferPtr,
+               Fee_CurrentJob.DataLength);
+
+    /* Pad to page boundary */
+    if (totalSize > (sizeof(Fee_BlockHeaderType) + Fee_CurrentJob.DataLength))
+    {
+        padSize = totalSize - sizeof(Fee_BlockHeaderType) - Fee_CurrentJob.DataLength;
+        offset = sizeof(Fee_BlockHeaderType) + Fee_CurrentJob.DataLength;
+        for (i = 0u; i < padSize; i++)
+        {
+            Fee_WorkBuffer[offset + i] = 0xFFu;
+        }
+    }
+}
+
+/**
+ * @brief Finalizes the write job after FLS completion (等价重构助手):
+ * updates block info, sector info and global counters on success.
+ */
+static void Fee_CompleteWriteJob(void)
+{
+    uint8 sectorIndex;
+    uint32 totalSize;
+
+    /* Wait for FLS write to complete */
+    if (Fee_FlsJob.JobState == FEE_FLS_JOB_COMPLETED)
+    {
+        /* Update block info */
+        sectorIndex = (uint8)Fee_CurrentJob.BlockOffset;
+        Fee_BlockInfo[Fee_CurrentJob.BlockId].BlockAddress =
+            Fee_SectorInfo[sectorIndex].NextWriteAddress;
+        Fee_BlockInfo[Fee_CurrentJob.BlockId].BlockSize = Fee_CurrentJob.DataLength;
+        Fee_BlockInfo[Fee_CurrentJob.BlockId].IsValid = TRUE;
+        Fee_BlockInfo[Fee_CurrentJob.BlockId].IsInvalidated = FALSE;
+        Fee_BlockInfo[Fee_CurrentJob.BlockId].WriteCycleCounter++;
+        Fee_BlockInfo[Fee_CurrentJob.BlockId].BlockState = FEE_BLOCK_STATE_VALID;
+
+        /* Update sector info */
+        totalSize = Fee_GetBlockTotalSize(Fee_CurrentJob.DataLength);
+        Fee_SectorInfo[sectorIndex].NextWriteAddress += totalSize;
+        Fee_SectorInfo[sectorIndex].FreeSpace -= totalSize;
+
+        /* Update global counters */
+        Fee_WriteCycleCounter++;
+
+        Fee_FinishJob(FEE_JOB_OK);
+    }
+    else if (Fee_FlsJob.JobState == FEE_FLS_JOB_FAILED)
+    {
+        Fee_FinishJob(FEE_JOB_FAILED);
+    }
+}
+
+/**
  * @brief Processes a write job
  */
 static void Fee_ProcessWriteJob(void)
@@ -1542,38 +1627,11 @@ static void Fee_ProcessWriteJob(void)
                 return;
             }
 
-            /* Build block header */
-            header.MagicNumber = FEE_BLOCK_HEADER_MAGIC_VALID;
-            header.BlockId = Fee_CurrentJob.BlockId;
-            header.BlockSize = Fee_CurrentJob.DataLength;
-            header.WriteCycleCount = Fee_BlockInfo[Fee_CurrentJob.BlockId].WriteCycleCounter + 1u;
-            header.BlockState = FEE_BLOCK_STATE_VALID;
-            header.Reserved[0] = 0u;
-            header.Reserved[1] = 0u;
-            header.Reserved[2] = 0u;
-
-            /* Calculate CRCs */
-            header.BlockCrc = Fee_CalculateCrc16(Fee_CurrentJob.DataBufferPtr, Fee_CurrentJob.DataLength);
-            header.HeaderCrc = Fee_CalculateHeaderCrc(&header);
+            Fee_BuildWriteHeader(&header);
 
             /* Prepare write buffer */
             totalSize = Fee_GetBlockTotalSize(Fee_CurrentJob.DataLength);
-            Fee_Memcpy(Fee_WorkBuffer, (uint8*)&header, sizeof(Fee_BlockHeaderType));
-            Fee_Memcpy(&Fee_WorkBuffer[sizeof(Fee_BlockHeaderType)],
-                       Fee_CurrentJob.DataBufferPtr,
-                       Fee_CurrentJob.DataLength);
-
-            /* Pad to page boundary */
-            if (totalSize > (sizeof(Fee_BlockHeaderType) + Fee_CurrentJob.DataLength))
-            {
-                uint32 padSize = totalSize - sizeof(Fee_BlockHeaderType) - Fee_CurrentJob.DataLength;
-                uint32 offset = sizeof(Fee_BlockHeaderType) + Fee_CurrentJob.DataLength;
-                uint32 i;
-                for (i = 0u; i < padSize; i++)
-                {
-                    Fee_WorkBuffer[offset + i] = 0xFFu;
-                }
-            }
+            Fee_FillWorkBuffer(&header, totalSize);
 
             /* Start FLS write */
             writeAddress = Fee_SectorInfo[sectorIndex].NextWriteAddress;
@@ -1590,33 +1648,7 @@ static void Fee_ProcessWriteJob(void)
             break;
 
         case FEE_FLS_JOB_PENDING + 1u:
-            /* Wait for FLS write to complete */
-            if (Fee_FlsJob.JobState == FEE_FLS_JOB_COMPLETED)
-            {
-                /* Update block info */
-                sectorIndex = (uint8)Fee_CurrentJob.BlockOffset;
-                Fee_BlockInfo[Fee_CurrentJob.BlockId].BlockAddress =
-                    Fee_SectorInfo[sectorIndex].NextWriteAddress;
-                Fee_BlockInfo[Fee_CurrentJob.BlockId].BlockSize = Fee_CurrentJob.DataLength;
-                Fee_BlockInfo[Fee_CurrentJob.BlockId].IsValid = TRUE;
-                Fee_BlockInfo[Fee_CurrentJob.BlockId].IsInvalidated = FALSE;
-                Fee_BlockInfo[Fee_CurrentJob.BlockId].WriteCycleCounter++;
-                Fee_BlockInfo[Fee_CurrentJob.BlockId].BlockState = FEE_BLOCK_STATE_VALID;
-
-                /* Update sector info */
-                totalSize = Fee_GetBlockTotalSize(Fee_CurrentJob.DataLength);
-                Fee_SectorInfo[sectorIndex].NextWriteAddress += totalSize;
-                Fee_SectorInfo[sectorIndex].FreeSpace -= totalSize;
-
-                /* Update global counters */
-                Fee_WriteCycleCounter++;
-
-                Fee_FinishJob(FEE_JOB_OK);
-            }
-            else if (Fee_FlsJob.JobState == FEE_FLS_JOB_FAILED)
-            {
-                Fee_FinishJob(FEE_JOB_FAILED);
-            }
+            Fee_CompleteWriteJob();
             break;
 
         default:

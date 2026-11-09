@@ -99,6 +99,14 @@ STATIC const NvM_EccBlockConfigType* NvM_EccHandler_FindBlockConfig(NvM_BlockIdT
 STATIC Std_ReturnType NvM_EccHandler_CalculateCrc(const uint8* data, uint16 length, uint32* crc);
 STATIC void NvM_EccHandler_NotifyDem(uint8 errorType, NvM_BlockIdType blockId);
 STATIC void NvM_EccHandler_ResetErrorCount(NvM_BlockIdType blockId);
+STATIC Std_ReturnType NvM_EccHandler_DispatchReadError(NvM_BlockIdType blockId, uint8 errorType,
+                                                       const NvM_EccBlockConfigType* blockConfig,
+                                                       uint8* dataBuffer, uint16 dataLength,
+                                                       NvM_EccErrorInfoType* localErrorInfo);
+STATIC Std_ReturnType NvM_EccHandler_RecoverUncorrectable(NvM_BlockIdType blockId, uint8 errorType,
+                                                          const NvM_EccBlockConfigType* blockConfig,
+                                                          uint8* dataBuffer, uint16 dataLength,
+                                                          NvM_EccErrorInfoType* localErrorInfo);
 
 /*==================================================================================================
 *                                       函数实现
@@ -174,20 +182,20 @@ Std_ReturnType NvM_EccHandler_HandleReadError(
     uint8* dataBuffer,
     uint16 dataLength)
 {
-    Std_ReturnType result = E_NOT_OK;
+    Std_ReturnType result;
     const NvM_EccBlockConfigType* blockConfig;
     NvM_EccErrorInfoType localErrorInfo;
-    
+
     if (NvM_EccHandler_Initialized == 0U)
     {
         return E_NOT_OK;
     }
-    
+
     if ((errorInfo == NULL_PTR) || (dataBuffer == NULL_PTR))
     {
         return E_NOT_OK;
     }
-    
+
     /* 查找块配置 */
     blockConfig = NvM_EccHandler_FindBlockConfig(blockId);
     if (blockConfig == NULL_PTR)
@@ -195,86 +203,124 @@ Std_ReturnType NvM_EccHandler_HandleReadError(
         /* 使用默认策略 */
         blockConfig = &NvM_EccDefaultConfig[0];
     }
-    
+
     /* 复制错误信息 */
     localErrorInfo = *errorInfo;
     localErrorInfo.blockId = blockId;
-    
+
     /* 增加错误计数 */
     if (blockId < NVM_CFG_MAX_BLOCK_ID)
     {
         NvM_EccErrorCount[blockId]++;
         localErrorInfo.retryCount = NvM_EccErrorCount[blockId];
     }
-    
+
     /* 根据错误类型和策略处理 */
-    switch (errorInfo->errorType)
-    {
-        case NVM_ECC_ERROR_SINGLE_BIT_CORRECTED:
-            /* 硬件已纠正，只需通知 */
-            localErrorInfo.recovered = TRUE;
-            localErrorInfo.recoveryMethod = NVM_ECC_RECOVERY_NONE;
-            result = E_OK;
-            break;
-            
-        case NVM_ECC_ERROR_DOUBLE_BIT_UNCORRECTABLE:
-        case NVM_ECC_ERROR_BLOCK_INTEGRITY_LOST:
-            /* 需要数据恢复 */
-            switch (blockConfig->recoveryStrategy)
-            {
-                case NVM_ECC_RECOVERY_USE_ROM_DEFAULT:
-                    result = NvM_EccHandler_RecoverFromRomDefault(blockId, dataBuffer, dataLength);
-                    if (result == E_OK)
-                    {
-                        localErrorInfo.recovered = TRUE;
-                        localErrorInfo.recoveryMethod = NVM_ECC_RECOVERY_USE_ROM_DEFAULT;
-                    }
-                    break;
-                    
-                case NVM_ECC_RECOVERY_USE_REDUNDANT_COPY:
-                    result = NvM_EccHandler_RecoverFromRedundantCopy(blockId, dataBuffer, dataLength);
-                    if (result == E_OK)
-                    {
-                        localErrorInfo.recovered = TRUE;
-                        localErrorInfo.recoveryMethod = NVM_ECC_RECOVERY_USE_REDUNDANT_COPY;
-                    }
-                    break;
-                    
-                case NVM_ECC_RECOVERY_ERASE_AND_RETRY:
-                    /* 擦除并尝试重新读取 */
-                    /* 注意：这可能导致数据丢失，仅适用于临时存储 */
-                    result = E_NOT_OK;
-                    break;
-                    
-                case NVM_ECC_RECOVERY_MARK_INVALID:
-                default:
-                    /* 标记为损坏 */
-                    (void)NvM_EccHandler_MarkBlockCorrupted(blockId, errorInfo->errorType);
-                    result = E_NOT_OK;
-                    break;
-            }
-            break;
-            
-        default:
-            result = E_NOT_OK;
-            break;
-    }
-    
+    result = NvM_EccHandler_DispatchReadError(blockId, errorInfo->errorType, blockConfig,
+                                              dataBuffer, dataLength, &localErrorInfo);
+
     /* 报告给DEM */
     NvM_EccHandler_NotifyDem(errorInfo->errorType, blockId);
-    
+
     /* 调用用户回调 */
     if (NvM_EccCallback != NULL_PTR)
     {
         NvM_EccCallback(&localErrorInfo, dataBuffer, dataLength);
     }
-    
+
     /* 如果恢复成功，重置错误计数 */
     if ((result == E_OK) && (localErrorInfo.recovered))
     {
         NvM_EccHandler_ResetErrorCount(blockId);
     }
-    
+
+    return result;
+}
+
+/**
+ * @brief 根据错误类型分派读错误处理 (等价重构助手)
+ */
+STATIC Std_ReturnType NvM_EccHandler_DispatchReadError(
+    NvM_BlockIdType blockId,
+    uint8 errorType,
+    const NvM_EccBlockConfigType* blockConfig,
+    uint8* dataBuffer,
+    uint16 dataLength,
+    NvM_EccErrorInfoType* localErrorInfo)
+{
+    Std_ReturnType result = E_NOT_OK;
+
+    switch (errorType)
+    {
+        case NVM_ECC_ERROR_SINGLE_BIT_CORRECTED:
+            /* 硬件已纠正，只需通知 */
+            localErrorInfo->recovered = TRUE;
+            localErrorInfo->recoveryMethod = NVM_ECC_RECOVERY_NONE;
+            result = E_OK;
+            break;
+
+        case NVM_ECC_ERROR_DOUBLE_BIT_UNCORRECTABLE:
+        case NVM_ECC_ERROR_BLOCK_INTEGRITY_LOST:
+            /* 需要数据恢复 */
+            result = NvM_EccHandler_RecoverUncorrectable(blockId, errorType, blockConfig,
+                                                         dataBuffer, dataLength, localErrorInfo);
+            break;
+
+        default:
+            result = E_NOT_OK;
+            break;
+    }
+
+    return result;
+}
+
+/**
+ * @brief 不可纠错误按块恢复策略处理 (等价重构助手)
+ */
+STATIC Std_ReturnType NvM_EccHandler_RecoverUncorrectable(
+    NvM_BlockIdType blockId,
+    uint8 errorType,
+    const NvM_EccBlockConfigType* blockConfig,
+    uint8* dataBuffer,
+    uint16 dataLength,
+    NvM_EccErrorInfoType* localErrorInfo)
+{
+    Std_ReturnType result = E_NOT_OK;
+
+    switch (blockConfig->recoveryStrategy)
+    {
+        case NVM_ECC_RECOVERY_USE_ROM_DEFAULT:
+            result = NvM_EccHandler_RecoverFromRomDefault(blockId, dataBuffer, dataLength);
+            if (result == E_OK)
+            {
+                localErrorInfo->recovered = TRUE;
+                localErrorInfo->recoveryMethod = NVM_ECC_RECOVERY_USE_ROM_DEFAULT;
+            }
+            break;
+
+        case NVM_ECC_RECOVERY_USE_REDUNDANT_COPY:
+            result = NvM_EccHandler_RecoverFromRedundantCopy(blockId, dataBuffer, dataLength);
+            if (result == E_OK)
+            {
+                localErrorInfo->recovered = TRUE;
+                localErrorInfo->recoveryMethod = NVM_ECC_RECOVERY_USE_REDUNDANT_COPY;
+            }
+            break;
+
+        case NVM_ECC_RECOVERY_ERASE_AND_RETRY:
+            /* 擦除并尝试重新读取 */
+            /* 注意：这可能导致数据丢失，仅适用于临时存储 */
+            result = E_NOT_OK;
+            break;
+
+        case NVM_ECC_RECOVERY_MARK_INVALID:
+        default:
+            /* 标记为损坏 */
+            (void)NvM_EccHandler_MarkBlockCorrupted(blockId, errorType);
+            result = E_NOT_OK;
+            break;
+    }
+
     return result;
 }
 

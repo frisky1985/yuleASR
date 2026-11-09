@@ -340,6 +340,11 @@ static Std_ReturnType SecOC_ProcessTxPdu(PduIdType pduId)
     return result;
 }
 
+/* SecOC_ProcessRxPdu 等价重构助手 */
+static uint32 SecOC_ExtendFreshness(uint32 lastVerified, uint32 truncatedFreshness);
+static void SecOC_VerifyRxBuffer(sint16 idx, PduIdType pduId,
+                                 uint8* securedPdu, PduLengthType securedPduLen);
+
 /**
  * @brief Process RX PDU - verify security
  * @req SWS_SecOC_00107
@@ -347,31 +352,23 @@ static Std_ReturnType SecOC_ProcessTxPdu(PduIdType pduId)
 static void SecOC_ProcessRxPdu(PduIdType pduId)
 {
     sint16 idx;
-    uint8 authData[SECOC_MAX_PDU_LENGTH + SECOC_FRESHNESS_BYTE_LEN + 1u];
-    uint16 authDataLen;
-    uint8 receivedAuthCode[SECOC_MAX_AUTH_INFO_LEN];
-    Csm_VerifyResultType verifyResult;
     uint8* securedPdu;
     PduLengthType securedPduLen;
-    PduLengthType originalDataLen;
-    uint8 i;
-    uint32 receivedFreshness;
-    Std_ReturnType result;
-    
+
     idx = SecOC_GetRxPduIndex(pduId);
     if (idx < 0) {
         return;
     }
-    
+
     if (!SecOC_RxBuffers[idx].inUse) {
         return;
     }
-    
+
     SecOC_RxPduState[idx].authInProgress = TRUE;
-    
+
     securedPdu = SecOC_RxBuffers[idx].data;
     securedPduLen = SecOC_RxBuffers[idx].length;
-    
+
     /* Calculate original data length */
     if (securedPduLen < (SECOC_FRESHNESS_TX_BYTE_LEN + SECOC_AUTH_INFO_LENGTH)) {
         SecOC_RxPduState[idx].status = SECOC_VERIFICATIONFAILURE_STATUS;
@@ -380,50 +377,80 @@ static void SecOC_ProcessRxPdu(PduIdType pduId)
         SecOC_RxBuffers[idx].inUse = FALSE;
         return;
     }
-    
+
+    SecOC_VerifyRxBuffer(idx, pduId, securedPdu, securedPduLen);
+
+    SecOC_RxPduState[idx].authInProgress = FALSE;
+    SecOC_RxBuffers[idx].inUse = FALSE;
+}
+
+/**
+ * @brief Reconstruct full 32-bit freshness from the truncated RX value (等价重构助手).
+ * Window method: take high bits from lastVerifiedFreshness, then adjust
+ * for wrap-around when the truncated counter rolled over since the last
+ * verified value.  Half-range threshold = 0x8000 for 16-bit truncation.
+ */
+static uint32 SecOC_ExtendFreshness(uint32 lastVerified, uint32 truncatedFreshness)
+{
+    uint32 highBits = lastVerified & 0xFFFF0000u;
+    uint16 lastLow = (uint16)(lastVerified & 0xFFFFu);
+    uint16 rxLow = (uint16)(truncatedFreshness & 0xFFFFu);
+    int32 diff = (int32)rxLow - (int32)lastLow;
+
+    if (diff < -0x8000) {
+        highBits += 0x10000u;
+    } else if (diff > 0x8000) {
+        if (highBits >= 0x10000u) {
+            highBits -= 0x10000u;
+        }
+    }
+    return highBits | (uint32)rxLow;
+}
+
+/**
+ * @brief Verify one buffered RX PDU (等价重构助手): extract freshness and auth
+ * code, run MAC verification and update state / forward data accordingly.
+ */
+static void SecOC_VerifyRxBuffer(sint16 idx, PduIdType pduId,
+                                 uint8* securedPdu, PduLengthType securedPduLen)
+{
+    uint8 authData[SECOC_MAX_PDU_LENGTH + SECOC_FRESHNESS_BYTE_LEN + 1u];
+    uint16 authDataLen;
+    uint8 receivedAuthCode[SECOC_MAX_AUTH_INFO_LEN];
+    Csm_VerifyResultType verifyResult;
+    PduLengthType originalDataLen;
+    uint8 i;
+    uint32 receivedFreshness;
+    Std_ReturnType result;
+
+    /* Calculate original data length */
     originalDataLen = securedPduLen - SECOC_FRESHNESS_TX_BYTE_LEN - SECOC_AUTH_INFO_LENGTH;
-    
+
     /* Extract truncated freshness value */
     receivedFreshness = 0u;
     for (i = 0u; i < SECOC_FRESHNESS_TX_BYTE_LEN; i++) {
-        receivedFreshness = (receivedFreshness << 8u) | 
+        receivedFreshness = (receivedFreshness << 8u) |
                            securedPdu[originalDataLen + i];
     }
-    
-    /* Reconstruct full 32-bit freshness from the 16-bit truncated RX value.
-     * Window method: take high bits from lastVerifiedFreshness, then adjust
-     * for wrap-around when the truncated counter rolled over since the last
-     * verified value.  Half-range threshold = 0x8000 for 16-bit truncation. */
-    {
-        uint32 lastVerified = SecOC_RxPduState[idx].lastVerifiedFreshness;
-        uint32 highBits = lastVerified & 0xFFFF0000u;
-        uint16 lastLow = (uint16)(lastVerified & 0xFFFFu);
-        uint16 rxLow = (uint16)(receivedFreshness & 0xFFFFu);
-        int32 diff = (int32)rxLow - (int32)lastLow;
 
-        if (diff < -0x8000) {
-            highBits += 0x10000u;
-        } else if (diff > 0x8000) {
-            if (highBits >= 0x10000u) {
-                highBits -= 0x10000u;
-            }
-        }
-        receivedFreshness = highBits | (uint32)rxLow;
-    }
-    
+    /* Reconstruct full 32-bit freshness from the 16-bit truncated RX value
+     * (window method, see SecOC_ExtendFreshness). */
+    receivedFreshness = SecOC_ExtendFreshness(SecOC_RxPduState[idx].lastVerifiedFreshness,
+                                              receivedFreshness);
+
     /* Extract authentication code */
     for (i = 0u; i < SECOC_AUTH_INFO_LENGTH; i++) {
         receivedAuthCode[i] = securedPdu[originalDataLen + SECOC_FRESHNESS_TX_BYTE_LEN + i];
     }
-    
+
     /* Build authentication data for verification */
     SecOC_BuildAuthData(securedPdu, originalDataLen, receivedFreshness, (uint8)pduId,
                         authData, &authDataLen);
-    
+
     /* Verify authentication code */
     result = SecOC_VerifyAuthCode(authData, authDataLen, receivedAuthCode,
                                    SECOC_AUTH_INFO_LENGTH, &verifyResult);
-    
+
     if ((result == E_OK) && (verifyResult == CSM_E_VER_OK)) {
         SecOC_RxPduState[idx].status = SECOC_VERIFICATIONSUCCESS_STATUS;
         SecOC_RxPduState[idx].lastResult = SECOC_VERIFICATIONSUCCESS;
@@ -431,29 +458,26 @@ static void SecOC_ProcessRxPdu(PduIdType pduId)
 #if (SECOC_ENABLE_FRESHNESS_PERSISTENCE == STD_ON)
         SecOC_FreshnessDirty = TRUE;
 #endif
-        
+
         /* Forward verified data to upper layer */
         {
             PduInfoType pduInfo;
             pduInfo.SduDataPtr = securedPdu;
             pduInfo.SduLength = originalDataLen;
             pduInfo.MetaDataPtr = NULL_PTR;
-            
+
             PduR_SecOCRxIndication(pduId, &pduInfo);
         }
     } else {
         SecOC_RxPduState[idx].status = SECOC_VERIFICATIONFAILURE_STATUS;
         SecOC_RxPduState[idx].lastResult = SECOC_VERIFICATIONFAILURE;
         SecOC_RxPduState[idx].retryCount++;
-        
+
         if (SecOC_RxPduState[idx].retryCount >= SECOC_VERIFICATION_RETRY_COUNT) {
             /* Report failure to DEM */
             /* Dem_ReportErrorStatus(SECOC_E_CRYPTO_AUTH_FAILED, DEM_EVENT_STATUS_FAILED); */
         }
     }
-    
-    SecOC_RxPduState[idx].authInProgress = FALSE;
-    SecOC_RxBuffers[idx].inUse = FALSE;
 }
 
 /*==================================================================================================
