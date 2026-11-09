@@ -505,180 +505,183 @@ void Dcm_TransferInit(void)
 }
 
 /**
- * @brief Process Request Download service (0x34)
- * Implements ISO 14229-1:2020 Section 10.8
+ * @brief Send negative response and return E_NOT_OK (rejection helper)
  */
-Std_ReturnType Dcm_TransferProcessRequestDownload(
-    uint8 ProtocolId,
-    const uint8* Data,
-    uint16 Length)
+STATIC Std_ReturnType Dcm_TransferReject(uint8 ProtocolId, uint8 SID, uint8 NRC)
 {
-    Std_ReturnType result = E_NOT_OK;
-    uint8 addressFormat;
-    uint8 addrLength;
-    uint8 sizeLength;
-    uint32 memoryAddress;
-    uint32 memorySize;
-    uint8 compressionMethod;
-    uint8 encryptionMethod;
-    uint8 responseData[5]; /* lengthFormatIdentifier (1) + maxBlockLength (4) */
-    uint32 maxBlockLength;
+    (void)Dcm_TransferSendNegativeResponse(ProtocolId, SID, NRC);
+    return E_NOT_OK;
+}
 
-    /* Minimum length: 1 (format) + 1 (addr) + 1 (size) + 0 (compress) + 0 (encrypt) = 3 bytes */
+/**
+ * @brief Common request pre-checks: minimum length and no active transfer
+ */
+STATIC Std_ReturnType Dcm_TransferPrecheckRequest(uint8 ProtocolId, uint8 SID, uint16 Length)
+{
+    /* Minimum length: 1 (format) + 1 (addr) + 1 (size) = 3 bytes */
     if (Length < 3U)
     {
-        (void)Dcm_TransferSendNegativeResponse(
-            ProtocolId,
-            DCM_TRANSFER_SID_REQUEST_DOWNLOAD,
-            DCM_E_INCORRECTMESSAGELENGTHORINVALIDFORMAT
-        );
-        return E_NOT_OK;
+        return Dcm_TransferReject(ProtocolId, SID, DCM_E_INCORRECTMESSAGELENGTHORINVALIDFORMAT);
     }
 
     /* Check if another transfer is already active */
     if (Dcm_TransferStatus.TransferActive)
     {
-        (void)Dcm_TransferSendNegativeResponse(
-            ProtocolId,
-            DCM_TRANSFER_SID_REQUEST_DOWNLOAD,
-            DCM_E_CONDITIONSNOTCORRECT
-        );
-        return E_NOT_OK;
+        return Dcm_TransferReject(ProtocolId, SID, DCM_E_CONDITIONSNOTCORRECT);
     }
 
+    return E_OK;
+}
+
+/**
+ * @brief Parse and validate addressAndLengthFormatIdentifier plus
+ *        compression/encryption methods of a requestDownload/requestUpload
+ */
+STATIC Std_ReturnType Dcm_TransferParseFormat(
+    uint8 ProtocolId,
+    uint8 SID,
+    const uint8* Data,
+    uint16 Length,
+    uint8* AddressFormat,
+    uint8* AddrLength,
+    uint8* SizeLength,
+    uint8* CompressionMethod,
+    uint8* EncryptionMethod)
+{
     /* Parse request parameters */
-    addressFormat = Data[0];
-    addrLength = DCM_TRANSFER_GET_ADDR_LEN(addressFormat);
-    sizeLength = DCM_TRANSFER_GET_SIZE_LEN(addressFormat);
+    *AddressFormat = Data[0];
+    *AddrLength = DCM_TRANSFER_GET_ADDR_LEN(*AddressFormat);
+    *SizeLength = DCM_TRANSFER_GET_SIZE_LEN(*AddressFormat);
 
     /* Validate address format */
-    if ((addrLength == 0U) || (sizeLength == 0U) ||
-        (addrLength > 4U) || (sizeLength > 4U))
+    if ((*AddrLength == 0U) || (*SizeLength == 0U) ||
+        (*AddrLength > 4U) || (*SizeLength > 4U))
     {
-        (void)Dcm_TransferSendNegativeResponse(
-            ProtocolId,
-            DCM_TRANSFER_SID_REQUEST_DOWNLOAD,
-            DCM_E_REQUESTOUTOFRANGE
-        );
-        return E_NOT_OK;
+        return Dcm_TransferReject(ProtocolId, SID, DCM_E_REQUESTOUTOFRANGE);
     }
 
     /* Check minimum length with address and size */
-    if (Length < (1U + addrLength + sizeLength))
+    if (Length < (1U + *AddrLength + *SizeLength))
     {
-        (void)Dcm_TransferSendNegativeResponse(
-            ProtocolId,
-            DCM_TRANSFER_SID_REQUEST_DOWNLOAD,
-            DCM_E_INCORRECTMESSAGELENGTHORINVALIDFORMAT
-        );
-        return E_NOT_OK;
+        return Dcm_TransferReject(ProtocolId, SID, DCM_E_INCORRECTMESSAGELENGTHORINVALIDFORMAT);
     }
 
     /* Extract compression and encryption methods if present */
-    compressionMethod = DCM_TRANSFER_COMPRESS_NONE;
-    encryptionMethod = DCM_TRANSFER_ENCRYPT_NONE;
+    *CompressionMethod = DCM_TRANSFER_COMPRESS_NONE;
+    *EncryptionMethod = DCM_TRANSFER_ENCRYPT_NONE;
 
-    if (Length > (1U + addrLength + sizeLength))
+    if (Length > (1U + *AddrLength + *SizeLength))
     {
         /* transferRequestParameterRecord contains compression/encryption methods */
-        uint8 paramIndex = 1U + addrLength + sizeLength;
+        uint8 paramIndex = 1U + *AddrLength + *SizeLength;
 
         /* First byte is compression method, second is encryption method */
-        compressionMethod = Data[paramIndex];
+        *CompressionMethod = Data[paramIndex];
         if (Length > (paramIndex + 1U))
         {
-            encryptionMethod = Data[paramIndex + 1U];
+            *EncryptionMethod = Data[paramIndex + 1U];
         }
     }
 
     /* Validate compression method */
-    if ((compressionMethod != DCM_TRANSFER_COMPRESS_NONE) &&
+    if ((*CompressionMethod != DCM_TRANSFER_COMPRESS_NONE) &&
         (Dcm_TransferConfig.SupportCompression == FALSE))
     {
-        (void)Dcm_TransferSendNegativeResponse(
-            ProtocolId,
-            DCM_TRANSFER_SID_REQUEST_DOWNLOAD,
-            DCM_E_REQUESTOUTOFRANGE
-        );
-        return E_NOT_OK;
+        return Dcm_TransferReject(ProtocolId, SID, DCM_E_REQUESTOUTOFRANGE);
     }
 
     /* Validate encryption method */
-    if ((encryptionMethod != DCM_TRANSFER_ENCRYPT_NONE) &&
+    if ((*EncryptionMethod != DCM_TRANSFER_ENCRYPT_NONE) &&
         (Dcm_TransferConfig.SupportEncryption == FALSE))
     {
-        (void)Dcm_TransferSendNegativeResponse(
-            ProtocolId,
-            DCM_TRANSFER_SID_REQUEST_DOWNLOAD,
-            DCM_E_REQUESTOUTOFRANGE
-        );
-        return E_NOT_OK;
+        return Dcm_TransferReject(ProtocolId, SID, DCM_E_REQUESTOUTOFRANGE);
     }
 
+    return E_OK;
+}
+
+/**
+ * @brief Extract and validate target memory range (built-in range check
+ *        followed by the application ValidateMemoryAddress callback)
+ */
+STATIC Std_ReturnType Dcm_TransferValidateTarget(
+    uint8 ProtocolId,
+    uint8 SID,
+    Dcm_TransferDirectionType Direction,
+    const uint8* Data,
+    uint8 AddrLength,
+    uint8 SizeLength,
+    uint32* MemoryAddress,
+    uint32* MemorySize)
+{
     /* Extract memory address and size */
     if (Dcm_TransferExtractAddressAndSize(
             &Data[1],
-            addrLength,
-            sizeLength,
-            &memoryAddress,
-            &memorySize) != E_OK)
+            AddrLength,
+            SizeLength,
+            MemoryAddress,
+            MemorySize) != E_OK)
     {
-        (void)Dcm_TransferSendNegativeResponse(
-            ProtocolId,
-            DCM_TRANSFER_SID_REQUEST_DOWNLOAD,
-            DCM_E_REQUESTOUTOFRANGE
-        );
-        return E_NOT_OK;
+        return Dcm_TransferReject(ProtocolId, SID, DCM_E_REQUESTOUTOFRANGE);
     }
 
     /* Validate memory address and size */
-    if (Dcm_ValidateMemoryRange(
-            memoryAddress,
-            memorySize,
-            DCM_TRANSFER_DIR_DOWNLOAD) != E_OK)
+    if (Dcm_ValidateMemoryRange(*MemoryAddress, *MemorySize, Direction) != E_OK)
     {
-        (void)Dcm_TransferSendNegativeResponse(
-            ProtocolId,
-            DCM_TRANSFER_SID_REQUEST_DOWNLOAD,
-            DCM_E_REQUESTOUTOFRANGE
-        );
-        return E_NOT_OK;
+        return Dcm_TransferReject(ProtocolId, SID, DCM_E_REQUESTOUTOFRANGE);
     }
 
     /* Check for upload/download not accepted condition */
     if (Dcm_TransferCallbacks.ValidateMemoryAddress != NULL_PTR)
     {
         if (Dcm_TransferCallbacks.ValidateMemoryAddress(
-                memoryAddress,
-                memorySize,
-                DCM_TRANSFER_DIR_DOWNLOAD) != E_OK)
+                *MemoryAddress,
+                *MemorySize,
+                Direction) != E_OK)
         {
-            (void)Dcm_TransferSendNegativeResponse(
-                ProtocolId,
-                DCM_TRANSFER_SID_REQUEST_DOWNLOAD,
-                DCM_E_UPLOADDOWNLOADNOTACCEPTED
-            );
-            return E_NOT_OK;
+            return Dcm_TransferReject(ProtocolId, SID, DCM_E_UPLOADDOWNLOADNOTACCEPTED);
         }
     }
 
-    /* Initialize transfer status */
-    Dcm_TransferStatus.State = DCM_TRANSFER_STATE_DOWNLOAD;
-    Dcm_TransferStatus.Direction = DCM_TRANSFER_DIR_DOWNLOAD;
+    return E_OK;
+}
+
+/**
+ * @brief Initialize transfer status for a freshly accepted transfer
+ */
+STATIC void Dcm_TransferStartSession(
+    Dcm_TransferStateType State,
+    Dcm_TransferDirectionType Direction,
+    uint8 AddressFormat,
+    uint8 AddrLength,
+    uint8 SizeLength,
+    uint8 CompressionMethod,
+    uint8 EncryptionMethod,
+    uint32 MemoryAddress,
+    uint32 MemorySize)
+{
+    Dcm_TransferStatus.State = State;
+    Dcm_TransferStatus.Direction = Direction;
     Dcm_TransferStatus.BlockSequenceCounter = 1U;  /* Start at 1 per ISO 14229-1 */
-    Dcm_TransferStatus.CompressionMethod = compressionMethod;
-    Dcm_TransferStatus.EncryptionMethod = encryptionMethod;
-    Dcm_TransferStatus.AddressFormat = addressFormat;
-    Dcm_TransferStatus.AddrLength = addrLength;
-    Dcm_TransferStatus.SizeLength = sizeLength;
-    Dcm_TransferStatus.MemoryAddress = memoryAddress;
-    Dcm_TransferStatus.MemorySize = memorySize;
+    Dcm_TransferStatus.CompressionMethod = CompressionMethod;
+    Dcm_TransferStatus.EncryptionMethod = EncryptionMethod;
+    Dcm_TransferStatus.AddressFormat = AddressFormat;
+    Dcm_TransferStatus.AddrLength = AddrLength;
+    Dcm_TransferStatus.SizeLength = SizeLength;
+    Dcm_TransferStatus.MemoryAddress = MemoryAddress;
+    Dcm_TransferStatus.MemorySize = MemorySize;
     Dcm_TransferStatus.TransferredSize = 0U;
     Dcm_TransferStatus.MaxBlockLength = (uint16)Dcm_TransferCalculateMaxBlockLength();
     Dcm_TransferStatus.TransferActive = TRUE;
+}
 
-    /* Calculate max block length for response (lengthFormatIdentifier = 0x00 = 1 byte) */
-    maxBlockLength = Dcm_TransferStatus.MaxBlockLength;
+/**
+ * @brief Build and send the positive response carrying maxNumberOfBlockLength
+ */
+STATIC Std_ReturnType Dcm_TransferRespondMaxBlock(uint8 ProtocolId, uint8 SID)
+{
+    uint8 responseData[5]; /* lengthFormatIdentifier (1) + maxBlockLength (4) */
+    uint32 maxBlockLength = Dcm_TransferStatus.MaxBlockLength;
 
     /* Build positive response per ISO 14229-1:2020 Section 10.8.4.2 */
     /* lengthFormatIdentifier (0x00 = 1 byte length) */
@@ -690,14 +693,80 @@ Std_ReturnType Dcm_TransferProcessRequestDownload(
     responseData[4] = (uint8)(maxBlockLength & 0xFFU);
 
     /* Send positive response */
-    result = Dcm_TransferSendPositiveResponse(
+    return Dcm_TransferSendPositiveResponse(
         ProtocolId,
-        DCM_TRANSFER_SID_REQUEST_DOWNLOAD,
+        SID,
         responseData,
         5U
     );
+}
 
-    return result;
+/**
+ * @brief Process Request Download service (0x34)
+ * Implements ISO 14229-1:2020 Section 10.8
+ */
+Std_ReturnType Dcm_TransferProcessRequestDownload(
+    uint8 ProtocolId,
+    const uint8* Data,
+    uint16 Length)
+{
+    uint8 addressFormat;
+    uint8 addrLength;
+    uint8 sizeLength;
+    uint8 compressionMethod;
+    uint8 encryptionMethod;
+    uint32 memoryAddress;
+    uint32 memorySize;
+
+    if (Dcm_TransferPrecheckRequest(
+            ProtocolId,
+            DCM_TRANSFER_SID_REQUEST_DOWNLOAD,
+            Length) != E_OK)
+    {
+        return E_NOT_OK;
+    }
+
+    if (Dcm_TransferParseFormat(
+            ProtocolId,
+            DCM_TRANSFER_SID_REQUEST_DOWNLOAD,
+            Data,
+            Length,
+            &addressFormat,
+            &addrLength,
+            &sizeLength,
+            &compressionMethod,
+            &encryptionMethod) != E_OK)
+    {
+        return E_NOT_OK;
+    }
+
+    if (Dcm_TransferValidateTarget(
+            ProtocolId,
+            DCM_TRANSFER_SID_REQUEST_DOWNLOAD,
+            DCM_TRANSFER_DIR_DOWNLOAD,
+            Data,
+            addrLength,
+            sizeLength,
+            &memoryAddress,
+            &memorySize) != E_OK)
+    {
+        return E_NOT_OK;
+    }
+
+    /* Initialize transfer status */
+    Dcm_TransferStartSession(
+        DCM_TRANSFER_STATE_DOWNLOAD,
+        DCM_TRANSFER_DIR_DOWNLOAD,
+        addressFormat,
+        addrLength,
+        sizeLength,
+        compressionMethod,
+        encryptionMethod,
+        memoryAddress,
+        memorySize
+    );
+
+    return Dcm_TransferRespondMaxBlock(ProtocolId, DCM_TRANSFER_SID_REQUEST_DOWNLOAD);
 }
 
 /**
@@ -709,191 +778,120 @@ Std_ReturnType Dcm_TransferProcessRequestUpload(
     const uint8* Data,
     uint16 Length)
 {
-    Std_ReturnType result = E_NOT_OK;
     uint8 addressFormat;
     uint8 addrLength;
     uint8 sizeLength;
-    uint32 memoryAddress;
-    uint32 memorySize;
     uint8 compressionMethod;
     uint8 encryptionMethod;
-    uint8 responseData[5];
-    uint32 maxBlockLength;
+    uint32 memoryAddress;
+    uint32 memorySize;
 
-    /* Minimum length: 1 (format) + 1 (addr) + 1 (size) = 3 bytes */
-    if (Length < 3U)
-    {
-        (void)Dcm_TransferSendNegativeResponse(
+    if (Dcm_TransferPrecheckRequest(
             ProtocolId,
             DCM_TRANSFER_SID_REQUEST_UPLOAD,
-            DCM_E_INCORRECTMESSAGELENGTHORINVALIDFORMAT
-        );
+            Length) != E_OK)
+    {
         return E_NOT_OK;
     }
 
-    /* Check if another transfer is already active */
-    if (Dcm_TransferStatus.TransferActive)
-    {
-        (void)Dcm_TransferSendNegativeResponse(
+    if (Dcm_TransferParseFormat(
             ProtocolId,
             DCM_TRANSFER_SID_REQUEST_UPLOAD,
-            DCM_E_CONDITIONSNOTCORRECT
-        );
+            Data,
+            Length,
+            &addressFormat,
+            &addrLength,
+            &sizeLength,
+            &compressionMethod,
+            &encryptionMethod) != E_OK)
+    {
         return E_NOT_OK;
     }
 
-    /* Parse request parameters */
-    addressFormat = Data[0];
-    addrLength = DCM_TRANSFER_GET_ADDR_LEN(addressFormat);
-    sizeLength = DCM_TRANSFER_GET_SIZE_LEN(addressFormat);
-
-    /* Validate address format */
-    if ((addrLength == 0U) || (sizeLength == 0U) ||
-        (addrLength > 4U) || (sizeLength > 4U))
-    {
-        (void)Dcm_TransferSendNegativeResponse(
+    if (Dcm_TransferValidateTarget(
             ProtocolId,
             DCM_TRANSFER_SID_REQUEST_UPLOAD,
-            DCM_E_REQUESTOUTOFRANGE
-        );
-        return E_NOT_OK;
-    }
-
-    /* Check minimum length with address and size */
-    if (Length < (1U + addrLength + sizeLength))
-    {
-        (void)Dcm_TransferSendNegativeResponse(
-            ProtocolId,
-            DCM_TRANSFER_SID_REQUEST_UPLOAD,
-            DCM_E_INCORRECTMESSAGELENGTHORINVALIDFORMAT
-        );
-        return E_NOT_OK;
-    }
-
-    /* Extract compression and encryption methods if present */
-    compressionMethod = DCM_TRANSFER_COMPRESS_NONE;
-    encryptionMethod = DCM_TRANSFER_ENCRYPT_NONE;
-
-    if (Length > (1U + addrLength + sizeLength))
-    {
-        /* transferRequestParameterRecord contains compression/encryption methods */
-        uint8 paramIndex = 1U + addrLength + sizeLength;
-
-        /* First byte is compression method, second is encryption method */
-        compressionMethod = Data[paramIndex];
-        if (Length > (paramIndex + 1U))
-        {
-            encryptionMethod = Data[paramIndex + 1U];
-        }
-    }
-
-    /* Validate compression method */
-    if ((compressionMethod != DCM_TRANSFER_COMPRESS_NONE) &&
-        (Dcm_TransferConfig.SupportCompression == FALSE))
-    {
-        (void)Dcm_TransferSendNegativeResponse(
-            ProtocolId,
-            DCM_TRANSFER_SID_REQUEST_UPLOAD,
-            DCM_E_REQUESTOUTOFRANGE
-        );
-        return E_NOT_OK;
-    }
-
-    /* Validate encryption method */
-    if ((encryptionMethod != DCM_TRANSFER_ENCRYPT_NONE) &&
-        (Dcm_TransferConfig.SupportEncryption == FALSE))
-    {
-        (void)Dcm_TransferSendNegativeResponse(
-            ProtocolId,
-            DCM_TRANSFER_SID_REQUEST_UPLOAD,
-            DCM_E_REQUESTOUTOFRANGE
-        );
-        return E_NOT_OK;
-    }
-
-    /* Extract memory address and size */
-    if (Dcm_TransferExtractAddressAndSize(
-            &Data[1],
+            DCM_TRANSFER_DIR_UPLOAD,
+            Data,
             addrLength,
             sizeLength,
             &memoryAddress,
             &memorySize) != E_OK)
     {
-        (void)Dcm_TransferSendNegativeResponse(
-            ProtocolId,
-            DCM_TRANSFER_SID_REQUEST_UPLOAD,
-            DCM_E_REQUESTOUTOFRANGE
-        );
         return E_NOT_OK;
-    }
-
-    /* Validate memory address and size */
-    if (Dcm_ValidateMemoryRange(
-            memoryAddress,
-            memorySize,
-            DCM_TRANSFER_DIR_UPLOAD) != E_OK)
-    {
-        (void)Dcm_TransferSendNegativeResponse(
-            ProtocolId,
-            DCM_TRANSFER_SID_REQUEST_UPLOAD,
-            DCM_E_REQUESTOUTOFRANGE
-        );
-        return E_NOT_OK;
-    }
-
-    /* Check for upload/download not accepted condition */
-    if (Dcm_TransferCallbacks.ValidateMemoryAddress != NULL_PTR)
-    {
-        if (Dcm_TransferCallbacks.ValidateMemoryAddress(
-                memoryAddress,
-                memorySize,
-                DCM_TRANSFER_DIR_UPLOAD) != E_OK)
-        {
-            (void)Dcm_TransferSendNegativeResponse(
-                ProtocolId,
-                DCM_TRANSFER_SID_REQUEST_UPLOAD,
-                DCM_E_UPLOADDOWNLOADNOTACCEPTED
-            );
-            return E_NOT_OK;
-        }
     }
 
     /* Initialize transfer status */
-    Dcm_TransferStatus.State = DCM_TRANSFER_STATE_UPLOAD;
-    Dcm_TransferStatus.Direction = DCM_TRANSFER_DIR_UPLOAD;
-    Dcm_TransferStatus.BlockSequenceCounter = 1U;  /* Start at 1 per ISO 14229-1 */
-    Dcm_TransferStatus.CompressionMethod = compressionMethod;
-    Dcm_TransferStatus.EncryptionMethod = encryptionMethod;
-    Dcm_TransferStatus.AddressFormat = addressFormat;
-    Dcm_TransferStatus.AddrLength = addrLength;
-    Dcm_TransferStatus.SizeLength = sizeLength;
-    Dcm_TransferStatus.MemoryAddress = memoryAddress;
-    Dcm_TransferStatus.MemorySize = memorySize;
-    Dcm_TransferStatus.TransferredSize = 0U;
-    Dcm_TransferStatus.MaxBlockLength = (uint16)Dcm_TransferCalculateMaxBlockLength();
-    Dcm_TransferStatus.TransferActive = TRUE;
-
-    /* Calculate max block length for response */
-    maxBlockLength = Dcm_TransferStatus.MaxBlockLength;
-
-    /* Build positive response per ISO 14229-1:2020 Section 10.9.4.2 */
-    /* lengthFormatIdentifier (0x00 = 1 byte length) */
-    responseData[0] = 0x00U;
-    /* maxNumberOfBlockLength */
-    responseData[1] = (uint8)((maxBlockLength >> 24) & 0xFFU);
-    responseData[2] = (uint8)((maxBlockLength >> 16) & 0xFFU);
-    responseData[3] = (uint8)((maxBlockLength >> 8) & 0xFFU);
-    responseData[4] = (uint8)(maxBlockLength & 0xFFU);
-
-    /* Send positive response */
-    result = Dcm_TransferSendPositiveResponse(
-        ProtocolId,
-        DCM_TRANSFER_SID_REQUEST_UPLOAD,
-        responseData,
-        5U
+    Dcm_TransferStartSession(
+        DCM_TRANSFER_STATE_UPLOAD,
+        DCM_TRANSFER_DIR_UPLOAD,
+        addressFormat,
+        addrLength,
+        sizeLength,
+        compressionMethod,
+        encryptionMethod,
+        memoryAddress,
+        memorySize
     );
 
+    return Dcm_TransferRespondMaxBlock(ProtocolId, DCM_TRANSFER_SID_REQUEST_UPLOAD);
+}
+
+/**
+ * @brief Acknowledge a download block and advance the sequence counter
+ */
+STATIC Std_ReturnType Dcm_TransferAckBlock(uint8 ProtocolId, uint8 BlockSequenceCounter)
+{
+    Std_ReturnType result;
+    uint8 responseData[1];
+
+    /* Send positive response with block sequence counter */
+    responseData[0] = BlockSequenceCounter;
+
+    result = Dcm_TransferSendPositiveResponse(
+        ProtocolId,
+        DCM_TRANSFER_SID_TRANSFER_DATA,
+        responseData,
+        1U
+    );
+
+    if (result == E_OK)
+    {
+        /* Increment block sequence counter */
+        Dcm_IncrementBlockSequenceCounter();
+    }
+
     return result;
+}
+
+/**
+ * @brief Download-direction TransferData processing: store block then
+ *        acknowledge (no-data block is acknowledged directly)
+ */
+STATIC Std_ReturnType Dcm_TransferHandleDownloadBlock(
+    uint8 ProtocolId,
+    uint8 BlockSequenceCounter,
+    const uint8* Data,
+    uint16 Length)
+{
+    Std_ReturnType result = E_OK;
+
+    if (Length > 1U)
+    {
+        /* Download: write received data to memory */
+        result = Dcm_TransferProcessDownloadBlock(
+            ProtocolId,
+            &Data[1],
+            Length - 1U
+        );
+
+        if (result != E_OK)
+        {
+            return result;
+        }
+    }
+
+    return Dcm_TransferAckBlock(ProtocolId, BlockSequenceCounter);
 }
 
 /**
@@ -905,117 +903,65 @@ Std_ReturnType Dcm_TransferProcessTransferData(
     const uint8* Data,
     uint16 Length)
 {
-    Std_ReturnType result = E_NOT_OK;
     uint8 blockSequenceCounter;
-    uint8 expectedCounter;
 
     /* Minimum length: 1 byte for block sequence counter */
     if (Length < 1U)
     {
-        (void)Dcm_TransferSendNegativeResponse(
+        return Dcm_TransferReject(
             ProtocolId,
             DCM_TRANSFER_SID_TRANSFER_DATA,
             DCM_E_INCORRECTMESSAGELENGTHORINVALIDFORMAT
         );
-        return E_NOT_OK;
     }
 
     /* Check if transfer is active */
     if (!Dcm_TransferStatus.TransferActive)
     {
-        (void)Dcm_TransferSendNegativeResponse(
+        return Dcm_TransferReject(
             ProtocolId,
             DCM_TRANSFER_SID_TRANSFER_DATA,
             DCM_E_REQUESTSEQUENCEERROR
         );
-        return E_NOT_OK;
     }
 
     /* Extract block sequence counter */
     blockSequenceCounter = Data[0];
 
-    /* Validate block sequence counter */
-    expectedCounter = Dcm_TransferStatus.BlockSequenceCounter;
-
-    if (blockSequenceCounter != expectedCounter)
+    /* Validate block sequence counter (wrong block sequence counter) */
+    if (blockSequenceCounter != Dcm_TransferStatus.BlockSequenceCounter)
     {
-        /* Wrong block sequence counter */
-        (void)Dcm_TransferSendNegativeResponse(
+        return Dcm_TransferReject(
             ProtocolId,
             DCM_TRANSFER_SID_TRANSFER_DATA,
             DCM_E_WRONGBLOCKSEQUENCECOUNTER
         );
-        return E_NOT_OK;
     }
 
     /* Process based on transfer direction */
     if (Dcm_TransferStatus.Direction == DCM_TRANSFER_DIR_DOWNLOAD)
     {
-        /* Download: write received data to memory */
-        if (Length > 1U)
-        {
-            result = Dcm_TransferProcessDownloadBlock(
-                ProtocolId,
-                &Data[1],
-                Length - 1U
-            );
-
-            if (result == E_OK)
-            {
-                /* Send positive response with block sequence counter */
-                uint8 responseData[1];
-                responseData[0] = blockSequenceCounter;
-
-                result = Dcm_TransferSendPositiveResponse(
-                    ProtocolId,
-                    DCM_TRANSFER_SID_TRANSFER_DATA,
-                    responseData,
-                    1U
-                );
-
-                if (result == E_OK)
-                {
-                    /* Increment block sequence counter */
-                    Dcm_IncrementBlockSequenceCounter();
-                }
-            }
-        }
-        else
-        {
-            /* No data - just acknowledge */
-            uint8 responseData[1];
-            responseData[0] = blockSequenceCounter;
-
-            result = Dcm_TransferSendPositiveResponse(
-                ProtocolId,
-                DCM_TRANSFER_SID_TRANSFER_DATA,
-                responseData,
-                1U
-            );
-
-            if (result == E_OK)
-            {
-                Dcm_IncrementBlockSequenceCounter();
-            }
-        }
-    }
-    else if (Dcm_TransferStatus.Direction == DCM_TRANSFER_DIR_UPLOAD)
-    {
-        /* Upload: read data from memory and send */
-        result = Dcm_TransferProcessUploadBlock(ProtocolId);
-    }
-    else
-    {
-        /* Invalid direction */
-        Dcm_TransferStatus.State = DCM_TRANSFER_STATE_ERROR;
-        (void)Dcm_TransferSendNegativeResponse(
+        return Dcm_TransferHandleDownloadBlock(
             ProtocolId,
-            DCM_TRANSFER_SID_TRANSFER_DATA,
-            DCM_E_CONDITIONSNOTCORRECT
+            blockSequenceCounter,
+            Data,
+            Length
         );
     }
 
-    return result;
+    if (Dcm_TransferStatus.Direction == DCM_TRANSFER_DIR_UPLOAD)
+    {
+        /* Upload: read data from memory and send */
+        return Dcm_TransferProcessUploadBlock(ProtocolId);
+    }
+
+    /* Invalid direction */
+    Dcm_TransferStatus.State = DCM_TRANSFER_STATE_ERROR;
+    return Dcm_TransferReject(
+        ProtocolId,
+        DCM_TRANSFER_SID_TRANSFER_DATA,
+        DCM_E_CONDITIONSNOTCORRECT
+    );
 }
 
 /**

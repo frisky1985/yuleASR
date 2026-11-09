@@ -842,6 +842,79 @@ STATIC Std_ReturnType Dcm_ProcessClearDiagnosticInformation(uint8 ProtocolId, co
 }
 
 /**
+ * @brief   Build routine header (subFunction + RID) and send positive response
+ */
+STATIC void Dcm_RoutineSendPositive(uint8 ProtocolId, uint8 SubFunction, uint16 Rid, uint8* ResponseData, uint16 ResponseLength)
+{
+    ResponseData[0] = SubFunction;
+    ResponseData[1] = (uint8)(Rid >> 8U);
+    ResponseData[2] = (uint8)(Rid);
+    Dcm_SendPositiveResponse(ProtocolId, DCM_SERVICE_ROUTINE_CONTROL, ResponseData, ResponseLength + 3U);
+}
+
+/**
+ * @brief   Execute startRoutine callback and send response
+ * @details NULL callback keeps result E_NOT_OK without negative response
+ *          (original fall-through semantics)
+ */
+STATIC Std_ReturnType Dcm_RoutineRunStart(uint8 ProtocolId, uint8 SubFunction, uint16 Rid, const Dcm_RIDConfigType* RidConfig, const uint8* Data, uint16 Length, uint8* ResponseData, uint16* ResponseLength)
+{
+    if (RidConfig->StartFnc == NULL_PTR)
+    {
+        return E_NOT_OK;
+    }
+
+    if (RidConfig->StartFnc(&Data[3], Length - 3U, &ResponseData[3], ResponseLength) == E_OK)
+    {
+        Dcm_RoutineSendPositive(ProtocolId, SubFunction, Rid, ResponseData, *ResponseLength);
+        return E_OK;
+    }
+
+    Dcm_SendNegativeResponse(ProtocolId, DCM_SERVICE_ROUTINE_CONTROL, DCM_E_CONDITIONS_NOT_CORRECT);
+    return E_NOT_OK;
+}
+
+/**
+ * @brief   Execute stopRoutine callback and send response
+ */
+STATIC Std_ReturnType Dcm_RoutineRunStop(uint8 ProtocolId, uint8 SubFunction, uint16 Rid, const Dcm_RIDConfigType* RidConfig, const uint8* Data, uint16 Length, uint8* ResponseData, uint16* ResponseLength)
+{
+    if (RidConfig->StopFnc == NULL_PTR)
+    {
+        return E_NOT_OK;
+    }
+
+    if (RidConfig->StopFnc(&Data[3], Length - 3U, &ResponseData[3], ResponseLength) == E_OK)
+    {
+        Dcm_RoutineSendPositive(ProtocolId, SubFunction, Rid, ResponseData, *ResponseLength);
+        return E_OK;
+    }
+
+    Dcm_SendNegativeResponse(ProtocolId, DCM_SERVICE_ROUTINE_CONTROL, DCM_E_CONDITIONS_NOT_CORRECT);
+    return E_NOT_OK;
+}
+
+/**
+ * @brief   Execute requestRoutineResults callback and send response
+ */
+STATIC Std_ReturnType Dcm_RoutineRunRequestResult(uint8 ProtocolId, uint8 SubFunction, uint16 Rid, const Dcm_RIDConfigType* RidConfig, uint8* ResponseData, uint16* ResponseLength)
+{
+    if (RidConfig->RequestResultFnc == NULL_PTR)
+    {
+        return E_NOT_OK;
+    }
+
+    if (RidConfig->RequestResultFnc(&ResponseData[3], ResponseLength) == E_OK)
+    {
+        Dcm_RoutineSendPositive(ProtocolId, SubFunction, Rid, ResponseData, *ResponseLength);
+        return E_OK;
+    }
+
+    Dcm_SendNegativeResponse(ProtocolId, DCM_SERVICE_ROUTINE_CONTROL, DCM_E_CONDITIONS_NOT_CORRECT);
+    return E_NOT_OK;
+}
+
+/**
  * @brief   Process Routine Control service
  * @req SWS_Dcm_00108
  */
@@ -854,103 +927,57 @@ STATIC Std_ReturnType Dcm_ProcessRoutineControl(uint8 ProtocolId, const uint8* D
     uint8 responseData[DCM_TX_BUFFER_SIZE];
     uint16 responseLength = 0U;
 
-    if (Length >= 3U)
-    {
-        subFunction = Data[0];
-        rid = ((uint16)Data[1] << 8U) | Data[2];
-
-        /* Find RID configuration */
-        ridConfig = Dcm_FindRID(rid);
-
-        if (ridConfig != NULL_PTR)
-        {
-            /* Check security level */
-            if (Dcm_InternalState.CurrentSecurityLevel >= ridConfig->SecurityLevel)
-            {
-                /* Check session type */
-                if ((ridConfig->SessionType == (uint32_t)(DCM_DEFAULT_SESSION)) ||
-                    (Dcm_InternalState.CurrentSession == ridConfig->SessionType))
-                {
-                    /* Process routine based on subfunction */
-                    switch (subFunction)
-                    {
-                        case 0x01U: /* Start Routine */
-                            if (ridConfig->StartFnc != NULL_PTR)
-                            {
-                                if (ridConfig->StartFnc(&Data[3], Length - 3U, &responseData[3], &responseLength) == E_OK)
-                                {
-                                    responseData[0] = subFunction;
-                                    responseData[1] = (uint8)(rid >> 8U);
-                                    responseData[2] = (uint8)(rid);
-                                    Dcm_SendPositiveResponse(ProtocolId, DCM_SERVICE_ROUTINE_CONTROL, responseData, responseLength + 3U);
-                                    result = E_OK;
-                                }
-                                else
-                                {
-                                    Dcm_SendNegativeResponse(ProtocolId, DCM_SERVICE_ROUTINE_CONTROL, DCM_E_CONDITIONS_NOT_CORRECT);
-                                }
-                            }
-                            break;
-
-                        case 0x02U: /* Stop Routine */
-                            if (ridConfig->StopFnc != NULL_PTR)
-                            {
-                                if (ridConfig->StopFnc(&Data[3], Length - 3U, &responseData[3], &responseLength) == E_OK)
-                                {
-                                    responseData[0] = subFunction;
-                                    responseData[1] = (uint8)(rid >> 8U);
-                                    responseData[2] = (uint8)(rid);
-                                    Dcm_SendPositiveResponse(ProtocolId, DCM_SERVICE_ROUTINE_CONTROL, responseData, responseLength + 3U);
-                                    result = E_OK;
-                                }
-                                else
-                                {
-                                    Dcm_SendNegativeResponse(ProtocolId, DCM_SERVICE_ROUTINE_CONTROL, DCM_E_CONDITIONS_NOT_CORRECT);
-                                }
-                            }
-                            break;
-
-                        case 0x03U: /* Request Routine Results */
-                            if (ridConfig->RequestResultFnc != NULL_PTR)
-                            {
-                                if (ridConfig->RequestResultFnc(&responseData[3], &responseLength) == E_OK)
-                                {
-                                    responseData[0] = subFunction;
-                                    responseData[1] = (uint8)(rid >> 8U);
-                                    responseData[2] = (uint8)(rid);
-                                    Dcm_SendPositiveResponse(ProtocolId, DCM_SERVICE_ROUTINE_CONTROL, responseData, responseLength + 3U);
-                                    result = E_OK;
-                                }
-                                else
-                                {
-                                    Dcm_SendNegativeResponse(ProtocolId, DCM_SERVICE_ROUTINE_CONTROL, DCM_E_CONDITIONS_NOT_CORRECT);
-                                }
-                            }
-                            break;
-
-                        default:
-                            Dcm_SendNegativeResponse(ProtocolId, DCM_SERVICE_ROUTINE_CONTROL, DCM_E_SUBFUNCTION_NOT_SUPPORTED);
-                            break;
-                    }
-                }
-                else
-                {
-                    Dcm_SendNegativeResponse(ProtocolId, DCM_SERVICE_ROUTINE_CONTROL, DCM_E_SERVICE_NOT_SUPPORTED);
-                }
-            }
-            else
-            {
-                Dcm_SendNegativeResponse(ProtocolId, DCM_SERVICE_ROUTINE_CONTROL, DCM_E_SECURITY_ACCESS_DENIED);
-            }
-        }
-        else
-        {
-            Dcm_SendNegativeResponse(ProtocolId, DCM_SERVICE_ROUTINE_CONTROL, DCM_E_REQUEST_OUT_OF_RANGE);
-        }
-    }
-    else
+    if (Length < 3U)
     {
         Dcm_SendNegativeResponse(ProtocolId, DCM_SERVICE_ROUTINE_CONTROL, DCM_E_INCORRECT_MESSAGE_LENGTH);
+        return E_NOT_OK;
+    }
+
+    subFunction = Data[0];
+    rid = ((uint16)Data[1] << 8U) | Data[2];
+
+    /* Find RID configuration */
+    ridConfig = Dcm_FindRID(rid);
+
+    if (ridConfig == NULL_PTR)
+    {
+        Dcm_SendNegativeResponse(ProtocolId, DCM_SERVICE_ROUTINE_CONTROL, DCM_E_REQUEST_OUT_OF_RANGE);
+        return E_NOT_OK;
+    }
+
+    /* Check security level */
+    if (Dcm_InternalState.CurrentSecurityLevel < ridConfig->SecurityLevel)
+    {
+        Dcm_SendNegativeResponse(ProtocolId, DCM_SERVICE_ROUTINE_CONTROL, DCM_E_SECURITY_ACCESS_DENIED);
+        return E_NOT_OK;
+    }
+
+    /* Check session type (default session always allowed) */
+    if ((ridConfig->SessionType != (uint32_t)(DCM_DEFAULT_SESSION)) &&
+        (Dcm_InternalState.CurrentSession != ridConfig->SessionType))
+    {
+        Dcm_SendNegativeResponse(ProtocolId, DCM_SERVICE_ROUTINE_CONTROL, DCM_E_SERVICE_NOT_SUPPORTED);
+        return E_NOT_OK;
+    }
+
+    /* Process routine based on subfunction */
+    switch (subFunction)
+    {
+        case 0x01U: /* Start Routine */
+            result = Dcm_RoutineRunStart(ProtocolId, subFunction, rid, ridConfig, Data, Length, responseData, &responseLength);
+            break;
+
+        case 0x02U: /* Stop Routine */
+            result = Dcm_RoutineRunStop(ProtocolId, subFunction, rid, ridConfig, Data, Length, responseData, &responseLength);
+            break;
+
+        case 0x03U: /* Request Routine Results */
+            result = Dcm_RoutineRunRequestResult(ProtocolId, subFunction, rid, ridConfig, responseData, &responseLength);
+            break;
+
+        default:
+            Dcm_SendNegativeResponse(ProtocolId, DCM_SERVICE_ROUTINE_CONTROL, DCM_E_SUBFUNCTION_NOT_SUPPORTED);
+            break;
     }
 
     return result;
