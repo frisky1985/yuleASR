@@ -111,27 +111,37 @@ static bl_antrollback_error_t read_slot(
 }
 
 /**
- * @brief 扫描全部槽位, 恢复当前计数器值及待确认状态
- * @details 两遍扫描兼容 v2/v3 布局:
- *          第一遍按 v3 槽位步长; 若发现 v3 记录则采用其结果 (混合布局下
- *          v3 写入序号必然最高, 取最大 write_seq 即最新)。
- *          若全无 v3 记录 (升级前遗留的 v2 NVM), 第二遍按 v2 槽位步长
- *          扫描, 恢复最新 v2 写入 (计数器/待确认状态), health_confirmed
- *          置 false (门控关闭语义)。
+ * @brief 判定候选记录是否更优
+ * @details 以最大写入序号为准; 序号相同取较大计数器值
  */
-static bl_antrollback_error_t scan_slots(bl_antrollback_context_t *ctx)
+static bool slot_record_better(
+    bool found,
+    uint32_t write_seq,
+    uint32_t counter,
+    uint32_t best_seq,
+    uint32_t best_counter
+)
+{
+    return (!found) || (write_seq > best_seq) ||
+           ((write_seq == best_seq) && (counter > best_counter));
+}
+
+/**
+ * @brief 第一遍扫描: v3 布局 (槽位步长 sizeof(bl_antrollback_slot_t))
+ */
+static void scan_slots_v3(
+    bl_antrollback_context_t *ctx,
+    bool *found,
+    bool *found_v3,
+    uint32_t *best_seq,
+    uint32_t *best_counter,
+    uint32_t *best_slot,
+    uint32_t *best_pending_counter,
+    uint32_t *best_pending_boot_count,
+    bool *best_health_confirmed
+)
 {
     bl_antrollback_slot_t slot;
-    bool found = false;
-    bool found_v3 = false;
-    uint32_t best_seq = 0U;
-    uint32_t best_counter = 0U;
-    uint32_t best_slot = 0U;
-    uint32_t best_pending_counter = 0U;
-    uint32_t best_pending_boot_count = 0U;
-    bool best_health_confirmed = false;
-
-    /* 第一遍: v3 布局 (槽位步长 sizeof(bl_antrollback_slot_t)) */
     for (uint32_t i = 0U; i < ctx->slots; i++) {
         bl_antrollback_error_t result = read_slot(ctx, i, &slot);
         if (result != BL_ANTIROLLBACK_OK) {
@@ -146,26 +156,96 @@ static bl_antrollback_error_t scan_slots(bl_antrollback_context_t *ctx)
             continue;
         }
         if (slot.record_version == BL_ANTIROLLBACK_RECORD_VERSION) {
-            found_v3 = true;
+            *found_v3 = true;
         }
         /* v2 记录无 health_confirmed 字段 → 门控关闭语义 (false) */
         bool health_confirmed = (slot.record_version == BL_ANTIROLLBACK_RECORD_VERSION_V2)
                                     ? false : (slot.health_confirmed != 0U);
-        /* 以最大写入序号为准; 序号相同取较大计数器值 */
-        if ((!found) || (slot.write_seq > best_seq) ||
-            ((slot.write_seq == best_seq) && (slot.counter > best_counter))) {
-            found = true;
-            best_seq = slot.write_seq;
-            best_counter = slot.counter;
-            best_slot = i;
-            best_pending_counter = slot.pending_counter;
-            best_pending_boot_count = slot.pending_boot_count;
-            best_health_confirmed = health_confirmed;
+        if (slot_record_better(*found, slot.write_seq, slot.counter,
+                               *best_seq, *best_counter)) {
+            *found = true;
+            *best_seq = slot.write_seq;
+            *best_counter = slot.counter;
+            *best_slot = i;
+            *best_pending_counter = slot.pending_counter;
+            *best_pending_boot_count = slot.pending_boot_count;
+            *best_health_confirmed = health_confirmed;
         }
     }
+}
 
-    /* 第二遍: v2 布局兼容扫描 (仅当 NVM 中无 v3 记录 — 升级前遗留 v2 数据)
-     * 按 v2 槽位步长 (28B) 读取, 使用 v2 记录布局 (crc32 在偏移 24) */
+/**
+ * @brief 第二遍扫描: v2 布局兼容扫描 (升级前遗留 v2 NVM)
+ * @details 按 v2 槽位步长 (28B) 读取, 使用 v2 记录布局 (crc32 在偏移 24);
+ *          health_confirmed 置 false (门控关闭语义)
+ */
+static void scan_slots_v2(
+    bl_antrollback_context_t *ctx,
+    bool *found,
+    uint32_t *best_seq,
+    uint32_t *best_counter,
+    uint32_t *best_slot,
+    uint32_t *best_pending_counter,
+    uint32_t *best_pending_boot_count
+)
+{
+    for (uint32_t i = 0U; i < ctx->slots; i++) {
+        bl_antrollback_slot_v2_t v2;
+        uint32_t slot_addr = ctx->base_address
+                             + i * BL_ANTIROLLBACK_RECORD_SIZE_V2;
+        if (ctx->flash->read(slot_addr, (uint8_t *)&v2,
+                             BL_ANTIROLLBACK_RECORD_SIZE_V2) != 0) {
+            continue;
+        }
+        if (v2.magic != BL_ANTIROLLBACK_MAGIC) {
+            continue;
+        }
+        if (v2.record_version != BL_ANTIROLLBACK_RECORD_VERSION_V2) {
+            continue;
+        }
+        if (bl_antrollback_crc32((const uint8_t *)&v2,
+                                 (uint32_t)offsetof(bl_antrollback_slot_v2_t, crc32))
+                != v2.crc32) {
+            continue;
+        }
+        if (slot_record_better(*found, v2.write_seq, v2.counter,
+                               *best_seq, *best_counter)) {
+            *found = true;
+            *best_seq = v2.write_seq;
+            *best_counter = v2.counter;
+            *best_slot = i;
+            *best_pending_counter = v2.pending_counter;
+            *best_pending_boot_count = v2.pending_boot_count;
+            /* v2 无健康确认标记, best_health_confirmed 保持 false */
+        }
+    }
+}
+
+/**
+ * @brief 扫描全部槽位, 恢复当前计数器值及待确认状态
+ * @details 两遍扫描兼容 v2/v3 布局:
+ *          第一遍按 v3 槽位步长; 若发现 v3 记录则采用其结果 (混合布局下
+ *          v3 写入序号必然最高, 取最大 write_seq 即最新)。
+ *          若全无 v3 记录 (升级前遗留的 v2 NVM), 第二遍按 v2 槽位步长
+ *          扫描, 恢复最新 v2 写入 (计数器/待确认状态), health_confirmed
+ *          置 false (门控关闭语义)。
+ */
+static bl_antrollback_error_t scan_slots(bl_antrollback_context_t *ctx)
+{
+    bool found = false;
+    bool found_v3 = false;
+    uint32_t best_seq = 0U;
+    uint32_t best_counter = 0U;
+    uint32_t best_slot = 0U;
+    uint32_t best_pending_counter = 0U;
+    uint32_t best_pending_boot_count = 0U;
+    bool best_health_confirmed = false;
+
+    scan_slots_v3(ctx, &found, &found_v3, &best_seq, &best_counter, &best_slot,
+                  &best_pending_counter, &best_pending_boot_count,
+                  &best_health_confirmed);
+
+    /* 第二遍: 仅当 NVM 中无 v3 记录 — 升级前遗留 v2 数据 */
     if (!found_v3) {
         found = false;
         best_seq = 0U;
@@ -175,36 +255,8 @@ static bl_antrollback_error_t scan_slots(bl_antrollback_context_t *ctx)
         best_pending_boot_count = 0U;
         best_health_confirmed = false;
 
-        for (uint32_t i = 0U; i < ctx->slots; i++) {
-            bl_antrollback_slot_v2_t v2;
-            uint32_t slot_addr = ctx->base_address
-                                 + i * BL_ANTIROLLBACK_RECORD_SIZE_V2;
-            if (ctx->flash->read(slot_addr, (uint8_t *)&v2,
-                                 BL_ANTIROLLBACK_RECORD_SIZE_V2) != 0) {
-                continue;
-            }
-            if (v2.magic != BL_ANTIROLLBACK_MAGIC) {
-                continue;
-            }
-            if (v2.record_version != BL_ANTIROLLBACK_RECORD_VERSION_V2) {
-                continue;
-            }
-            if (bl_antrollback_crc32((const uint8_t *)&v2,
-                                     (uint32_t)offsetof(bl_antrollback_slot_v2_t, crc32))
-                    != v2.crc32) {
-                continue;
-            }
-            if ((!found) || (v2.write_seq > best_seq) ||
-                ((v2.write_seq == best_seq) && (v2.counter > best_counter))) {
-                found = true;
-                best_seq = v2.write_seq;
-                best_counter = v2.counter;
-                best_slot = i;
-                best_pending_counter = v2.pending_counter;
-                best_pending_boot_count = v2.pending_boot_count;
-                best_health_confirmed = false;   /* v2 无健康确认标记 */
-            }
-        }
+        scan_slots_v2(ctx, &found, &best_seq, &best_counter, &best_slot,
+                      &best_pending_counter, &best_pending_boot_count);
     }
 
     if (!found) {

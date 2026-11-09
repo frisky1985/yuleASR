@@ -540,6 +540,246 @@ bl_secure_boot_error_t bl_secure_boot_update_rollback_info(
     return BL_SB_OK;
 }
 
+/**
+ * @brief 检查证书有效期 (可配置开关)
+ */
+static bl_secure_boot_error_t verify_cert_validity_period(
+    bl_secure_boot_context_t *ctx,
+    const bl_certificate_t *cert
+)
+{
+    if (!ctx->config.verify_cert_validity) {
+        return BL_SB_OK;
+    }
+
+    uint64_t current_time = 0;
+    if (!bl_time_get_ms(&current_time)) {
+        DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
+                "Current time source unavailable, cannot verify certificate validity");
+        return BL_SB_ERROR_TIME_UNAVAILABLE;
+    }
+    if ((current_time < cert->valid_from) || (current_time > cert->valid_until)) {
+        DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
+                "Certificate expired or not yet valid: now=%llu, from=%llu, until=%llu",
+                (unsigned long long)current_time,
+                (unsigned long long)cert->valid_from,
+                (unsigned long long)cert->valid_until);
+        return BL_SB_ERROR_CERT_EXPIRED;
+    }
+    return BL_SB_OK;
+}
+
+/**
+ * @brief 确定签名验证公钥
+ * @details 根证书使用可信根公钥验证，其余证书使用链中上一级证书的公钥，
+ *          且签发者必须是 CA
+ */
+static bl_secure_boot_error_t select_chain_signing_key(
+    const bl_cert_chain_t *chain,
+    int i,
+    const uint8_t *trusted_root_key,
+    const uint8_t **signing_key,
+    uint32_t *signing_key_len
+)
+{
+    if ((uint32_t)i == (uint32_t)(chain->num_certs - 1U)) {
+        /* 根证书使用可信公钥验证 */
+        *signing_key = trusted_root_key;
+        return BL_SB_OK;
+    }
+
+    /* 其他证书使用上一级证书的公钥；签发者必须是 CA */
+    if (!chain->certs[i + 1].is_ca) {
+        DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
+                "Certificate %d signer is not a CA", i + 1);
+        return BL_SB_ERROR_CERT_INVALID;
+    }
+    *signing_key = chain->certs[i + 1].public_key;
+    if (chain->certs[i + 1].public_key_len > 0U) {
+        *signing_key_len = chain->certs[i + 1].public_key_len;
+    }
+    return BL_SB_OK;
+}
+
+/**
+ * @brief 计算证书数据哈希（签名覆盖整张证书数据）
+ */
+static bl_secure_boot_error_t compute_cert_hash(
+    csm_context_t *csm,
+    const bl_certificate_t *cert,
+    int i,
+    uint8_t *cert_hash,
+    uint32_t *hash_len
+)
+{
+    if ((cert->data == NULL) || (cert->size == 0U)) {
+        DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
+                "Certificate %d has no data to verify", i);
+        return BL_SB_ERROR_CERT_INVALID;
+    }
+
+    *hash_len = BL_SB_HASH_SIZE;
+    csm_status_t status = csm_hash(csm, CSM_ALGO_SHA_256,
+                                   cert->data, cert->size,
+                                   cert_hash, hash_len);
+    if (status != CSM_OK) {
+        DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
+                "Certificate %d hash calculation failed: %d", i, status);
+        return BL_SB_ERROR_CRYPTO_FAILURE;
+    }
+    return BL_SB_OK;
+}
+
+/**
+ * @brief 确定签名算法 (SM2 国密就绪框架: 无后端 → 显式 NOT_SUPPORTED, fail-closed)
+ */
+static bl_secure_boot_error_t map_cert_sign_algo(
+    bl_signature_type_t sign_type,
+    csm_algorithm_t *sign_algo
+)
+{
+    switch (sign_type) {
+        case BL_SB_SIGN_ECDSA_P256_SHA256:
+            *sign_algo = CSM_ALGO_ECDSA_P256_SHA_256;
+            return BL_SB_OK;
+        case BL_SB_SIGN_ECDSA_P384_SHA384:
+            *sign_algo = CSM_ALGO_ECDSA_P384_SHA_384;
+            return BL_SB_OK;
+        case BL_SB_SIGN_SM2_SM3:
+            DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
+                    "SM2-SM3 certificate signature requested but no SM backend");
+            return BL_SB_ERROR_ALGO_NOT_SUPPORTED;
+        default:
+            DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
+                    "Unsupported certificate signature type: %d", sign_type);
+            return BL_SB_ERROR_INVALID_SIGNATURE;
+    }
+}
+
+/**
+ * @brief 通过KeyM将签名验证公钥导入临时密钥槽
+ * @details 有 KeyM 时分配临时槽并导入验签公钥；无 KeyM 时仅根证书可回退到
+ *          配置的根CA密钥槽，中间证书缺少 KeyM 支持则失败
+ */
+static bl_secure_boot_error_t setup_verify_key_slot(
+    bl_secure_boot_context_t *ctx,
+    keym_context_t *keym,
+    const bl_cert_chain_t *chain,
+    int i,
+    const uint8_t *signing_key,
+    uint32_t signing_key_len,
+    uint8_t *verify_key_slot,
+    bool *temp_slot_in_use
+)
+{
+    *verify_key_slot = KEYM_SLOT_ID_INVALID;
+    *temp_slot_in_use = false;
+
+    if (keym != NULL) {
+        keym_status_t key_status = keym_slot_allocate(
+            keym, verify_key_slot, "bl_cert_chain", KEYM_TYPE_ECC_P256);
+        if (key_status != KEYM_OK) {
+            DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
+                    "Failed to allocate verification key slot: %d", key_status);
+            return BL_SB_ERROR_CRYPTO_FAILURE;
+        }
+        key_status = keym_key_import(keym, *verify_key_slot,
+                                     signing_key, signing_key_len, 1U);
+        if (key_status != KEYM_OK) {
+            DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
+                    "Failed to import verification key: %d", key_status);
+            (void)keym_slot_free(keym, *verify_key_slot);
+            return BL_SB_ERROR_CRYPTO_FAILURE;
+        }
+        *temp_slot_in_use = true;
+        return BL_SB_OK;
+    }
+
+    if ((uint32_t)i == (uint32_t)(chain->num_certs - 1U)) {
+        /* 无KeyM时回退到配置的根CA密钥槽验证根证书 */
+        *verify_key_slot = ctx->config.root_ca_key_slot;
+        return BL_SB_OK;
+    }
+
+    DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
+            "KeyM required to verify intermediate certificate %d", i);
+    return BL_SB_ERROR_CRYPTO_FAILURE;
+}
+
+/**
+ * @brief 验证证书链中的单张证书
+ * @return 验签失败时置 VERIFICATION_FAILED 状态并返回 INVALID_SIGNATURE
+ */
+static bl_secure_boot_error_t verify_single_cert(
+    bl_secure_boot_context_t *ctx,
+    const bl_cert_chain_t *chain,
+    int i,
+    const uint8_t *trusted_root_key,
+    csm_context_t *csm
+)
+{
+    const bl_certificate_t *cert = &chain->certs[i];
+
+    bl_secure_boot_error_t result = verify_cert_validity_period(ctx, cert);
+    if (result != BL_SB_OK) {
+        return result;
+    }
+
+    /* 确定签名验证公钥 (默认 ECDSA P-256 公钥长度) */
+    const uint8_t *signing_key = NULL;
+    uint32_t signing_key_len = BL_SB_SIGNATURE_SIZE;
+    result = select_chain_signing_key(chain, i, trusted_root_key,
+                                      &signing_key, &signing_key_len);
+    if (result != BL_SB_OK) {
+        return result;
+    }
+
+    uint8_t cert_hash[BL_SB_HASH_SIZE];
+    uint32_t hash_len;
+    result = compute_cert_hash(csm, cert, i, cert_hash, &hash_len);
+    if (result != BL_SB_OK) {
+        return result;
+    }
+
+    csm_algorithm_t sign_algo;
+    result = map_cert_sign_algo(cert->sign_type, &sign_algo);
+    if (result != BL_SB_OK) {
+        return result;
+    }
+
+    keym_context_t *keym = (keym_context_t*)ctx->keym_context;
+    uint8_t verify_key_slot;
+    bool temp_slot_in_use;
+    result = setup_verify_key_slot(ctx, keym, chain, i,
+                                   signing_key, signing_key_len,
+                                   &verify_key_slot, &temp_slot_in_use);
+    if (result != BL_SB_OK) {
+        return result;
+    }
+
+    /* 使用CSM验证证书签名 */
+    bool verify_result = false;
+    csm_status_t status = csm_mac_verify(csm, sign_algo, verify_key_slot,
+                                         cert_hash, hash_len,
+                                         cert->signature, BL_SB_SIGNATURE_SIZE,
+                                         &verify_result);
+
+    if (temp_slot_in_use && (keym != NULL)) {
+        (void)keym_slot_free(keym, verify_key_slot);
+    }
+
+    if ((status != CSM_OK) || !verify_result) {
+        DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
+                "Certificate %d signature verification failed", i);
+        set_state(ctx, BL_SB_STATE_VERIFICATION_FAILED);
+        return BL_SB_ERROR_INVALID_SIGNATURE;
+    }
+
+    DDS_LOG(BL_SB_LOG_LEVEL, BL_SB_MODULE_NAME,
+            "Certificate %d signature verified", i);
+    return BL_SB_OK;
+}
+
 bl_secure_boot_error_t bl_secure_boot_verify_cert_chain(
     bl_secure_boot_context_t *ctx,
     const bl_cert_chain_t *chain,
@@ -549,154 +789,30 @@ bl_secure_boot_error_t bl_secure_boot_verify_cert_chain(
     if ((ctx == NULL) || (chain == NULL) || (trusted_root_key == NULL)) {
         return BL_SB_ERROR_INVALID_PARAM;
     }
-    
+
     if ((chain->num_certs == 0U) || (chain->num_certs > BL_SB_MAX_CERT_CHAIN_DEPTH)) {
         return BL_SB_ERROR_CERT_CHAIN_INVALID;
     }
-    
+
     csm_context_t *csm = (csm_context_t*)ctx->csm_context;
     if (csm == NULL) {
         return BL_SB_ERROR_CRYPTO_FAILURE;
     }
-    
-    /* 验证证书链：逐级验证签名（根→叶子，每张证书由上一级公钥签发）
-     * 根证书使用可信根公钥验证，其余证书使用链中上一级证书的公钥验证 */
+
+    /* 验证证书链：逐级验证签名（根→叶子，每张证书由上一级公钥签发） */
     for (int i = chain->num_certs - 1U; i >= 0; i--) {
-        const bl_certificate_t *cert = &chain->certs[i];
-        
-        /* 检查证书有效期 */
-        if (ctx->config.verify_cert_validity) {
-            uint64_t current_time = 0;
-            if (!bl_time_get_ms(&current_time)) {
-                DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
-                        "Current time source unavailable, cannot verify certificate validity");
-                return BL_SB_ERROR_TIME_UNAVAILABLE;
-            }
-            if ((current_time < cert->valid_from) || (current_time > cert->valid_until)) {
-                DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
-                        "Certificate expired or not yet valid: now=%llu, from=%llu, until=%llu",
-                        (unsigned long long)current_time,
-                        (unsigned long long)cert->valid_from,
-                        (unsigned long long)cert->valid_until);
-                return BL_SB_ERROR_CERT_EXPIRED;
-            }
+        bl_secure_boot_error_t result = verify_single_cert(ctx, chain, i,
+                                                           trusted_root_key, csm);
+        if (result != BL_SB_OK) {
+            return result;
         }
-        
-        /* 确定签名验证公钥 */
-        const uint8_t *signing_key = NULL;
-        uint32_t signing_key_len = BL_SB_SIGNATURE_SIZE; /* ECDSA P-256 公钥 */
-        if ((uint32_t)i == (uint32_t)(chain->num_certs - 1U)) {
-            /* 根证书使用可信公钥验证 */
-            signing_key = trusted_root_key;
-        } else {
-            /* 其他证书使用上一级证书的公钥；签发者必须是 CA */
-            if (!chain->certs[i + 1].is_ca) {
-                DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
-                        "Certificate %d signer is not a CA", i + 1);
-                return BL_SB_ERROR_CERT_INVALID;
-            }
-            signing_key = chain->certs[i + 1].public_key;
-            if (chain->certs[i + 1].public_key_len > 0U) {
-                signing_key_len = chain->certs[i + 1].public_key_len;
-            }
-        }
-        
-        if ((cert->data == NULL) || (cert->size == 0U)) {
-            DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
-                    "Certificate %d has no data to verify", i);
-            return BL_SB_ERROR_CERT_INVALID;
-        }
-        
-        /* 计算证书数据哈希（签名覆盖整张证书数据） */
-        uint8_t cert_hash[BL_SB_HASH_SIZE];
-        uint32_t hash_len = BL_SB_HASH_SIZE;
-        csm_status_t status = csm_hash(csm, CSM_ALGO_SHA_256,
-                                       cert->data, cert->size,
-                                       cert_hash, &hash_len);
-        if (status != CSM_OK) {
-            DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
-                    "Certificate %d hash calculation failed: %d", i, status);
-            return BL_SB_ERROR_CRYPTO_FAILURE;
-        }
-        
-        /* 确定签名算法 */
-        csm_algorithm_t sign_algo;
-        switch (cert->sign_type) {
-            case BL_SB_SIGN_ECDSA_P256_SHA256:
-                sign_algo = CSM_ALGO_ECDSA_P256_SHA_256;
-                break;
-            case BL_SB_SIGN_ECDSA_P384_SHA384:
-                sign_algo = CSM_ALGO_ECDSA_P384_SHA_384;
-                break;
-            case BL_SB_SIGN_SM2_SM3:
-                /* SM2 国密就绪框架: 无后端 → 显式 NOT_SUPPORTED (fail-closed) */
-                DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
-                        "SM2-SM3 certificate signature requested but no SM backend");
-                return BL_SB_ERROR_ALGO_NOT_SUPPORTED;
-            default:
-                DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
-                        "Unsupported certificate signature type: %d", cert->sign_type);
-                return BL_SB_ERROR_INVALID_SIGNATURE;
-        }
-        
-        /* 通过KeyM将签名验证公钥导入临时密钥槽 */
-        keym_context_t *keym = (keym_context_t*)ctx->keym_context;
-        uint8_t verify_key_slot = KEYM_SLOT_ID_INVALID;
-        bool temp_slot_in_use = false;
-        
-        if (keym != NULL) {
-            keym_status_t key_status = keym_slot_allocate(
-                keym, &verify_key_slot, "bl_cert_chain", KEYM_TYPE_ECC_P256);
-            if (key_status != KEYM_OK) {
-                DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
-                        "Failed to allocate verification key slot: %d", key_status);
-                return BL_SB_ERROR_CRYPTO_FAILURE;
-            }
-            key_status = keym_key_import(keym, verify_key_slot,
-                                         signing_key, signing_key_len, 1U);
-            if (key_status != KEYM_OK) {
-                DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
-                        "Failed to import verification key: %d", key_status);
-                (void)keym_slot_free(keym, verify_key_slot);
-                return BL_SB_ERROR_CRYPTO_FAILURE;
-            }
-            temp_slot_in_use = true;
-        } else if ((uint32_t)i == (uint32_t)(chain->num_certs - 1U)) {
-            /* 无KeyM时回退到配置的根CA密钥槽验证根证书 */
-            verify_key_slot = ctx->config.root_ca_key_slot;
-        } else {
-            DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
-                    "KeyM required to verify intermediate certificate %d", i);
-            return BL_SB_ERROR_CRYPTO_FAILURE;
-        }
-        
-        /* 使用CSM验证证书签名 */
-        bool verify_result = false;
-        status = csm_mac_verify(csm, sign_algo, verify_key_slot,
-                                cert_hash, hash_len,
-                                cert->signature, BL_SB_SIGNATURE_SIZE,
-                                &verify_result);
-        
-        if (temp_slot_in_use && (keym != NULL)) {
-            (void)keym_slot_free(keym, verify_key_slot);
-        }
-        
-        if ((status != CSM_OK) || !verify_result) {
-            DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
-                    "Certificate %d signature verification failed", i);
-            set_state(ctx, BL_SB_STATE_VERIFICATION_FAILED);
-            return BL_SB_ERROR_INVALID_SIGNATURE;
-        }
-        
-        DDS_LOG(BL_SB_LOG_LEVEL, BL_SB_MODULE_NAME,
-                "Certificate %d signature verified", i);
     }
-    
+
     set_state(ctx, BL_SB_STATE_CERT_VALID);
-    
+
     DDS_LOG(BL_SB_LOG_LEVEL, BL_SB_MODULE_NAME,
             "Certificate chain verified");
-    
+
     return BL_SB_OK;
 }
 
