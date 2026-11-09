@@ -85,14 +85,65 @@ sbl_main_error_t sbl_main_connect_antrollback(sbl_main_context_t *ctx)
     return SBL_MAIN_OK;
 }
 
+/* ----------------------------------------------------------------------------
+ * sbl_main_init 内部助手 (B5 拆分)
+ * ---------------------------------------------------------------------------- */
+
+/**
+ * @brief init 入口参数校验: 上下文/配置指针与 NVM 访问回调齐全 (缺失 = INVALID_PARAM)
+ */
+static bool sbl_main_init_args_valid(const sbl_main_context_t *ctx,
+                                     const sbl_main_config_t *cfg)
+{
+    return (ctx != NULL) && (cfg != NULL) &&
+           (cfg->flash != NULL) && (cfg->flash->read != NULL) &&
+           (cfg->flash->erase != NULL) && (cfg->flash->program != NULL);
+}
+
+/**
+ * @brief 填充安全启动配置 (② 读计数器 → 填配置; 0 = 禁用抗回滚)
+ */
+static void sbl_main_fill_secure_boot_config(bl_secure_boot_config_t *sb,
+                                             const sbl_main_config_t *cfg,
+                                             uint32_t counter)
+{
+    (void)memset(sb, 0, sizeof(*sb));
+    sb->verify_signature    = cfg->verify_signature;
+    sb->verify_hash         = cfg->verify_hash;
+    sb->verify_version      = cfg->verify_version;
+    sb->verify_cert_chain   = cfg->verify_cert_chain;
+    sb->verify_cert_validity = cfg->verify_cert_validity;
+    sb->max_boot_attempts   = (cfg->rollback_max_boot_attempts != 0U)
+                                  ? cfg->rollback_max_boot_attempts
+                                  : SBL_MAIN_DEFAULT_MAX_ATTEMPTS;
+    sb->min_firmware_version = 0U;
+    sb->root_ca_key_slot    = cfg->root_ca_key_slot;
+    sb->oem_key_slot        = cfg->oem_key_slot;
+    /* 抗回滚计数器: 从 NVM 装载 (0 = 禁用); sbl_main_boot 启动前会再装载一次 */
+    sb->anti_rollback_counter = counter;
+}
+
+/**
+ * @brief 填充回滚管理器配置 (0 = 取默认值)
+ */
+static void sbl_main_fill_rollback_config(bl_rollback_config_t *rb_cfg,
+                                          const sbl_main_config_t *cfg)
+{
+    (void)memset(rb_cfg, 0, sizeof(*rb_cfg));
+    rb_cfg->max_boot_attempts         = (cfg->rollback_max_boot_attempts != 0U)
+                                           ? cfg->rollback_max_boot_attempts
+                                           : SBL_MAIN_DEFAULT_MAX_ATTEMPTS;
+    rb_cfg->max_consecutive_failures  = (cfg->rollback_max_consecutive_failures != 0U)
+                                           ? cfg->rollback_max_consecutive_failures
+                                           : SBL_MAIN_DEFAULT_MAX_CONSEC_FAILURES;
+    rb_cfg->auto_rollback_enabled     = cfg->rollback_auto_enabled;
+    rb_cfg->preserve_history          = true;
+}
+
 sbl_main_error_t sbl_main_init(sbl_main_context_t *ctx, const sbl_main_config_t *cfg)
 {
-    if ((ctx == NULL) || (cfg == NULL)) {
+    if (!sbl_main_init_args_valid(ctx, cfg)) {
         return SBL_MAIN_ERROR_INVALID_PARAM;
-    }
-    if ((cfg->flash == NULL) || (cfg->flash->read == NULL) ||
-        (cfg->flash->erase == NULL) || (cfg->flash->program == NULL)) {
-        return SBL_MAIN_ERROR_INVALID_PARAM;   /* 无可用 NVM 访问 */
     }
     if ((cfg->app_image == NULL) || (cfg->app_image_size == 0U)) {
         return SBL_MAIN_ERROR_NO_APP;
@@ -115,24 +166,10 @@ sbl_main_error_t sbl_main_init(sbl_main_context_t *ctx, const sbl_main_config_t 
         return SBL_MAIN_ERROR_COUNTER_READ;
     }
 
-    bl_secure_boot_config_t *sb = &ctx->sb_config;
-    (void)memset(sb, 0, sizeof(*sb));
-    sb->verify_signature    = cfg->verify_signature;
-    sb->verify_hash         = cfg->verify_hash;
-    sb->verify_version      = cfg->verify_version;
-    sb->verify_cert_chain   = cfg->verify_cert_chain;
-    sb->verify_cert_validity = cfg->verify_cert_validity;
-    sb->max_boot_attempts   = (cfg->rollback_max_boot_attempts != 0U)
-                                  ? cfg->rollback_max_boot_attempts
-                                  : SBL_MAIN_DEFAULT_MAX_ATTEMPTS;
-    sb->min_firmware_version = 0U;
-    sb->root_ca_key_slot    = cfg->root_ca_key_slot;
-    sb->oem_key_slot        = cfg->oem_key_slot;
-    /* 抗回滚计数器: 从 NVM 装载 (0 = 禁用); sbl_main_boot 启动前会再装载一次 */
-    sb->anti_rollback_counter = ctx->counter;
+    sbl_main_fill_secure_boot_config(&ctx->sb_config, cfg, ctx->counter);
 
     /* ③ 安全启动模块初始化 */
-    if (bl_secure_boot_init(&ctx->secure_boot, sb,
+    if (bl_secure_boot_init(&ctx->secure_boot, &ctx->sb_config,
                             cfg->csm_ctx, cfg->keym_ctx) != BL_SB_OK) {
         return SBL_MAIN_ERROR_SECURE_BOOT_INIT;
     }
@@ -140,15 +177,7 @@ sbl_main_error_t sbl_main_init(sbl_main_context_t *ctx, const sbl_main_config_t 
     /* ④ 回滚管理器初始化 (生产替换点: 注入真实分区管理器,
      * 此处骨架传 NULL — 回滚仅记录/切换意图, 分区切换由平台接管) */
     bl_rollback_config_t rb_cfg;
-    (void)memset(&rb_cfg, 0, sizeof(rb_cfg));
-    rb_cfg.max_boot_attempts         = (cfg->rollback_max_boot_attempts != 0U)
-                                           ? cfg->rollback_max_boot_attempts
-                                           : SBL_MAIN_DEFAULT_MAX_ATTEMPTS;
-    rb_cfg.max_consecutive_failures  = (cfg->rollback_max_consecutive_failures != 0U)
-                                           ? cfg->rollback_max_consecutive_failures
-                                           : SBL_MAIN_DEFAULT_MAX_CONSEC_FAILURES;
-    rb_cfg.auto_rollback_enabled     = cfg->rollback_auto_enabled;
-    rb_cfg.preserve_history          = true;
+    sbl_main_fill_rollback_config(&rb_cfg, cfg);
     if (bl_rollback_init(&ctx->rollback, &rb_cfg, NULL) != BL_ROLLBACK_OK) {
         return SBL_MAIN_ERROR_ROLLBACK_FAILED;
     }
@@ -180,15 +209,16 @@ void sbl_main_deinit(sbl_main_context_t *ctx)
             "SBL integration layer deinitialized");
 }
 
-sbl_main_error_t sbl_main_boot(sbl_main_context_t *ctx)
-{
-    if (ctx == NULL) {
-        return SBL_MAIN_ERROR_INVALID_PARAM;
-    }
-    if (!ctx->initialized) {
-        return SBL_MAIN_ERROR_NOT_INITIALIZED;
-    }
+/* ============================================================================
+ * 内部助手 (B5 拆分: 主流程 = 参数校验 + 阶段派发)
+ * ============================================================================ */
 
+/**
+ * @brief 启动前准备: 装载抗回滚计数器 → 填安全启动配置 → 注入存储接口 (①②③)
+ * @return 准备失败时返回对应错误码
+ */
+static sbl_main_error_t sbl_main_prepare_boot(sbl_main_context_t *ctx)
+{
     /* ① 从 NVM 装载抗回滚计数器 (启动时最新值) */
     uint32_t counter = 0U;
     if (Boot_AntiRollback_Read(&ctx->antrollback, &counter) != BL_ANTIROLLBACK_OK) {
@@ -204,51 +234,59 @@ sbl_main_error_t sbl_main_boot(sbl_main_context_t *ctx)
     if (conn_ret != SBL_MAIN_OK) {
         return conn_ret;
     }
+    return SBL_MAIN_OK;
+}
 
-    /* ④ 安全启动验签 (App 固件) */
-    bl_secure_boot_error_t sb_result = bl_secure_boot_verify(
-        &ctx->secure_boot, ctx->config.app_image, ctx->config.app_image_size);
-
-    if (sb_result == BL_SB_OK) {
-        /* ⑤a 验签通过:
-         * 健康门控关闭 (默认) → 立即上报本次成功启动, 走原 N 次制 (向后兼容);
-         * 健康门控开启 → 不立即上报, 等待 App 业务健康确认
-         *   (App 经 Boot_Update_ConfirmBusinessHealth 确认健康,
-         *    经 Boot_Update_NotifyBootSuccess 完成计数/提交; 未确认则
-         *    pending 保持, watchdog/boot_attempt 超限后自动回滚)。
-         * P2-2 (2026-08-13): 门控开启且未确认时, 本次启动计入 boot_attempt —
-         *   若 App 持续不确认 (业务挂死), boot_attempt_counter 超限后
-         *   bl_rollback_check_needed 触发回滚, 不无限等待。 */
-        if (!ctx->antrollback.health_check_enabled) {
-            bl_antrollback_error_t notify_ret = Boot_AntiRollback_NotifySuccessfulBoot(
-                &ctx->antrollback, ctx->config.app_version);
-            if (notify_ret != BL_ANTIROLLBACK_OK) {
-                /* 计数失败不阻塞启动, 仅记录 (下次启动仍受计数器保护) */
-                DDS_LOG(DDS_LOG_LEVEL_WARN, SBL_MAIN_MODULE_NAME,
-                        "NotifySuccessfulBoot failed (%d) — boot proceeds",
-                        (int)notify_ret);
-            }
-        } else {
-            /* 门控开启: 未确认健康前, 本次启动记入 boot_attempt (试运行计数),
-             * 超限由 bl_rollback 回滚兜底 (P2-2)。 */
-            (void)bl_rollback_record_boot_attempt(&ctx->rollback);
+/**
+ * @brief 验签通过路径 (⑤a/⑤b): 成功上报或试运行计数, 回调后跳转 App
+ */
+static void sbl_main_handle_verify_ok(sbl_main_context_t *ctx)
+{
+    /* ⑤a 验签通过:
+     * 健康门控关闭 (默认) → 立即上报本次成功启动, 走原 N 次制 (向后兼容);
+     * 健康门控开启 → 不立即上报, 等待 App 业务健康确认
+     *   (App 经 Boot_Update_ConfirmBusinessHealth 确认健康,
+     *    经 Boot_Update_NotifyBootSuccess 完成计数/提交; 未确认则
+     *    pending 保持, watchdog/boot_attempt 超限后自动回滚)。
+     * P2-2 (2026-08-13): 门控开启且未确认时, 本次启动计入 boot_attempt —
+     *   若 App 持续不确认 (业务挂死), boot_attempt_counter 超限后
+     *   bl_rollback_check_needed 触发回滚, 不无限等待。 */
+    if (!ctx->antrollback.health_check_enabled) {
+        bl_antrollback_error_t notify_ret = Boot_AntiRollback_NotifySuccessfulBoot(
+            &ctx->antrollback, ctx->config.app_version);
+        if (notify_ret != BL_ANTIROLLBACK_OK) {
+            /* 计数失败不阻塞启动, 仅记录 (下次启动仍受计数器保护) */
+            DDS_LOG(DDS_LOG_LEVEL_WARN, SBL_MAIN_MODULE_NAME,
+                    "NotifySuccessfulBoot failed (%d) — boot proceeds",
+                    (int)notify_ret);
         }
-
-        if (ctx->config.on_boot_result != NULL) {
-            ctx->config.on_boot_result(SBL_MAIN_RESULT_APP_STARTED);
-        }
-
-        /* ⑤b 跳转 App (生产: Boot_Loader_Jump, 不返回; 测试: mock 返回) */
-        if (ctx->config.jump_to_app != NULL) {
-            ctx->config.jump_to_app(ctx->config.app_entry);
-        }
-        return SBL_MAIN_OK;
+    } else {
+        /* 门控开启: 未确认健康前, 本次启动记入 boot_attempt (试运行计数),
+         * 超限由 bl_rollback 回滚兜底 (P2-2)。 */
+        (void)bl_rollback_record_boot_attempt(&ctx->rollback);
     }
 
+    if (ctx->config.on_boot_result != NULL) {
+        ctx->config.on_boot_result(SBL_MAIN_RESULT_APP_STARTED);
+    }
+
+    /* ⑤b 跳转 App (生产: Boot_Loader_Jump, 不返回; 测试: mock 返回) */
+    if (ctx->config.jump_to_app != NULL) {
+        ctx->config.jump_to_app(ctx->config.app_entry);
+    }
+}
+
+/**
+ * @brief 验签失败路径 (⑤c): 记录失败 → 自动回滚 (命中则终结本次启动) → 拒绝启动进恢复
+ * @return SBL_MAIN_ERROR_ROLLBACK_FAILED 或 SBL_MAIN_ERROR_VERIFY_FAILED
+ */
+static sbl_main_error_t sbl_main_handle_verify_fail(sbl_main_context_t *ctx,
+                                                    bl_secure_boot_error_t sb_result)
+{
     /* ⑤c 验签失败: 记录失败并进入回滚/拒绝流程 */
     DDS_LOG(DDS_LOG_LEVEL_ERROR, SBL_MAIN_MODULE_NAME,
             "Secure boot verification failed (%d) for version 0x%08X, "
-            "counter=%u", (int)sb_result, ctx->config.app_version, counter);
+            "counter=%u", (int)sb_result, ctx->config.app_version, ctx->counter);
 
     (void)bl_rollback_record_boot_result(&ctx->rollback, BL_BOOT_RESULT_FAILURE);
 
@@ -281,6 +319,35 @@ sbl_main_error_t sbl_main_boot(sbl_main_context_t *ctx)
         ctx->config.on_boot_result(SBL_MAIN_RESULT_APP_REJECTED);
     }
     return SBL_MAIN_ERROR_VERIFY_FAILED;
+}
+
+sbl_main_error_t sbl_main_boot(sbl_main_context_t *ctx)
+{
+    if (ctx == NULL) {
+        return SBL_MAIN_ERROR_INVALID_PARAM;
+    }
+    if (!ctx->initialized) {
+        return SBL_MAIN_ERROR_NOT_INITIALIZED;
+    }
+
+    /* ①②③ 装载计数器/填安全启动配置/注入抗回滚存储接口 */
+    sbl_main_error_t prep_ret = sbl_main_prepare_boot(ctx);
+    if (prep_ret != SBL_MAIN_OK) {
+        return prep_ret;
+    }
+
+    /* ④ 安全启动验签 (App 固件) */
+    bl_secure_boot_error_t sb_result = bl_secure_boot_verify(
+        &ctx->secure_boot, ctx->config.app_image, ctx->config.app_image_size);
+
+    if (sb_result == BL_SB_OK) {
+        /* ⑤a/⑤b 验签通过: 上报或试运行计数, 回调后跳转 App */
+        sbl_main_handle_verify_ok(ctx);
+        return SBL_MAIN_OK;
+    }
+
+    /* ⑤c 验签失败: 记录失败并进入回滚/拒绝流程 */
+    return sbl_main_handle_verify_fail(ctx, sb_result);
 }
 
 const char *sbl_main_error_to_string(sbl_main_error_t err)

@@ -595,6 +595,128 @@ Std_ReturnType S32K312_Hsm_AesInit(S32K312_HsmAesContextType* context,
     return E_OK;
 }
 
+/**
+ * @brief ECB 加解密入口参数校验 (指针有效性/密钥已装载)
+ */
+static boolean S32K312_Hsm_AesEcbArgsValid(const S32K312_HsmAesContextType* context,
+                                           const uint8* input,
+                                           const uint8* output)
+{
+    return (context != NULL_PTR) && (input != NULL_PTR) && (output != NULL_PTR) &&
+           (context->keyLoaded);
+}
+
+/**
+ * @brief ECB 硬件就绪检查 (模块状态 READY 且 AES 配置已使能)
+ */
+static Std_ReturnType S32K312_Hsm_AesEcbCheckReady(void)
+{
+    if ((S32K312_Hsm_State != S32K312_HSM_STATE_READY) ||
+        (S32K312_Hsm_ConfigPtr == NULL_PTR) || (!S32K312_Hsm_ConfigPtr->enableAes)) {
+        return E_NOT_OK;
+    }
+    return E_OK;
+}
+
+/**
+ * @brief 构建 ECB 模式控制字 (方向由 directionCtrl 指定, 256bit 密钥附加长度位)
+ */
+static uint32 S32K312_Hsm_AesEcbBuildCtrlReg(const S32K312_HsmAesContextType* context,
+                                             uint32 directionCtrl)
+{
+    uint32 ctrlReg = S32K312_HSM_AES_CTRL_ENABLE | S32K312_HSM_AES_CTRL_MODE_ECB |
+                     directionCtrl;
+
+    if (context->keyLength == S32K312_HSM_AES_KEY_SIZE_256) {
+        ctrlReg |= S32K312_HSM_AES_CTRL_KEYLEN_256;
+    }
+    return ctrlReg;
+}
+
+/**
+ * @brief 装载上下文密钥到 AES 硬件寄存器
+ */
+static void S32K312_Hsm_AesEcbLoadKey(const S32K312_HsmAesContextType* context)
+{
+    uint32 j;
+    uint32 wordCount = context->keyLength / 4U;
+
+    for (j = 0U; j < wordCount; j++) {
+        S32K312_Hsm_AesRegs->KEY[j] =
+            ((uint32)context->key[j * 4U] << 24) |
+            ((uint32)context->key[j * 4U + 1U] << 16) |
+            ((uint32)context->key[j * 4U + 2U] << 8) |
+            (uint32)context->key[j * 4U + 3U];
+    }
+}
+
+/**
+ * @brief ECB 逐块处理: 等待就绪 → 装载密钥/输入数据 → 启动 → 等待完成 → 校验 → 回读输出
+ * @return 等待超时设置 LastError=TIMEOUT 并中止后续块; 硬件错误设置 LastError=HARDWARE 并中止
+ */
+static Std_ReturnType S32K312_Hsm_AesEcbProcessBlocks(const S32K312_HsmAesContextType* context,
+                                                      uint32 ctrlReg,
+                                                      const uint8* input,
+                                                      uint8* output,
+                                                      uint32 blocks)
+{
+    Std_ReturnType result;
+    uint32 i;
+    uint32 j;
+
+    /* Process each block */
+    for (i = 0U; i < blocks; i++) {
+        uint32 blockOffset = i * S32K312_HSM_AES_BLOCK_SIZE;
+
+        /* Wait for AES module ready */
+        result = S32K312_Hsm_WaitForAesReady(S32K312_HSM_TIMEOUT_AES);
+        if (result != E_OK) {
+            S32K312_Hsm_LastError = S32K312_HSM_ERROR_TIMEOUT;
+            return result;
+        }
+
+        if (S32K312_Hsm_AesRegs != NULL_PTR) {
+            /* Load key (only needed for first block or key change) */
+            S32K312_Hsm_AesEcbLoadKey(context);
+
+            /* Load input data */
+            for (j = 0U; j < 4U; j++) {
+                S32K312_Hsm_AesRegs->DATA_IN[j] =
+                    ((uint32)input[blockOffset + j * 4U] << 24) |
+                    ((uint32)input[blockOffset + j * 4U + 1U] << 16) |
+                    ((uint32)input[blockOffset + j * 4U + 2U] << 8) |
+                    (uint32)input[blockOffset + j * 4U + 3U];
+            }
+
+            /* Start operation */
+            S32K312_Hsm_AesRegs->CTRL = ctrlReg | S32K312_HSM_AES_CTRL_START;
+
+            /* Wait for completion */
+            result = S32K312_Hsm_WaitForAesReady(S32K312_HSM_TIMEOUT_AES);
+            if (result != E_OK) {
+                S32K312_Hsm_LastError = S32K312_HSM_ERROR_TIMEOUT;
+                return result;
+            }
+
+            /* Check for error */
+            if ((S32K312_Hsm_AesRegs->STATUS & S32K312_HSM_AES_CTRL_ERROR) != 0U) {
+                S32K312_Hsm_LastError = S32K312_HSM_ERROR_HARDWARE;
+                return E_NOT_OK;
+            }
+
+            /* Read output data */
+            for (j = 0U; j < 4U; j++) {
+                uint32 data = S32K312_Hsm_AesRegs->DATA_OUT[j];
+                output[blockOffset + j * 4U] = (uint8)(data >> 24);
+                output[blockOffset + j * 4U + 1U] = (uint8)(data >> 16);
+                output[blockOffset + j * 4U + 2U] = (uint8)(data >> 8);
+                output[blockOffset + j * 4U + 3U] = (uint8)(data);
+            }
+        }
+    }
+    return E_OK;
+}
+
 /**********************************************************************************************************************
  * S32K312_Hsm_AesEcbEncrypt
  *********************************************************************************************************************/
@@ -604,109 +726,34 @@ Std_ReturnType S32K312_Hsm_AesEcbEncrypt(const S32K312_HsmAesContextType* contex
                                           uint8* ciphertext,
                                           uint32 length)
 {
-    Std_ReturnType result = E_NOT_OK;
-    uint32 i;
-    uint32 blocks;
+    Std_ReturnType result;
     uint32 ctrlReg;
-    
-    if ((context == NULL_PTR) || (plaintext == NULL_PTR) || (ciphertext == NULL_PTR)) {
+
+    if (!S32K312_Hsm_AesEcbArgsValid(context, plaintext, ciphertext)) {
         return E_NOT_OK;
     }
-    
-    if (!context->keyLoaded) {
-        return E_NOT_OK;
-    }
-    
+
     if ((length == 0U) || ((length % S32K312_HSM_AES_BLOCK_SIZE) != 0U)) {
         S32K312_Hsm_ReportError(S32K312_HSM_SID_AES_ENCRYPT, S32K312_HSM_ERROR_INVALID_PARAM);
         return E_NOT_OK;
     }
-    
-    if (S32K312_Hsm_State != S32K312_HSM_STATE_READY) {
+
+    if (S32K312_Hsm_AesEcbCheckReady() != E_OK) {
         return E_NOT_OK;
     }
-    
-    /* Check AES availability */
-    if ((S32K312_Hsm_ConfigPtr == NULL_PTR) || (!S32K312_Hsm_ConfigPtr->enableAes)) {
-        return E_NOT_OK;
-    }
-    
+
     S32K312_Hsm_State = S32K312_HSM_STATE_BUSY;
-    
-    blocks = length / S32K312_HSM_AES_BLOCK_SIZE;
-    
+
     /* Setup control register */
-    ctrlReg = S32K312_HSM_AES_CTRL_ENABLE | S32K312_HSM_AES_CTRL_MODE_ECB | 
-              S32K312_HSM_AES_CTRL_ENCRYPT;
-    
-    if (context->keyLength == S32K312_HSM_AES_KEY_SIZE_256) {
-        ctrlReg |= S32K312_HSM_AES_CTRL_KEYLEN_256;
-    }
-    
-    /* Process each block */
-    for (i = 0U; i < blocks; i++) {
-        uint32 blockOffset = i * S32K312_HSM_AES_BLOCK_SIZE;
-        uint32 j;
-        
-        /* Wait for AES module ready */
-        result = S32K312_Hsm_WaitForAesReady(S32K312_HSM_TIMEOUT_AES);
-        if (result != E_OK) {
-            S32K312_Hsm_LastError = S32K312_HSM_ERROR_TIMEOUT;
-            break;
-        }
-        
-        /* Load key (only needed for first block or key change) */
-        if (S32K312_Hsm_AesRegs != NULL_PTR) {
-            uint32 wordCount = context->keyLength / 4U;
-            for (j = 0U; j < wordCount; j++) {
-                S32K312_Hsm_AesRegs->KEY[j] = 
-                    ((uint32)context->key[j * 4U] << 24) |
-                    ((uint32)context->key[j * 4U + 1U] << 16) |
-                    ((uint32)context->key[j * 4U + 2U] << 8) |
-                    (uint32)context->key[j * 4U + 3U];
-            }
-            
-            /* Load plaintext data */
-            for (j = 0U; j < 4U; j++) {
-                S32K312_Hsm_AesRegs->DATA_IN[j] =
-                    ((uint32)plaintext[blockOffset + j * 4U] << 24) |
-                    ((uint32)plaintext[blockOffset + j * 4U + 1U] << 16) |
-                    ((uint32)plaintext[blockOffset + j * 4U + 2U] << 8) |
-                    (uint32)plaintext[blockOffset + j * 4U + 3U];
-            }
-            
-            /* Start operation */
-            S32K312_Hsm_AesRegs->CTRL = ctrlReg | S32K312_HSM_AES_CTRL_START;
-            
-            /* Wait for completion */
-            result = S32K312_Hsm_WaitForAesReady(S32K312_HSM_TIMEOUT_AES);
-            if (result != E_OK) {
-                S32K312_Hsm_LastError = S32K312_HSM_ERROR_TIMEOUT;
-                break;
-            }
-            
-            /* Check for error */
-            if ((S32K312_Hsm_AesRegs->STATUS & S32K312_HSM_AES_CTRL_ERROR) != 0U) {
-                S32K312_Hsm_LastError = S32K312_HSM_ERROR_HARDWARE;
-                result = E_NOT_OK;
-                break;
-            }
-            
-            /* Read ciphertext */
-            for (j = 0U; j < 4U; j++) {
-                uint32 data = S32K312_Hsm_AesRegs->DATA_OUT[j];
-                ciphertext[blockOffset + j * 4U] = (uint8)(data >> 24);
-                ciphertext[blockOffset + j * 4U + 1U] = (uint8)(data >> 16);
-                ciphertext[blockOffset + j * 4U + 2U] = (uint8)(data >> 8);
-                ciphertext[blockOffset + j * 4U + 3U] = (uint8)(data);
-            }
-        }
-    }
-    
+    ctrlReg = S32K312_Hsm_AesEcbBuildCtrlReg(context, S32K312_HSM_AES_CTRL_ENCRYPT);
+
+    result = S32K312_Hsm_AesEcbProcessBlocks(context, ctrlReg, plaintext, ciphertext,
+                                             length / S32K312_HSM_AES_BLOCK_SIZE);
+
     if (result == E_OK) {
         S32K312_Hsm_OperationCount++;
     }
-    
+
     S32K312_Hsm_State = S32K312_HSM_STATE_READY;
     return result;
 }
@@ -720,106 +767,34 @@ Std_ReturnType S32K312_Hsm_AesEcbDecrypt(const S32K312_HsmAesContextType* contex
                                           uint8* plaintext,
                                           uint32 length)
 {
-    Std_ReturnType result = E_NOT_OK;
-    uint32 i;
-    uint32 blocks;
+    Std_ReturnType result;
     uint32 ctrlReg;
-    
-    if ((context == NULL_PTR) || (ciphertext == NULL_PTR) || (plaintext == NULL_PTR)) {
+
+    if (!S32K312_Hsm_AesEcbArgsValid(context, ciphertext, plaintext)) {
         return E_NOT_OK;
     }
-    
-    if (!context->keyLoaded) {
-        return E_NOT_OK;
-    }
-    
+
     if ((length == 0U) || ((length % S32K312_HSM_AES_BLOCK_SIZE) != 0U)) {
         S32K312_Hsm_ReportError(S32K312_HSM_SID_AES_DECRYPT, S32K312_HSM_ERROR_INVALID_PARAM);
         return E_NOT_OK;
     }
-    
-    if (S32K312_Hsm_State != S32K312_HSM_STATE_READY) {
+
+    if (S32K312_Hsm_AesEcbCheckReady() != E_OK) {
         return E_NOT_OK;
     }
-    
-    if ((S32K312_Hsm_ConfigPtr == NULL_PTR) || (!S32K312_Hsm_ConfigPtr->enableAes)) {
-        return E_NOT_OK;
-    }
-    
+
     S32K312_Hsm_State = S32K312_HSM_STATE_BUSY;
-    
-    blocks = length / S32K312_HSM_AES_BLOCK_SIZE;
-    
+
     /* Setup control register for decryption */
-    ctrlReg = S32K312_HSM_AES_CTRL_ENABLE | S32K312_HSM_AES_CTRL_MODE_ECB | 
-              S32K312_HSM_AES_CTRL_DECRYPT;
-    
-    if (context->keyLength == S32K312_HSM_AES_KEY_SIZE_256) {
-        ctrlReg |= S32K312_HSM_AES_CTRL_KEYLEN_256;
-    }
-    
-    /* Process each block */
-    for (i = 0U; i < blocks; i++) {
-        uint32 blockOffset = i * S32K312_HSM_AES_BLOCK_SIZE;
-        uint32 j;
-        
-        result = S32K312_Hsm_WaitForAesReady(S32K312_HSM_TIMEOUT_AES);
-        if (result != E_OK) {
-            S32K312_Hsm_LastError = S32K312_HSM_ERROR_TIMEOUT;
-            break;
-        }
-        
-        if (S32K312_Hsm_AesRegs != NULL_PTR) {
-            /* Load key */
-            uint32 wordCount = context->keyLength / 4U;
-            for (j = 0U; j < wordCount; j++) {
-                S32K312_Hsm_AesRegs->KEY[j] = 
-                    ((uint32)context->key[j * 4U] << 24) |
-                    ((uint32)context->key[j * 4U + 1U] << 16) |
-                    ((uint32)context->key[j * 4U + 2U] << 8) |
-                    (uint32)context->key[j * 4U + 3U];
-            }
-            
-            /* Load ciphertext */
-            for (j = 0U; j < 4U; j++) {
-                S32K312_Hsm_AesRegs->DATA_IN[j] =
-                    ((uint32)ciphertext[blockOffset + j * 4U] << 24) |
-                    ((uint32)ciphertext[blockOffset + j * 4U + 1U] << 16) |
-                    ((uint32)ciphertext[blockOffset + j * 4U + 2U] << 8) |
-                    (uint32)ciphertext[blockOffset + j * 4U + 3U];
-            }
-            
-            /* Start operation */
-            S32K312_Hsm_AesRegs->CTRL = ctrlReg | S32K312_HSM_AES_CTRL_START;
-            
-            result = S32K312_Hsm_WaitForAesReady(S32K312_HSM_TIMEOUT_AES);
-            if (result != E_OK) {
-                S32K312_Hsm_LastError = S32K312_HSM_ERROR_TIMEOUT;
-                break;
-            }
-            
-            /* Check for error */
-            if ((S32K312_Hsm_AesRegs->STATUS & S32K312_HSM_AES_CTRL_ERROR) != 0U) {
-                S32K312_Hsm_LastError = S32K312_HSM_ERROR_HARDWARE;
-                result = E_NOT_OK;
-                break;
-            }
-            
-            /* Read plaintext */
-            for (j = 0U; j < 4U; j++) {
-                uint32 data = S32K312_Hsm_AesRegs->DATA_OUT[j];
-                plaintext[blockOffset + j * 4U] = (uint8)(data >> 24);
-                plaintext[blockOffset + j * 4U + 1U] = (uint8)(data >> 16);
-                plaintext[blockOffset + j * 4U + 2U] = (uint8)(data >> 8);
-                plaintext[blockOffset + j * 4U + 3U] = (uint8)(data);
-            }
-        }
-    }
-    
+    ctrlReg = S32K312_Hsm_AesEcbBuildCtrlReg(context, S32K312_HSM_AES_CTRL_DECRYPT);
+
+    result = S32K312_Hsm_AesEcbProcessBlocks(context, ctrlReg, ciphertext, plaintext,
+                                             length / S32K312_HSM_AES_BLOCK_SIZE);
+
     if (result == E_OK) {
         S32K312_Hsm_OperationCount++;
     }
-    
+
     S32K312_Hsm_State = S32K312_HSM_STATE_READY;
     return result;
 }
@@ -1292,6 +1267,134 @@ Std_ReturnType S32K312_Hsm_EccPointMultiply(const S32K312_HsmEccContextType* con
     return result;
 }
 
+/**
+ * @brief ECC 签名入口参数校验 (指针有效性/密钥已装载/摘要长度)
+ */
+static boolean S32K312_Hsm_EccSignArgsValid(const S32K312_HsmEccContextType* context,
+                                            const uint8* digest,
+                                            uint32 digestLength,
+                                            const uint8* signature,
+                                            const uint32* signatureLength)
+{
+    return (context != NULL_PTR) && (digest != NULL_PTR) &&
+           (signature != NULL_PTR) && (signatureLength != NULL_PTR) &&
+           (context->keyLoaded) &&
+           (digestLength == S32K312_HSM_SHA256_DIGEST_SIZE);
+}
+
+/**
+ * @brief ECC 硬件就绪检查 (模块状态 READY 且 ECC 配置已使能)
+ */
+static Std_ReturnType S32K312_Hsm_EccCheckReady(void)
+{
+    if ((S32K312_Hsm_State != S32K312_HSM_STATE_READY) ||
+        (S32K312_Hsm_ConfigPtr == NULL_PTR) || (!S32K312_Hsm_ConfigPtr->enableEcc)) {
+        return E_NOT_OK;
+    }
+    return E_OK;
+}
+
+/**
+ * @brief 构建 ECC 控制字 (operation 指定 OP_VERIFY/OP_SIGN, 曲线为 SECP384R1 时附加 P384 位)
+ */
+static uint32 S32K312_Hsm_EccBuildCtrlReg(const S32K312_HsmEccContextType* context,
+                                          uint32 operation)
+{
+    uint32 ctrlReg = S32K312_HSM_ECC_CTRL_ENABLE | operation;
+
+    if (context->curve == S32K312_HSM_ECC_CURVE_SECP384R1) {
+        ctrlReg |= S32K312_HSM_ECC_CTRL_CURVE_P384;
+    }
+    return ctrlReg;
+}
+
+/**
+ * @brief 装载签名操作数: 私钥/摘要
+ */
+static void S32K312_Hsm_EccSignLoadOperands(const S32K312_HsmEccContextType* context,
+                                            const uint8* digest)
+{
+    uint32 i;
+    uint32 wordCount = context->keyLength / 4U;
+
+    /* Load private key */
+    for (i = 0U; i < wordCount; i++) {
+        S32K312_Hsm_EccRegs->SCALAR[i] =
+            ((uint32)context->privateKey[i * 4U] << 24) |
+            ((uint32)context->privateKey[i * 4U + 1U] << 16) |
+            ((uint32)context->privateKey[i * 4U + 2U] << 8) |
+            (uint32)context->privateKey[i * 4U + 3U];
+    }
+
+    /* Load hash */
+    for (i = 0U; i < 8U; i++) {
+        S32K312_Hsm_EccRegs->HASH[i] =
+            ((uint32)digest[i * 4U] << 24) |
+            ((uint32)digest[i * 4U + 1U] << 16) |
+            ((uint32)digest[i * 4U + 2U] << 8) |
+            (uint32)digest[i * 4U + 3U];
+    }
+}
+
+/**
+ * @brief 回读签名 (R || S) 到 signature 缓冲
+ */
+static void S32K312_Hsm_EccSignReadSignature(const S32K312_HsmEccContextType* context,
+                                             uint8* signature)
+{
+    uint32 i;
+    uint32 wordCount = context->keyLength / 4U;
+
+    /* Read signature (R || S) */
+    for (i = 0U; i < wordCount; i++) {
+        uint32 dataR = S32K312_Hsm_EccRegs->SIG_R[i];
+        signature[i * 4U] = (uint8)(dataR >> 24);
+        signature[i * 4U + 1U] = (uint8)(dataR >> 16);
+        signature[i * 4U + 2U] = (uint8)(dataR >> 8);
+        signature[i * 4U + 3U] = (uint8)(dataR);
+
+        uint32 dataS = S32K312_Hsm_EccRegs->SIG_S[i];
+        signature[context->keyLength + i * 4U] = (uint8)(dataS >> 24);
+        signature[context->keyLength + i * 4U + 1U] = (uint8)(dataS >> 16);
+        signature[context->keyLength + i * 4U + 2U] = (uint8)(dataS >> 8);
+        signature[context->keyLength + i * 4U + 3U] = (uint8)(dataS);
+    }
+}
+
+/**
+ * @brief ECC 签名硬件执行序列: 等待就绪 → 装载操作数 → 启动 → 等待完成 → 回读签名
+ */
+static Std_ReturnType S32K312_Hsm_EccSignRunHw(const S32K312_HsmEccContextType* context,
+                                               uint32 ctrlReg,
+                                               const uint8* digest,
+                                               uint8* signature,
+                                               uint32* signatureLength)
+{
+    Std_ReturnType result;
+
+    result = S32K312_Hsm_WaitForEccReady(S32K312_HSM_TIMEOUT_ECC);
+    if (result == E_OK) {
+        if (S32K312_Hsm_EccRegs != NULL_PTR) {
+            S32K312_Hsm_EccSignLoadOperands(context, digest);
+
+            /* Start signing */
+            S32K312_Hsm_EccRegs->CTRL = ctrlReg | S32K312_HSM_ECC_CTRL_START;
+
+            result = S32K312_Hsm_WaitForEccReady(S32K312_HSM_TIMEOUT_ECC);
+            if (result == E_OK) {
+                if ((S32K312_Hsm_EccRegs->STATUS & S32K312_HSM_ECC_CTRL_ERROR) != 0U) {
+                    S32K312_Hsm_LastError = S32K312_HSM_ERROR_HARDWARE;
+                    result = E_NOT_OK;
+                } else {
+                    S32K312_Hsm_EccSignReadSignature(context, signature);
+                    *signatureLength = context->keyLength * 2U;
+                }
+            }
+        }
+    }
+    return result;
+}
+
 /**********************************************************************************************************************
  * S32K312_Hsm_EccSign
  *********************************************************************************************************************/
@@ -1302,97 +1405,123 @@ Std_ReturnType S32K312_Hsm_EccSign(const S32K312_HsmEccContextType* context,
                                     uint8* signature,
                                     uint32* signatureLength)
 {
-    Std_ReturnType result = E_NOT_OK;
+    Std_ReturnType result;
     uint32 ctrlReg;
-    uint32 i;
-    uint32 wordCount;
-    
-    if ((context == NULL_PTR) || (digest == NULL_PTR) || 
-        (signature == NULL_PTR) || (signatureLength == NULL_PTR)) {
+
+    if (!S32K312_Hsm_EccSignArgsValid(context, digest, digestLength,
+                                      signature, signatureLength)) {
         return E_NOT_OK;
     }
-    
-    if (!context->keyLoaded) {
+
+    if (S32K312_Hsm_EccCheckReady() != E_OK) {
         return E_NOT_OK;
     }
-    
-    if (digestLength != S32K312_HSM_SHA256_DIGEST_SIZE) {
-        return E_NOT_OK;
-    }
-    
-    if (S32K312_Hsm_State != S32K312_HSM_STATE_READY) {
-        return E_NOT_OK;
-    }
-    
-    if ((S32K312_Hsm_ConfigPtr == NULL_PTR) || (!S32K312_Hsm_ConfigPtr->enableEcc)) {
-        return E_NOT_OK;
-    }
-    
+
     S32K312_Hsm_State = S32K312_HSM_STATE_BUSY;
-    
+
     /* Setup control register */
-    ctrlReg = S32K312_HSM_ECC_CTRL_ENABLE | S32K312_HSM_ECC_CTRL_OP_SIGN;
-    if (context->curve == S32K312_HSM_ECC_CURVE_SECP384R1) {
-        ctrlReg |= S32K312_HSM_ECC_CTRL_CURVE_P384;
+    ctrlReg = S32K312_Hsm_EccBuildCtrlReg(context, S32K312_HSM_ECC_CTRL_OP_SIGN);
+
+    result = S32K312_Hsm_EccSignRunHw(context, ctrlReg, digest, signature, signatureLength);
+
+    if (result == E_OK) {
+        S32K312_Hsm_OperationCount++;
     }
-    
+
+    S32K312_Hsm_State = S32K312_HSM_STATE_READY;
+    return result;
+}
+
+/**
+ * @brief ECC 验签入口参数校验 (指针有效性/密钥已装载/摘要与签名长度)
+ */
+static boolean S32K312_Hsm_EccVerifyArgsValid(const S32K312_HsmEccContextType* context,
+                                              const uint8* digest,
+                                              uint32 digestLength,
+                                              const uint8* signature,
+                                              uint32 signatureLength,
+                                              Crypto_VerifyResultType* verifyResult)
+{
+    return (context != NULL_PTR) && (digest != NULL_PTR) &&
+           (signature != NULL_PTR) && (verifyResult != NULL_PTR) &&
+           (context->keyLoaded) &&
+           (digestLength == S32K312_HSM_SHA256_DIGEST_SIZE) &&
+           (signatureLength == (context->keyLength * 2U));
+}
+
+/**
+ * @brief 装载验签操作数: 公钥/摘要/签名 (R,S)
+ */
+static void S32K312_Hsm_EccVerifyLoadOperands(const S32K312_HsmEccContextType* context,
+                                              const uint8* digest,
+                                              const uint8* signature)
+{
+    uint32 i;
+    uint32 wordCount = context->keyLength / 4U;
+
+    /* Load public key */
+    for (i = 0U; i < (wordCount * 2U); i++) {
+        S32K312_Hsm_EccRegs->POINT_IN[i] =
+            ((uint32)context->publicKey[i * 4U] << 24) |
+            ((uint32)context->publicKey[i * 4U + 1U] << 16) |
+            ((uint32)context->publicKey[i * 4U + 2U] << 8) |
+            (uint32)context->publicKey[i * 4U + 3U];
+    }
+
+    /* Load hash */
+    for (i = 0U; i < 8U; i++) {
+        S32K312_Hsm_EccRegs->HASH[i] =
+            ((uint32)digest[i * 4U] << 24) |
+            ((uint32)digest[i * 4U + 1U] << 16) |
+            ((uint32)digest[i * 4U + 2U] << 8) |
+            (uint32)digest[i * 4U + 3U];
+    }
+
+    /* Load signature */
+    for (i = 0U; i < wordCount; i++) {
+        S32K312_Hsm_EccRegs->SIG_R[i] =
+            ((uint32)signature[i * 4U] << 24) |
+            ((uint32)signature[i * 4U + 1U] << 16) |
+            ((uint32)signature[i * 4U + 2U] << 8) |
+            (uint32)signature[i * 4U + 3U];
+
+        S32K312_Hsm_EccRegs->SIG_S[i] =
+            ((uint32)signature[context->keyLength + i * 4U] << 24) |
+            ((uint32)signature[context->keyLength + i * 4U + 1U] << 16) |
+            ((uint32)signature[context->keyLength + i * 4U + 2U] << 8) |
+            (uint32)signature[context->keyLength + i * 4U + 3U];
+    }
+}
+
+/**
+ * @brief ECC 验签硬件执行序列: 等待就绪 → 装载操作数 → 启动 → 等待完成 → 回读验签结果
+ */
+static Std_ReturnType S32K312_Hsm_EccVerifyRunHw(const S32K312_HsmEccContextType* context,
+                                                 uint32 ctrlReg,
+                                                 const uint8* digest,
+                                                 const uint8* signature,
+                                                 Crypto_VerifyResultType* verifyResult)
+{
+    Std_ReturnType result;
+
     result = S32K312_Hsm_WaitForEccReady(S32K312_HSM_TIMEOUT_ECC);
     if (result == E_OK) {
         if (S32K312_Hsm_EccRegs != NULL_PTR) {
-            wordCount = context->keyLength / 4U;
-            
-            /* Load private key */
-            for (i = 0U; i < wordCount; i++) {
-                S32K312_Hsm_EccRegs->SCALAR[i] =
-                    ((uint32)context->privateKey[i * 4U] << 24) |
-                    ((uint32)context->privateKey[i * 4U + 1U] << 16) |
-                    ((uint32)context->privateKey[i * 4U + 2U] << 8) |
-                    (uint32)context->privateKey[i * 4U + 3U];
-            }
-            
-            /* Load hash */
-            for (i = 0U; i < 8U; i++) {
-                S32K312_Hsm_EccRegs->HASH[i] =
-                    ((uint32)digest[i * 4U] << 24) |
-                    ((uint32)digest[i * 4U + 1U] << 16) |
-                    ((uint32)digest[i * 4U + 2U] << 8) |
-                    (uint32)digest[i * 4U + 3U];
-            }
-            
-            /* Start signing */
+            S32K312_Hsm_EccVerifyLoadOperands(context, digest, signature);
+
+            /* Start verification */
             S32K312_Hsm_EccRegs->CTRL = ctrlReg | S32K312_HSM_ECC_CTRL_START;
-            
+
             result = S32K312_Hsm_WaitForEccReady(S32K312_HSM_TIMEOUT_ECC);
             if (result == E_OK) {
                 if ((S32K312_Hsm_EccRegs->STATUS & S32K312_HSM_ECC_CTRL_ERROR) != 0U) {
-                    S32K312_Hsm_LastError = S32K312_HSM_ERROR_HARDWARE;
-                    result = E_NOT_OK;
+                    *verifyResult = CRYPTO_VERIFICATION_FAILED;
                 } else {
-                    /* Read signature (R || S) */
-                    for (i = 0U; i < wordCount; i++) {
-                        uint32 dataR = S32K312_Hsm_EccRegs->SIG_R[i];
-                        signature[i * 4U] = (uint8)(dataR >> 24);
-                        signature[i * 4U + 1U] = (uint8)(dataR >> 16);
-                        signature[i * 4U + 2U] = (uint8)(dataR >> 8);
-                        signature[i * 4U + 3U] = (uint8)(dataR);
-                        
-                        uint32 dataS = S32K312_Hsm_EccRegs->SIG_S[i];
-                        signature[context->keyLength + i * 4U] = (uint8)(dataS >> 24);
-                        signature[context->keyLength + i * 4U + 1U] = (uint8)(dataS >> 16);
-                        signature[context->keyLength + i * 4U + 2U] = (uint8)(dataS >> 8);
-                        signature[context->keyLength + i * 4U + 3U] = (uint8)(dataS);
-                    }
-                    *signatureLength = context->keyLength * 2U;
+                    *verifyResult = CRYPTO_VERIFICATION_PASSED;
                 }
             }
         }
     }
-    
-    if (result == E_OK) {
-        S32K312_Hsm_OperationCount++;
-    }
-    
-    S32K312_Hsm_State = S32K312_HSM_STATE_READY;
     return result;
 }
 
@@ -1407,98 +1536,30 @@ Std_ReturnType S32K312_Hsm_EccVerify(const S32K312_HsmEccContextType* context,
                                       uint32 signatureLength,
                                       Crypto_VerifyResultType* verifyResult)
 {
-    Std_ReturnType result = E_NOT_OK;
+    Std_ReturnType result;
     uint32 ctrlReg;
-    uint32 i;
-    uint32 wordCount;
-    
-    if ((context == NULL_PTR) || (digest == NULL_PTR) || 
-        (signature == NULL_PTR) || (verifyResult == NULL_PTR)) {
+
+    if (!S32K312_Hsm_EccVerifyArgsValid(context, digest, digestLength,
+                                        signature, signatureLength, verifyResult)) {
         return E_NOT_OK;
     }
-    
-    if (!context->keyLoaded) {
+
+    if (S32K312_Hsm_EccCheckReady() != E_OK) {
         return E_NOT_OK;
     }
-    
-    if ((digestLength != S32K312_HSM_SHA256_DIGEST_SIZE) ||
-        (signatureLength != (context->keyLength * 2U))) {
-        return E_NOT_OK;
-    }
-    
-    if (S32K312_Hsm_State != S32K312_HSM_STATE_READY) {
-        return E_NOT_OK;
-    }
-    
-    if ((S32K312_Hsm_ConfigPtr == NULL_PTR) || (!S32K312_Hsm_ConfigPtr->enableEcc)) {
-        return E_NOT_OK;
-    }
-    
+
     *verifyResult = CRYPTO_VERIFICATION_FAILED;
     S32K312_Hsm_State = S32K312_HSM_STATE_BUSY;
-    
+
     /* Setup control register */
-    ctrlReg = S32K312_HSM_ECC_CTRL_ENABLE | S32K312_HSM_ECC_CTRL_OP_VERIFY;
-    if (context->curve == S32K312_HSM_ECC_CURVE_SECP384R1) {
-        ctrlReg |= S32K312_HSM_ECC_CTRL_CURVE_P384;
-    }
-    
-    result = S32K312_Hsm_WaitForEccReady(S32K312_HSM_TIMEOUT_ECC);
-    if (result == E_OK) {
-        if (S32K312_Hsm_EccRegs != NULL_PTR) {
-            wordCount = context->keyLength / 4U;
-            
-            /* Load public key */
-            for (i = 0U; i < (wordCount * 2U); i++) {
-                S32K312_Hsm_EccRegs->POINT_IN[i] =
-                    ((uint32)context->publicKey[i * 4U] << 24) |
-                    ((uint32)context->publicKey[i * 4U + 1U] << 16) |
-                    ((uint32)context->publicKey[i * 4U + 2U] << 8) |
-                    (uint32)context->publicKey[i * 4U + 3U];
-            }
-            
-            /* Load hash */
-            for (i = 0U; i < 8U; i++) {
-                S32K312_Hsm_EccRegs->HASH[i] =
-                    ((uint32)digest[i * 4U] << 24) |
-                    ((uint32)digest[i * 4U + 1U] << 16) |
-                    ((uint32)digest[i * 4U + 2U] << 8) |
-                    (uint32)digest[i * 4U + 3U];
-            }
-            
-            /* Load signature */
-            for (i = 0U; i < wordCount; i++) {
-                S32K312_Hsm_EccRegs->SIG_R[i] =
-                    ((uint32)signature[i * 4U] << 24) |
-                    ((uint32)signature[i * 4U + 1U] << 16) |
-                    ((uint32)signature[i * 4U + 2U] << 8) |
-                    (uint32)signature[i * 4U + 3U];
-                
-                S32K312_Hsm_EccRegs->SIG_S[i] =
-                    ((uint32)signature[context->keyLength + i * 4U] << 24) |
-                    ((uint32)signature[context->keyLength + i * 4U + 1U] << 16) |
-                    ((uint32)signature[context->keyLength + i * 4U + 2U] << 8) |
-                    (uint32)signature[context->keyLength + i * 4U + 3U];
-            }
-            
-            /* Start verification */
-            S32K312_Hsm_EccRegs->CTRL = ctrlReg | S32K312_HSM_ECC_CTRL_START;
-            
-            result = S32K312_Hsm_WaitForEccReady(S32K312_HSM_TIMEOUT_ECC);
-            if (result == E_OK) {
-                if ((S32K312_Hsm_EccRegs->STATUS & S32K312_HSM_ECC_CTRL_ERROR) != 0U) {
-                    *verifyResult = CRYPTO_VERIFICATION_FAILED;
-                } else {
-                    *verifyResult = CRYPTO_VERIFICATION_PASSED;
-                }
-            }
-        }
-    }
-    
+    ctrlReg = S32K312_Hsm_EccBuildCtrlReg(context, S32K312_HSM_ECC_CTRL_OP_VERIFY);
+
+    result = S32K312_Hsm_EccVerifyRunHw(context, ctrlReg, digest, signature, verifyResult);
+
     if (result == E_OK) {
         S32K312_Hsm_OperationCount++;
     }
-    
+
     S32K312_Hsm_State = S32K312_HSM_STATE_READY;
     return result;
 }

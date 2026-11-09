@@ -32,15 +32,17 @@ static uint32_t    bib_checksum(const Boot_InfoBlock *bib);
 
 /* ---- Main Entry ---- */
 
-void Boot_Loader_Main(void)
-{
-    Boot_Result ret;
+/* B5 拆分: 主流程只做阶段派发, 各阶段逻辑见下方 static 助手 */
 
-    /* Phase 0: App->Bootloader 握手检查 (一次性)
-     * App 在 EcuM_PerformReset 前写入握手块 (链接符号 __boot_handshake_start);
-     * 若请求 OEM/SYS Bootloader, 直接进入下载/恢复模式, 不启动 App。
-     * ECC 冷启动安全: POR 后 SRAM ECC 校验位未初始化, 直接读会触发
-     * 不可纠正 ECC 错误 (HardFault); 先按需整块写 0 再读。 */
+/**
+ * Phase 0: App->Bootloader 握手检查 (一次性)
+ * App 在 EcuM_PerformReset 前写入握手块 (链接符号 __boot_handshake_start);
+ * 若请求 OEM/SYS Bootloader, 直接进入下载/恢复模式, 不启动 App。
+ * ECC 冷启动安全: POR 后 SRAM ECC 校验位未初始化, 直接读会触发
+ * 不可纠正 ECC 错误 (HardFault); 先按需整块写 0 再读。
+ */
+static void boot_loader_check_handshake(void)
+{
     (void)Boot_Handshake_EccColdInit();
     Boot_HandshakeType hs_target = Boot_Handshake_GetTarget();
     if ((hs_target == BOOT_HANDSHAKE_OEM_BOOTLOADER) ||
@@ -48,52 +50,46 @@ void Boot_Loader_Main(void)
         Boot_Handshake_Clear();
         Boot_Loader_EnterRecovery();
     }
+}
 
-    /* Phase 1: Init hardware minimally */
-    (void)Boot_Flash_Init();
-
-    /* Phase 2: Load boot info block */
-    Boot_InfoBlock bib;
-    ret = load_bib(&bib);
+/**
+ * Phase 2: Load boot info block; first boot or corrupted BIB → init fresh
+ */
+static void boot_loader_load_or_init_bib(Boot_InfoBlock *bib)
+{
+    Boot_Result ret = load_bib(bib);
     if (ret != BOOT_OK) {
-        /* First boot or corrupted BIB → init fresh */
-        (void)memset(&bib, 0, sizeof(bib));
-        bib.magic               = 0x30424942U;  /* 'BIB0' */
-        bib.max_boot_attempts   = BOOT_MAX_BOOT_ATTEMPTS;
-        bib.status              = 0x01U;
-        bib.crc32               = bib_checksum(&bib);
-        (void)save_bib(&bib);
+        (void)memset(bib, 0, sizeof(*bib));
+        bib->magic               = 0x30424942U;  /* 'BIB0' */
+        bib->max_boot_attempts   = BOOT_MAX_BOOT_ATTEMPTS;
+        bib->status              = 0x01U;
+        bib->crc32               = bib_checksum(bib);
+        (void)save_bib(bib);
     }
+}
 
-    /* Phase 3: Resolve boot target */
-    Boot_Decision decision = Boot_Loader_ResolveBootTarget();
-
-    if (decision.last_error != BOOT_OK) {
-        /* Increment boot attempt counter */
-        bib.boot_count++;
-        if (bib.boot_count >= bib.max_boot_attempts) {
-            Boot_Loader_EnterRecovery();
-        }
-        bib.crc32 = bib_checksum(&bib);
-        (void)save_bib(&bib);
+/**
+ * Phase 3 失败路径: 递增启动尝试计数, 达上限直接进恢复模式, 否则保存后进恢复
+ */
+static void boot_loader_handle_decision_error(Boot_InfoBlock *bib)
+{
+    /* Increment boot attempt counter */
+    bib->boot_count++;
+    if (bib->boot_count >= bib->max_boot_attempts) {
         Boot_Loader_EnterRecovery();
     }
+    bib->crc32 = bib_checksum(bib);
+    (void)save_bib(bib);
+    Boot_Loader_EnterRecovery();
+}
 
-    /* Phase 4: Verify signature */
-    uint8_t hash[32];
-    Boot_ImageHeader hdr;
-    Boot_ImageTrailer trail;
-
-    ret = Boot_Flash_Read(decision.target_addr,
-                          (uint8_t *)&hdr, sizeof(hdr));
-    if (ret != BOOT_OK) goto fail;
-
-    ret = Boot_Image_ValidateHeader(&hdr);
-    if (ret != BOOT_OK) goto fail;
-
-    /* Hash the payload — read from flash into page buffer incrementally */
-    uint32_t payload_addr = decision.target_addr + sizeof(Boot_ImageHeader);
-    uint32_t remaining = hdr.payload_size;
+/**
+ * Phase 4: 读取 payload 并计算 SHA-256 摘要 (分页读入缓冲)
+ */
+static void boot_loader_hash_payload(uint32_t payload_addr, uint32_t payload_size,
+                                     uint8_t hash[32])
+{
+    uint32_t remaining = payload_size;
     uint32_t offset = 0U;
 
     /* Use incremental SHA-256 over the payload */
@@ -117,16 +113,28 @@ void Boot_Loader_Main(void)
         offset += chunk;
         remaining -= chunk;
     }
-    Boot_Verify_Hash(g_boot_page_buf, hdr.payload_size, hash);
+    Boot_Verify_Hash(g_boot_page_buf, payload_size, hash);
 #endif
+}
 
-    /* Read trailer */
-    ret = Boot_Image_ReadTrailer(payload_addr, hdr.payload_size, &trail);
-    if (ret != BOOT_OK) goto fail;
+/**
+ * Phase 4: 读 trailer, 按目标镜像选择公钥并验签
+ * @return BOOT_OK 表示签名有效
+ */
+static Boot_Result boot_loader_verify_signature(const Boot_Decision *decision,
+                                                uint32_t payload_addr,
+                                                const Boot_ImageHeader *hdr,
+                                                const uint8_t *hash)
+{
+    Boot_ImageTrailer trail;
+    Boot_Result ret = Boot_Image_ReadTrailer(payload_addr, hdr->payload_size, &trail);
+    if (ret != BOOT_OK) {
+        return ret;
+    }
 
     /* Try HSM first, fall back to software */
     const Boot_PubKey *pub_key;
-    if (decision.target == BOOT_IMAGE_SBL) {
+    if (decision->target == BOOT_IMAGE_SBL) {
         pub_key = &g_boot_pubkey_sbl;
     } else {
         pub_key = &g_boot_pubkey_app;
@@ -135,14 +143,75 @@ void Boot_Loader_Main(void)
     ret = Boot_Verify_Signature(hash, trail.signature, pub_key);
     if (ret != BOOT_OK) {
         /* Signature invalid → recovery */
-        goto fail;
+    }
+    return ret;
+}
+
+/**
+ * Phase 5: Mark successful boot in BIB
+ */
+static void boot_loader_mark_boot_success(Boot_InfoBlock *bib)
+{
+    bib->boot_count = 0U;
+    bib->status     = 0x01U;
+    bib->crc32      = bib_checksum(bib);
+    (void)save_bib(bib);
+}
+
+/**
+ * fail 路径: 递增启动尝试计数 (超限永久置故障态), 保存后进入恢复模式
+ */
+static void boot_loader_fail_recover(Boot_InfoBlock *bib)
+{
+    bib->boot_count++;
+    if (bib->boot_count >= bib->max_boot_attempts) {
+        bib->status = 0xFFU;  /* Enter recovery permanently */
+    }
+    bib->crc32 = bib_checksum(bib);
+    (void)save_bib(bib);
+    Boot_Loader_EnterRecovery();
+}
+
+void Boot_Loader_Main(void)
+{
+    Boot_Result ret;
+    Boot_InfoBlock bib;
+
+    boot_loader_check_handshake();
+
+    /* Phase 1: Init hardware minimally */
+    (void)Boot_Flash_Init();
+
+    /* Phase 2: Load boot info block */
+    boot_loader_load_or_init_bib(&bib);
+
+    /* Phase 3: Resolve boot target */
+    Boot_Decision decision = Boot_Loader_ResolveBootTarget();
+
+    if (decision.last_error != BOOT_OK) {
+        boot_loader_handle_decision_error(&bib);
     }
 
+    /* Phase 4: Verify signature */
+    Boot_ImageHeader hdr;
+    uint8_t hash[32];
+
+    ret = Boot_Flash_Read(decision.target_addr,
+                          (uint8_t *)&hdr, sizeof(hdr));
+    if (ret != BOOT_OK) goto fail;
+
+    ret = Boot_Image_ValidateHeader(&hdr);
+    if (ret != BOOT_OK) goto fail;
+
+    /* Hash the payload — read from flash into page buffer incrementally */
+    uint32_t payload_addr = decision.target_addr + sizeof(Boot_ImageHeader);
+    boot_loader_hash_payload(payload_addr, hdr.payload_size, hash);
+
+    ret = boot_loader_verify_signature(&decision, payload_addr, &hdr, hash);
+    if (ret != BOOT_OK) goto fail;
+
     /* Phase 5: Mark successful boot in BIB */
-    bib.boot_count = 0U;
-    bib.status     = 0x01U;
-    bib.crc32      = bib_checksum(&bib);
-    (void)save_bib(&bib);
+    boot_loader_mark_boot_success(&bib);
 
     /* Phase 6: Jump to application */
     Boot_Loader_Jump(decision.target_addr);
@@ -150,13 +219,7 @@ void Boot_Loader_Main(void)
 
 fail:
 /*     decision.last_error = ret; */
-    bib.boot_count++;
-    if (bib.boot_count >= bib.max_boot_attempts) {
-        bib.status = 0xFFU;  /* Enter recovery permanently */
-    }
-    bib.crc32 = bib_checksum(&bib);
-    (void)save_bib(&bib);
-    Boot_Loader_EnterRecovery();
+    boot_loader_fail_recover(&bib);
 }
 
 /* ---- Resolve Boot Target ---- */
