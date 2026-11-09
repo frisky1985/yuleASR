@@ -454,148 +454,185 @@ void IsoTp_DeInit(void)
  * Transmission State Machine
  ******************************************************************************/
 
-static void IsoTp_TxStateMachine(uint8_t channelId)
+/**
+ * @brief TX_READY 态: 首帧/单帧发送启动
+ */
+static void IsoTp_TxStartTransmission(
+    uint8_t channelId,
+    Isotp_ChannelContextType *ctx,
+    const Isotp_ChannelConfigType *config
+)
 {
-    Isotp_ChannelContextType *ctx = &g_channelContexts[channelId];
-    const Isotp_ChannelConfigType *config = &g_isotpContext.channelConfigs[channelId];
-    
+    uint8_t frame[ISOTP_CANFD_MAX_FRAME_SIZE];
+    uint8_t frameLen;
+    Isotp_ReturnType result;
+
+    if (IsoTp_IsMultiFrame(ctx->txLength, config->addressing.addrMode,
+                           (config->canFrameType == ISOTP_CAN_FD))) {
+        /* Multi-frame: Send First Frame */
+        result = IsoTp_BuildFirstFrame(
+            ctx->txLength,
+            ctx->txBuffer,
+            frame,
+            &frameLen,
+            config->addressing.addrMode,
+            (config->canFrameType == ISOTP_CAN_FD)
+        );
+
+        if (result == ISOTP_E_OK) {
+            result = IsoTp_SendCanFrame(channelId, config->addressing.txCanId, frame, frameLen);
+            if (result == ISOTP_E_OK) {
+                ctx->txSentLength = IsoTp_GetMaxSingleFramePayload(
+                    config->addressing.addrMode,
+                    (config->canFrameType == ISOTP_CAN_FD)
+                );
+                ctx->txSentLength = (ctx->txSentLength < ctx->txLength) ?
+                                    ctx->txSentLength : ctx->txLength;
+                ctx->txSeqNum = 1U;  /* First CF seq = 1 */
+                ctx->txBlockCount = 0U;
+                ctx->state = ISOTP_STATE_TX_WAIT_FC;
+                ctx->txWaitStartTime = IsoTp_GetCurrentTime();
+            }
+        }
+    } else {
+        /* Single frame transmission */
+        result = IsoTp_BuildSingleFrame(
+            ctx->txBuffer,
+            ctx->txLength,
+            frame,
+            &frameLen,
+            config->addressing.addrMode,
+            (config->canFrameType == ISOTP_CAN_FD)
+        );
+
+        if (result == ISOTP_E_OK) {
+            result = IsoTp_SendCanFrame(channelId, config->addressing.txCanId, frame, frameLen);
+            if (result == ISOTP_E_OK) {
+                ctx->txSentLength = ctx->txLength;
+                ctx->state = ISOTP_STATE_TX_DONE;
+            }
+        }
+    }
+}
+
+/**
+ * @brief TX_WAIT_FC 态: 流控超时监控
+ */
+static void IsoTp_TxWaitFlowControl(
+    uint8_t channelId,
+    Isotp_ChannelContextType *ctx,
+    const Isotp_ChannelConfigType *config
+)
+{
+    /* Check for Flow Control timeout */
+    if ((IsoTp_GetCurrentTime() - ctx->txWaitStartTime) > config->timing.nBs) {
+        ctx->state = ISOTP_STATE_TX_ERROR;
+        if (g_isotpContext.txConfirmationCallback != NULL) {
+            g_isotpContext.txConfirmationCallback(channelId, ISOTP_E_TIMEOUT, ctx->userData);
+        }
+    }
+}
+
+/**
+ * @brief TX_SEND_CF 态: 连续帧发送 / 块结束回等 FC / STmin 等待
+ */
+static void IsoTp_TxSendConsecutiveFrames(
+    uint8_t channelId,
+    Isotp_ChannelContextType *ctx,
+    const Isotp_ChannelConfigType *config
+)
+{
     uint8_t frame[ISOTP_CANFD_MAX_FRAME_SIZE];
     uint8_t frameLen;
     uint16_t remainingBytes;
     uint16_t bytesToSend;
     uint8_t maxPayload;
     Isotp_ReturnType result;
-    
-    switch (ctx->state) {
-        case ISOTP_STATE_TX_READY: {
-            /* Start transmission - send First Frame or Single Frame */
-            if (IsoTp_IsMultiFrame(ctx->txLength, config->addressing.addrMode, 
-                                   (config->canFrameType == ISOTP_CAN_FD))) {
-                /* Multi-frame: Send First Frame */
-                result = IsoTp_BuildFirstFrame(
-                    ctx->txLength,
-                    ctx->txBuffer,
-                    frame,
-                    &frameLen,
-                    config->addressing.addrMode,
-                    (config->canFrameType == ISOTP_CAN_FD)
-                );
-                
-                if (result == ISOTP_E_OK) {
-                    result = IsoTp_SendCanFrame(channelId, config->addressing.txCanId, frame, frameLen);
-                    if (result == ISOTP_E_OK) {
-                        ctx->txSentLength = IsoTp_GetMaxSingleFramePayload(
-                            config->addressing.addrMode, 
-                            (config->canFrameType == ISOTP_CAN_FD)
-                        );
-                        ctx->txSentLength = (ctx->txSentLength < ctx->txLength) ? 
-                                            ctx->txSentLength : ctx->txLength;
-                        ctx->txSeqNum = 1U;  /* First CF seq = 1 */
-                        ctx->txBlockCount = 0U;
-                        ctx->state = ISOTP_STATE_TX_WAIT_FC;
-                        ctx->txWaitStartTime = IsoTp_GetCurrentTime();
-                    }
-                }
+
+    /* Send Consecutive Frame(s) */
+    remainingBytes = ctx->txLength - ctx->txSentLength;
+    maxPayload = IsoTp_GetMaxSingleFramePayload(config->addressing.addrMode,
+                                                (config->canFrameType == ISOTP_CAN_FD));
+    bytesToSend = (remainingBytes < maxPayload) ? remainingBytes : maxPayload;
+
+    result = IsoTp_BuildConsecutiveFrame(
+        ctx->txSeqNum,
+        &ctx->txBuffer[ctx->txSentLength],
+        (uint8_t)bytesToSend,
+        frame,
+        &frameLen,
+        config->addressing.addrMode,
+        (config->canFrameType == ISOTP_CAN_FD)
+    );
+
+    if (result == ISOTP_E_OK) {
+        result = IsoTp_SendCanFrame(channelId, config->addressing.txCanId, frame, frameLen);
+        if (result == ISOTP_E_OK) {
+            ctx->txSentLength += bytesToSend;
+            ctx->txSeqNum = (ctx->txSeqNum + 1U) & 0x0FU;
+            ctx->txBlockCount++;
+
+            /* Check if transmission complete */
+            if (ctx->txSentLength >= ctx->txLength) {
+                ctx->state = ISOTP_STATE_TX_DONE;
+            } else if (ctx->txBlockSize > 0U && ctx->txBlockCount >= ctx->txBlockSize) {
+                /* Block complete, wait for next FC */
+                ctx->state = ISOTP_STATE_TX_WAIT_FC;
+                ctx->txWaitStartTime = IsoTp_GetCurrentTime();
             } else {
-                /* Single frame transmission */
-                result = IsoTp_BuildSingleFrame(
-                    ctx->txBuffer,
-                    ctx->txLength,
-                    frame,
-                    &frameLen,
-                    config->addressing.addrMode,
-                    (config->canFrameType == ISOTP_CAN_FD)
-                );
-                
-                if (result == ISOTP_E_OK) {
-                    result = IsoTp_SendCanFrame(channelId, config->addressing.txCanId, frame, frameLen);
-                    if (result == ISOTP_E_OK) {
-                        ctx->txSentLength = ctx->txLength;
-                        ctx->state = ISOTP_STATE_TX_DONE;
-                    }
-                }
+                /* Wait for STmin before next CF */
+                ctx->state = ISOTP_STATE_TX_WAIT_STMIN;
+                ctx->txWaitStartTime = IsoTp_GetCurrentTime();
             }
-            break;
         }
-        
-        case ISOTP_STATE_TX_WAIT_FC: {
+    }
+}
+
+static void IsoTp_TxStateMachine(uint8_t channelId)
+{
+    Isotp_ChannelContextType *ctx = &g_channelContexts[channelId];
+    const Isotp_ChannelConfigType *config = &g_isotpContext.channelConfigs[channelId];
+
+    switch (ctx->state) {
+        case ISOTP_STATE_TX_READY:
+            /* Start transmission - send First Frame or Single Frame */
+            IsoTp_TxStartTransmission(channelId, ctx, config);
+            break;
+
+        case ISOTP_STATE_TX_WAIT_FC:
             /* Check for Flow Control timeout */
-            if ((IsoTp_GetCurrentTime() - ctx->txWaitStartTime) > config->timing.nBs) {
-                ctx->state = ISOTP_STATE_TX_ERROR;
-                if (g_isotpContext.txConfirmationCallback != NULL) {
-                    g_isotpContext.txConfirmationCallback(channelId, ISOTP_E_TIMEOUT, ctx->userData);
-                }
-            }
+            IsoTp_TxWaitFlowControl(channelId, ctx, config);
             break;
-        }
-        
-        case ISOTP_STATE_TX_SEND_CF: {
+
+        case ISOTP_STATE_TX_SEND_CF:
             /* Send Consecutive Frame(s) */
-            remainingBytes = ctx->txLength - ctx->txSentLength;
-            maxPayload = IsoTp_GetMaxSingleFramePayload(config->addressing.addrMode, 
-                                                        (config->canFrameType == ISOTP_CAN_FD));
-            bytesToSend = (remainingBytes < maxPayload) ? remainingBytes : maxPayload;
-            
-            result = IsoTp_BuildConsecutiveFrame(
-                ctx->txSeqNum,
-                &ctx->txBuffer[ctx->txSentLength],
-                (uint8_t)bytesToSend,
-                frame,
-                &frameLen,
-                config->addressing.addrMode,
-                (config->canFrameType == ISOTP_CAN_FD)
-            );
-            
-            if (result == ISOTP_E_OK) {
-                result = IsoTp_SendCanFrame(channelId, config->addressing.txCanId, frame, frameLen);
-                if (result == ISOTP_E_OK) {
-                    ctx->txSentLength += bytesToSend;
-                    ctx->txSeqNum = (ctx->txSeqNum + 1U) & 0x0FU;
-                    ctx->txBlockCount++;
-                    
-                    /* Check if transmission complete */
-                    if (ctx->txSentLength >= ctx->txLength) {
-                        ctx->state = ISOTP_STATE_TX_DONE;
-                    } else if (ctx->txBlockSize > 0U && ctx->txBlockCount >= ctx->txBlockSize) {
-                        /* Block complete, wait for next FC */
-                        ctx->state = ISOTP_STATE_TX_WAIT_FC;
-                        ctx->txWaitStartTime = IsoTp_GetCurrentTime();
-                    } else {
-                        /* Wait for STmin before next CF */
-                        ctx->state = ISOTP_STATE_TX_WAIT_STMIN;
-                        ctx->txWaitStartTime = IsoTp_GetCurrentTime();
-                    }
-                }
-            }
+            IsoTp_TxSendConsecutiveFrames(channelId, ctx, config);
             break;
-        }
-        
+
         case ISOTP_STATE_TX_WAIT_STMIN: {
             /* Wait for STmin timeout */
             float stMinMs = IsoTp_StMinToMs(ctx->txStMin);
             uint32_t elapsed = IsoTp_GetCurrentTime() - ctx->txWaitStartTime;
-            
+
             if (elapsed >= (uint32_t)stMinMs) {
                 ctx->state = ISOTP_STATE_TX_SEND_CF;
             }
             break;
         }
-        
-        case ISOTP_STATE_TX_DONE: {
+
+        case ISOTP_STATE_TX_DONE:
             /* Transmission complete - notify callback */
             ctx->state = ISOTP_STATE_IDLE;
             if (g_isotpContext.txConfirmationCallback != NULL) {
                 g_isotpContext.txConfirmationCallback(channelId, ISOTP_E_OK, ctx->userData);
             }
             break;
-        }
-        
-        case ISOTP_STATE_TX_ERROR: {
+
+        case ISOTP_STATE_TX_ERROR:
             /* Error state - reset to idle */
             ctx->state = ISOTP_STATE_IDLE;
             break;
-        }
-        
+
         default:
             break;
     }
@@ -648,6 +685,220 @@ static void IsoTp_RxStateMachine(uint8_t channelId)
  * Frame Processing
  ******************************************************************************/
 
+/**
+ * @brief 解析接收帧的 N_PCI 与负载指针
+ */
+static Isotp_ReturnType IsoTp_ParseRxFrameHeader(
+    const uint8_t *canData,
+    uint8_t canDlc,
+    Isotp_NpciType *npci,
+    uint8_t addrMode,
+    const uint8_t **payload,
+    uint8_t *payloadLen
+)
+{
+    Isotp_ReturnType result = IsoTp_ParseNpci(canData, canDlc, npci, addrMode);
+    if (result != ISOTP_E_OK) {
+        return result;
+    }
+
+    return IsoTp_GetFramePayload(canData, canDlc, payload, payloadLen, npci, addrMode);
+}
+
+/**
+ * @brief SF 处理: 单帧完整消息直接入接收缓冲
+ */
+static Isotp_ReturnType IsoTp_ProcessRxSf(
+    Isotp_ChannelContextType *ctx,
+    const Isotp_NpciType *npci,
+    const uint8_t *payload,
+    const Isotp_ChannelConfigType *config
+)
+{
+    if (ctx->rxBuffer == NULL || config->rxBufferSize < npci->dataLength) {
+        return ISOTP_E_NO_BUFFER;
+    }
+
+    (void)memcpy(ctx->rxBuffer, payload, npci->dataLength);
+    ctx->rxReceivedLength = npci->dataLength;
+    ctx->rxLength = npci->dataLength;
+    ctx->state = ISOTP_STATE_RX_DONE;
+    return ISOTP_E_OK;
+}
+
+/**
+ * @brief FF 处理: 启动多帧接收并回复 FC (CTS / 溢出)
+ */
+static Isotp_ReturnType IsoTp_ProcessRxFf(
+    uint8_t channelId,
+    Isotp_ChannelContextType *ctx,
+    const Isotp_ChannelConfigType *config,
+    const Isotp_NpciType *npci,
+    const uint8_t *payload,
+    uint8_t payloadLen
+)
+{
+    uint8_t frame[ISOTP_CANFD_MAX_FRAME_SIZE];
+    uint8_t frameLen;
+
+    if (ctx->rxBuffer == NULL || config->rxBufferSize < npci->dataLength) {
+        /* Send overflow FC */
+        (void)IsoTp_BuildFlowControlFrame(
+            ISOTP_FS_OVFLW,
+            0U,
+            0U,
+            frame,
+            &frameLen,
+            config->addressing.addrMode
+        );
+        (void)IsoTp_SendCanFrame(channelId, config->addressing.rxCanId, frame, frameLen);
+        return ISOTP_E_BUFFER_OVERFLOW;
+    }
+
+    ctx->rxLength = npci->dataLength;
+    ctx->rxReceivedLength = payloadLen;
+    (void)memcpy(ctx->rxBuffer, payload, payloadLen);
+    ctx->rxSeqNum = 1U;  /* Expect seq 1 in first CF */
+    ctx->rxWftCounter = 0U;
+
+    /* Request buffer confirmation via callback */
+    uint8_t bs = ISOTP_DEFAULT_BS;
+    uint8_t stmin = ISOTP_DEFAULT_STMIN;
+
+    if (g_isotpContext.flowControlCallback != NULL) {
+        g_isotpContext.flowControlCallback(
+            channelId,
+            npci->dataLength,
+            &bs,
+            &stmin,
+            ctx->userData
+        );
+    }
+
+    ctx->rxBlockSize = bs;
+    ctx->rxStMin = stmin;
+
+    /* Send Flow Control (CTS) */
+    (void)IsoTp_BuildFlowControlFrame(
+        ISOTP_FS_CTS,
+        bs,
+        stmin,
+        frame,
+        &frameLen,
+        config->addressing.addrMode
+    );
+    (void)IsoTp_SendCanFrame(channelId, config->addressing.rxCanId, frame, frameLen);
+
+    ctx->state = ISOTP_STATE_RX_WAIT_CF;
+    ctx->rxWaitStartTime = IsoTp_GetCurrentTime();
+    ctx->rxBlockCount = 0U;
+    return ISOTP_E_OK;
+}
+
+/**
+ * @brief CF 处理: 连续帧拷贝 / 块结束 FC / 接收完成判定
+ */
+static Isotp_ReturnType IsoTp_ProcessRxCf(
+    uint8_t channelId,
+    Isotp_ChannelContextType *ctx,
+    const Isotp_ChannelConfigType *config,
+    const Isotp_NpciType *npci,
+    const uint8_t *payload,
+    uint8_t payloadLen
+)
+{
+    uint8_t frame[ISOTP_CANFD_MAX_FRAME_SIZE];
+    uint8_t frameLen;
+
+    if (ctx->state != ISOTP_STATE_RX_WAIT_CF) {
+        return ISOTP_E_UNEXPECTED_FRAME;
+    }
+
+    /* Check sequence number */
+    if (npci->seqNum != ctx->rxSeqNum) {
+        ctx->state = ISOTP_STATE_RX_ERROR;
+        return ISOTP_E_SEQUENCE_ERROR;
+    }
+
+    /* Copy data */
+    uint16_t remaining = ctx->rxLength - ctx->rxReceivedLength;
+    uint16_t bytesToCopy = (payloadLen < remaining) ? payloadLen : remaining;
+    (void)memcpy(&ctx->rxBuffer[ctx->rxReceivedLength], payload, bytesToCopy);
+    ctx->rxReceivedLength += bytesToCopy;
+    ctx->rxSeqNum = (ctx->rxSeqNum + 1U) & 0x0FU;
+    ctx->rxBlockCount++;
+
+    /* Check if complete */
+    if (ctx->rxReceivedLength >= ctx->rxLength) {
+        ctx->state = ISOTP_STATE_RX_DONE;
+    } else if (ctx->rxBlockSize > 0U && ctx->rxBlockCount >= ctx->rxBlockSize) {
+        /* Block complete, send CTS FC */
+        ctx->rxBlockCount = 0U;
+        (void)IsoTp_BuildFlowControlFrame(
+            ISOTP_FS_CTS,
+            ctx->rxBlockSize,
+            ctx->rxStMin,
+            frame,
+            &frameLen,
+            config->addressing.addrMode
+        );
+        (void)IsoTp_SendCanFrame(channelId, config->addressing.rxCanId, frame, frameLen);
+        ctx->rxWaitStartTime = IsoTp_GetCurrentTime();
+    } else {
+        ctx->rxWaitStartTime = IsoTp_GetCurrentTime();
+    }
+    return ISOTP_E_OK;
+}
+
+/**
+ * @brief FC 处理: 发送侧流控响应 (CTS 继续发送 / WT 等待 / OVFLW 放弃)
+ */
+static Isotp_ReturnType IsoTp_ProcessRxFc(
+    uint8_t channelId,
+    Isotp_ChannelContextType *ctx,
+    const Isotp_NpciType *npci
+)
+{
+    if (ctx->state != ISOTP_STATE_TX_WAIT_FC) {
+        return ISOTP_E_UNEXPECTED_FRAME;
+    }
+
+    switch (npci->flowStatus) {
+        case ISOTP_FS_CTS:
+            /* Continue to send */
+            ctx->txBlockSize = npci->blockSize;
+            ctx->txStMin = npci->stMin;
+            ctx->txBlockCount = 0U;
+            ctx->state = ISOTP_STATE_TX_SEND_CF;
+            break;
+
+        case ISOTP_FS_WT:
+            /* Wait - check WFT counter */
+            ctx->rxWftCounter++;
+            if (ctx->rxWftCounter > ISOTP_DEFAULT_WFT_MAX) {
+                ctx->state = ISOTP_STATE_TX_ERROR;
+                if (g_isotpContext.txConfirmationCallback != NULL) {
+                    g_isotpContext.txConfirmationCallback(channelId, ISOTP_E_WFT_OVRN, ctx->userData);
+                }
+            } else {
+                ctx->txWaitStartTime = IsoTp_GetCurrentTime();
+            }
+            break;
+
+        case ISOTP_FS_OVFLW:
+            /* Overflow - abort transmission */
+            ctx->state = ISOTP_STATE_TX_ERROR;
+            if (g_isotpContext.txConfirmationCallback != NULL) {
+                g_isotpContext.txConfirmationCallback(channelId, ISOTP_E_BUFFER_OVERFLOW, ctx->userData);
+            }
+            break;
+
+        default:
+            return ISOTP_E_INVALID_FRAME;
+    }
+    return ISOTP_E_OK;
+}
+
 Isotp_ReturnType IsoTp_ProcessRxFrame(
     uint8_t channelId,
     const uint8_t *canData,
@@ -657,188 +908,48 @@ Isotp_ReturnType IsoTp_ProcessRxFrame(
     if (!IsoTp_IsValidChannel(channelId) || canData == NULL || canDlc == 0U) {
         return ISOTP_E_INVALID_PARAMETER;
     }
-    
+
     Isotp_ChannelContextType *ctx = &g_channelContexts[channelId];
     const Isotp_ChannelConfigType *config = &g_isotpContext.channelConfigs[channelId];
     Isotp_NpciType npci;
     const uint8_t *payload;
     uint8_t payloadLen;
-    Isotp_ReturnType result;
-    uint8_t frame[ISOTP_CANFD_MAX_FRAME_SIZE];
-    uint8_t frameLen;
-    
-    /* Parse N_PCI */
-    result = IsoTp_ParseNpci(canData, canDlc, &npci, config->addressing.addrMode);
+
+    /* Parse N_PCI and payload pointer */
+    Isotp_ReturnType result = IsoTp_ParseRxFrameHeader(canData, canDlc, &npci,
+                                                       config->addressing.addrMode,
+                                                       &payload, &payloadLen);
     if (result != ISOTP_E_OK) {
         return result;
     }
-    
-    /* Get payload pointer */
-    result = IsoTp_GetFramePayload(canData, canDlc, &payload, &payloadLen, &npci, 
-                                   config->addressing.addrMode);
-    if (result != ISOTP_E_OK) {
-        return result;
-    }
-    
+
     switch (npci.pciType) {
-        case ISOTP_N_PCI_SF: {
+        case ISOTP_N_PCI_SF:
             /* Single Frame - complete message */
-            if (ctx->rxBuffer == NULL || config->rxBufferSize < npci.dataLength) {
-                return ISOTP_E_NO_BUFFER;
-            }
-            
-            (void)memcpy(ctx->rxBuffer, payload, npci.dataLength);
-            ctx->rxReceivedLength = npci.dataLength;
-            ctx->rxLength = npci.dataLength;
-            ctx->state = ISOTP_STATE_RX_DONE;
+            result = IsoTp_ProcessRxSf(ctx, &npci, payload, config);
             break;
-        }
-        
-        case ISOTP_N_PCI_FF: {
+
+        case ISOTP_N_PCI_FF:
             /* First Frame - start multi-frame reception */
-            if (ctx->rxBuffer == NULL || config->rxBufferSize < npci.dataLength) {
-                /* Send overflow FC */
-                (void)IsoTp_BuildFlowControlFrame(
-                    ISOTP_FS_OVFLW,
-                    0U,
-                    0U,
-                    frame,
-                    &frameLen,
-                    config->addressing.addrMode
-                );
-                (void)IsoTp_SendCanFrame(channelId, config->addressing.rxCanId, frame, frameLen);
-                return ISOTP_E_BUFFER_OVERFLOW;
-            }
-            
-            ctx->rxLength = npci.dataLength;
-            ctx->rxReceivedLength = payloadLen;
-            (void)memcpy(ctx->rxBuffer, payload, payloadLen);
-            ctx->rxSeqNum = 1U;  /* Expect seq 1 in first CF */
-            ctx->rxWftCounter = 0U;
-            
-            /* Request buffer confirmation via callback */
-            uint8_t bs = ISOTP_DEFAULT_BS;
-            uint8_t stmin = ISOTP_DEFAULT_STMIN;
-            
-            if (g_isotpContext.flowControlCallback != NULL) {
-                g_isotpContext.flowControlCallback(
-                    channelId,
-                    npci.dataLength,
-                    &bs,
-                    &stmin,
-                    ctx->userData
-                );
-            }
-            
-            ctx->rxBlockSize = bs;
-            ctx->rxStMin = stmin;
-            
-            /* Send Flow Control (CTS) */
-            (void)IsoTp_BuildFlowControlFrame(
-                ISOTP_FS_CTS,
-                bs,
-                stmin,
-                frame,
-                &frameLen,
-                config->addressing.addrMode
-            );
-            (void)IsoTp_SendCanFrame(channelId, config->addressing.rxCanId, frame, frameLen);
-            
-            ctx->state = ISOTP_STATE_RX_WAIT_CF;
-            ctx->rxWaitStartTime = IsoTp_GetCurrentTime();
-            ctx->rxBlockCount = 0U;
+            result = IsoTp_ProcessRxFf(channelId, ctx, config, &npci, payload, payloadLen);
             break;
-        }
-        
-        case ISOTP_N_PCI_CF: {
+
+        case ISOTP_N_PCI_CF:
             /* Consecutive Frame */
-            if (ctx->state != ISOTP_STATE_RX_WAIT_CF) {
-                return ISOTP_E_UNEXPECTED_FRAME;
-            }
-            
-            /* Check sequence number */
-            if (npci.seqNum != ctx->rxSeqNum) {
-                ctx->state = ISOTP_STATE_RX_ERROR;
-                return ISOTP_E_SEQUENCE_ERROR;
-            }
-            
-            /* Copy data */
-            uint16_t remaining = ctx->rxLength - ctx->rxReceivedLength;
-            uint16_t bytesToCopy = (payloadLen < remaining) ? payloadLen : remaining;
-            (void)memcpy(&ctx->rxBuffer[ctx->rxReceivedLength], payload, bytesToCopy);
-            ctx->rxReceivedLength += bytesToCopy;
-            ctx->rxSeqNum = (ctx->rxSeqNum + 1U) & 0x0FU;
-            ctx->rxBlockCount++;
-            
-            /* Check if complete */
-            if (ctx->rxReceivedLength >= ctx->rxLength) {
-                ctx->state = ISOTP_STATE_RX_DONE;
-            } else if (ctx->rxBlockSize > 0U && ctx->rxBlockCount >= ctx->rxBlockSize) {
-                /* Block complete, send CTS FC */
-                ctx->rxBlockCount = 0U;
-                (void)IsoTp_BuildFlowControlFrame(
-                    ISOTP_FS_CTS,
-                    ctx->rxBlockSize,
-                    ctx->rxStMin,
-                    frame,
-                    &frameLen,
-                    config->addressing.addrMode
-                );
-                (void)IsoTp_SendCanFrame(channelId, config->addressing.rxCanId, frame, frameLen);
-                ctx->rxWaitStartTime = IsoTp_GetCurrentTime();
-            } else {
-                ctx->rxWaitStartTime = IsoTp_GetCurrentTime();
-            }
+            result = IsoTp_ProcessRxCf(channelId, ctx, config, &npci, payload, payloadLen);
             break;
-        }
-        
-        case ISOTP_N_PCI_FC: {
+
+        case ISOTP_N_PCI_FC:
             /* Flow Control (for TX side) */
-            if (ctx->state != ISOTP_STATE_TX_WAIT_FC) {
-                return ISOTP_E_UNEXPECTED_FRAME;
-            }
-            
-            switch (npci.flowStatus) {
-                case ISOTP_FS_CTS:
-                    /* Continue to send */
-                    ctx->txBlockSize = npci.blockSize;
-                    ctx->txStMin = npci.stMin;
-                    ctx->txBlockCount = 0U;
-                    ctx->state = ISOTP_STATE_TX_SEND_CF;
-                    break;
-                    
-                case ISOTP_FS_WT:
-                    /* Wait - check WFT counter */
-                    ctx->rxWftCounter++;
-                    if (ctx->rxWftCounter > ISOTP_DEFAULT_WFT_MAX) {
-                        ctx->state = ISOTP_STATE_TX_ERROR;
-                        if (g_isotpContext.txConfirmationCallback != NULL) {
-                            g_isotpContext.txConfirmationCallback(channelId, ISOTP_E_WFT_OVRN, ctx->userData);
-                        }
-                    } else {
-                        ctx->txWaitStartTime = IsoTp_GetCurrentTime();
-                    }
-                    break;
-                    
-                case ISOTP_FS_OVFLW:
-                    /* Overflow - abort transmission */
-                    ctx->state = ISOTP_STATE_TX_ERROR;
-                    if (g_isotpContext.txConfirmationCallback != NULL) {
-                        g_isotpContext.txConfirmationCallback(channelId, ISOTP_E_BUFFER_OVERFLOW, ctx->userData);
-                    }
-                    break;
-                    
-                default:
-                    return ISOTP_E_INVALID_FRAME;
-            }
+            result = IsoTp_ProcessRxFc(channelId, ctx, &npci);
             break;
-        }
-        
+
         default:
-            return ISOTP_E_INVALID_FRAME;
+            result = ISOTP_E_INVALID_FRAME;
+            break;
     }
-    
-    return ISOTP_E_OK;
+
+    return result;
 }
 
 /******************************************************************************
