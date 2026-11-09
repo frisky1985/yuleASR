@@ -644,92 +644,140 @@ void Mqtt_UpdateState(Mqtt_InternalConnectionType* conn,
     }
 }
 
+/* Mqtt_ProcessStateMachine 状态处理助手 (等价重构): 各状态事件逻辑逐路径保留 */
+
+/**
+ * @brief CONNECTING 状态: 发送 CONNECT 报文 (等价重构助手)
+ */
+static Mqtt_ReturnType Mqtt_StateConnecting(Mqtt_InternalConnectionType* conn)
+{
+    Mqtt_ReturnType result;
+
+    /* 发送CONNECT报文 */
+    result = Mqtt_EncodeConnect(conn);
+    if (result == MQTT_OK) {
+        result = Mqtt_SendPacket(conn, conn->sendBuffer, conn->sendLength);
+        if (result == MQTT_OK) {
+            /* 等待CONNACK */
+        }
+    }
+    return result;
+}
+
+/**
+ * @brief CONNECTED 状态: 处理接收数据 (等价重构助手)
+ */
+static Mqtt_ReturnType Mqtt_StateConnected(Mqtt_InternalConnectionType* conn)
+{
+    /* 处理接收数据 */
+    Mqtt_ReturnType result = Mqtt_ReceivePacket(conn);
+
+    /* 检查保活 */
+    /* 保活逻辑通过 Mqtt_Ping API 由上层定时调用实现 */
+    return result;
+}
+
+/**
+ * @brief DISCONNECTING 状态: 关闭 TLS 与 TCP 连接 (等价重构助手)
+ */
+static void Mqtt_StateDisconnecting(Mqtt_InternalConnectionType* conn)
+{
+    /* 关闭TLS连接 */
+#if (MQTT_SUPPORT_TLS == STD_ON)
+    if (conn->useTls && (conn->tlsContext != NULL_PTR)) {
+        (void)Mqtt_Tls_Close(conn->tlsContext);
+        Mqtt_Tls_DestroyContext(conn->tlsContext);
+        conn->tlsContext = NULL_PTR;
+    }
+#endif
+    /* 关闭TCP连接 */
+    if (conn->socketId != TCPIP_SOCKETID_INVALID) {
+        TcpIp_SocketClose(conn->socketId);
+        conn->socketId = TCPIP_SOCKETID_INVALID;
+    }
+    Mqtt_UpdateState(conn, MQTT_STATE_DISCONNECTED);
+}
+
+/**
+ * @brief TCP_CONNECTING 状态: 检查 TCP 连接结果或超时 (等价重构助手)
+ */
+static void Mqtt_StateTcpConnecting(Mqtt_InternalConnectionType* conn)
+{
+    /* 检查TCP连接是否完成 */
+    if ((TcpIp_IsConnected(conn->socketId)) != 0U) {
+#if (MQTT_SUPPORT_TLS == STD_ON)
+        if ((conn->useTls) != 0U) {
+            /* 开始TLS握手 */
+            Mqtt_UpdateState(conn, MQTT_STATE_TLS_HANDSHAKING);
+        } else
+#endif
+        {
+            /* 直接发送MQTT CONNECT报文 */
+            Mqtt_UpdateState(conn, MQTT_STATE_MQTT_CONNECTING);
+        }
+    } else if ((Mqtt_CheckTimeout(conn, conn->config.connectTimeoutMs)) != 0U) {
+        Mqtt_UpdateState(conn, MQTT_STATE_DISCONNECTING);
+    }
+}
+
+#if (MQTT_SUPPORT_TLS == STD_ON)
+/**
+ * @brief TLS_HANDSHAKING 状态: 执行 TLS 握手或超时 (等价重构助手)
+ */
+static void Mqtt_StateTlsHandshaking(Mqtt_InternalConnectionType* conn)
+{
+    /* 执行TLS握手 */
+    {
+        Mqtt_ReturnType tlsResult;
+        tlsResult = Mqtt_Tls_PerformHandshake(conn->tlsContext,
+                                               conn->socketId,
+                                               NULL_PTR);
+        if (tlsResult == MQTT_OK) {
+            /* TLS握手成功，发送MQTT CONNECT报文 */
+            Mqtt_UpdateState(conn, MQTT_STATE_MQTT_CONNECTING);
+        } else if ((Mqtt_CheckTimeout(conn, MQTT_TLS_HANDSHAKE_TIMEOUT_MS)) != 0U) {
+            Mqtt_UpdateState(conn, MQTT_STATE_DISCONNECTING);
+        }
+    }
+}
+#endif
+
 Mqtt_ReturnType Mqtt_ProcessStateMachine(Mqtt_InternalConnectionType* conn)
 {
     Mqtt_ReturnType result = MQTT_OK;
-    
+
     switch (conn->state) {
         case MQTT_STATE_UNINIT:
         case MQTT_STATE_DISCONNECTED:
             /* 无需处理 */
             break;
-            
+
         case MQTT_STATE_CONNECTING:
-            /* 发送CONNECT报文 */
-            result = Mqtt_EncodeConnect(conn);
-            if (result == MQTT_OK) {
-                result = Mqtt_SendPacket(conn, conn->sendBuffer, conn->sendLength);
-                if (result == MQTT_OK) {
-                    /* 等待CONNACK */
-                }
-            }
+            result = Mqtt_StateConnecting(conn);
             break;
-            
+
         case MQTT_STATE_CONNECTED:
-            /* 处理接收数据 */
-            result = Mqtt_ReceivePacket(conn);
-            
-            /* 检查保活 */
-            /* 保活逻辑通过 Mqtt_Ping API 由上层定时调用实现 */
+            result = Mqtt_StateConnected(conn);
             break;
-            
+
         case MQTT_STATE_DISCONNECTING:
-            /* 关闭TLS连接 */
-#if (MQTT_SUPPORT_TLS == STD_ON)
-            if (conn->useTls && (conn->tlsContext != NULL_PTR)) {
-                (void)Mqtt_Tls_Close(conn->tlsContext);
-                Mqtt_Tls_DestroyContext(conn->tlsContext);
-                conn->tlsContext = NULL_PTR;
-            }
-#endif
-            /* 关闭TCP连接 */
-            if (conn->socketId != TCPIP_SOCKETID_INVALID) {
-                TcpIp_SocketClose(conn->socketId);
-                conn->socketId = TCPIP_SOCKETID_INVALID;
-            }
-            Mqtt_UpdateState(conn, MQTT_STATE_DISCONNECTED);
+            Mqtt_StateDisconnecting(conn);
             break;
-            
+
     case MQTT_STATE_TCP_CONNECTING:
-        /* 检查TCP连接是否完成 */
-        if ((TcpIp_IsConnected(conn->socketId)) != 0U) {
-#if (MQTT_SUPPORT_TLS == STD_ON)
-            if ((conn->useTls) != 0U) {
-                /* 开始TLS握手 */
-                Mqtt_UpdateState(conn, MQTT_STATE_TLS_HANDSHAKING);
-            } else
-#endif
-            {
-                /* 直接发送MQTT CONNECT报文 */
-                Mqtt_UpdateState(conn, MQTT_STATE_MQTT_CONNECTING);
-            }
-        } else if ((Mqtt_CheckTimeout(conn, conn->config.connectTimeoutMs)) != 0U) {
-            Mqtt_UpdateState(conn, MQTT_STATE_DISCONNECTING);
-        }
+        Mqtt_StateTcpConnecting(conn);
         break;
-        
+
 #if (MQTT_SUPPORT_TLS == STD_ON)
     case MQTT_STATE_TLS_HANDSHAKING:
-        /* 执行TLS握手 */
-        {
-            Mqtt_ReturnType tlsResult;
-            tlsResult = Mqtt_Tls_PerformHandshake(conn->tlsContext, 
-                                                   conn->socketId, 
-                                                   NULL_PTR);
-            if (tlsResult == MQTT_OK) {
-                /* TLS握手成功，发送MQTT CONNECT报文 */
-                Mqtt_UpdateState(conn, MQTT_STATE_MQTT_CONNECTING);
-            } else if ((Mqtt_CheckTimeout(conn, MQTT_TLS_HANDSHAKE_TIMEOUT_MS)) != 0U) {
-                Mqtt_UpdateState(conn, MQTT_STATE_DISCONNECTING);
-            }
-        }
+        Mqtt_StateTlsHandshaking(conn);
         break;
 #endif
-            
+
         default:
             break;
     }
-    
+
     return result;
 }
 
@@ -821,42 +869,48 @@ Mqtt_ReturnType Mqtt_ReceivePacket(Mqtt_InternalConnectionType* conn)
     }
 }
 
-/* 编码函数实现示例 - 完整实现需更多细节 */
-Mqtt_ReturnType Mqtt_EncodeConnect(Mqtt_InternalConnectionType* conn)
+/* Mqtt_EncodeConnect 编码阶段助手 (等价重构): 剩余长度计算与字段写入顺序逐条保留 */
+
+/**
+ * @brief 计算 CONNECT 报文剩余长度与连接标志 (等价重构助手)
+ */
+static void Mqtt_ComputeConnectFields(Mqtt_InternalConnectionType* conn,
+                                      uint16* remainingLength,
+                                      uint16* clientIdLen,
+                                      uint8* connectFlags)
 {
-    uint16 idx = 0;
-    uint16 remainingLength = 0;
-    uint16 clientIdLen;
-    uint8 connectFlags = 0;
-    
     /* 计算剩余长度 */
-    clientIdLen = strlen(conn->config.clientId);
-    remainingLength = 10; /* 固定头长度 */
-    remainingLength += 2U + clientIdLen; /* 客户端ID */
-    
+    *clientIdLen = strlen(conn->config.clientId);
+    *remainingLength = 10; /* 固定头长度 */
+    *remainingLength += 2U + *clientIdLen; /* 客户端ID */
+
     if (conn->config.username != NULL_PTR) {
-        connectFlags |= 0x80; /* 用户名标志 */
-        remainingLength += 2U + strlen(conn->config.username);
+        *connectFlags |= 0x80; /* 用户名标志 */
+        *remainingLength += 2U + strlen(conn->config.username);
     }
-    
+
     if (conn->config.password != NULL_PTR) {
-        connectFlags |= 0x40; /* 密码标志 */
-        remainingLength += 2U + strlen(conn->config.password);
+        *connectFlags |= 0x40; /* 密码标志 */
+        *remainingLength += 2U + strlen(conn->config.password);
     }
-    
+
     if (conn->config.cleanSession == MQTT_CLEAN_SESSION_TRUE) {
-        connectFlags |= 0x02; /* 清洁会话 */
+        *connectFlags |= 0x02; /* 清洁会话 */
     }
-    
-    /* 检查缓冲区空间 */
-    if ((remainingLength + 2U) > MQTT_SEND_BUFFER_SIZE) {
-        return MQTT_E_BUFFER_OVERFLOW;
-    }
-    
+}
+
+/**
+ * @brief 写入 CONNECT 固定头: 包类型/剩余长度编码/协议名/协议级别/连接标志/保活时间 (等价重构助手)
+ */
+static uint16 Mqtt_WriteConnectFixedHeader(Mqtt_InternalConnectionType* conn,
+                                           uint16 remainingLength,
+                                           uint8 connectFlags,
+                                           uint16 idx)
+{
     /* 包头 */
     conn->sendBuffer[idx] = MQTT_PACKET_TYPE_CONNECT;
     idx++;
-    
+
     /* 剩余长度编码 (支持多字节编码) */
     if (remainingLength < 128U) {
         conn->sendBuffer[idx] = remainingLength;
@@ -867,7 +921,7 @@ Mqtt_ReturnType Mqtt_EncodeConnect(Mqtt_InternalConnectionType* conn)
         conn->sendBuffer[idx] = remainingLength >> 7;
         idx++;
     }
-    
+
     /* 协议名 */
     conn->sendBuffer[idx] = 0x00;
     idx++;
@@ -881,21 +935,31 @@ Mqtt_ReturnType Mqtt_EncodeConnect(Mqtt_InternalConnectionType* conn)
     idx++;
     conn->sendBuffer[idx] = 'T';
     idx++;
-    
+
     /* 协议级别 */
     conn->sendBuffer[idx] = (conn->config.version == MQTT_VERSION_50) ? 5 : 4;
     idx++;
-    
+
     /* 连接标志 */
     conn->sendBuffer[idx] = connectFlags;
     idx++;
-    
+
     /* 保活时间 */
     conn->sendBuffer[idx] = (conn->config.keepAliveSeconds >> 8) & 0xFFU;
     idx++;
     conn->sendBuffer[idx] = conn->config.keepAliveSeconds & 0xFFU;
     idx++;
-    
+
+    return idx;
+}
+
+/**
+ * @brief 写入 CONNECT 客户端ID/用户名/密码字段 (等价重构助手)
+ */
+static uint16 Mqtt_WriteConnectIdentity(Mqtt_InternalConnectionType* conn,
+                                        uint16 idx,
+                                        uint16 clientIdLen)
+{
     /* 客户端ID */
     conn->sendBuffer[idx] = (clientIdLen >> 8) & 0xFFU;
     idx++;
@@ -903,7 +967,7 @@ Mqtt_ReturnType Mqtt_EncodeConnect(Mqtt_InternalConnectionType* conn)
     idx++;
     (void)memcpy(&conn->sendBuffer[idx], conn->config.clientId, clientIdLen);
     idx += clientIdLen;
-    
+
     /* 用户名 */
     if (conn->config.username != NULL_PTR) {
         uint16 usernameLen = strlen(conn->config.username);
@@ -914,7 +978,7 @@ Mqtt_ReturnType Mqtt_EncodeConnect(Mqtt_InternalConnectionType* conn)
         (void)memcpy(&conn->sendBuffer[idx], conn->config.username, usernameLen);
         idx += usernameLen;
     }
-    
+
     /* 密码 */
     if (conn->config.password != NULL_PTR) {
         uint16 passwordLen = strlen(conn->config.password);
@@ -925,9 +989,34 @@ Mqtt_ReturnType Mqtt_EncodeConnect(Mqtt_InternalConnectionType* conn)
         (void)memcpy(&conn->sendBuffer[idx], conn->config.password, passwordLen);
         idx += passwordLen;
     }
-    
+
+    return idx;
+}
+
+/* 编码函数实现示例 - 完整实现需更多细节 */
+Mqtt_ReturnType Mqtt_EncodeConnect(Mqtt_InternalConnectionType* conn)
+{
+    uint16 idx = 0;
+    uint16 remainingLength = 0;
+    uint16 clientIdLen = 0;
+    uint8 connectFlags = 0;
+
+    /* 计算剩余长度与连接标志 */
+    Mqtt_ComputeConnectFields(conn, &remainingLength, &clientIdLen, &connectFlags);
+
+    /* 检查缓冲区空间 */
+    if ((remainingLength + 2U) > MQTT_SEND_BUFFER_SIZE) {
+        return MQTT_E_BUFFER_OVERFLOW;
+    }
+
+    /* 包头 + 剩余长度 + 协议名/协议级别/连接标志/保活时间 */
+    idx = Mqtt_WriteConnectFixedHeader(conn, remainingLength, connectFlags, idx);
+
+    /* 客户端ID + 用户名 + 密码 */
+    idx = Mqtt_WriteConnectIdentity(conn, idx, clientIdLen);
+
     conn->sendLength = idx;
-    
+
     return MQTT_OK;
 }
 
