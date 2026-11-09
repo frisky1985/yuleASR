@@ -290,6 +290,125 @@ static void Icu_ProcessSignalMeasurement(Icu_ChannelType channel, uint16 current
 *                                    API IMPLEMENTATION
 ==================================================================================================*/
 
+/* Icu_Init 等价重构助手 */
+
+/**
+ * @brief Build eMIOS channel control register value from config (等价重构助手)
+ */
+static uint32 Icu_BuildChannelControlReg(const Icu_ChannelConfigType* chConfig)
+{
+    /* Configure channel based on measurement mode */
+    uint32 cReg = 0U;
+
+    /* Set prescaler */
+    if (chConfig->ClockPrescaler > 0U) {
+        cReg |= EMIOS_C_UCPREN;
+        cReg |= (((chConfig->ClockPrescaler - 1U) & 0x03U) << EMIOS_UCPRE_SHIFT);
+    }
+
+    /* Set input filter */
+    cReg |= (0x02U << EMIOS_IF_SHIFT);  /* Medium filter */
+
+    /* Set activation condition (edge) */
+    switch (chConfig->DefaultActivation) {
+        case ICU_RISING_EDGE:
+            cReg |= EMIOS_C_EDPOL;  /* Rising edge */
+            cReg &= ~EMIOS_C_EDSEL;
+            break;
+        case ICU_FALLING_EDGE:
+            cReg &= ~EMIOS_C_EDPOL;  /* Falling edge */
+            cReg &= ~EMIOS_C_EDSEL;
+            break;
+        case ICU_BOTH_EDGES:
+            cReg |= EMIOS_C_EDPOL;  /* Both edges */
+            cReg |= EMIOS_C_EDSEL;
+            break;
+        default:
+            cReg |= EMIOS_C_EDPOL;
+            break;
+    }
+
+    /* Set mode based on measurement type */
+    switch (chConfig->MeasurementMode) {
+        case ICU_MODE_SIGNAL_EDGE_DETECT:
+            cReg |= ((uint32)EMIOS_MODE_SAIC << EMIOS_MODE_SHIFT);
+            break;
+
+        case ICU_MODE_SIGNAL_MEASUREMENT:
+            if (chConfig->SignalMeasurementProperty == ICU_DUTY_CYCLE) {
+                cReg |= ((uint32)EMIOS_MODE_IPWM << EMIOS_MODE_SHIFT);
+            } else {
+                cReg |= ((uint32)EMIOS_MODE_IPM << EMIOS_MODE_SHIFT);
+            }
+            break;
+
+        case ICU_MODE_TIMESTAMP:
+            cReg |= ((uint32)EMIOS_MODE_SAIC << EMIOS_MODE_SHIFT);
+            break;
+
+        case ICU_MODE_EDGE_COUNTER:
+            cReg |= ((uint32)EMIOS_MODE_EMCB << EMIOS_MODE_SHIFT);
+            break;
+
+        default:
+            cReg |= ((uint32)EMIOS_MODE_GPIO_INPUT << EMIOS_MODE_SHIFT);
+            break;
+    }
+
+    return cReg;
+}
+
+/**
+ * @brief Initialize per-channel runtime data (等价重构助手)
+ */
+static void Icu_InitChannelRuntimeData(Icu_ChannelType channel, const Icu_ChannelConfigType* chConfig)
+{
+    /* Initialize runtime data */
+    Icu_ChannelInputState[channel] = ICU_IDLE;
+    Icu_ChannelActivation[channel] = chConfig->DefaultActivation;
+    Icu_ChannelNotificationEnabled[channel] = chConfig->NotificationEnabled;
+    Icu_ChannelRunning[channel] = FALSE;
+    Icu_ChannelWakeupEnabled[channel] = FALSE;
+    Icu_TimestampBuffer[channel] = NULL_PTR;
+    Icu_TimestampBufferSize[channel] = 0U;
+    Icu_TimestampIndex[channel] = 0U;
+    Icu_EdgeCount[channel] = 0U;
+    Icu_EdgeCountEnabled[channel] = FALSE;
+    Icu_SignalPeriodTime[channel] = 0U;
+    Icu_SignalActiveTime[channel] = 0U;
+    Icu_SignalLastCapture[channel] = 0U;
+    Icu_SignalMeasurementRunning[channel] = FALSE;
+}
+
+/**
+ * @brief Reset and configure a single eMIOS channel (等价重构助手)
+ */
+static void Icu_InitChannel(const Icu_ChannelConfigType* chConfig)
+{
+    Icu_ChannelType channel = chConfig->ChannelId;
+
+    if (channel >= ICU_NUM_CHANNELS) {
+        return;
+    }
+
+    uint32 emiosBase = Icu_GetEmiosBaseAddr(channel);
+    uint8 chNum = Icu_GetEmiosChannelNum(channel);
+    uint32 chAddr = Icu_GetChannelRegAddr(emiosBase, chNum);
+
+    /* Reset channel */
+    REG_WRITE32(chAddr + EMIOS_C_C, 0U);
+    REG_WRITE32(chAddr + EMIOS_C_S, EMIOS_S_FLAG);  /* Clear flag */
+    REG_WRITE32(chAddr + EMIOS_C_A, 0U);
+    REG_WRITE32(chAddr + EMIOS_C_B, 0U);
+
+    REG_WRITE32(chAddr + EMIOS_C_C, Icu_BuildChannelControlReg(chConfig));
+
+    Icu_InitChannelRuntimeData(channel, chConfig);
+
+    /* Clear any pending flag */
+    Icu_ClearChannelFlag(channel);
+}
+
 /** @req SWS_Icu_00001 */
 void Icu_Init(const Icu_ConfigType* ConfigPtr)
 {
@@ -305,110 +424,16 @@ void Icu_Init(const Icu_ConfigType* ConfigPtr)
     #endif
     
     Icu_ConfigPtr = ConfigPtr;
-    
+
     /* Initialize all configured channels */
     for (uint8 i = 0U; i < ConfigPtr->NumChannels; i++) {
-        const Icu_ChannelConfigType* chConfig = &ConfigPtr->Channels[i];
-        Icu_ChannelType channel = chConfig->ChannelId;
-        
-        if (channel >= ICU_NUM_CHANNELS) {
-            continue;
-        }
-        
-        uint32 emiosBase = Icu_GetEmiosBaseAddr(channel);
-        uint8 chNum = Icu_GetEmiosChannelNum(channel);
-        uint32 chAddr = Icu_GetChannelRegAddr(emiosBase, chNum);
-        
-        /* Reset channel */
-        REG_WRITE32(chAddr + EMIOS_C_C, 0U);
-        REG_WRITE32(chAddr + EMIOS_C_S, EMIOS_S_FLAG);  /* Clear flag */
-        REG_WRITE32(chAddr + EMIOS_C_A, 0U);
-        REG_WRITE32(chAddr + EMIOS_C_B, 0U);
-        
-        /* Configure channel based on measurement mode */
-        uint32 cReg = 0U;
-        
-        /* Set prescaler */
-        if (chConfig->ClockPrescaler > 0U) {
-            cReg |= EMIOS_C_UCPREN;
-            cReg |= (((chConfig->ClockPrescaler - 1U) & 0x03U) << EMIOS_UCPRE_SHIFT);
-        }
-        
-        /* Set input filter */
-        cReg |= (0x02U << EMIOS_IF_SHIFT);  /* Medium filter */
-        
-        /* Set activation condition (edge) */
-        switch (chConfig->DefaultActivation) {
-            case ICU_RISING_EDGE:
-                cReg |= EMIOS_C_EDPOL;  /* Rising edge */
-                cReg &= ~EMIOS_C_EDSEL;
-                break;
-            case ICU_FALLING_EDGE:
-                cReg &= ~EMIOS_C_EDPOL;  /* Falling edge */
-                cReg &= ~EMIOS_C_EDSEL;
-                break;
-            case ICU_BOTH_EDGES:
-                cReg |= EMIOS_C_EDPOL;  /* Both edges */
-                cReg |= EMIOS_C_EDSEL;
-                break;
-            default:
-                cReg |= EMIOS_C_EDPOL;
-                break;
-        }
-        
-        /* Set mode based on measurement type */
-        switch (chConfig->MeasurementMode) {
-            case ICU_MODE_SIGNAL_EDGE_DETECT:
-                cReg |= ((uint32)EMIOS_MODE_SAIC << EMIOS_MODE_SHIFT);
-                break;
-                
-            case ICU_MODE_SIGNAL_MEASUREMENT:
-                if (chConfig->SignalMeasurementProperty == ICU_DUTY_CYCLE) {
-                    cReg |= ((uint32)EMIOS_MODE_IPWM << EMIOS_MODE_SHIFT);
-                } else {
-                    cReg |= ((uint32)EMIOS_MODE_IPM << EMIOS_MODE_SHIFT);
-                }
-                break;
-                
-            case ICU_MODE_TIMESTAMP:
-                cReg |= ((uint32)EMIOS_MODE_SAIC << EMIOS_MODE_SHIFT);
-                break;
-                
-            case ICU_MODE_EDGE_COUNTER:
-                cReg |= ((uint32)EMIOS_MODE_EMCB << EMIOS_MODE_SHIFT);
-                break;
-                
-            default:
-                cReg |= ((uint32)EMIOS_MODE_GPIO_INPUT << EMIOS_MODE_SHIFT);
-                break;
-        }
-        
-        REG_WRITE32(chAddr + EMIOS_C_C, cReg);
-        
-        /* Initialize runtime data */
-        Icu_ChannelInputState[channel] = ICU_IDLE;
-        Icu_ChannelActivation[channel] = chConfig->DefaultActivation;
-        Icu_ChannelNotificationEnabled[channel] = chConfig->NotificationEnabled;
-        Icu_ChannelRunning[channel] = FALSE;
-        Icu_ChannelWakeupEnabled[channel] = FALSE;
-        Icu_TimestampBuffer[channel] = NULL_PTR;
-        Icu_TimestampBufferSize[channel] = 0U;
-        Icu_TimestampIndex[channel] = 0U;
-        Icu_EdgeCount[channel] = 0U;
-        Icu_EdgeCountEnabled[channel] = FALSE;
-        Icu_SignalPeriodTime[channel] = 0U;
-        Icu_SignalActiveTime[channel] = 0U;
-        Icu_SignalLastCapture[channel] = 0U;
-        Icu_SignalMeasurementRunning[channel] = FALSE;
-        
-        /* Clear any pending flag */
-        Icu_ClearChannelFlag(channel);
+        Icu_InitChannel(&ConfigPtr->Channels[i]);
     }
-    
+
     /* Enable eMIOS modules */
     REG_WRITE32(ICU_EMIOS_0_BASE_ADDR + EMIOS_MCR, 0x00000001U);  /* Global enable */
     REG_WRITE32(ICU_EMIOS_1_BASE_ADDR + EMIOS_MCR, 0x00000001U);
-    
+
     Icu_DriverMode = ConfigPtr->DefaultMode;
     Icu_DriverInitialized = TRUE;
 }

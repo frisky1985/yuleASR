@@ -51,23 +51,11 @@
 #include "MemMap.h"
 
  /**
-  * @brief   Initializes the DEM module
-  * @req SWS_Dem_00001
+  * @brief   Initializes all event states and time-based debounce state (等价重构助手)
   */
-void Dem_Init(const Dem_ConfigType* ConfigPtr)
+STATIC void Dem_InitAllEventStates(void)
 {
     uint8 i;
-
-#if (DEM_DEV_ERROR_DETECT == STD_ON)
-    if (ConfigPtr == NULL_PTR)
-    {
-        DEM_DET_REPORT_ERROR(DEM_SERVICE_ID_INIT, DEM_E_PARAM_POINTER);
-        return;
-    }
-#endif
-
-    /* Store configuration pointer */
-    Dem_InternalState.ConfigPtr = ConfigPtr;
 
     /* Initialize event states */
     for (i = 0U; i < DEM_NUM_EVENTS; i++)
@@ -83,12 +71,20 @@ void Dem_Init(const Dem_ConfigType* ConfigPtr)
         Dem_InternalState.EventStates[i].IsAged = FALSE;
         Dem_InternalState.EventStates[i].LastReportTimestamp = 0U;
         Dem_InternalState.EventStates[i].TimeInCurrentStatus = 0U;
-        
+
         /* Initialize time-based debounce state */
         Dem_InternalState.TimeDebounceStates[i].State = DEM_TIME_DEBOUNCE_IDLE;
         Dem_InternalState.TimeDebounceStates[i].ElapsedTimeMs = 0U;
         Dem_InternalState.TimeDebounceStates[i].ThresholdReached = FALSE;
     }
+}
+
+ /**
+  * @brief   Initializes DTC entries from configuration (等价重构助手)
+  */
+STATIC void Dem_InitDtcEntries(const Dem_ConfigType* ConfigPtr)
+{
+    uint8 i;
 
     /* Initialize DTC entries */
     for (i = 0U; i < DEM_NUM_DTCS; i++)
@@ -103,7 +99,7 @@ void Dem_Init(const Dem_ConfigType* ConfigPtr)
             Dem_InternalState.DTCEntries[i].DTC = 0U;
             Dem_InternalState.DTCEntries[i].AgingThreshold = DEM_AGING_CYCLE_THRESHOLD;
         }
-        
+
         Dem_InternalState.DTCEntries[i].Status = DEM_DTC_STATUS_TEST_NOT_COMPLETED_SINCE_LAST_CLEAR |
             DEM_DTC_STATUS_TEST_NOT_COMPLETED_THIS_OPERATION_CYCLE;
         Dem_InternalState.DTCEntries[i].OccurrenceCounter = 0U;
@@ -114,6 +110,14 @@ void Dem_Init(const Dem_ConfigType* ConfigPtr)
         Dem_InternalState.DTCEntries[i].NvMBlockId = 0xFFFFU;
         Dem_InternalState.DTCEntries[i].IsNvMDataValid = FALSE;
     }
+}
+
+ /**
+  * @brief   Initializes operation cycle, enable and storage conditions (等价重构助手)
+  */
+STATIC void Dem_InitOperatingConditions(void)
+{
+    uint8 i;
 
     /* Initialize operation cycle states */
     for (i = 0U; i < DEM_NUM_OPERATION_CYCLES; i++)
@@ -132,11 +136,14 @@ void Dem_Init(const Dem_ConfigType* ConfigPtr)
     {
         Dem_InternalState.StorageConditions[i] = TRUE;
     }
+}
 
-    /* Initialize selected DTC */
-    Dem_InternalState.SelectedDTC = 0U;
-    Dem_InternalState.DTCRecordUpdateDisabled = FALSE;
-    Dem_InternalState.DTCSettingDisabled = FALSE;
+ /**
+  * @brief   Initializes freeze frames and extended data records (等价重构助手)
+  */
+STATIC void Dem_InitStorageRecords(void)
+{
+    uint8 i;
 
     /* Initialize freeze frames */
     for (i = 0U; i < DEM_NUM_FREEZE_FRAME_RECORDS; i++)
@@ -154,6 +161,35 @@ void Dem_Init(const Dem_ConfigType* ConfigPtr)
         Dem_InternalState.ExtendedDataRecords[i].Length = 0U;
         Dem_InternalState.ExtendedDataRecords[i].DtcIndex = 0xFFFFU;
     }
+}
+
+ /**
+  * @brief   Initializes the DEM module
+  * @req SWS_Dem_00001
+  */
+void Dem_Init(const Dem_ConfigType* ConfigPtr)
+{
+#if (DEM_DEV_ERROR_DETECT == STD_ON)
+    if (ConfigPtr == NULL_PTR)
+    {
+        DEM_DET_REPORT_ERROR(DEM_SERVICE_ID_INIT, DEM_E_PARAM_POINTER);
+        return;
+    }
+#endif
+
+    /* Store configuration pointer */
+    Dem_InternalState.ConfigPtr = ConfigPtr;
+
+    Dem_InitAllEventStates();
+    Dem_InitDtcEntries(ConfigPtr);
+    Dem_InitOperatingConditions();
+
+    /* Initialize selected DTC */
+    Dem_InternalState.SelectedDTC = 0U;
+    Dem_InternalState.DTCRecordUpdateDisabled = FALSE;
+    Dem_InternalState.DTCSettingDisabled = FALSE;
+
+    Dem_InitStorageRecords();
 
     /* Initialize filter state */
     Dem_InternalState.DTCFilterStatusMask = 0xFFU;

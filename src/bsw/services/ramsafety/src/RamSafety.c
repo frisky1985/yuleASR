@@ -156,6 +156,15 @@ STATIC Std_ReturnType RamSafety_RunDataLineTest(
 );
 STATIC void RamSafety_UpdateStats(boolean passed, RamSafety_TestType testType);
 STATIC void RamSafety_HandleError(RamSafety_TestType testType, uint32 addr, uint8 expected, uint8 actual);
+/* RamSafety_RunStartupTest 等价重构助手 */
+STATIC void RamSafety_CheckStartupEcc(const RamSafety_RegionType* region, Std_ReturnType* result);
+STATIC void RamSafety_RunStartupRegion(
+    const RamSafety_RegionType* region,
+    RamSafety_ProgressCallbackType progressCb,
+    uint8 totalRegions,
+    uint8* testedRegions,
+    Std_ReturnType* result
+);
 
 /*==================================================================================================
 *                                       函数实现
@@ -272,6 +281,80 @@ RamSafety_StateType RamSafety_GetState(void)
     return RamSafety_State;
 }
 
+/* RamSafety_RunStartupTest 等价重构助手 */
+
+/**
+ * @brief 检查硬件ECC (如果使能) (等价重构助手)
+ */
+STATIC void RamSafety_CheckStartupEcc(const RamSafety_RegionType* region, Std_ReturnType* result)
+{
+    /* 检查硬件ECC (如果使能) */
+    if (region->eccEnabled && RamSafety_CurrentConfig->useHardwareEcc)
+    {
+        boolean hasError = FALSE;
+        uint32 errorCount = 0U;
+
+        if (E_OK == Platform_RamSafety_CheckEccStatus(region->startAddress, &hasError, &errorCount))
+        {
+            if ((hasError) != 0U)
+            {
+                *result = E_NOT_OK;
+                RamSafety_HandleError(RAMSAFETY_TEST_FULL, region->startAddress, 0U, 0U);
+            }
+        }
+    }
+}
+
+/**
+ * @brief 对单个配置为启动检查的区域执行全部测试并更新进度/统计 (等价重构助手)
+ */
+STATIC void RamSafety_RunStartupRegion(
+    const RamSafety_RegionType* region,
+    RamSafety_ProgressCallbackType progressCb,
+    uint8 totalRegions,
+    uint8* testedRegions,
+    Std_ReturnType* result
+)
+{
+    if ((region->startupTest) != 0U)
+    {
+        /* 通知进度 */
+        if (NULL_PTR != progressCb)
+        {
+            uint8 percent = (uint8)(((*testedRegions) * 100U) / totalRegions);
+            progressCb(percent, region);
+        }
+
+        /* 运行March C- 检查 */
+        if (E_OK != RamSafety_RunMarchC(region, NULL_PTR))
+        {
+            *result = E_NOT_OK;
+            RamSafety_HandleError(RAMSAFETY_TEST_MARCH_C, region->startAddress, 0U, 0U);
+        }
+
+        /* 运行行走模式检查 */
+        if (E_OK != RamSafety_RunWalkPattern(region, NULL_PTR))
+        {
+            *result = E_NOT_OK;
+            RamSafety_HandleError(RAMSAFETY_TEST_WALK_PATTERN, region->startAddress, 0U, 0U);
+        }
+
+        RamSafety_CheckStartupEcc(region, result);
+
+        (*testedRegions)++;
+
+        /* 更新统计 */
+        if (E_OK == *result)
+        {
+            RamSafety_UpdateStats(TRUE, RAMSAFETY_TEST_FULL);
+        }
+        else
+        {
+            RamSafety_UpdateStats(FALSE, RAMSAFETY_TEST_FULL);
+        }
+    }
+}
+
 /**
  * @brief 运行启动时完整检查
  * @ASIL-D: Startup test with full coverage
@@ -308,57 +391,7 @@ Std_ReturnType RamSafety_RunStartupTest(RamSafety_ProgressCallbackType progressC
     {
         const RamSafety_RegionType* region = &RamSafety_CurrentConfig->regions[i];
 
-        if ((region->startupTest) != 0U)
-        {
-            /* 通知进度 */
-            if (NULL_PTR != progressCb)
-            {
-                uint8 percent = (uint8)((testedRegions * 100U) / totalRegions);
-                progressCb(percent, region);
-            }
-
-            /* 运行March C- 检查 */
-            if (E_OK != RamSafety_RunMarchC(region, NULL_PTR))
-            {
-                result = E_NOT_OK;
-                RamSafety_HandleError(RAMSAFETY_TEST_MARCH_C, region->startAddress, 0U, 0U);
-            }
-
-            /* 运行行走模式检查 */
-            if (E_OK != RamSafety_RunWalkPattern(region, NULL_PTR))
-            {
-                result = E_NOT_OK;
-                RamSafety_HandleError(RAMSAFETY_TEST_WALK_PATTERN, region->startAddress, 0U, 0U);
-            }
-
-            /* 检查硬件ECC (如果使能) */
-            if (region->eccEnabled && RamSafety_CurrentConfig->useHardwareEcc)
-            {
-                boolean hasError = FALSE;
-                uint32 errorCount = 0U;
-
-                if (E_OK == Platform_RamSafety_CheckEccStatus(region->startAddress, &hasError, &errorCount))
-                {
-                    if ((hasError) != 0U)
-                    {
-                        result = E_NOT_OK;
-                        RamSafety_HandleError(RAMSAFETY_TEST_FULL, region->startAddress, 0U, 0U);
-                    }
-                }
-            }
-
-            testedRegions++;
-
-            /* 更新统计 */
-            if (E_OK == result)
-            {
-                RamSafety_UpdateStats(TRUE, RAMSAFETY_TEST_FULL);
-            }
-            else
-            {
-                RamSafety_UpdateStats(FALSE, RAMSAFETY_TEST_FULL);
-            }
-        }
+        RamSafety_RunStartupRegion(region, progressCb, totalRegions, &testedRegions, &result);
     }
 
     /* 最终进度 */

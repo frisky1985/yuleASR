@@ -176,12 +176,88 @@ STATIC Std_ReturnType WdgM_FindEntityIndex(uint16 seId, uint8* index);
 STATIC void WdgM_PlatformTrigger(void);
 STATIC void WdgM_PlatformSetMode(uint8 mode);
 STATIC void WdgM_PerformSafetyAction(uint32 errorCode);
+/* WdgM_Init 等价重构助手 */
+STATIC void WdgM_ResetSupervisedEntities(void);
+STATIC void WdgM_ConfigureActiveEntities(const WdgM_ConfigType* config);
 
 /*==================================================================================================
 *                                       函数实现
 ==================================================================================================*/
 #define WDGM_START_SEC_CODE
 #include "WdgM_MemMap.h"
+
+/* WdgM_Init 等价重构助手 */
+
+/**
+ * @brief 复位所有监督实体运行时状态 (等价重构助手)
+ */
+STATIC void WdgM_ResetSupervisedEntities(void)
+{
+    uint8 i;
+
+    /* 初始化监督实体 */
+    for (i = 0U; i < WDGM_CFG_MAX_SUPERVISED_ENTITIES; i++)
+    {
+        WdgM_SupervisedEntities[i].seId = 0U;
+        WdgM_SupervisedEntities[i].state = WDGM_SE_STATE_DEACTIVATED;
+        WdgM_SupervisedEntities[i].aliveCounter = 0U;
+        WdgM_SupervisedEntities[i].expectedAliveIndications = 0U;
+        WdgM_SupervisedEntities[i].aliveSupMaxIndications = 0U;
+        WdgM_SupervisedEntities[i].aliveSupRefCycle = 1U;
+        WdgM_SupervisedEntities[i].aliveCycleCounter = 0U;
+        WdgM_SupervisedEntities[i].timestampStart = 0U;
+        WdgM_SupervisedEntities[i].timestampStop = 0U;
+        WdgM_SupervisedEntities[i].consecutiveErrors = 0U;
+        WdgM_SupervisedEntities[i].deactivated = TRUE;
+    }
+}
+
+/**
+ * @brief 按配置填充激活的监督实体 (等价重构助手)
+ */
+STATIC void WdgM_ConfigureActiveEntities(const WdgM_ConfigType* config)
+{
+    uint8 i;
+
+    /* 配置激活的监督实体 */
+    if (config->entities != NULL_PTR)
+    {
+        for (i = 0U; i < config->numEntities; i++)
+        {
+            if (i < WDGM_CFG_MAX_SUPERVISED_ENTITIES)
+            {
+                WdgM_SupervisedEntities[i].seId = config->entities[i].seId;
+                WdgM_SupervisedEntities[i].deactivated = !config->entities[i].enabled;
+
+                /* 填充活监督配置: 期望活指示数 / 最大活指示数 / 参考周期数
+                 * (修复: 之前 expectedAliveIndications 恒为 0, 导致 alive
+                 *  supervision expiry 永远不会触发) */
+                WdgM_SupervisedEntities[i].expectedAliveIndications =
+                    config->entities[i].config.alive.aliveSupMin;
+                WdgM_SupervisedEntities[i].aliveSupMaxIndications =
+                    config->entities[i].config.alive.aliveSupMax;
+
+                /* 参考周期数至少为 1, 防止配置为 0 时异常评估 */
+                if (config->entities[i].config.alive.aliveSupRefCycle == 0U)
+                {
+                    WdgM_SupervisedEntities[i].aliveSupRefCycle = 1U;
+                }
+                else
+                {
+                    WdgM_SupervisedEntities[i].aliveSupRefCycle =
+                        config->entities[i].config.alive.aliveSupRefCycle;
+                }
+                WdgM_SupervisedEntities[i].aliveCycleCounter = 0U;
+
+                if ((config->entities[i].enabled) != 0U)
+                {
+                    WdgM_SupervisedEntities[i].state = WDGM_SE_STATE_CORRECT;
+                    WdgM_SupervisedEntities[i].deactivated = FALSE;
+                }
+            }
+        }
+    }
+}
 
 /**
  * @brief 初始化WdgM模块
@@ -191,8 +267,7 @@ STATIC void WdgM_PerformSafetyAction(uint32 errorCode);
 Std_ReturnType WdgM_Init(const WdgM_ConfigType* config)
 {
     Std_ReturnType result = E_NOT_OK;
-    uint8 i;
-    
+
     /* 参数验证 */
 #if (WDGM_CFG_DEV_ERROR_DETECT == STD_ON)
     if (NULL_PTR == config)
@@ -222,62 +297,10 @@ Std_ReturnType WdgM_Init(const WdgM_ConfigType* config)
     WdgM_State = WDGM_STATE_INIT;
     WdgM_CurrentConfig = config;
     WdgM_CurrentMode = WDGM_WATCHDOG_MODE_OFF;
-    
-    /* 初始化监督实体 */
-    for (i = 0U; i < WDGM_CFG_MAX_SUPERVISED_ENTITIES; i++)
-    {
-        WdgM_SupervisedEntities[i].seId = 0U;
-        WdgM_SupervisedEntities[i].state = WDGM_SE_STATE_DEACTIVATED;
-        WdgM_SupervisedEntities[i].aliveCounter = 0U;
-        WdgM_SupervisedEntities[i].expectedAliveIndications = 0U;
-        WdgM_SupervisedEntities[i].aliveSupMaxIndications = 0U;
-        WdgM_SupervisedEntities[i].aliveSupRefCycle = 1U;
-        WdgM_SupervisedEntities[i].aliveCycleCounter = 0U;
-        WdgM_SupervisedEntities[i].timestampStart = 0U;
-        WdgM_SupervisedEntities[i].timestampStop = 0U;
-        WdgM_SupervisedEntities[i].consecutiveErrors = 0U;
-        WdgM_SupervisedEntities[i].deactivated = TRUE;
-    }
-    
-    /* 配置激活的监督实体 */
-    if (config->entities != NULL_PTR)
-    {
-        for (i = 0U; i < config->numEntities; i++)
-        {
-            if (i < WDGM_CFG_MAX_SUPERVISED_ENTITIES)
-            {
-                WdgM_SupervisedEntities[i].seId = config->entities[i].seId;
-                WdgM_SupervisedEntities[i].deactivated = !config->entities[i].enabled;
-                
-                /* 填充活监督配置: 期望活指示数 / 最大活指示数 / 参考周期数
-                 * (修复: 之前 expectedAliveIndications 恒为 0, 导致 alive
-                 *  supervision expiry 永远不会触发) */
-                WdgM_SupervisedEntities[i].expectedAliveIndications =
-                    config->entities[i].config.alive.aliveSupMin;
-                WdgM_SupervisedEntities[i].aliveSupMaxIndications =
-                    config->entities[i].config.alive.aliveSupMax;
-                
-                /* 参考周期数至少为 1, 防止配置为 0 时异常评估 */
-                if (config->entities[i].config.alive.aliveSupRefCycle == 0U)
-                {
-                    WdgM_SupervisedEntities[i].aliveSupRefCycle = 1U;
-                }
-                else
-                {
-                    WdgM_SupervisedEntities[i].aliveSupRefCycle =
-                        config->entities[i].config.alive.aliveSupRefCycle;
-                }
-                WdgM_SupervisedEntities[i].aliveCycleCounter = 0U;
-                
-                if ((config->entities[i].enabled) != 0U)
-                {
-                    WdgM_SupervisedEntities[i].state = WDGM_SE_STATE_CORRECT;
-                    WdgM_SupervisedEntities[i].deactivated = FALSE;
-                }
-            }
-        }
-    }
-    
+
+    WdgM_ResetSupervisedEntities();
+    WdgM_ConfigureActiveEntities(config);
+
     /* 初始化全局状态 */
     WdgM_GlobalStatus.expiredSupervisionCycles = 0U;
     WdgM_GlobalStatus.totalRefreshes = 0U;
