@@ -82,7 +82,7 @@
 
 | 任务 | 命令级验收门禁 | 优先级 |
 |:-----|:---------------|:-------|
-| L2-1 MISRA required 清零 | `misra.gate.required=0` (当前 58) | P0 |
+| L2-1 MISRA required 清零 | `misra.gate.required=0` (当前 58)；**2026-11-09：compile_commands 权威口径下 src/ 生产 17.7 = 0、10.4 = 0（整改前 633 / 165 个唯一位置）**；yuleOSH 门禁因 include 路径不全对这两条呈 false-negative，58 为其余规则/口径差 | P0 |
 | L2-2 通配偏差逐条复核 | `wildcard_deviations` 从 pending 转为逐条批准 | P1 |
 | L2-3 MISRA total ratchet | total ≤ 1547 (只降不升) | P0 |
 
