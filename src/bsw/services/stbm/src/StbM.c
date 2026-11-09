@@ -49,7 +49,7 @@
 ==================================================================================================*/
 #if (STBM_DEV_ERROR_DETECT == STD_ON)
     #define STBM_DET_REPORT_ERROR(ApiId, ErrorId) \
-        Det_ReportError(STBM_MODULE_ID, STBM_INSTANCE_ID, (ApiId), (ErrorId))
+        (void)Det_ReportError(STBM_MODULE_ID, STBM_INSTANCE_ID, (ApiId), (ErrorId))
 #else
     #define STBM_DET_REPORT_ERROR(ApiId, ErrorId)
 #endif

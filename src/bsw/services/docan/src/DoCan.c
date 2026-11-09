@@ -42,7 +42,7 @@ extern Std_ReturnType CanTp_Transmit(PduIdType CanTpTxSduId, const PduInfoType* 
 ==================================================================================================*/
 #if (DOCAN_DEV_ERROR_DETECT == STD_ON)
     #define DOCAN_DET_REPORT_ERROR(ApiId, ErrorId) \
-        Det_ReportError(DOCAN_MODULE_ID, DOCAN_INSTANCE_ID, (ApiId), (ErrorId))
+        (void)Det_ReportError(DOCAN_MODULE_ID, DOCAN_INSTANCE_ID, (ApiId), (ErrorId))
 #else
     #define DOCAN_DET_REPORT_ERROR(ApiId, ErrorId)
 #endif

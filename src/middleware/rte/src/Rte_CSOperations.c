@@ -47,7 +47,7 @@
 ==================================================================================================*/
 #if (RTE_DEV_ERROR_DETECT == STD_ON)
     #define RTE_CSOPS_DET_REPORT_ERROR(ApiId, ErrorId) \
-        Det_ReportError(RTE_MODULE_ID, RTE_CSOPS_INSTANCE_ID, (ApiId), (ErrorId))
+        (void)Det_ReportError(RTE_MODULE_ID, RTE_CSOPS_INSTANCE_ID, (ApiId), (ErrorId))
 #else
     #define RTE_CSOPS_DET_REPORT_ERROR(ApiId, ErrorId)
 #endif

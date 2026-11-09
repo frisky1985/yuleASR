@@ -422,7 +422,7 @@ Mqtt_ReturnType Mqtt_Tls_PerformHandshake(
         
         /* 保存会话(如果启用) */
         if (ctx->config.enableSessionResumption) {
-            mbedtls_ssl_get_session(&ctx->ssl, &ctx->savedSession);
+            (void)mbedtls_ssl_get_session(&ctx->ssl, &ctx->savedSession);
         }
         
         if (callback != NULL_PTR) {
@@ -533,7 +533,7 @@ Mqtt_ReturnType Mqtt_Tls_Close(Mqtt_TlsContextType context)
     }
     
     /* 发送close_notify */
-    mbedtls_ssl_close_notify(&ctx->ssl);
+    (void)mbedtls_ssl_close_notify(&ctx->ssl);
     
     ctx->handshakeComplete = FALSE;
     

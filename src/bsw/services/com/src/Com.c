@@ -45,7 +45,7 @@
 ==================================================================================================*/
 #if (COM_DEV_ERROR_DETECT == STD_ON)
     #define COM_DET_REPORT_ERROR(ApiId, ErrorId) \
-        Det_ReportError(COM_MODULE_ID, COM_INSTANCE_ID, (ApiId), (ErrorId))
+        (void)Det_ReportError(COM_MODULE_ID, COM_INSTANCE_ID, (ApiId), (ErrorId))
 #else
     #define COM_DET_REPORT_ERROR(ApiId, ErrorId)
 #endif

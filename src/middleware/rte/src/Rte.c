@@ -40,7 +40,7 @@ extern void Rte_SwcPortApi_ConnectAllPorts(void);
 ==================================================================================================*/
 #if (RTE_DEV_ERROR_DETECT == STD_ON)
     #define RTE_DET_REPORT_ERROR(ApiId, ErrorId) \
-        Det_ReportError(RTE_MODULE_ID, RTE_INSTANCE_ID, (ApiId), (ErrorId))
+        (void)Det_ReportError(RTE_MODULE_ID, RTE_INSTANCE_ID, (ApiId), (ErrorId))
 #else
     #define RTE_DET_REPORT_ERROR(ApiId, ErrorId)
 #endif

@@ -103,7 +103,7 @@ void Boot_Verify_Hash(const uint8_t *data, uint32_t len, uint8_t *digest)
 
 void Boot_Verify_Hash(const uint8_t *data, uint32_t len, uint8_t *digest)
 {
-    sha256_compute(data, len, digest);
+    (void)sha256_compute(data, len, digest);
 }
 #endif
 

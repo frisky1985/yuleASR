@@ -39,7 +39,7 @@
   ==================================================================================================*/
 #if (DEM_DEV_ERROR_DETECT == STD_ON)
 #define DEM_DET_REPORT_ERROR(ApiId, ErrorId) \
-    Det_ReportError(DEM_MODULE_ID, DEM_INSTANCE_ID, (ApiId), (ErrorId))
+    (void)Det_ReportError(DEM_MODULE_ID, DEM_INSTANCE_ID, (ApiId), (ErrorId))
 #else
 #define DEM_DET_REPORT_ERROR(ApiId, ErrorId)
 #endif

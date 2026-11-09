@@ -93,7 +93,7 @@ static void Csm_Cfg_HmacSha256(
     /* 密钥规整: >64B 先哈希, <=64B 补零 */
     if (keyLen > 64U)
     {
-        mbedtls_sha256(key, keyLen, k, 0);
+        (void)mbedtls_sha256(key, keyLen, k, 0);
         keyLen = CSM_CFG_SHA256_DIGEST_LEN;
     }
     else
@@ -115,10 +115,10 @@ static void Csm_Cfg_HmacSha256(
     {
         mbedtls_sha256_context ctx;
         mbedtls_sha256_init(&ctx);
-        mbedtls_sha256_starts(&ctx, 0);
-        mbedtls_sha256_update(&ctx, ipad, 64U);
-        mbedtls_sha256_update(&ctx, msg, msgLen);
-        mbedtls_sha256_finish(&ctx, inner);
+        (void)mbedtls_sha256_starts(&ctx, 0);
+        (void)mbedtls_sha256_update(&ctx, ipad, 64U);
+        (void)mbedtls_sha256_update(&ctx, msg, msgLen);
+        (void)mbedtls_sha256_finish(&ctx, inner);
         mbedtls_sha256_free(&ctx);
     }
 
@@ -126,10 +126,10 @@ static void Csm_Cfg_HmacSha256(
     {
         mbedtls_sha256_context ctx;
         mbedtls_sha256_init(&ctx);
-        mbedtls_sha256_starts(&ctx, 0);
-        mbedtls_sha256_update(&ctx, opad, 64U);
-        mbedtls_sha256_update(&ctx, inner, CSM_CFG_SHA256_DIGEST_LEN);
-        mbedtls_sha256_finish(&ctx, out);
+        (void)mbedtls_sha256_starts(&ctx, 0);
+        (void)mbedtls_sha256_update(&ctx, opad, 64U);
+        (void)mbedtls_sha256_update(&ctx, inner, CSM_CFG_SHA256_DIGEST_LEN);
+        (void)mbedtls_sha256_finish(&ctx, out);
         mbedtls_sha256_free(&ctx);
     }
 }

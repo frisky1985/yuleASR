@@ -44,7 +44,7 @@
  *==================================================================================================*/
 #if (ETHSWT_DEV_ERROR_DETECT == STD_ON)
     #define ETHSWT_DET_REPORT_ERROR(api, err) \
-        Det_ReportError(ETHSWT_MODULE_ID, ETHSWT_INSTANCE_ID, (api), (err))
+        (void)Det_ReportError(ETHSWT_MODULE_ID, ETHSWT_INSTANCE_ID, (api), (err))
 #else
     #define ETHSWT_DET_REPORT_ERROR(api, err)
 #endif

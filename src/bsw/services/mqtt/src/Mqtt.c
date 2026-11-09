@@ -28,7 +28,7 @@
  *===========================================================================*/
 #if (MQTT_DEV_ERROR_DETECT == STD_ON)
 #define MQTT_DET_REPORT_ERROR(ApiId, ErrorId) \
-    Det_ReportError(MQTT_MODULE_ID, 0, (ApiId), (ErrorId))
+    (void)Det_ReportError(MQTT_MODULE_ID, 0, (ApiId), (ErrorId))
 #else
 #define MQTT_DET_REPORT_ERROR(ApiId, ErrorId)
 #endif

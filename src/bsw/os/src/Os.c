@@ -35,7 +35,7 @@
 ==================================================================================================*/
 #if (OS_DEV_ERROR_DETECT == STD_ON)
     #define OS_DET_REPORT_ERROR(ApiId, ErrorId) \
-        Det_ReportError(OS_MODULE_ID, OS_INSTANCE_ID, (ApiId), (ErrorId))
+        (void)Det_ReportError(OS_MODULE_ID, OS_INSTANCE_ID, (ApiId), (ErrorId))
 #else
     #define OS_DET_REPORT_ERROR(ApiId, ErrorId)
 #endif
@@ -619,7 +619,7 @@ StatusType Os_Internal_SetEvent(TaskType TaskID, EventMaskType Mask)
         return E_OS_STATE;
     }
 
-    xEventGroupSetBits(task->FreeRTOS_EventGroup, (EventBits_t)Mask);
+    (void)xEventGroupSetBits(task->FreeRTOS_EventGroup, (EventBits_t)Mask);
 
     return E_OS_OK;
 }
@@ -673,7 +673,7 @@ StatusType Os_Internal_ClearEvent(EventMaskType Mask)
                 return E_OS_STATE;
             }
 
-            xEventGroupClearBits(
+            (void)xEventGroupClearBits(
                 Os_GlobalState.Tasks[i].FreeRTOS_EventGroup,
                 (EventBits_t)Mask);
 
@@ -1520,8 +1520,8 @@ void Os_AlarmCallback(TimerHandle_t xTimer)
             cycleMs = 1;
         }
 
-        xTimerChangePeriod(xTimer, pdMS_TO_TICKS(cycleMs), 0);
-        xTimerStart(xTimer, 0);
+        (void)xTimerChangePeriod(xTimer, pdMS_TO_TICKS(cycleMs), 0);
+        (void)xTimerStart(xTimer, 0);
     }
 }
 

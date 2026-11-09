@@ -26,7 +26,7 @@
 ==================================================================================================*/
 #if (CRYIF_DEV_ERROR_DETECT == STD_ON)
     #define CRYIF_DET_REPORT_ERROR(ApiId, ErrorId) \
-        Det_ReportError(CRYIF_MODULE_ID, CRYIF_INSTANCE_ID, (ApiId), (ErrorId))
+        (void)Det_ReportError(CRYIF_MODULE_ID, CRYIF_INSTANCE_ID, (ApiId), (ErrorId))
 #else
     #define CRYIF_DET_REPORT_ERROR(ApiId, ErrorId)
 #endif

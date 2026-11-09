@@ -42,7 +42,7 @@
  *==================================================================================================*/
 #if (FLSTST_DEV_ERROR_DETECT == STD_ON)
     #define FLSTST_DET_REPORT_ERROR(api, err) \
-        Det_ReportError(FLSTST_MODULE_ID, FLSTST_INSTANCE_ID, (api), (err))
+        (void)Det_ReportError(FLSTST_MODULE_ID, FLSTST_INSTANCE_ID, (api), (err))
 #else
     #define FLSTST_DET_REPORT_ERROR(api, err)
 #endif

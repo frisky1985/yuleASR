@@ -37,7 +37,7 @@
  *==================================================================================================*/
 #if (SD_DEV_ERROR_DETECT == STD_ON)
     #define SD_DET_REPORT_ERROR(api, err) \
-        Det_ReportError(SD_MODULE_ID, SD_INSTANCE_ID, (api), (err))
+        (void)Det_ReportError(SD_MODULE_ID, SD_INSTANCE_ID, (api), (err))
 #else
     #define SD_DET_REPORT_ERROR(api, err)
 #endif

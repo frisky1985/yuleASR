@@ -140,7 +140,7 @@ void Xcp_Init(const Xcp_ConfigType* ConfigPtr)
 
 #if (XCP_DEV_ERROR_DETECT == STD_ON)
     if (ConfigPtr == NULL_PTR) {
-        Det_ReportError(XCP_MODULE_ID, XCP_INSTANCE_ID, XCP_SID_INIT, XCP_E_PARAM_POINTER);
+        (void)Det_ReportError(XCP_MODULE_ID, XCP_INSTANCE_ID, XCP_SID_INIT, XCP_E_PARAM_POINTER);
         return;
     }
 #endif
@@ -248,7 +248,7 @@ void Xcp_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
 #if (XCP_DEV_ERROR_DETECT == STD_ON)
     if (versioninfo == NULL_PTR) {
-        Det_ReportError(XCP_MODULE_ID, XCP_INSTANCE_ID, XCP_SID_GETVERSIONINFO, XCP_E_PARAM_POINTER);
+        (void)Det_ReportError(XCP_MODULE_ID, XCP_INSTANCE_ID, XCP_SID_GETVERSIONINFO, XCP_E_PARAM_POINTER);
         return;
     }
 #endif
@@ -290,15 +290,15 @@ void Xcp_RxIndication(uint8 XcpChannelId, PduIdType XcpPduId, const PduInfoType*
 {
 #if (XCP_DEV_ERROR_DETECT == STD_ON)
     if (Xcp_Initialized == 0U) {
-        Det_ReportError(XCP_MODULE_ID, XCP_INSTANCE_ID, XCP_SID_RXINDICATION, XCP_E_NOT_INITIALIZED);
+        (void)Det_ReportError(XCP_MODULE_ID, XCP_INSTANCE_ID, XCP_SID_RXINDICATION, XCP_E_NOT_INITIALIZED);
         return;
     }
     if ((XcpRxPduPtr == NULL_PTR) || (XcpRxPduPtr->SduDataPtr == NULL_PTR)) {
-        Det_ReportError(XCP_MODULE_ID, XCP_INSTANCE_ID, XCP_SID_RXINDICATION, XCP_E_PARAM_POINTER);
+        (void)Det_ReportError(XCP_MODULE_ID, XCP_INSTANCE_ID, XCP_SID_RXINDICATION, XCP_E_PARAM_POINTER);
         return;
     }
     if (!XCP_IS_CHANNEL_VALID(XcpChannelId)) {
-        Det_ReportError(XCP_MODULE_ID, XCP_INSTANCE_ID, XCP_SID_RXINDICATION, XCP_E_PARAM_CHANNEL);
+        (void)Det_ReportError(XCP_MODULE_ID, XCP_INSTANCE_ID, XCP_SID_RXINDICATION, XCP_E_PARAM_CHANNEL);
         return;
     }
 #endif
@@ -319,11 +319,11 @@ void Xcp_TxConfirmation(uint8 XcpChannelId, PduIdType XcpTxPduId)
 {
 #if (XCP_DEV_ERROR_DETECT == STD_ON)
     if (Xcp_Initialized == 0U) {
-        Det_ReportError(XCP_MODULE_ID, XCP_INSTANCE_ID, XCP_SID_TXCONFIRMATION, XCP_E_NOT_INITIALIZED);
+        (void)Det_ReportError(XCP_MODULE_ID, XCP_INSTANCE_ID, XCP_SID_TXCONFIRMATION, XCP_E_NOT_INITIALIZED);
         return;
     }
     if (!XCP_IS_CHANNEL_VALID(XcpChannelId)) {
-        Det_ReportError(XCP_MODULE_ID, XCP_INSTANCE_ID, XCP_SID_TXCONFIRMATION, XCP_E_PARAM_CHANNEL);
+        (void)Det_ReportError(XCP_MODULE_ID, XCP_INSTANCE_ID, XCP_SID_TXCONFIRMATION, XCP_E_PARAM_CHANNEL);
         return;
     }
 #endif
@@ -341,15 +341,15 @@ Std_ReturnType Xcp_TriggerTransmit(uint8 XcpChannelId, PduIdType XcpTxPduId, Pdu
 {
 #if (XCP_DEV_ERROR_DETECT == STD_ON)
     if (Xcp_Initialized == 0U) {
-        Det_ReportError(XCP_MODULE_ID, XCP_INSTANCE_ID, XCP_SID_TRIGGERTRANSMIT, XCP_E_NOT_INITIALIZED);
+        (void)Det_ReportError(XCP_MODULE_ID, XCP_INSTANCE_ID, XCP_SID_TRIGGERTRANSMIT, XCP_E_NOT_INITIALIZED);
         return E_NOT_OK;
     }
     if (PduInfoPtr == NULL_PTR) {
-        Det_ReportError(XCP_MODULE_ID, XCP_INSTANCE_ID, XCP_SID_TRIGGERTRANSMIT, XCP_E_PARAM_POINTER);
+        (void)Det_ReportError(XCP_MODULE_ID, XCP_INSTANCE_ID, XCP_SID_TRIGGERTRANSMIT, XCP_E_PARAM_POINTER);
         return E_NOT_OK;
     }
     if (!XCP_IS_CHANNEL_VALID(XcpChannelId)) {
-        Det_ReportError(XCP_MODULE_ID, XCP_INSTANCE_ID, XCP_SID_TRIGGERTRANSMIT, XCP_E_PARAM_CHANNEL);
+        (void)Det_ReportError(XCP_MODULE_ID, XCP_INSTANCE_ID, XCP_SID_TRIGGERTRANSMIT, XCP_E_PARAM_CHANNEL);
         return E_NOT_OK;
     }
 #endif
@@ -370,11 +370,11 @@ void Xcp_SetTransmissionMode(uint8 XcpChannelId, uint8 Mode)
 {
 #if (XCP_DEV_ERROR_DETECT == STD_ON)
     if (Xcp_Initialized == 0U) {
-        Det_ReportError(XCP_MODULE_ID, XCP_INSTANCE_ID, XCP_SID_SETTRANSMISSIONMODE, XCP_E_NOT_INITIALIZED);
+        (void)Det_ReportError(XCP_MODULE_ID, XCP_INSTANCE_ID, XCP_SID_SETTRANSMISSIONMODE, XCP_E_NOT_INITIALIZED);
         return;
     }
     if (!XCP_IS_CHANNEL_VALID(XcpChannelId)) {
-        Det_ReportError(XCP_MODULE_ID, XCP_INSTANCE_ID, XCP_SID_SETTRANSMISSIONMODE, XCP_E_PARAM_CHANNEL);
+        (void)Det_ReportError(XCP_MODULE_ID, XCP_INSTANCE_ID, XCP_SID_SETTRANSMISSIONMODE, XCP_E_PARAM_CHANNEL);
         return;
     }
 #endif

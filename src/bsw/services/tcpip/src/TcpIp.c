@@ -61,7 +61,7 @@
  *==================================================================================================*/
 #if (TCPIP_DEV_ERROR_DETECT == STD_ON)
     #define TCPIP_DET_REPORT_ERROR(api, err) \
-        Det_ReportError(TCPIP_MODULE_ID, TCPIP_INSTANCE_ID, (api), (err))
+        (void)Det_ReportError(TCPIP_MODULE_ID, TCPIP_INSTANCE_ID, (api), (err))
 #else
     #define TCPIP_DET_REPORT_ERROR(api, err)
 #endif

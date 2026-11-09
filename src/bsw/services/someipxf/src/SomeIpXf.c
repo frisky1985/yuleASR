@@ -53,7 +53,7 @@
 ==================================================================================================*/
 #if (SOMEIPXF_DEV_ERROR_DETECT == STD_ON)
     #define SOMEIPXF_DET_REPORT_ERROR(ApiId, ErrorId) \
-        Det_ReportError(SOMEIPXF_MODULE_ID, SOMEIPXF_INSTANCE_ID, (ApiId), (ErrorId))
+        (void)Det_ReportError(SOMEIPXF_MODULE_ID, SOMEIPXF_INSTANCE_ID, (ApiId), (ErrorId))
 #else
     #define SOMEIPXF_DET_REPORT_ERROR(ApiId, ErrorId)
 #endif

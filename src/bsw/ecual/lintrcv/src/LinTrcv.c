@@ -365,7 +365,7 @@ void LinTrcv_Init(const LinTrcv_ConfigType *ConfigPtr)
     /* Check for NULL_PTR pointer if static config is not used */
     if (ConfigPtr == NULL_PTR)
     {
-        Det_ReportError(LINTRCV_MODULE_ID, 0U, LINTRCV_SID_INIT, LINTRCV_E_PARAM_CONFIG);
+        (void)Det_ReportError(LINTRCV_MODULE_ID, 0U, LINTRCV_SID_INIT, LINTRCV_E_PARAM_CONFIG);
         return;
     }
 #endif
@@ -449,21 +449,21 @@ Std_ReturnType LinTrcv_SetOpMode(uint8 Channel, LinTrcv_OpmodeType OpMode)
     /* Check module initialization */
     if (LinTrcv_ModuleInitialized == FALSE)
     {
-        Det_ReportError(LINTRCV_MODULE_ID, 0U, LINTRCV_SID_SETOPMODE, LINTRCV_E_UNINIT);
+        (void)Det_ReportError(LINTRCV_MODULE_ID, 0U, LINTRCV_SID_SETOPMODE, LINTRCV_E_UNINIT);
         return E_NOT_OK;
     }
     
     /* Check channel validity */
     if (!LINTRCV_IS_VALID_CHANNEL(Channel))
     {
-        Det_ReportError(LINTRCV_MODULE_ID, 0U, LINTRCV_SID_SETOPMODE, LINTRCV_E_INVALID_CHANNEL);
+        (void)Det_ReportError(LINTRCV_MODULE_ID, 0U, LINTRCV_SID_SETOPMODE, LINTRCV_E_INVALID_CHANNEL);
         return E_NOT_OK;
     }
     
     /* Check operation mode validity */
     if (!LINTRCV_IS_VALID_OPMODE(OpMode))
     {
-        Det_ReportError(LINTRCV_MODULE_ID, 0U, LINTRCV_SID_SETOPMODE, LINTRCV_E_INVALID_OPMODE);
+        (void)Det_ReportError(LINTRCV_MODULE_ID, 0U, LINTRCV_SID_SETOPMODE, LINTRCV_E_INVALID_OPMODE);
         return E_NOT_OK;
     }
 #endif
@@ -505,21 +505,21 @@ Std_ReturnType LinTrcv_GetOpMode(uint8 Channel, LinTrcv_OpmodeType *OpMode)
     /* Check module initialization */
     if (LinTrcv_ModuleInitialized == FALSE)
     {
-        Det_ReportError(LINTRCV_MODULE_ID, 0U, LINTRCV_SID_GETOPMODE, LINTRCV_E_UNINIT);
+        (void)Det_ReportError(LINTRCV_MODULE_ID, 0U, LINTRCV_SID_GETOPMODE, LINTRCV_E_UNINIT);
         return E_NOT_OK;
     }
     
     /* Check channel validity */
     if (!LINTRCV_IS_VALID_CHANNEL(Channel))
     {
-        Det_ReportError(LINTRCV_MODULE_ID, 0U, LINTRCV_SID_GETOPMODE, LINTRCV_E_INVALID_CHANNEL);
+        (void)Det_ReportError(LINTRCV_MODULE_ID, 0U, LINTRCV_SID_GETOPMODE, LINTRCV_E_INVALID_CHANNEL);
         return E_NOT_OK;
     }
     
     /* Check NULL_PTR pointer */
     if (OpMode == NULL_PTR)
     {
-        Det_ReportError(LINTRCV_MODULE_ID, 0U, LINTRCV_SID_GETOPMODE, LINTRCV_E_PARAM_POINTER);
+        (void)Det_ReportError(LINTRCV_MODULE_ID, 0U, LINTRCV_SID_GETOPMODE, LINTRCV_E_PARAM_POINTER);
         return E_NOT_OK;
     }
 #endif
@@ -561,21 +561,21 @@ Std_ReturnType LinTrcv_GetBusWuReason(uint8 Channel, LinTrcv_WakeupReasonType *W
     /* Check module initialization */
     if (LinTrcv_ModuleInitialized == FALSE)
     {
-        Det_ReportError(LINTRCV_MODULE_ID, 0U, LINTRCV_SID_GETBUSWUREASON, LINTRCV_E_UNINIT);
+        (void)Det_ReportError(LINTRCV_MODULE_ID, 0U, LINTRCV_SID_GETBUSWUREASON, LINTRCV_E_UNINIT);
         return E_NOT_OK;
     }
     
     /* Check channel validity */
     if (!LINTRCV_IS_VALID_CHANNEL(Channel))
     {
-        Det_ReportError(LINTRCV_MODULE_ID, 0U, LINTRCV_SID_GETBUSWUREASON, LINTRCV_E_INVALID_CHANNEL);
+        (void)Det_ReportError(LINTRCV_MODULE_ID, 0U, LINTRCV_SID_GETBUSWUREASON, LINTRCV_E_INVALID_CHANNEL);
         return E_NOT_OK;
     }
     
     /* Check NULL_PTR pointer */
     if (WuReason == NULL_PTR)
     {
-        Det_ReportError(LINTRCV_MODULE_ID, 0U, LINTRCV_SID_GETBUSWUREASON, LINTRCV_E_PARAM_POINTER);
+        (void)Det_ReportError(LINTRCV_MODULE_ID, 0U, LINTRCV_SID_GETBUSWUREASON, LINTRCV_E_PARAM_POINTER);
         return E_NOT_OK;
     }
 #endif
@@ -597,7 +597,7 @@ void LinTrcv_GetVersionInfo(Std_VersionInfoType *VersionInfo)
 #if (LINTRCV_DEV_ERROR_DETECT == STD_ON)
     if (VersionInfo == NULL_PTR)
     {
-        Det_ReportError(LINTRCV_MODULE_ID, 0U, LINTRCV_SID_GETVERSIONINFO, LINTRCV_E_PARAM_POINTER);
+        (void)Det_ReportError(LINTRCV_MODULE_ID, 0U, LINTRCV_SID_GETVERSIONINFO, LINTRCV_E_PARAM_POINTER);
         return;
     }
 #endif
@@ -623,14 +623,14 @@ Std_ReturnType LinTrcv_Wakeup(uint8 Channel)
     /* Check module initialization */
     if (LinTrcv_ModuleInitialized == FALSE)
     {
-        Det_ReportError(LINTRCV_MODULE_ID, 0U, LINTRCV_SID_WAKEUP, LINTRCV_E_UNINIT);
+        (void)Det_ReportError(LINTRCV_MODULE_ID, 0U, LINTRCV_SID_WAKEUP, LINTRCV_E_UNINIT);
         return E_NOT_OK;
     }
     
     /* Check channel validity */
     if (!LINTRCV_IS_VALID_CHANNEL(Channel))
     {
-        Det_ReportError(LINTRCV_MODULE_ID, 0U, LINTRCV_SID_WAKEUP, LINTRCV_E_INVALID_CHANNEL);
+        (void)Det_ReportError(LINTRCV_MODULE_ID, 0U, LINTRCV_SID_WAKEUP, LINTRCV_E_INVALID_CHANNEL);
         return E_NOT_OK;
     }
 #endif
@@ -654,14 +654,14 @@ Std_ReturnType LinTrcv_CheckWakeup(uint8 Channel)
     /* Check module initialization */
     if (LinTrcv_ModuleInitialized == FALSE)
     {
-        Det_ReportError(LINTRCV_MODULE_ID, 0U, LINTRCV_SID_CHECKWAKEUP, LINTRCV_E_UNINIT);
+        (void)Det_ReportError(LINTRCV_MODULE_ID, 0U, LINTRCV_SID_CHECKWAKEUP, LINTRCV_E_UNINIT);
         return E_NOT_OK;
     }
     
     /* Check channel validity */
     if (!LINTRCV_IS_VALID_CHANNEL(Channel))
     {
-        Det_ReportError(LINTRCV_MODULE_ID, 0U, LINTRCV_SID_CHECKWAKEUP, LINTRCV_E_INVALID_CHANNEL);
+        (void)Det_ReportError(LINTRCV_MODULE_ID, 0U, LINTRCV_SID_CHECKWAKEUP, LINTRCV_E_INVALID_CHANNEL);
         return E_NOT_OK;
     }
 #endif
@@ -703,7 +703,7 @@ void LinTrcv_Cbk_WakeupByBus(uint8 Channel)
     
     if (!LINTRCV_IS_VALID_CHANNEL(Channel))
     {
-        Det_ReportError(LINTRCV_MODULE_ID, 0U, LINTRCV_SID_CBK_WAKEUPBYBUS, LINTRCV_E_INVALID_CHANNEL);
+        (void)Det_ReportError(LINTRCV_MODULE_ID, 0U, LINTRCV_SID_CBK_WAKEUPBYBUS, LINTRCV_E_INVALID_CHANNEL);
         return;
     }
 #endif

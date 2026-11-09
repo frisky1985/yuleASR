@@ -168,7 +168,7 @@ void FrTp_ProcessFlowControl(FrTp_ConnectionIdxType connIdx, uint8 flowStatus, u
 /* Error reporting */
 #if (FRTP_DEV_ERROR_DETECT == STD_ON)
 #define FRTP_DET_REPORT_ERROR(ApiId, ErrorId) \
-    Det_ReportError(FRTP_MODULE_ID, 0U, (ApiId), (ErrorId))
+    (void)Det_ReportError(FRTP_MODULE_ID, 0U, (ApiId), (ErrorId))
 #else
 #define FRTP_DET_REPORT_ERROR(ApiId, ErrorId)
 #endif

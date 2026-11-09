@@ -47,7 +47,7 @@
 ==================================================================================================*/
 #if (SOMEIPTP_DEV_ERROR_DETECT == STD_ON)
     #define SOMEIPTP_DET_REPORT_ERROR(ApiId, ErrorId) \
-        Det_ReportError(SOMEIPTP_MODULE_ID, SOMEIPTP_INSTANCE_ID, (ApiId), (ErrorId))
+        (void)Det_ReportError(SOMEIPTP_MODULE_ID, SOMEIPTP_INSTANCE_ID, (ApiId), (ErrorId))
 #else
     #define SOMEIPTP_DET_REPORT_ERROR(ApiId, ErrorId)
 #endif

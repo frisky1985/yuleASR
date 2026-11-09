@@ -179,7 +179,7 @@ static const uint32 NvM_Crc32Table[256U] =
 ==================================================================================================*/
 #if (NVM_DEV_ERROR_DETECT == STD_ON)
     #define NVM_DET_REPORT_ERROR(ApiId, ErrorId) \
-        Det_ReportError(NVM_MODULE_ID, NVM_INSTANCE_ID, (ApiId), (ErrorId))
+        (void)Det_ReportError(NVM_MODULE_ID, NVM_INSTANCE_ID, (ApiId), (ErrorId))
 #else
     #define NVM_DET_REPORT_ERROR(ApiId, ErrorId)
 #endif

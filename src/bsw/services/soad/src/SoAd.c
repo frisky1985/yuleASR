@@ -50,7 +50,7 @@
 ==================================================================================================*/
 #if (SOAD_DEV_ERROR_DETECT == STD_ON)
     #define SOAD_DET_REPORT_ERROR(ApiId, ErrorId) \
-        Det_ReportError(SOAD_MODULE_ID, SOAD_INSTANCE_ID, (ApiId), (ErrorId))
+        (void)Det_ReportError(SOAD_MODULE_ID, SOAD_INSTANCE_ID, (ApiId), (ErrorId))
 #else
     #define SOAD_DET_REPORT_ERROR(ApiId, ErrorId)
 #endif

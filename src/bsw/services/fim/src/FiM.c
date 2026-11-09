@@ -47,7 +47,7 @@
 ==================================================================================================*/
 #if (FIM_DEV_ERROR_DETECT == STD_ON)
     #define FIM_DET_REPORT_ERROR(ApiId, ErrorId) \
-        Det_ReportError(FIM_MODULE_ID, FIM_INSTANCE_ID, (ApiId), (ErrorId))
+        (void)Det_ReportError(FIM_MODULE_ID, FIM_INSTANCE_ID, (ApiId), (ErrorId))
 #else
     #define FIM_DET_REPORT_ERROR(ApiId, ErrorId)
 #endif

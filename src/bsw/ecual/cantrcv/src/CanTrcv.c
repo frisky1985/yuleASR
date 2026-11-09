@@ -27,7 +27,7 @@
 
 #if (CANTRCV_DEV_ERROR_DETECT == STD_ON)
 #define CANTRCV_DET_REPORT_ERROR(ApiId, ErrorId) \
-    Det_ReportError(CANTRCV_MODULE_ID, CANTRCV_INSTANCE_ID, (ApiId), (ErrorId))
+    (void)Det_ReportError(CANTRCV_MODULE_ID, CANTRCV_INSTANCE_ID, (ApiId), (ErrorId))
 #else
 #define CANTRCV_DET_REPORT_ERROR(ApiId, ErrorId) ((void)0)
 #endif

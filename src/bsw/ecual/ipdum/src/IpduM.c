@@ -26,7 +26,7 @@
 
 #if (IPDUM_DEV_ERROR_DETECT == STD_ON)
 #define IPDUM_DET_REPORT_ERROR(ApiId, ErrorId) \
-    Det_ReportError(IPDUM_MODULE_ID, IPDUM_INSTANCE_ID, (ApiId), (ErrorId))
+    (void)Det_ReportError(IPDUM_MODULE_ID, IPDUM_INSTANCE_ID, (ApiId), (ErrorId))
 #else
 #define IPDUM_DET_REPORT_ERROR(ApiId, ErrorId) ((void)0)
 #endif

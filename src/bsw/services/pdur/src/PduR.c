@@ -54,7 +54,7 @@ extern Std_ReturnType Dcm_TriggerTransmit(PduIdType TxPduId, PduInfoType* PduInf
 ==================================================================================================*/
 #if (PDUR_DEV_ERROR_DETECT == STD_ON)
     #define PDUR_DET_REPORT_ERROR(ApiId, ErrorId) \
-        Det_ReportError(PDUR_MODULE_ID, PDUR_INSTANCE_ID, (ApiId), (ErrorId))
+        (void)Det_ReportError(PDUR_MODULE_ID, PDUR_INSTANCE_ID, (ApiId), (ErrorId))
 #else
     #define PDUR_DET_REPORT_ERROR(ApiId, ErrorId)
 #endif

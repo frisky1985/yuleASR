@@ -47,7 +47,7 @@
 ==================================================================================================*/
 #if (DCM_DEV_ERROR_DETECT == STD_ON)
     #define DCM_TRANSFER_DET_REPORT_ERROR(ApiId, ErrorId) \
-        Det_ReportError(DCM_MODULE_ID, DCM_TRANSFER_INSTANCE_ID, (ApiId), (ErrorId))
+        (void)Det_ReportError(DCM_MODULE_ID, DCM_TRANSFER_INSTANCE_ID, (ApiId), (ErrorId))
 #else
     #define DCM_TRANSFER_DET_REPORT_ERROR(ApiId, ErrorId)
 #endif

@@ -644,7 +644,7 @@ void Dlt_ComRxIndication(const uint8* data, uint16 length);
  * @brief DLT 开发错误检测启用
  */
 #define DLT_DETECT_ERROR(ApiId, ErrorId) \
-    Det_ReportError(DLT_MODULE_ID, DLT_INSTANCE_ID, ApiId, ErrorId)
+    (void)Det_ReportError(DLT_MODULE_ID, DLT_INSTANCE_ID, ApiId, ErrorId)
 
 #else
 
