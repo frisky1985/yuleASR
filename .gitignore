@@ -5,6 +5,7 @@
 
 # Build artifacts (编译产物)
 /build/
+/build-mcdc/
 *.o
 *.obj
 *.exe
@@ -157,6 +158,8 @@ src/bsw/boot/test/test_boot_integration
 .yuleosh/reports/misra-scan.json
 .yuleosh/reports/misra-gate.json
 .yuleosh/reports/misra-report.xlsx
+# MC/DC report is generated per CI run (provenance binds to HEAD, never committed)
+.yuleosh/reports/mcdc-coverage.json
 
 # Oversized MISRA artifacts (>200KB remote blob limit, kept locally)
 .yuleosh/reports/misra-traceability.csv

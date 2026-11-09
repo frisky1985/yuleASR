@@ -463,6 +463,36 @@ jobs:
           python3 tools/check_coverage_gate.py .yuleosh/reports/c-coverage.json
 
   # ============================================================
+  # MC/DC — 主机测量 + ASIL 模块门禁 (Clang 18)
+  #   量产口径: ISO 26262-6 Table 12 结构覆盖率（ASIL B 及以上需 MC/DC）
+  #   范围: .yuleosh/ci-config.yaml mcdc.scope 中的 ASIL 模块
+  #   证据: 主机单测 + -fcoverage-mcdc; 目标板证据不在本 job 范围
+  # ============================================================
+  mcdc:
+    name: MC/DC (host, ASIL modules)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ./.github/actions/setup-env
+        with:
+          pip-packages: pyyaml
+          apt-packages: clang-18 llvm-18 libclang-rt-18-dev cmake ninja-build
+
+      - name: Measure MC/DC (build + ctest + aggregate)
+        run: bash tools/run_mcdc_coverage.sh
+
+      - name: MC/DC Gate (ASIL modules)
+        # 证据校验（provenance/相对路径/非空）+ ASIL 模块阈值判定
+        run: python3 tools/check_mcdc_gate.py
+
+      - name: Upload MC/DC Report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: mcdc-report
+          path: .yuleosh/reports/mcdc-coverage.json
+          retention-days: 30
+
+  # ============================================================
   # Integration Tests — 编译 + 上传产物 (被 e2e/uds/ota 等依赖)
   # ============================================================
   integration-build:

@@ -69,6 +69,40 @@ coverage:
     src/bsw/services/secoc: 60.0
     src/bsw/services/ramsafety: 60.0
 
+# ── MC/DC 覆盖率门禁（主机测量，Clang 18）────────────────────────
+# 方案: 主机 native 单测 + `-fcoverage-mcdc`，由 tools/run_mcdc_coverage.sh
+# 采集、tools/check_mcdc_gate.py 判定。目标板证据不在本门禁范围。
+# 范围: ASIL 模块，依据 docs/safety/asil-decomposition-report.md §3.1.1。
+# 阈值: threshold 为当前棘轮基线（只升不降），target 为量产目标 100%。
+#       每轮提升前先用 run_mcdc_coverage.sh 复测，再更新本值。
+# 基线: 2026-11-09 首轮实测 (Clang 18.1.3, host, 209 tests, 6355 decisions) —
+#       下列模块值为实测覆盖率向下取 0.1% 的棘轮下限。
+mcdc:
+  enabled: true
+  measurement: host
+  tool: clang-18
+  target: 100.0
+  threshold: 20.0       # 未单列模块的兜底下限（当前最低 ASIL 模块基线）
+  enforce: true
+  scope:
+    - src/bsw/services/e2e
+    - src/bsw/services/wdgm
+    - src/bsw/services/nvm
+    - src/bsw/services/cryif
+    - src/bsw/services/secoc
+    - src/bsw/services/ramsafety
+    - src/bsw/os
+  exclude:
+    - "*/include/*"
+  module_thresholds:
+    src/bsw/services/e2e: 100.0
+    src/bsw/services/wdgm: 66.6
+    src/bsw/services/nvm: 49.4
+    src/bsw/services/cryif: 100.0
+    src/bsw/services/secoc: 63.6
+    src/bsw/services/ramsafety: 20.0
+    src/bsw/os: 83.3
+
 misra:
   enabled: true
   ruleset: "misra-c2023"
