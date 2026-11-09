@@ -247,176 +247,203 @@ void LinSlave_RxInterruptHandler(uint8 RxByte)
 }
 
 /**
+ * RX_BREAK 态: 期待 Sync (0x55)
+ */
+static void LinSlave_HandleStateRxBreak(uint8 RxByte)
+{
+    if (RxByte == 0x55U) {
+        LinSlave_State = LINSLAVE_STATE_RX_SYNC;
+    } else {
+        /* Sync 错误 */
+        LinSlave_ProcessError(LINSLAVE_ERROR_SYNC);
+    }
+}
+
+/**
+ * RX_SYNC 态: 接收 PID 并按配置表/原始方式分发
+ */
+static void LinSlave_HandleStateRxSync(uint8 RxByte)
+{
+    LinSlave_CurrentPid = RxByte;
+
+    /* 验证 PID */
+    if (!LinSlave_ValidatePid(RxByte)) {
+        LinSlave_ProcessError(LINSLAVE_ERROR_PID);
+        return;
+    }
+
+    /* 使用新配置表 */
+    if ((UseConfigTable) != 0U) {
+        uint8 frameIndex;
+        const LinSlave_UnconditionalFrameConfigType* frame;
+
+        /* 检查是否是Unconditional Frame */
+        frame = LinSlave_CfgTable_FindUnconditionalByPid(RxByte);
+        if (frame != NULL_PTR) {
+            /* 获取Frame索引 */
+            frameIndex = LinSlave_CfgTable_GetIndexByPid(RxByte);
+
+            /* 根据方向处理 */
+            if (frame->Direction == LINSLAVE_DIR_RX) {
+                /* 接收方向: 主机发送数据，从机接收 */
+                LinSlave_State = LINSLAVE_STATE_RX_DATA;
+                LinSlave_RxIndex = 0;
+            } else if (frame->Direction == LINSLAVE_DIR_TX) {
+                /* 发送方向: 主机请求，从机发送 */
+                LinSlave_ProcessUnconditionalTx(frameIndex);
+                LinSlave_State = LINSLAVE_STATE_IDLE;
+            } else if (frame->Direction == LINSLAVE_DIR_RX_TX) {
+                /* 双向: 先接收后发送 */
+                LinSlave_State = LINSLAVE_STATE_RX_DATA;
+                LinSlave_RxIndex = 0;
+            }
+            return;
+        }
+
+        /* 检查是否是诊断帧 */
+        if ((LinSlave_CfgTable_IsDiagnosticFrame(RxByte)) != 0U) {
+            LinSlave_State = LINSLAVE_STATE_RX_DATA;
+            LinSlave_RxIndex = 0;
+            return;
+        }
+
+        /* 检查是否是Event Triggered Frame */
+        if ((LinSlave_CfgTable_IsEventFrame(RxByte)) != 0U) {
+            /* Event Frame处理 */
+            const LinSlave_EventFrameConfigType* eventFrame =
+                LinSlave_CfgTable_FindEventFrame(RxByte);
+            if (eventFrame != NULL_PTR) {
+                /* 检查关联的Unconditional Frames是否有数据需要发送 */
+            }
+            LinSlave_State = LINSLAVE_STATE_IDLE;
+            LinSlave_ResetStateMachine();
+            return;
+        }
+
+        /* 检查是否是Sporadic Frame */
+        if ((LinSlave_CfgTable_IsSporadicFrame(RxByte)) != 0U) {
+            /* Sporadic Frame处理 */
+            LinSlave_State = LINSLAVE_STATE_IDLE;
+            LinSlave_ResetStateMachine();
+            return;
+        }
+
+        /* 未找到匹配的帧 */
+        LinSlave_State = LINSLAVE_STATE_IDLE;
+        LinSlave_ResetStateMachine();
+    } else {
+        /* 原始方式 */
+        if (LinSlave_ExtractId(RxByte) == LinSlave_ConfigPtr->NodeId) {
+            LinSlave_RxIndex = 0;
+            LinSlave_State = LINSLAVE_STATE_RX_DATA;
+
+            if (LinSlave_RxCallback != NULL_PTR) {
+                LinSlave_RxCallback(
+                    LinSlave_CurrentPid,
+                    LinSlave_TxBuffer,
+                    &LinSlave_TxLength,
+                    &LinSlave_ResponseChecksumType
+                );
+            }
+        } else {
+            LinSlave_State = LINSLAVE_STATE_IDLE;
+            LinSlave_ResetStateMachine();
+        }
+    }
+}
+
+/**
+ * RX_DATA 态: 接收数据字节 (配置表固定 8 字节 / 原始方式按 TxLength)
+ */
+static void LinSlave_HandleStateRxData(uint8 RxByte)
+{
+    if ((UseConfigTable) != 0U) {
+        /* 接收数据并存储 */
+        if (LinSlave_RxIndex < 8U) {
+            LinSlave_RxBuffer[LinSlave_RxIndex] = RxByte;
+            LinSlave_RxIndex++;
+
+            /* 检查是否已接收完数据 */
+            if (LinSlave_RxIndex >= 8U) {
+                uint8 frameIndex = LinSlave_CfgTable_GetIndexByPid(LinSlave_CurrentPid);
+                if (frameIndex != 0xFFU) {
+                    /* 处理Unconditional Frame接收 */
+                    LinSlave_ProcessUnconditionalRx(frameIndex, LinSlave_RxBuffer, 8);
+                }
+                LinSlave_RxIndex = 0;
+                LinSlave_State = LINSLAVE_STATE_IDLE;
+            }
+        }
+    } else {
+        /* 原始方式 */
+        if (LinSlave_RxIndex < LinSlave_TxLength) {
+            LinSlave_RxBuffer[LinSlave_RxIndex] = RxByte;
+            LinSlave_RxIndex++;
+
+            if (LinSlave_RxIndex >= LinSlave_TxLength) {
+                LinSlave_State = LINSLAVE_STATE_RX_CSUM;
+            }
+        } else {
+            LinSlave_ProcessError(LINSLAVE_ERROR_FRAMING);
+        }
+    }
+}
+
+/**
+ * RX_CSUM 态: 接收校验和并验证
+ */
+static void LinSlave_HandleStateRxCsum(uint8 RxByte)
+{
+    uint8 CalculatedCsum = LinSlave_CalculateChecksum(
+        LinSlave_TxBuffer,
+        LinSlave_TxLength,
+        LinSlave_CurrentPid,
+        (LinSlave_ChecksumType)(UseConfigTable ? 0U : LinSlave_ConfigPtr->ChecksumType)
+    );
+
+    if (RxByte == CalculatedCsum) {
+        /* 校验和正确，发送响应 */
+        LinSlave_SendResponse();
+    } else {
+        /* 校验和错误 */
+        LinSlave_ProcessError(LINSLAVE_ERROR_CHECKSUM);
+    }
+
+    /* 重置状态机 */
+    LinSlave_ResetStateMachine();
+    LinSlave_State = LINSLAVE_STATE_IDLE;
+}
+
+/**
  * 处理接收数据 - 状态机核心
  */
 static void LinSlave_HandleRxData(uint8 RxByte)
 {
-    uint8 CalculatedCsum;
     switch (LinSlave_State) {
         case LINSLAVE_STATE_IDLE:
             /* 等待 Break，忽略其他字节 */
             break;
-            
+
         case LINSLAVE_STATE_RX_BREAK:
-            /* 期待 Sync (0x55) */
-            if (RxByte == 0x55U) {
-                LinSlave_State = LINSLAVE_STATE_RX_SYNC;
-            } else {
-                /* Sync 错误 */
-                LinSlave_ProcessError(LINSLAVE_ERROR_SYNC);
-            }
+            LinSlave_HandleStateRxBreak(RxByte);
             break;
-            
+
         case LINSLAVE_STATE_RX_SYNC:
-            /* 接收 PID */
-            LinSlave_CurrentPid = RxByte;
-            
-            /* 验证 PID */
-            if (!LinSlave_ValidatePid(RxByte)) {
-                LinSlave_ProcessError(LINSLAVE_ERROR_PID);
-                return;
-            }
-            
-            /* 使用新配置表 */
-            if ((UseConfigTable) != 0U) {
-                uint8 frameIndex;
-                const LinSlave_UnconditionalFrameConfigType* frame;
-                
-                /* 检查是否是Unconditional Frame */
-                frame = LinSlave_CfgTable_FindUnconditionalByPid(RxByte);
-                if (frame != NULL_PTR) {
-                    /* 获取Frame索引 */
-                    frameIndex = LinSlave_CfgTable_GetIndexByPid(RxByte);
-                    
-                    /* 根据方向处理 */
-                    if (frame->Direction == LINSLAVE_DIR_RX) {
-                        /* 接收方向: 主机发送数据，从机接收 */
-                        LinSlave_State = LINSLAVE_STATE_RX_DATA;
-                        LinSlave_RxIndex = 0;
-                    } else if (frame->Direction == LINSLAVE_DIR_TX) {
-                        /* 发送方向: 主机请求，从机发送 */
-                        LinSlave_ProcessUnconditionalTx(frameIndex);
-                        LinSlave_State = LINSLAVE_STATE_IDLE;
-                    } else if (frame->Direction == LINSLAVE_DIR_RX_TX) {
-                        /* 双向: 先接收后发送 */
-                        LinSlave_State = LINSLAVE_STATE_RX_DATA;
-                        LinSlave_RxIndex = 0;
-                    }
-                    return;
-                }
-                
-                /* 检查是否是诊断帧 */
-                if ((LinSlave_CfgTable_IsDiagnosticFrame(RxByte)) != 0U) {
-                    LinSlave_State = LINSLAVE_STATE_RX_DATA;
-                    LinSlave_RxIndex = 0;
-                    return;
-                }
-                
-                /* 检查是否是Event Triggered Frame */
-                if ((LinSlave_CfgTable_IsEventFrame(RxByte)) != 0U) {
-                    /* Event Frame处理 */
-                    const LinSlave_EventFrameConfigType* eventFrame = 
-                        LinSlave_CfgTable_FindEventFrame(RxByte);
-                    if (eventFrame != NULL_PTR) {
-                        /* 检查关联的Unconditional Frames是否有数据需要发送 */
-                    }
-                    LinSlave_State = LINSLAVE_STATE_IDLE;
-                    LinSlave_ResetStateMachine();
-                    return;
-                }
-                
-                /* 检查是否是Sporadic Frame */
-                if ((LinSlave_CfgTable_IsSporadicFrame(RxByte)) != 0U) {
-                    /* Sporadic Frame处理 */
-                    LinSlave_State = LINSLAVE_STATE_IDLE;
-                    LinSlave_ResetStateMachine();
-                    return;
-                }
-                
-                /* 未找到匹配的帧 */
-                LinSlave_State = LINSLAVE_STATE_IDLE;
-                LinSlave_ResetStateMachine();
-            } else {
-                /* 原始方式 */
-                if (LinSlave_ExtractId(RxByte) == LinSlave_ConfigPtr->NodeId) {
-                    LinSlave_RxIndex = 0;
-                    LinSlave_State = LINSLAVE_STATE_RX_DATA;
-                    
-                    if (LinSlave_RxCallback != NULL_PTR) {
-                        LinSlave_RxCallback(
-                            LinSlave_CurrentPid,
-                            LinSlave_TxBuffer,
-                            &LinSlave_TxLength,
-                            &LinSlave_ResponseChecksumType
-                        );
-                    }
-                } else {
-                    LinSlave_State = LINSLAVE_STATE_IDLE;
-                    LinSlave_ResetStateMachine();
-                }
-            }
+            LinSlave_HandleStateRxSync(RxByte);
             break;
-            
+
         case LINSLAVE_STATE_RX_DATA:
-            /* 接收数据字节 */
-            if ((UseConfigTable) != 0U) {
-                /* 接收数据并存储 */
-                if (LinSlave_RxIndex < 8U) {
-                    LinSlave_RxBuffer[LinSlave_RxIndex] = RxByte;
-                    LinSlave_RxIndex++;
-                    
-                    /* 检查是否已接收完数据 */
-                    if (LinSlave_RxIndex >= 8U) {
-                        uint8 frameIndex = LinSlave_CfgTable_GetIndexByPid(LinSlave_CurrentPid);
-                        if (frameIndex != 0xFFU) {
-                            /* 处理Unconditional Frame接收 */
-                            LinSlave_ProcessUnconditionalRx(frameIndex, LinSlave_RxBuffer, 8);
-                        }
-                        LinSlave_RxIndex = 0;
-                        LinSlave_State = LINSLAVE_STATE_IDLE;
-                    }
-                }
-            } else {
-                /* 原始方式 */
-                if (LinSlave_RxIndex < LinSlave_TxLength) {
-                    LinSlave_RxBuffer[LinSlave_RxIndex] = RxByte;
-                    LinSlave_RxIndex++;
-                    
-                    if (LinSlave_RxIndex >= LinSlave_TxLength) {
-                        LinSlave_State = LINSLAVE_STATE_RX_CSUM;
-                    }
-                } else {
-                    LinSlave_ProcessError(LINSLAVE_ERROR_FRAMING);
-                }
-            }
+            LinSlave_HandleStateRxData(RxByte);
             break;
-            
+
         case LINSLAVE_STATE_RX_CSUM:
-            /* 接收校验和并验证 */
-            CalculatedCsum = LinSlave_CalculateChecksum(
-                LinSlave_TxBuffer,
-                LinSlave_TxLength,
-                LinSlave_CurrentPid,
-                (LinSlave_ChecksumType)(UseConfigTable ? 0U : LinSlave_ConfigPtr->ChecksumType)
-            );
-            
-            if (RxByte == CalculatedCsum) {
-                /* 校验和正确，发送响应 */
-                LinSlave_SendResponse();
-            } else {
-                /* 校验和错误 */
-                LinSlave_ProcessError(LINSLAVE_ERROR_CHECKSUM);
-            }
-            
-            /* 重置状态机 */
-            LinSlave_ResetStateMachine();
-            LinSlave_State = LINSLAVE_STATE_IDLE;
+            LinSlave_HandleStateRxCsum(RxByte);
             break;
-            
+
         case LINSLAVE_STATE_TX_RESPONSE:
             /* 正在发送响应，忽略接收 */
             break;
-            
+
         default:
             /* 异常状态，重置 */
             LinSlave_ResetStateMachine();

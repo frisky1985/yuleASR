@@ -466,21 +466,48 @@ void LinMaster_TxCompleteInterruptHandler(void)
 }
 
 /**
- * @brief 状态机主处理器
+ * @brief 状态阶段分类 (头部发送 / 数据交换)
  */
-static void LinMaster_StateMachineHandler(void)
+typedef enum {
+    LINMASTER_PHASE_IDLE,
+    LINMASTER_PHASE_HEADER,
+    LINMASTER_PHASE_DATA,
+    LINMASTER_PHASE_OTHER
+} LinMaster_PhaseType;
+
+/**
+ * @brief 将当前状态归类到处理阶段
+ */
+static LinMaster_PhaseType LinMaster_ClassifyPhase(void)
+{
+    switch (LinMaster_State) {
+        case LINMASTER_STATE_SEND_BREAK:
+        case LINMASTER_STATE_SEND_SYNC:
+        case LINMASTER_STATE_SEND_PID:
+            return LINMASTER_PHASE_HEADER;
+
+        case LINMASTER_STATE_SEND_TX_DATA:
+        case LINMASTER_STATE_WAIT_CHECKSUM:
+        case LINMASTER_STATE_WAIT_RX_DATA:
+        case LINMASTER_STATE_DELAY:
+            return LINMASTER_PHASE_DATA;
+
+        case LINMASTER_STATE_IDLE:
+            return LINMASTER_PHASE_IDLE;
+
+        default:
+            return LINMASTER_PHASE_OTHER;
+    }
+}
+
+/**
+ * @brief 头部发送阶段: Break → Sync → PID
+ */
+static void LinMaster_HandleHeaderPhase(void)
 {
     LinMaster_StatusType status;
-    
+
     switch (LinMaster_State) {
-        case LINMASTER_STATE_IDLE:
-            /* 空闲状态，等待操作请求 */
-            if ((LinMaster_HeaderRequested) != 0U) {
-                LinMaster_HeaderRequested = FALSE;
-                LinMaster_ChangeState(LINMASTER_STATE_SEND_BREAK);
-            }
-            break;
-            
         case LINMASTER_STATE_SEND_BREAK:
             /* 发送Break字段 */
             status = LinMaster_Hal_SendBreak();
@@ -492,14 +519,14 @@ static void LinMaster_StateMachineHandler(void)
                 LinMaster_ProcessError(LINMASTER_ERROR_BREAK);
             }
             break;
-            
+
         case LINMASTER_STATE_SEND_SYNC:
             /* 检查Sync发送超时 */
             if ((LinMaster_IsTimeout()) != 0U) {
                 LinMaster_ProcessError(LINMASTER_ERROR_TIMEOUT);
                 return;
             }
-            
+
             /* 发送Sync字节 */
             status = LinMaster_Hal_SendByte(LINMASTER_SYNC_BYTE);
             if (status == LINMASTER_OK) {
@@ -510,14 +537,15 @@ static void LinMaster_StateMachineHandler(void)
                 LinMaster_ProcessError(LINMASTER_ERROR_SYNC);
             }
             break;
-            
+
         case LINMASTER_STATE_SEND_PID:
+        default:
             /* 检查PID发送超时 */
             if ((LinMaster_IsTimeout()) != 0U) {
                 LinMaster_ProcessError(LINMASTER_ERROR_TIMEOUT);
                 return;
             }
-            
+
             /* 发送PID */
             status = LinMaster_Hal_SendByte(LinMaster_CurrentPid);
             if (status == LINMASTER_OK) {
@@ -537,14 +565,55 @@ static void LinMaster_StateMachineHandler(void)
                 LinMaster_ProcessError(LINMASTER_ERROR_PID);
             }
             break;
-            
+    }
+}
+
+/**
+ * @brief WAIT_CHECKSUM 态: 主机发送方向计算并发送校验和后完成帧
+ */
+static void LinMaster_HandleWaitChecksum(void)
+{
+    /* 检查超时 */
+    if ((LinMaster_IsTimeout()) != 0U) {
+        LinMaster_ProcessError(LINMASTER_ERROR_TIMEOUT);
+        return;
+    }
+
+    if (LinMaster_CurrentDirection == LINMASTER_FRAME_DIR_TX) {
+        /* 主机发送，计算并发送校验和 */
+        LinMaster_CalculateAndSendChecksum();
+
+        /* 帧发送完成 */
+        LinMaster_FrameComplete = TRUE;
+        LinMaster_OperationPending = FALSE;
+
+        /* 调用发送回调 */
+        if (LinMaster_TxCallback != NULL_PTR) {
+            LinMaster_TxCallback(LinMaster_CurrentPid, LinMaster_TxBuffer, LinMaster_TxLength, TRUE);
+        }
+
+        /* 进入延迟状态 */
+        LinMaster_ChangeState(LINMASTER_STATE_DELAY);
+        LinMaster_StartTimeout(LinMaster_ConfigPtr->InterFrameDelayMs);
+    }
+    /* 如果是RX方向，在接收中断中处理 */
+}
+
+/**
+ * @brief 数据交换阶段: 发送数据 / 等待校验和 / 等待响应 / 帧间延迟
+ */
+static void LinMaster_HandleDataPhase(void)
+{
+    LinMaster_StatusType status;
+
+    switch (LinMaster_State) {
         case LINMASTER_STATE_SEND_TX_DATA:
             /* 检查数据发送超时 */
             if ((LinMaster_IsTimeout()) != 0U) {
                 LinMaster_ProcessError(LINMASTER_ERROR_TIMEOUT);
                 return;
             }
-            
+
             /* 发送数据字节 */
             if (LinMaster_TxIndex < LinMaster_TxLength) {
                 status = LinMaster_Hal_SendByte(LinMaster_TxBuffer[LinMaster_TxIndex]);
@@ -559,34 +628,11 @@ static void LinMaster_StateMachineHandler(void)
                 }
             }
             break;
-            
+
         case LINMASTER_STATE_WAIT_CHECKSUM:
-            /* 检查超时 */
-            if ((LinMaster_IsTimeout()) != 0U) {
-                LinMaster_ProcessError(LINMASTER_ERROR_TIMEOUT);
-                return;
-            }
-            
-            if (LinMaster_CurrentDirection == LINMASTER_FRAME_DIR_TX) {
-                /* 主机发送，计算并发送校验和 */
-                LinMaster_CalculateAndSendChecksum();
-                
-                /* 帧发送完成 */
-                LinMaster_FrameComplete = TRUE;
-                LinMaster_OperationPending = FALSE;
-                
-                /* 调用发送回调 */
-                if (LinMaster_TxCallback != NULL_PTR) {
-                    LinMaster_TxCallback(LinMaster_CurrentPid, LinMaster_TxBuffer, LinMaster_TxLength, TRUE);
-                }
-                
-                /* 进入延迟状态 */
-                LinMaster_ChangeState(LINMASTER_STATE_DELAY);
-                LinMaster_StartTimeout(LinMaster_ConfigPtr->InterFrameDelayMs);
-            }
-            /* 如果是RX方向，在接收中断中处理 */
+            LinMaster_HandleWaitChecksum();
             break;
-            
+
         case LINMASTER_STATE_WAIT_RX_DATA:
             /* 检查响应超时 */
             if ((LinMaster_IsTimeout()) != 0U) {
@@ -595,8 +641,9 @@ static void LinMaster_StateMachineHandler(void)
             }
             /* 数据接收在中断处理器中完成 */
             break;
-            
+
         case LINMASTER_STATE_DELAY:
+        default:
             /* 帧间延迟 */
             if ((LinMaster_IsTimeout()) != 0U) {
                 /* 延迟结束，进入下一帧或返回空闲 */
@@ -604,16 +651,39 @@ static void LinMaster_StateMachineHandler(void)
                 LinMaster_ChangeState(LINMASTER_STATE_IDLE);
             }
             break;
-            
-        case LINMASTER_STATE_NEXT_ENTRY:
-            /* 进入下一帧处理 (可根据应用扩展) */
-            LinMaster_ResetStateMachine();
-            LinMaster_ChangeState(LINMASTER_STATE_IDLE);
+    }
+}
+
+/**
+ * @brief 状态机主处理器
+ */
+static void LinMaster_StateMachineHandler(void)
+{
+    switch (LinMaster_ClassifyPhase()) {
+        case LINMASTER_PHASE_IDLE:
+            /* 空闲状态，等待操作请求 */
+            if ((LinMaster_HeaderRequested) != 0U) {
+                LinMaster_HeaderRequested = FALSE;
+                LinMaster_ChangeState(LINMASTER_STATE_SEND_BREAK);
+            }
             break;
-            
-        case LINMASTER_STATE_UNINIT:
+
+        case LINMASTER_PHASE_HEADER:
+            LinMaster_HandleHeaderPhase();
+            break;
+
+        case LINMASTER_PHASE_DATA:
+            LinMaster_HandleDataPhase();
+            break;
+
+        case LINMASTER_PHASE_OTHER:
         default:
-            /* 未初始化或异常状态 */
+            if (LinMaster_State == LINMASTER_STATE_NEXT_ENTRY) {
+                /* 进入下一帧处理 (可根据应用扩展) */
+                LinMaster_ResetStateMachine();
+                LinMaster_ChangeState(LINMASTER_STATE_IDLE);
+            }
+            /* LINMASTER_STATE_UNINIT 或异常状态: 不处理 */
             break;
     }
 }

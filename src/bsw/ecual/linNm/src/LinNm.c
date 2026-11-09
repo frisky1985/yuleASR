@@ -383,6 +383,114 @@ static void LinNm_TransitionToState(uint8 channelIndex, LinNm_StateType newState
         LinNm_NotifyStateChange(channelIndex, oldState, (Nm_StateType)newState);
     }
 }
+/** * @brief BUS_SLEEP 态事件处理 */
+static void LinNm_HandleBusSleepEvent(uint8 channelIndex, LinNm_EventType event)
+{
+    switch (event)
+    {
+        case LINNM_EVENT_NETWORK_REQUEST:
+        case LINNM_EVENT_MSG_RECEIVED:
+        case LINNM_EVENT_WAKEUP: /* Wake up the network */
+            LinNm_LeaveBusSleep(channelIndex);
+            LinNm_TransitionToState(channelIndex, LINNM_STATE_REPEAT_MESSAGE);
+            break;
+        default: /* Stay in bus sleep */
+            break;
+    }
+}
+
+/** * @brief PREPARE_BUS_SLEEP 态事件处理 */
+static void LinNm_HandlePrepareBusSleepEvent(uint8 channelIndex, LinNm_EventType event)
+{
+    switch (event)
+    {
+        case LINNM_EVENT_NETWORK_REQUEST:
+        case LINNM_EVENT_MSG_RECEIVED:
+        case LINNM_EVENT_WAKEUP: /* Re-enter network mode */
+            LinNm_TransitionToState(channelIndex, LINNM_STATE_NORMAL_OPERATION);
+            break;
+        case LINNM_EVENT_TIMEOUT: /* Enter bus sleep */
+            LinNm_TransitionToState(channelIndex, LINNM_STATE_BUS_SLEEP);
+            break;
+        default: /* Stay in prepare bus sleep */
+            break;
+    }
+}
+
+/** * @brief READY_SLEEP 态事件处理 */
+static void LinNm_HandleReadySleepEvent(uint8 channelIndex, LinNm_EventType event)
+{
+    switch (event)
+    {
+        case LINNM_EVENT_NETWORK_REQUEST: /* Enter normal operation */
+            LinNm_TransitionToState(channelIndex, LINNM_STATE_NORMAL_OPERATION);
+            break;
+        case LINNM_EVENT_MSG_RECEIVED: /* Reset timeout timer */
+            LinNm_StartTimeoutTimer(channelIndex, LinNm_ConfigPtr->ChannelConfig[channelIndex].TimeoutTimeMs);
+            break;
+        case LINNM_EVENT_TIMEOUT: /* Enter prepare bus sleep */
+            LinNm_TransitionToState(channelIndex, LINNM_STATE_PREPARE_BUS_SLEEP);
+            break;
+        default: /* Stay in ready sleep */
+            break;
+    }
+}
+
+/** * @brief NORMAL_OPERATION 态事件处理 */
+static void LinNm_HandleNormalOperationEvent(uint8 channelIndex, LinNm_EventType event)
+{
+    switch (event)
+    {
+        case LINNM_EVENT_NETWORK_RELEASE: /* Enter ready sleep */
+            LinNm_TransitionToState(channelIndex, LINNM_STATE_READY_SLEEP);
+            break;
+        case LINNM_EVENT_MSG_RECEIVED: /* Reset timeout timer */
+            LinNm_StartTimeoutTimer(channelIndex, LinNm_ConfigPtr->ChannelConfig[channelIndex].TimeoutTimeMs);
+            break;
+        case LINNM_EVENT_TIMEOUT: /* Enter ready sleep */
+            LinNm_TransitionToState(channelIndex, LINNM_STATE_READY_SLEEP);
+            break;
+        default: /* Stay in normal operation */
+            break;
+    }
+}
+
+/** * @brief REPEAT_MESSAGE 态事件处理 */
+static void LinNm_HandleRepeatMessageEvent(uint8 channelIndex, LinNm_EventType event)
+{
+    switch (event)
+    {
+        case LINNM_EVENT_NETWORK_RELEASE: /* Enter ready sleep */
+            LinNm_TransitionToState(channelIndex, LINNM_STATE_READY_SLEEP);
+            break;
+        case LINNM_EVENT_MSG_RECEIVED:
+        case LINNM_EVENT_TIMEOUT: /* Transition to normal operation */
+            LinNm_TransitionToState(channelIndex, LINNM_STATE_NORMAL_OPERATION);
+            break;
+        default: /* Stay in repeat message, decrement counter in MainFunction */
+            break;
+    }
+}
+
+/** * @brief NETWORK_MODE 态事件处理 */
+static void LinNm_HandleNetworkModeEvent(uint8 channelIndex, LinNm_EventType event)
+{
+    switch (event)
+    {
+        case LINNM_EVENT_NETWORK_RELEASE:
+            LinNm_TransitionToState(channelIndex, LINNM_STATE_READY_SLEEP);
+            break;
+        case LINNM_EVENT_MSG_RECEIVED:
+            LinNm_StartTimeoutTimer(channelIndex, LinNm_ConfigPtr->ChannelConfig[channelIndex].TimeoutTimeMs);
+            break;
+        case LINNM_EVENT_TIMEOUT:
+            LinNm_TransitionToState(channelIndex, LINNM_STATE_READY_SLEEP);
+            break;
+        default: /* Stay in network mode */
+            break;
+    }
+}
+
 /** * @brief Main state machine processing */
 /** @req SWS_LinNm_00014 */
 static void LinNm_StateMachine(uint8 channelIndex, LinNm_EventType event)
@@ -396,94 +504,22 @@ static void LinNm_StateMachine(uint8 channelIndex, LinNm_EventType event)
     switch (chRuntime->State)
     {
         case LINNM_STATE_BUS_SLEEP:
-            switch (event)
-            {
-                case LINNM_EVENT_NETWORK_REQUEST:
-                case LINNM_EVENT_MSG_RECEIVED:
-                case LINNM_EVENT_WAKEUP: /* Wake up the network */
-                    LinNm_LeaveBusSleep(channelIndex);
-                    LinNm_TransitionToState(channelIndex, LINNM_STATE_REPEAT_MESSAGE);
-                    break;
-                default: /* Stay in bus sleep */
-                    break;
-            }
+            LinNm_HandleBusSleepEvent(channelIndex, event);
             break;
         case LINNM_STATE_PREPARE_BUS_SLEEP:
-            switch (event)
-            {
-                case LINNM_EVENT_NETWORK_REQUEST:
-                case LINNM_EVENT_MSG_RECEIVED:
-                case LINNM_EVENT_WAKEUP: /* Re-enter network mode */
-                    LinNm_TransitionToState(channelIndex, LINNM_STATE_NORMAL_OPERATION);
-                    break;
-                case LINNM_EVENT_TIMEOUT: /* Enter bus sleep */
-                    LinNm_TransitionToState(channelIndex, LINNM_STATE_BUS_SLEEP);
-                    break;
-                default: /* Stay in prepare bus sleep */
-                    break;
-            }
+            LinNm_HandlePrepareBusSleepEvent(channelIndex, event);
             break;
         case LINNM_STATE_READY_SLEEP:
-            switch (event)
-            {
-                case LINNM_EVENT_NETWORK_REQUEST: /* Enter normal operation */
-                    LinNm_TransitionToState(channelIndex, LINNM_STATE_NORMAL_OPERATION);
-                    break;
-                case LINNM_EVENT_MSG_RECEIVED: /* Reset timeout timer */
-                    LinNm_StartTimeoutTimer(channelIndex, LinNm_ConfigPtr->ChannelConfig[channelIndex].TimeoutTimeMs);
-                    break;
-                case LINNM_EVENT_TIMEOUT: /* Enter prepare bus sleep */
-                    LinNm_TransitionToState(channelIndex, LINNM_STATE_PREPARE_BUS_SLEEP);
-                    break;
-                default: /* Stay in ready sleep */
-                    break;
-            }
+            LinNm_HandleReadySleepEvent(channelIndex, event);
             break;
         case LINNM_STATE_NORMAL_OPERATION:
-            switch (event)
-            {
-                case LINNM_EVENT_NETWORK_RELEASE: /* Enter ready sleep */
-                    LinNm_TransitionToState(channelIndex, LINNM_STATE_READY_SLEEP);
-                    break;
-                case LINNM_EVENT_MSG_RECEIVED: /* Reset timeout timer */
-                    LinNm_StartTimeoutTimer(channelIndex, LinNm_ConfigPtr->ChannelConfig[channelIndex].TimeoutTimeMs);
-                    break;
-                case LINNM_EVENT_TIMEOUT: /* Enter ready sleep */
-                    LinNm_TransitionToState(channelIndex, LINNM_STATE_READY_SLEEP);
-                    break;
-                default: /* Stay in normal operation */
-                    break;
-            }
+            LinNm_HandleNormalOperationEvent(channelIndex, event);
             break;
         case LINNM_STATE_REPEAT_MESSAGE:
-            switch (event)
-            {
-                case LINNM_EVENT_NETWORK_RELEASE: /* Enter ready sleep */
-                    LinNm_TransitionToState(channelIndex, LINNM_STATE_READY_SLEEP);
-                    break;
-                case LINNM_EVENT_MSG_RECEIVED:
-                case LINNM_EVENT_TIMEOUT: /* Transition to normal operation */
-                    LinNm_TransitionToState(channelIndex, LINNM_STATE_NORMAL_OPERATION);
-                    break;
-                default: /* Stay in repeat message, decrement counter in MainFunction */
-                    break;
-            }
+            LinNm_HandleRepeatMessageEvent(channelIndex, event);
             break;
         case LINNM_STATE_NETWORK_MODE:
-            switch (event)
-            {
-                case LINNM_EVENT_NETWORK_RELEASE:
-                    LinNm_TransitionToState(channelIndex, LINNM_STATE_READY_SLEEP);
-                    break;
-                case LINNM_EVENT_MSG_RECEIVED:
-                    LinNm_StartTimeoutTimer(channelIndex, LinNm_ConfigPtr->ChannelConfig[channelIndex].TimeoutTimeMs);
-                    break;
-                case LINNM_EVENT_TIMEOUT:
-                    LinNm_TransitionToState(channelIndex, LINNM_STATE_READY_SLEEP);
-                    break;
-                default: /* Stay in network mode */
-                    break;
-            }
+            LinNm_HandleNetworkModeEvent(channelIndex, event);
             break;
         default: /* Invalid state, enter bus sleep */
             LinNm_TransitionToState(channelIndex, LINNM_STATE_BUS_SLEEP);
