@@ -1024,6 +1024,53 @@ uint32 Icu_GetSysTimestamp(void)
 /*==================================================================================================
 *                                    INTERRUPT HANDLER
 ==================================================================================================*/
+/* Icu_ProcessInterrupt 等价重构助手 */
+
+/**
+ * @brief 通道通知使能时调用回调 (等价重构助手)
+ */
+static void Icu_NotifyIfEnabled(Icu_ChannelType Channel)
+{
+    if (Icu_ChannelNotificationEnabled[Channel] &&
+        (Icu_ConfigPtr->Channels[Channel].NotificationFn != NULL_PTR)) {
+        Icu_ConfigPtr->Channels[Channel].NotificationFn();
+    }
+}
+
+/**
+ * @brief ICU_TIMESTAMP 模式: 存储时间戳并处理环形/线性缓冲与通知间隔 (等价重构助手)
+ */
+static void Icu_ProcessTimestampCapture(Icu_ChannelType Channel, uint16 captureValue)
+{
+    /* Store timestamp */
+    if (Icu_TimestampBuffer[Channel] != NULL_PTR) {
+        Icu_TimestampBuffer[Channel][Icu_TimestampIndex[Channel]] = captureValue;
+        Icu_TimestampIndex[Channel]++;
+
+        /* Wrap around for circular buffer */
+        if (Icu_TimestampIndex[Channel] >= Icu_TimestampBufferSize[Channel]) {
+            if (Icu_ConfigPtr->Channels[Channel].TimestampBufferType == ICU_CIRCULAR_BUFFER) {
+                Icu_TimestampIndex[Channel] = 0U;
+            } else {
+                /* Linear buffer - stop capturing */
+/** @req SWS_Icu_00012 */
+                Icu_StopTimestamp(Channel);
+            }
+        }
+
+        /* Check for notification */
+        if (Icu_TimestampNotifyInterval[Channel] > 0U) {
+            Icu_TimestampCaptureCount[Channel]++;
+            if (Icu_TimestampCaptureCount[Channel] >= Icu_TimestampNotifyInterval[Channel]) {
+                Icu_TimestampCaptureCount[Channel] = 0U;
+                if (Icu_ConfigPtr->Channels[Channel].NotificationFn != NULL_PTR) {
+                    Icu_ConfigPtr->Channels[Channel].NotificationFn();
+                }
+            }
+        }
+    }
+}
+
 /**
  * @brief ICU Interrupt Handler
  * @param Channel Channel that triggered the interrupt
@@ -1033,78 +1080,43 @@ void Icu_ProcessInterrupt(Icu_ChannelType Channel){
     if (Channel >= ICU_NUM_CHANNELS) {
         return;
     }
-    
+
     uint32 emiosBase = Icu_GetEmiosBaseAddr(Channel);
     uint8 chNum = Icu_GetEmiosChannelNum(Channel);
     uint32 chAddr = Icu_GetChannelRegAddr(emiosBase, chNum);
-    
+
     /* Read capture value */
     uint16 captureValue = (uint16)REG_READ32(chAddr + EMIOS_C_A);
-    
+
     /* Clear flag */
     Icu_ClearChannelFlag(Channel);
-    
+
     /* Process based on measurement mode */
     if ((Icu_ConfigPtr->Channels[Channel].MeasurementMode == ICU_MODE_TIMESTAMP) &&
         Icu_ChannelRunning[Channel]) {
-        /* Store timestamp */
-        if (Icu_TimestampBuffer[Channel] != NULL_PTR) {
-            Icu_TimestampBuffer[Channel][Icu_TimestampIndex[Channel]] = captureValue;
-            Icu_TimestampIndex[Channel]++;
-            
-            /* Wrap around for circular buffer */
-            if (Icu_TimestampIndex[Channel] >= Icu_TimestampBufferSize[Channel]) {
-                if (Icu_ConfigPtr->Channels[Channel].TimestampBufferType == ICU_CIRCULAR_BUFFER) {
-                    Icu_TimestampIndex[Channel] = 0U;
-                } else {
-                    /* Linear buffer - stop capturing */
-/** @req SWS_Icu_00012 */
-                    Icu_StopTimestamp(Channel);
-                }
-            }
-            
-            /* Check for notification */
-            if (Icu_TimestampNotifyInterval[Channel] > 0U) {
-                Icu_TimestampCaptureCount[Channel]++;
-                if (Icu_TimestampCaptureCount[Channel] >= Icu_TimestampNotifyInterval[Channel]) {
-                    Icu_TimestampCaptureCount[Channel] = 0U;
-                    if (Icu_ConfigPtr->Channels[Channel].NotificationFn != NULL_PTR) {
-                        Icu_ConfigPtr->Channels[Channel].NotificationFn();
-                    }
-                }
-            }
-        }
+        Icu_ProcessTimestampCapture(Channel, captureValue);
     }
     else if ((Icu_ConfigPtr->Channels[Channel].MeasurementMode == ICU_MODE_SIGNAL_MEASUREMENT) &&
              Icu_SignalMeasurementRunning[Channel]) {
         /* Process signal measurement */
         Icu_ProcessSignalMeasurement(Channel, captureValue);
-        
+
         /* Call notification if enabled */
-        if (Icu_ChannelNotificationEnabled[Channel] &&
-            (Icu_ConfigPtr->Channels[Channel].NotificationFn != NULL_PTR)) {
-            Icu_ConfigPtr->Channels[Channel].NotificationFn();
-        }
+        Icu_NotifyIfEnabled(Channel);
     }
     else if (Icu_ConfigPtr->Channels[Channel].MeasurementMode == ICU_MODE_SIGNAL_EDGE_DETECT) {
         /* Update input state */
         Icu_ChannelInputState[Channel] = ICU_ACTIVE;
-        
+
         /* Call notification if enabled */
-        if (Icu_ChannelNotificationEnabled[Channel] &&
-            (Icu_ConfigPtr->Channels[Channel].NotificationFn != NULL_PTR)) {
-            Icu_ConfigPtr->Channels[Channel].NotificationFn();
-        }
+        Icu_NotifyIfEnabled(Channel);
     }
     else if ((Icu_EdgeCountEnabled[Channel]) != 0U) {
         /* Edge counting - increment handled by hardware */
         /* Call notification if enabled */
-        if (Icu_ChannelNotificationEnabled[Channel] &&
-            (Icu_ConfigPtr->Channels[Channel].NotificationFn != NULL_PTR)) {
-            Icu_ConfigPtr->Channels[Channel].NotificationFn();
-        }
+        Icu_NotifyIfEnabled(Channel);
     }
-    
+
     /* Handle wakeup */
     if (Icu_ChannelWakeupEnabled[Channel] && (Icu_DriverMode == ICU_MODE_SLEEP)) {
         /* Report wakeup to EcuM */

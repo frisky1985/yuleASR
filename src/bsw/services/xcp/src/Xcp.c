@@ -402,6 +402,32 @@ Xcp_SessionStatusType Xcp_GetSessionStatus(void)
     return status;
 }
 
+/* Xcp_ProcessCommand 命令路由等价重构助手: 标准命令谓词按两组拆分,
+ * 路由结果与原实现逐路径一致 (DAQ/PGM 分支因 cmd>=0xC0 先行短路保持原死代码语义) */
+static boolean Xcp_IsStdCmdGroupA(uint8 cmd)
+{
+    return (boolean)((cmd == XCP_CMD_CONNECT) || (cmd == XCP_CMD_DISCONNECT) ||
+        (cmd == XCP_CMD_GET_STATUS) || (cmd == XCP_CMD_SYNCH) ||
+        (cmd == XCP_CMD_GET_COMM_MODE_INFO) || (cmd == XCP_CMD_GET_ID) ||
+        (cmd == XCP_CMD_SET_REQUEST));
+}
+
+static boolean Xcp_IsStdCmdGroupB(uint8 cmd)
+{
+    return (boolean)((cmd == XCP_CMD_GET_SEED) || (cmd == XCP_CMD_UNLOCK) ||
+        (cmd == XCP_CMD_SET_MTA) || (cmd == XCP_CMD_UPLOAD) ||
+        (cmd == XCP_CMD_SHORT_UPLOAD) || (cmd == XCP_CMD_BUILD_CHECKSUM) ||
+        (cmd == XCP_CMD_TRANSPORT_LAYER_CMD) || (cmd == XCP_CMD_USER_CMD));
+}
+
+static boolean Xcp_IsStandardCommand(uint8 cmd)
+{
+    if (cmd >= 0xC0U) {
+        return TRUE;
+    }
+    return (boolean)(Xcp_IsStdCmdGroupA(cmd) || Xcp_IsStdCmdGroupB(cmd));
+}
+
 /** @req SWS_Xcp_00009 */
 /**
  * @brief Processes received XCP command
@@ -423,14 +449,7 @@ void Xcp_ProcessCommand(uint8 ChannelId, const uint8* Data, uint8 Length)
     }
 
     /* Route command to appropriate processor */
-    if ((cmd >= 0xC0U) || (cmd == XCP_CMD_CONNECT) || (cmd == XCP_CMD_DISCONNECT) ||
-        (cmd == XCP_CMD_GET_STATUS) || (cmd == XCP_CMD_SYNCH) ||
-        (cmd == XCP_CMD_GET_COMM_MODE_INFO) || (cmd == XCP_CMD_GET_ID) ||
-        (cmd == XCP_CMD_SET_REQUEST) || (cmd == XCP_CMD_GET_SEED) ||
-        (cmd == XCP_CMD_UNLOCK) || (cmd == XCP_CMD_SET_MTA) ||
-        (cmd == XCP_CMD_UPLOAD) || (cmd == XCP_CMD_SHORT_UPLOAD) ||
-        (cmd == XCP_CMD_BUILD_CHECKSUM) || (cmd == XCP_CMD_TRANSPORT_LAYER_CMD) ||
-        (cmd == XCP_CMD_USER_CMD)) {
+    if (Xcp_IsStandardCommand(cmd)) {
         Xcp_ProcessStandardCommand(ChannelId, Data, Length);
     }
     else if ((cmd >= 0xC0U) && (cmd <= 0xE3U)) {

@@ -73,22 +73,28 @@ static BswM_InternalType BswM_State = {
 
 void BswM_ExecuteActionList(uint16 ActionListIndex);
 
+/* BswM_EvaluateExpression 显式工作栈帧 (MISRA 17.2 迭代求值) */
+typedef struct {
+    uint16 index;
+    uint8  phase; /* 0 = expand children, 1 = compute result */
+    uint8  depth;
+} BswM_EvalFrameType;
+
+/* BswM_EvaluateExpression 等价重构助手 */
+static void BswM_EvalExpand(const BswM_ExpressionConfigType* expr, const BswM_EvalFrameType* frame,
+                            BswM_EvalFrameType* workStack, uint8* wsp, uint8 capacity);
+static void BswM_EvalCompute(const BswM_ExpressionConfigType* expr, boolean* valStack, uint8* vsp);
+
 static boolean BswM_EvaluateExpression(uint16 ExpressionIndex, uint8 Depth)
 {
     /* Iterative expression-tree evaluation (MISRA 17.2: no recursion).
      * Uses an explicit work stack (index + phase + depth) and a value stack.
      * Depth is bounded by BSWM_EXPR_MAX_DEPTH (16), so stack sizes are safe. */
-    typedef struct {
-        uint16 index;
-        uint8  phase; /* 0 = expand children, 1 = compute result */
-        uint8  depth;
-    } BswM_EvalFrame;
-
-    BswM_EvalFrame workStack[(BSWM_EXPR_MAX_DEPTH * 2U) + 2U];
-    boolean        valStack[(BSWM_EXPR_MAX_DEPTH * 2U) + 2U];
-    uint8          wsp = 0U;
-    uint8          vsp = 0U;
-    boolean        result = FALSE;
+    BswM_EvalFrameType workStack[(BSWM_EXPR_MAX_DEPTH * 2U) + 2U];
+    boolean            valStack[(BSWM_EXPR_MAX_DEPTH * 2U) + 2U];
+    uint8              wsp = 0U;
+    uint8              vsp = 0U;
+    boolean            result = FALSE;
 
     if ((BswM_State.configPtr == NULL_PTR) || (Depth > BSWM_EXPR_MAX_DEPTH)) {
         return FALSE;
@@ -104,7 +110,7 @@ static boolean BswM_EvaluateExpression(uint16 ExpressionIndex, uint8 Depth)
     wsp++;
 
     while (wsp > 0U) {
-        BswM_EvalFrame frame = workStack[--wsp];
+        BswM_EvalFrameType frame = workStack[--wsp];
         const BswM_ExpressionConfigType* expr;
 
         if ((frame.index >= BswM_State.configPtr->NumExpressions) ||
@@ -117,81 +123,10 @@ static boolean BswM_EvaluateExpression(uint16 ExpressionIndex, uint8 Depth)
         expr = &BswM_State.configPtr->Expressions[frame.index];
 
         if (frame.phase == 0U) {
-            /* Phase 0: re-push self as phase 1, then push children (right-first so left pops first) */
-            if (wsp < (uint8)(sizeof(workStack) / sizeof(workStack[0]))) {
-                workStack[wsp].index = frame.index;
-                workStack[wsp].phase = 1U;
-                workStack[wsp].depth = frame.depth;
-                wsp++;
-            }
-            switch (expr->ExpressionType) {
-                case BSWM_EXPR_LOGICAL_AND:
-                case BSWM_EXPR_LOGICAL_OR:
-                    workStack[wsp].index = expr->RightIndex;
-                    workStack[wsp].phase = 0U;
-                    workStack[wsp].depth = (uint8)(frame.depth + 1U);
-                    wsp++;
-                    workStack[wsp].index = expr->LeftIndex;
-                    workStack[wsp].phase = 0U;
-                    workStack[wsp].depth = (uint8)(frame.depth + 1U);
-                    wsp++;
-                    break;
-                case BSWM_EXPR_LOGICAL_NOT:
-                    workStack[wsp].index = expr->LeftIndex;
-                    workStack[wsp].phase = 0U;
-                    workStack[wsp].depth = (uint8)(frame.depth + 1U);
-                    wsp++;
-                    break;
-                default:
-                    break; /* leaf evaluated in phase 1 */
-            }
+            BswM_EvalExpand(expr, &frame, workStack, &wsp,
+                            (uint8)((BSWM_EXPR_MAX_DEPTH * 2U) + 2U));
         } else {
-            /* Phase 1: compute node value from children already on valStack */
-            boolean val;
-            switch (expr->ExpressionType) {
-                case BSWM_EXPR_MODE_EQUALS:
-                case BSWM_EXPR_MODE_NOT_EQUALS:
-                    if ((expr->PortIndex < BswM_State.configPtr->NumModeRequestPorts) &&
-                        (BswM_State.configPtr->ModeRequestPorts != NULL_PTR)) {
-                        boolean matches = (boolean)(BswM_State.portValue[expr->PortIndex] == expr->CompareValue);
-                        val = (expr->ExpressionType == BSWM_EXPR_MODE_EQUALS)
-                                  ? matches
-                                  : (boolean)(matches == FALSE);
-                    } else {
-                        val = FALSE;
-                    }
-                    valStack[vsp] = val;
-                    vsp++;
-                    break;
-
-                case BSWM_EXPR_LOGICAL_AND: {
-                    boolean right = valStack[--vsp];
-                    boolean left  = valStack[--vsp];
-                    valStack[vsp] = (boolean)(left && right);
-                    vsp++;
-                    break;
-                }
-
-                case BSWM_EXPR_LOGICAL_OR: {
-                    boolean right = valStack[--vsp];
-                    boolean left  = valStack[--vsp];
-                    valStack[vsp] = (boolean)(left || right);
-                    vsp++;
-                    break;
-                }
-
-                case BSWM_EXPR_LOGICAL_NOT: {
-                    boolean child = valStack[--vsp];
-                    valStack[vsp] = (boolean)(child == FALSE);
-                    vsp++;
-                    break;
-                }
-
-                default:
-                    valStack[vsp] = FALSE;
-                    vsp++;
-                    break;
-            }
+            BswM_EvalCompute(expr, valStack, &vsp);
         }
     }
 
@@ -199,6 +134,106 @@ static boolean BswM_EvaluateExpression(uint16 ExpressionIndex, uint8 Depth)
         result = valStack[vsp - 1U];
     }
     return result;
+}
+
+/**
+ * @brief Phase 0: 重压自身 (phase 1) 并按表达式类型压入子节点 (等价重构助手)
+ * @note  子节点压栈沿用原实现, 不做二次容量检查 (与原代码一致)
+ */
+static void BswM_EvalExpand(const BswM_ExpressionConfigType* expr, const BswM_EvalFrameType* frame,
+                            BswM_EvalFrameType* workStack, uint8* wsp, uint8 capacity)
+{
+    /* Phase 0: re-push self as phase 1, then push children (right-first so left pops first) */
+    if (*wsp < capacity) {
+        workStack[*wsp].index = frame->index;
+        workStack[*wsp].phase = 1U;
+        workStack[*wsp].depth = frame->depth;
+        (*wsp)++;
+    }
+    switch (expr->ExpressionType) {
+        case BSWM_EXPR_LOGICAL_AND:
+        case BSWM_EXPR_LOGICAL_OR:
+            workStack[*wsp].index = expr->RightIndex;
+            workStack[*wsp].phase = 0U;
+            workStack[*wsp].depth = (uint8)(frame->depth + 1U);
+            (*wsp)++;
+            workStack[*wsp].index = expr->LeftIndex;
+            workStack[*wsp].phase = 0U;
+            workStack[*wsp].depth = (uint8)(frame->depth + 1U);
+            (*wsp)++;
+            break;
+        case BSWM_EXPR_LOGICAL_NOT:
+            workStack[*wsp].index = expr->LeftIndex;
+            workStack[*wsp].phase = 0U;
+            workStack[*wsp].depth = (uint8)(frame->depth + 1U);
+            (*wsp)++;
+            break;
+        default:
+            break; /* leaf evaluated in phase 1 */
+    }
+}
+
+/**
+ * @brief Phase 1: 从值栈弹出子节点计算本节点值 (等价重构助手)
+ */
+static void BswM_EvalCompute(const BswM_ExpressionConfigType* expr, boolean* valStack, uint8* vsp)
+{
+    /* Phase 1: compute node value from children already on valStack */
+    boolean val;
+    switch (expr->ExpressionType) {
+        case BSWM_EXPR_MODE_EQUALS:
+        case BSWM_EXPR_MODE_NOT_EQUALS:
+            if ((expr->PortIndex < BswM_State.configPtr->NumModeRequestPorts) &&
+                (BswM_State.configPtr->ModeRequestPorts != NULL_PTR)) {
+                boolean matches = (boolean)(BswM_State.portValue[expr->PortIndex] == expr->CompareValue);
+                val = (expr->ExpressionType == BSWM_EXPR_MODE_EQUALS)
+                          ? matches
+                          : (boolean)(matches == FALSE);
+            } else {
+                val = FALSE;
+            }
+            valStack[*vsp] = val;
+            (*vsp)++;
+            break;
+
+        case BSWM_EXPR_LOGICAL_AND: {
+            boolean right;
+            boolean left;
+            (*vsp)--;
+            right = valStack[*vsp];
+            (*vsp)--;
+            left = valStack[*vsp];
+            valStack[*vsp] = (boolean)(left && right);
+            (*vsp)++;
+            break;
+        }
+
+        case BSWM_EXPR_LOGICAL_OR: {
+            boolean right;
+            boolean left;
+            (*vsp)--;
+            right = valStack[*vsp];
+            (*vsp)--;
+            left = valStack[*vsp];
+            valStack[*vsp] = (boolean)(left || right);
+            (*vsp)++;
+            break;
+        }
+
+        case BSWM_EXPR_LOGICAL_NOT: {
+            boolean child;
+            (*vsp)--;
+            child = valStack[*vsp];
+            valStack[*vsp] = (boolean)(child == FALSE);
+            (*vsp)++;
+            break;
+        }
+
+        default:
+            valStack[*vsp] = FALSE;
+            (*vsp)++;
+            break;
+    }
 }
 
 /**

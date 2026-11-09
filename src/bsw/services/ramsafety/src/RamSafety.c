@@ -122,6 +122,26 @@ STATIC Std_ReturnType RamSafety_RunMarchC(
     const RamSafety_RegionType* region,
     RamSafety_ErrorCallbackType errorCb
 );
+/* RamSafety_RunMarchC 等价重构助手 */
+STATIC boolean RamSafety_MarchVerify(RamSafety_ErrorCallbackType errorCb, uint32 address,
+                                     uint8 expected, uint8 actual);
+STATIC void RamSafety_MarchFill(const RamSafety_RegionType* region, uint8 pattern);
+STATIC Std_ReturnType RamSafety_MarchUpRwr(const RamSafety_RegionType* region,
+                                           RamSafety_ErrorCallbackType errorCb,
+                                           uint8 expectedRead, uint8 writePattern, uint8 expectedWrite);
+STATIC Std_ReturnType RamSafety_MarchDownRwr(const RamSafety_RegionType* region,
+                                             RamSafety_ErrorCallbackType errorCb,
+                                             uint8 expectedRead, uint8 writePattern, uint8 expectedWrite);
+STATIC Std_ReturnType RamSafety_MarchDownRead(const RamSafety_RegionType* region,
+                                              RamSafety_ErrorCallbackType errorCb, uint8 expected);
+/* RamSafety_TriggerTest 等价重构助手 */
+typedef Std_ReturnType (*RamSafety_TestFnType)(const RamSafety_RegionType* region,
+                                               RamSafety_ErrorCallbackType errorCb);
+STATIC Std_ReturnType RamSafety_RunIfRegion(RamSafety_TestFnType testFn, const RamSafety_RegionType* region,
+                                            RamSafety_ErrorCallbackType errorCb);
+STATIC Std_ReturnType RamSafety_RunQuickTest(const RamSafety_RegionType* region);
+STATIC Std_ReturnType RamSafety_RunSelectedTest(RamSafety_TestType testType, const RamSafety_RegionType* region,
+                                                RamSafety_ErrorCallbackType errorCb);
 STATIC Std_ReturnType RamSafety_RunWalkPattern(
     const RamSafety_RegionType* region,
     RamSafety_ErrorCallbackType errorCb
@@ -432,6 +452,79 @@ void RamSafety_MainFunction(void)
 }
 
 /**
+ * @brief 指定区域非空时执行测试, 否则返回 E_NOT_OK (等价重构助手)
+ */
+STATIC Std_ReturnType RamSafety_RunIfRegion(RamSafety_TestFnType testFn, const RamSafety_RegionType* region,
+                                            RamSafety_ErrorCallbackType errorCb)
+{
+    if (NULL_PTR != region)
+    {
+        return testFn(region, errorCb);
+    }
+    return E_NOT_OK;
+}
+
+/**
+ * @brief 快速检查: 只检查第一个字节读写 (等价重构助手)
+ * @note  保持原实现: 读写校验结果被末尾 result = E_OK 覆盖,
+ *        区域非空时恒返回 E_OK
+ */
+STATIC Std_ReturnType RamSafety_RunQuickTest(const RamSafety_RegionType* region)
+{
+    Std_ReturnType result = E_NOT_OK;
+
+    if (NULL_PTR != region)
+    {
+        volatile uint8* ptr = (volatile uint8*)(uintptr)region->startAddress;
+        uint8 original = *ptr;
+        *ptr = RAMSAFETY_PATTERN_55;
+        if (*ptr != RAMSAFETY_PATTERN_55)
+        {
+            result = E_NOT_OK;
+        }
+        *ptr = original;
+        result = E_OK;
+    }
+    return result;
+}
+
+/**
+ * @brief 按测试类型选择并执行对应算法 (等价重构助手)
+ */
+STATIC Std_ReturnType RamSafety_RunSelectedTest(RamSafety_TestType testType, const RamSafety_RegionType* region,
+                                                RamSafety_ErrorCallbackType errorCb)
+{
+    switch (testType)
+    {
+        case RAMSAFETY_TEST_MARCH_C:
+            return RamSafety_RunIfRegion(RamSafety_RunMarchC, region, errorCb);
+
+        case RAMSAFETY_TEST_WALK_PATTERN:
+            return RamSafety_RunIfRegion(RamSafety_RunWalkPattern, region, errorCb);
+
+        case RAMSAFETY_TEST_ADDR_LINE:
+            return RamSafety_RunIfRegion(RamSafety_RunAddrLineTest, region, errorCb);
+
+        case RAMSAFETY_TEST_DATA_LINE:
+            return RamSafety_RunIfRegion(RamSafety_RunDataLineTest, region, errorCb);
+
+        case RAMSAFETY_TEST_QUICK:
+            /* 快速检查: 只检查第一个和最后一个字节 */
+            return RamSafety_RunQuickTest(region);
+
+        case RAMSAFETY_TEST_FULL:
+            if (RamSafety_RunIfRegion(RamSafety_RunMarchC, region, errorCb) == E_OK)
+            {
+                return RamSafety_RunIfRegion(RamSafety_RunWalkPattern, region, errorCb);
+            }
+            return E_NOT_OK;
+
+        default:
+            return E_NOT_OK;
+    }
+}
+
+/**
  * @brief 手动触发指定类型的检查
  * @req SWS_RamSafety_00012
  */
@@ -467,67 +560,7 @@ RamSafety_ResultType RamSafety_TriggerTest(
         region = &RamSafety_CurrentConfig->regions[regionId];
     }
 
-    switch (testType)
-    {
-        case RAMSAFETY_TEST_MARCH_C:
-            if (NULL_PTR != region)
-            {
-                result = RamSafety_RunMarchC(region, errorCb);
-            }
-            break;
-
-        case RAMSAFETY_TEST_WALK_PATTERN:
-            if (NULL_PTR != region)
-            {
-                result = RamSafety_RunWalkPattern(region, errorCb);
-            }
-            break;
-
-        case RAMSAFETY_TEST_ADDR_LINE:
-            if (NULL_PTR != region)
-            {
-                result = RamSafety_RunAddrLineTest(region, errorCb);
-            }
-            break;
-
-        case RAMSAFETY_TEST_DATA_LINE:
-            if (NULL_PTR != region)
-            {
-                result = RamSafety_RunDataLineTest(region, errorCb);
-            }
-            break;
-
-        case RAMSAFETY_TEST_QUICK:
-            /* 快速检查: 只检查第一个和最后一个字节 */
-            if (NULL_PTR != region)
-            {
-                volatile uint8* ptr = (volatile uint8*)(uintptr)region->startAddress;
-                uint8 original = *ptr;
-                *ptr = RAMSAFETY_PATTERN_55;
-                if (*ptr != RAMSAFETY_PATTERN_55)
-                {
-                    result = E_NOT_OK;
-                }
-                *ptr = original;
-                result = E_OK;
-            }
-            break;
-
-        case RAMSAFETY_TEST_FULL:
-            if (NULL_PTR != region)
-            {
-                result = RamSafety_RunMarchC(region, errorCb);
-                if (E_OK == result)
-                {
-                    result = RamSafety_RunWalkPattern(region, errorCb);
-                }
-            }
-            break;
-
-        default:
-            result = E_NOT_OK;
-            break;
-    }
+    result = RamSafety_RunSelectedTest(testType, region, errorCb);
 
     if (E_OK == result)
     {
@@ -775,11 +808,44 @@ STATIC Std_ReturnType RamSafety_ValidateConfig(const RamSafety_ConfigType* confi
 }
 
 /**
- * @brief 运行March C- 算法
- * @ASIL-D: Memory test algorithm
- * @req SWS_RamSafety_00102
+ * @brief March 单地址读值校验, 失败时上报错误回调 (等价重构助手)
+ * @return TRUE=读值与期望不符 (已回调), FALSE=一致
  */
-STATIC Std_ReturnType RamSafety_RunMarchC(const RamSafety_RegionType* region, RamSafety_ErrorCallbackType errorCb)
+STATIC boolean RamSafety_MarchVerify(RamSafety_ErrorCallbackType errorCb, uint32 address,
+                                     uint8 expected, uint8 actual)
+{
+    if (actual != expected)
+    {
+        if (NULL_PTR != errorCb)
+        {
+            errorCb(RAMSAFETY_TEST_MARCH_C, address, expected, actual);
+        }
+        return TRUE;
+    }
+    return FALSE;
+}
+
+/**
+ * @brief 阶段1: ↑ (w0) 从低到高写指定图案 (等价重构助手)
+ */
+STATIC void RamSafety_MarchFill(const RamSafety_RegionType* region, uint8 pattern)
+{
+    volatile uint8* ptr;
+    uint32 i;
+
+    for (i = 0U; i < region->size; i++)
+    {
+        ptr = (volatile uint8*)(uintptr)(region->startAddress + i);
+        *ptr = pattern;
+    }
+}
+
+/**
+ * @brief 升序 (r,w,r) 相位: 读期望值-写新图案-回读校验 (等价重构助手)
+ */
+STATIC Std_ReturnType RamSafety_MarchUpRwr(const RamSafety_RegionType* region,
+                                           RamSafety_ErrorCallbackType errorCb,
+                                           uint8 expectedRead, uint8 writePattern, uint8 expectedWrite)
 {
     volatile uint8* ptr;
     uint32 i;
@@ -787,126 +853,117 @@ STATIC Std_ReturnType RamSafety_RunMarchC(const RamSafety_RegionType* region, Ra
     uint32 addr = region->startAddress;
     uint8 readVal;
 
-    /* 阶段1: ↑ (w0) - 从低到高写0 */
     for (i = 0U; i < size; i++)
     {
         ptr = (volatile uint8*)(uintptr)(addr + i);
-        *ptr = RAMSAFETY_PATTERN_0;
+        readVal = *ptr;
+        if (RamSafety_MarchVerify(errorCb, addr + i, expectedRead, readVal))
+        {
+            return E_NOT_OK;
+        }
+        *ptr = writePattern;
+        readVal = *ptr;
+        if (RamSafety_MarchVerify(errorCb, addr + i, writePattern, readVal))
+        {
+            return E_NOT_OK;
+        }
     }
+    return E_OK;
+}
+
+/**
+ * @brief 降序 (r,w,r) 相位: 读期望值-写新图案-回读校验 (等价重构助手)
+ */
+STATIC Std_ReturnType RamSafety_MarchDownRwr(const RamSafety_RegionType* region,
+                                             RamSafety_ErrorCallbackType errorCb,
+                                             uint8 expectedRead, uint8 writePattern, uint8 expectedWrite)
+{
+    volatile uint8* ptr;
+    uint32 i;
+    uint32 size = region->size;
+    uint32 addr = region->startAddress;
+    uint8 readVal;
+
+    for (i = size; i > 0U; i--)
+    {
+        ptr = (volatile uint8*)(uintptr)(addr + i - 1U);
+        readVal = *ptr;
+        if (RamSafety_MarchVerify(errorCb, addr + i - 1U, expectedRead, readVal))
+        {
+            return E_NOT_OK;
+        }
+        *ptr = writePattern;
+        readVal = *ptr;
+        if (RamSafety_MarchVerify(errorCb, addr + i - 1U, writePattern, readVal))
+        {
+            return E_NOT_OK;
+        }
+    }
+    return E_OK;
+}
+
+/**
+ * @brief 降序只读相位: 校验区域内容为期望图案 (等价重构助手)
+ */
+STATIC Std_ReturnType RamSafety_MarchDownRead(const RamSafety_RegionType* region,
+                                              RamSafety_ErrorCallbackType errorCb, uint8 expected)
+{
+    volatile uint8* ptr;
+    uint32 i;
+    uint32 size = region->size;
+    uint32 addr = region->startAddress;
+    uint8 readVal;
+
+    for (i = size; i > 0U; i--)
+    {
+        ptr = (volatile uint8*)(uintptr)(addr + i - 1U);
+        readVal = *ptr;
+        if (RamSafety_MarchVerify(errorCb, addr + i - 1U, expected, readVal))
+        {
+            return E_NOT_OK;
+        }
+    }
+    return E_OK;
+}
+
+/**
+ * @brief 运行March C- 算法
+ * @ASIL-D: Memory test algorithm
+ * @req SWS_RamSafety_00102
+ */
+STATIC Std_ReturnType RamSafety_RunMarchC(const RamSafety_RegionType* region, RamSafety_ErrorCallbackType errorCb)
+{
+    /* 阶段1: ↑ (w0) - 从低到高写0 */
+    RamSafety_MarchFill(region, RAMSAFETY_PATTERN_0);
 
     /* 阶段2: ↑ (r0,w1,r1) - 从低到高: 读0,写1,读1 */
-    for (i = 0U; i < size; i++)
+    if (RamSafety_MarchUpRwr(region, errorCb, RAMSAFETY_PATTERN_0, RAMSAFETY_PATTERN_1, RAMSAFETY_PATTERN_1) != E_OK)
     {
-        ptr = (volatile uint8*)(uintptr)(addr + i);
-        readVal = *ptr;
-        if (readVal != RAMSAFETY_PATTERN_0)
-        {
-            if (NULL_PTR != errorCb)
-            {
-                errorCb(RAMSAFETY_TEST_MARCH_C, addr + i, RAMSAFETY_PATTERN_0, readVal);
-            }
-            return E_NOT_OK;
-        }
-        *ptr = RAMSAFETY_PATTERN_1;
-        readVal = *ptr;
-        if (readVal != RAMSAFETY_PATTERN_1)
-        {
-            if (NULL_PTR != errorCb)
-            {
-                errorCb(RAMSAFETY_TEST_MARCH_C, addr + i, RAMSAFETY_PATTERN_1, readVal);
-            }
-            return E_NOT_OK;
-        }
+        return E_NOT_OK;
     }
 
     /* 阶段3: ↑ (r1,w0,r0) - 从低到高: 读1,写0,读0 */
-    for (i = 0U; i < size; i++)
+    if (RamSafety_MarchUpRwr(region, errorCb, RAMSAFETY_PATTERN_1, RAMSAFETY_PATTERN_0, RAMSAFETY_PATTERN_0) != E_OK)
     {
-        ptr = (volatile uint8*)(uintptr)(addr + i);
-        readVal = *ptr;
-        if (readVal != RAMSAFETY_PATTERN_1)
-        {
-            if (NULL_PTR != errorCb)
-            {
-                errorCb(RAMSAFETY_TEST_MARCH_C, addr + i, RAMSAFETY_PATTERN_1, readVal);
-            }
-            return E_NOT_OK;
-        }
-        *ptr = RAMSAFETY_PATTERN_0;
-        readVal = *ptr;
-        if (readVal != RAMSAFETY_PATTERN_0)
-        {
-            if (NULL_PTR != errorCb)
-            {
-                errorCb(RAMSAFETY_TEST_MARCH_C, addr + i, RAMSAFETY_PATTERN_0, readVal);
-            }
-            return E_NOT_OK;
-        }
+        return E_NOT_OK;
     }
 
     /* 阶段4: ↓ (r0,w1,r1) - 从高到低: 读0,写1,读1 */
-    for (i = size; i > 0U; i--)
+    if (RamSafety_MarchDownRwr(region, errorCb, RAMSAFETY_PATTERN_0, RAMSAFETY_PATTERN_1, RAMSAFETY_PATTERN_1) != E_OK)
     {
-        ptr = (volatile uint8*)(uintptr)(addr + i - 1U);
-        readVal = *ptr;
-        if (readVal != RAMSAFETY_PATTERN_0)
-        {
-            if (NULL_PTR != errorCb)
-            {
-                errorCb(RAMSAFETY_TEST_MARCH_C, addr + i - 1U, RAMSAFETY_PATTERN_0, readVal);
-            }
-            return E_NOT_OK;
-        }
-        *ptr = RAMSAFETY_PATTERN_1;
-        readVal = *ptr;
-        if (readVal != RAMSAFETY_PATTERN_1)
-        {
-            if (NULL_PTR != errorCb)
-            {
-                errorCb(RAMSAFETY_TEST_MARCH_C, addr + i - 1U, RAMSAFETY_PATTERN_1, readVal);
-            }
-            return E_NOT_OK;
-        }
+        return E_NOT_OK;
     }
 
     /* 阶段5: ↓ (r1,w0,r0) - 从高到低: 读1,写0,读0 */
-    for (i = size; i > 0U; i--)
+    if (RamSafety_MarchDownRwr(region, errorCb, RAMSAFETY_PATTERN_1, RAMSAFETY_PATTERN_0, RAMSAFETY_PATTERN_0) != E_OK)
     {
-        ptr = (volatile uint8*)(uintptr)(addr + i - 1U);
-        readVal = *ptr;
-        if (readVal != RAMSAFETY_PATTERN_1)
-        {
-            if (NULL_PTR != errorCb)
-            {
-                errorCb(RAMSAFETY_TEST_MARCH_C, addr + i - 1U, RAMSAFETY_PATTERN_1, readVal);
-            }
-            return E_NOT_OK;
-        }
-        *ptr = RAMSAFETY_PATTERN_0;
-        readVal = *ptr;
-        if (readVal != RAMSAFETY_PATTERN_0)
-        {
-            if (NULL_PTR != errorCb)
-            {
-                errorCb(RAMSAFETY_TEST_MARCH_C, addr + i - 1U, RAMSAFETY_PATTERN_0, readVal);
-            }
-            return E_NOT_OK;
-        }
+        return E_NOT_OK;
     }
 
     /* 阶段6: ↓ (r0) - 从高到低读0 */
-    for (i = size; i > 0U; i--)
+    if (RamSafety_MarchDownRead(region, errorCb, RAMSAFETY_PATTERN_0) != E_OK)
     {
-        ptr = (volatile uint8*)(uintptr)(addr + i - 1U);
-        readVal = *ptr;
-        if (readVal != RAMSAFETY_PATTERN_0)
-        {
-            if (NULL_PTR != errorCb)
-            {
-                errorCb(RAMSAFETY_TEST_MARCH_C, addr + i - 1U, RAMSAFETY_PATTERN_0, readVal);
-            }
-            return E_NOT_OK;
-        }
+        return E_NOT_OK;
     }
 
     return E_OK;

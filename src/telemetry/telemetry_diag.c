@@ -11,14 +11,34 @@
 void Tel_Diag_Init(void) {    /* 注册到DCM - 由外部调用 */
 }
 
-Std_ReturnType Tel_Diag_ReadData(uint16_t did, uint8_t *data, uint16_t max_len, uint16_t *actual_len) {
-    if (!data || !actual_len || (max_len == 0U)) {
+/* Tel_Diag_ReadData 按 DID 读取助手 (等价重构): 各 DID 的长度校验、
+ * stats 空指针兜底与字节序组装逻辑逐路径保留 */
+static Std_ReturnType Tel_Diag_ReadU16Field(uint8_t *data, uint16_t max_len,
+                                            uint16_t *actual_len, uint16_t value) {
+    if (max_len < 2U) {
         return E_NOT_OK;
     }
-    
-    *actual_len = 0;
-    const TelStats_t *stats = Tel_GetStats();
-    
+    data[0] = (value >> 8) & 0xFFU;
+    data[1] = value & 0xFFU;
+    *actual_len = 2;
+    return E_OK;
+}
+
+static Std_ReturnType Tel_Diag_ReadU32Field(uint8_t *data, uint16_t max_len,
+                                            uint16_t *actual_len, uint32_t value) {
+    if (max_len < 4U) {
+        return E_NOT_OK;
+    }
+    data[0] = (value >> 24) & 0xFFU;
+    data[1] = (value >> 16) & 0xFFU;
+    data[2] = (value >> 8) & 0xFFU;
+    data[3] = value & 0xFFU;
+    *actual_len = 4;
+    return E_OK;
+}
+
+static Std_ReturnType Tel_Diag_ReadByDid(uint16_t did, uint8_t *data, uint16_t max_len,
+                                         uint16_t *actual_len, const TelStats_t *stats) {
     switch (did) {
         case DID_TEL_STATUS: {
             if (max_len < sizeof(TelDiagStatus_t)) {
@@ -33,7 +53,7 @@ Std_ReturnType Tel_Diag_ReadData(uint16_t did, uint8_t *data, uint16_t max_len, 
             *actual_len = sizeof(TelDiagStatus_t);
             return E_OK;
         }
-        
+
         case DID_TEL_STATS: {
             if (max_len < sizeof(TelDiagStats_t)) {
                 return E_NOT_OK;
@@ -50,51 +70,37 @@ Std_ReturnType Tel_Diag_ReadData(uint16_t did, uint8_t *data, uint16_t max_len, 
             *actual_len = sizeof(TelDiagStats_t);
             return E_OK;
         }
-        
-        case DID_TEL_BUFFER_USAGE: {
-            if (max_len < 2U) {
-                return E_NOT_OK;
-            }
-            uint16_t usage = stats ? stats->current_usage : 0;
-            data[0] = (usage >> 8) & 0xFFU;
-            data[1] = usage & 0xFFU;
-            *actual_len = 2;
-            return E_OK;
-        }
-        
-        case DID_TEL_OVERFLOW_COUNT: {
-            if (max_len < 2U) {
-                return E_NOT_OK;
-            }
-            uint16_t overflow = stats ? stats->overflow_cnt : 0;
-            data[0] = (overflow >> 8) & 0xFFU;
-            data[1] = overflow & 0xFFU;
-            *actual_len = 2;
-            return E_OK;
-        }
-        
-        case DID_TEL_EVENT_COUNT: {
-            if (max_len < 4U) {
-                return E_NOT_OK;
-            }
-            uint32_t count = stats ? stats->total_events : 0;
-            data[0] = (count >> 24) & 0xFFU;
-            data[1] = (count >> 16) & 0xFFU;
-            data[2] = (count >> 8) & 0xFFU;
-            data[3] = count & 0xFFU;
-            *actual_len = 4;
-            return E_OK;
-        }
-        
+
+        case DID_TEL_BUFFER_USAGE:
+            return Tel_Diag_ReadU16Field(data, max_len, actual_len,
+                                         (uint16_t)(stats ? stats->current_usage : 0));
+
+        case DID_TEL_OVERFLOW_COUNT:
+            return Tel_Diag_ReadU16Field(data, max_len, actual_len,
+                                         (uint16_t)(stats ? stats->overflow_cnt : 0));
+
+        case DID_TEL_EVENT_COUNT:
+            return Tel_Diag_ReadU32Field(data, max_len, actual_len,
+                                         (uint32_t)(stats ? stats->total_events : 0));
+
         case DID_TEL_READ_EVENTS: {
             /* 读取原始事件数据 */
             TelStatus_t status = Tel_ReadEvents(data, max_len, actual_len);
             return (status == TEL_OK) ? E_OK : E_NOT_OK;
         }
-        
+
         default:
             return E_NOT_OK;
     }
+}
+
+Std_ReturnType Tel_Diag_ReadData(uint16_t did, uint8_t *data, uint16_t max_len, uint16_t *actual_len) {
+    if (!data || !actual_len || (max_len == 0U)) {
+        return E_NOT_OK;
+    }
+
+    *actual_len = 0;
+    return Tel_Diag_ReadByDid(did, data, max_len, actual_len, Tel_GetStats());
 }
 
 Std_ReturnType Tel_Diag_WriteData(uint16_t did, const uint8_t *data, uint16_t len) {

@@ -252,130 +252,186 @@ static uint32 RamTst_GetTickMs(void)
  */
 /** @req SWS_RamTst_00113 */
 /** @req SWS_RamTst_00105 */
+/* RamTst_ExecuteMarchC 等价重构助手: March 相位单步结果 */
+typedef enum {
+    RAMTST_MARCH_CONTINUE = 0,   /* 相位边界切换, 继续处理下一相位 */
+    RAMTST_MARCH_STEP_DONE,      /* 已处理一个地址, 本轮循环结束 */
+    RAMTST_MARCH_EXIT            /* 测试完成/StopOnError/异常, 立即返回 */
+} RamTst_MarchStepResultType;
+
+typedef RamTst_MarchStepResultType (*RamTst_MarchStepFnType)(void);
+
+/**
+ * @brief March 单地址: 读校验并写新图案 (等价重构助手)
+ * @return FALSE=StopOnError 触发, 调用方立即返回
+ */
+static boolean RamTst_MarchCheckWrite(uint32 addr, uint32 expected, uint32 writePattern, uint8 stepId)
+{
+    if (REG_READ32(addr) != expected) {
+        RamTst_RecordError(addr, expected, REG_READ32(addr), stepId);
+        if ((RamTst_State.StopOnError) != 0U) { RamTst_State.Result = RAMTST_RESULT_FAILED; return FALSE; }
+    }
+    REG_WRITE32(addr, writePattern);
+    return TRUE;
+}
+
+/**
+ * @brief March 单地址只读校验 (等价重构助手)
+ */
+static boolean RamTst_MarchCheckOnly(uint32 addr, uint32 expected, uint8 stepId)
+{
+    if (REG_READ32(addr) != expected) {
+        RamTst_RecordError(addr, expected, REG_READ32(addr), stepId);
+        if ((RamTst_State.StopOnError) != 0U) { RamTst_State.Result = RAMTST_RESULT_FAILED; return FALSE; }
+    }
+    return TRUE;
+}
+
+/**
+ * @brief March 超时检查 (等价重构助手)
+ * @return FALSE=已超时 (结果与状态已置位)
+ */
+static boolean RamTst_MarchTimeoutOk(void)
+{
+    /* Check timeout */
+    if (RamTst_State.TimeoutMs > 0U) {
+        if (RamTst_State.TickCount > RamTst_State.TimeoutMs) {
+            RamTst_State.Result = RAMTST_RESULT_TIMEOUT;
+            RamTst_State.Status = RAMTST_STATUS_IDLE;
+            return FALSE;
+        }
+    }
+    return TRUE;
+}
+
+static RamTst_MarchStepResultType RamTst_MarchStepM0(void)
+{
+    /* M0: Write background pattern (ascending) */
+    if (RamTst_State.CurrentAddress >= RamTst_State.EndAddress) {
+        RamTst_State.CurrentMarchStep = 1U;
+        RamTst_State.CurrentAddress = RamTst_State.Config.StartAddress;
+        return RAMTST_MARCH_CONTINUE;
+    }
+    REG_WRITE32(RamTst_State.CurrentAddress, RamTst_State.WritePattern);
+    RamTst_State.CurrentAddress += RAMTST_STEP_SIZE;
+    return RAMTST_MARCH_STEP_DONE;
+}
+
+static RamTst_MarchStepResultType RamTst_MarchStepM1(void)
+{
+    /* M1: Read(0), Write(1) ascending */
+    if (RamTst_State.CurrentAddress >= RamTst_State.EndAddress) {
+        RamTst_State.CurrentMarchStep = 2U;
+        RamTst_State.CurrentAddress = RamTst_State.Config.StartAddress;
+        return RAMTST_MARCH_CONTINUE;
+    }
+    if (!RamTst_MarchCheckWrite(RamTst_State.CurrentAddress, RamTst_State.WritePattern,
+                                RamTst_State.ReadPattern, 1U)) {
+        return RAMTST_MARCH_EXIT;
+    }
+    RamTst_State.CurrentAddress += RAMTST_STEP_SIZE;
+    return RAMTST_MARCH_STEP_DONE;
+}
+
+static RamTst_MarchStepResultType RamTst_MarchStepM2(void)
+{
+    /* M2: Read(1), Write(0) ascending */
+    if (RamTst_State.CurrentAddress >= RamTst_State.EndAddress) {
+        RamTst_State.CurrentMarchStep = 3U;
+        RamTst_State.CurrentAddress = RamTst_State.EndAddress - RAMTST_STEP_SIZE;
+        RamTst_State.DirectionAscending = FALSE;
+        return RAMTST_MARCH_CONTINUE;
+    }
+    if (!RamTst_MarchCheckWrite(RamTst_State.CurrentAddress, RamTst_State.ReadPattern,
+                                RamTst_State.WritePattern, 2U)) {
+        return RAMTST_MARCH_EXIT;
+    }
+    RamTst_State.CurrentAddress += RAMTST_STEP_SIZE;
+    return RAMTST_MARCH_STEP_DONE;
+}
+
+static RamTst_MarchStepResultType RamTst_MarchStepM3(void)
+{
+    /* M3: Read(0), Write(1) descending */
+    if (RamTst_State.CurrentAddress < RamTst_State.Config.StartAddress) {
+        RamTst_State.CurrentMarchStep = 4U;
+        RamTst_State.CurrentAddress = RamTst_State.EndAddress - RAMTST_STEP_SIZE;
+        return RAMTST_MARCH_CONTINUE;
+    }
+    if (!RamTst_MarchCheckWrite(RamTst_State.CurrentAddress, RamTst_State.WritePattern,
+                                RamTst_State.ReadPattern, 3U)) {
+        return RAMTST_MARCH_EXIT;
+    }
+    RamTst_State.CurrentAddress = (RamTst_State.CurrentAddress > RAMTST_STEP_SIZE)
+                                  ? (RamTst_State.CurrentAddress - RAMTST_STEP_SIZE) : 0U;
+    return RAMTST_MARCH_STEP_DONE;
+}
+
+static RamTst_MarchStepResultType RamTst_MarchStepM4(void)
+{
+    /* M4: Read(1), Write(0) descending */
+    if (RamTst_State.CurrentAddress < RamTst_State.Config.StartAddress) {
+        RamTst_State.CurrentMarchStep = 5U;
+        RamTst_State.CurrentAddress = RamTst_State.Config.StartAddress;
+        RamTst_State.DirectionAscending = TRUE;
+        return RAMTST_MARCH_CONTINUE;
+    }
+    if (!RamTst_MarchCheckWrite(RamTst_State.CurrentAddress, RamTst_State.ReadPattern,
+                                RamTst_State.WritePattern, 4U)) {
+        return RAMTST_MARCH_EXIT;
+    }
+    RamTst_State.CurrentAddress = (RamTst_State.CurrentAddress > RAMTST_STEP_SIZE)
+                                  ? (RamTst_State.CurrentAddress - RAMTST_STEP_SIZE) : 0U;
+    return RAMTST_MARCH_STEP_DONE;
+}
+
+static RamTst_MarchStepResultType RamTst_MarchStepM5(void)
+{
+    /* M5: Read(0) ascending */
+    if (RamTst_State.CurrentAddress >= RamTst_State.EndAddress) {
+        /* Test complete */
+        if (RamTst_State.Result != RAMTST_RESULT_FAILED) {
+            RamTst_State.Result = RAMTST_RESULT_OK;
+        }
+        RamTst_State.Status = RAMTST_STATUS_COMPLETED;
+        return RAMTST_MARCH_EXIT;
+    }
+    if (!RamTst_MarchCheckOnly(RamTst_State.CurrentAddress, RamTst_State.WritePattern, 5U)) {
+        return RAMTST_MARCH_EXIT;
+    }
+    RamTst_State.CurrentAddress += RAMTST_STEP_SIZE;
+    return RAMTST_MARCH_STEP_DONE;
+}
+
+/* March 相位函数表 (M0..M5) */
+static const RamTst_MarchStepFnType RamTst_MarchStepTable[6U] = {
+    RamTst_MarchStepM0, RamTst_MarchStepM1, RamTst_MarchStepM2,
+    RamTst_MarchStepM3, RamTst_MarchStepM4, RamTst_MarchStepM5
+};
+
 static void RamTst_ExecuteMarchC(void)
 {
-    uint32 stepSize = RAMTST_STEP_SIZE;
-    uint32 addr;
     boolean stepComplete = FALSE;
 
     while (!stepComplete) {
-        switch (RamTst_State.CurrentMarchStep) {
-            case 0U: /* M0: Write background pattern (ascending) */
-                if (RamTst_State.CurrentAddress >= RamTst_State.EndAddress) {
-                    RamTst_State.CurrentMarchStep = 1U;
-                    RamTst_State.CurrentAddress = RamTst_State.Config.StartAddress;
-                    break;
-                }
-                REG_WRITE32(RamTst_State.CurrentAddress, RamTst_State.WritePattern);
-                RamTst_State.CurrentAddress += stepSize;
-                stepComplete = TRUE;
-                break;
+        RamTst_MarchStepResultType stepResult;
+        uint8 step = RamTst_State.CurrentMarchStep;
 
-            case 1U: /* M1: Read(0), Write(1) ascending */
-                if (RamTst_State.CurrentAddress >= RamTst_State.EndAddress) {
-                    RamTst_State.CurrentMarchStep = 2U;
-                    RamTst_State.CurrentAddress = RamTst_State.Config.StartAddress;
-                    break;
-                }
-                addr = RamTst_State.CurrentAddress;
-                if (REG_READ32(addr) != RamTst_State.WritePattern) {
-                    RamTst_RecordError(addr, RamTst_State.WritePattern,
-                                       REG_READ32(addr), 1U);
-                    if ((RamTst_State.StopOnError) != 0U) { RamTst_State.Result = RAMTST_RESULT_FAILED; return; }
-                }
-                REG_WRITE32(addr, RamTst_State.ReadPattern);
-                RamTst_State.CurrentAddress += stepSize;
-                stepComplete = TRUE;
-                break;
-
-            case 2U: /* M2: Read(1), Write(0) ascending */
-                if (RamTst_State.CurrentAddress >= RamTst_State.EndAddress) {
-                    RamTst_State.CurrentMarchStep = 3U;
-                    RamTst_State.CurrentAddress = RamTst_State.EndAddress - stepSize;
-                    RamTst_State.DirectionAscending = FALSE;
-                    break;
-                }
-                addr = RamTst_State.CurrentAddress;
-                if (REG_READ32(addr) != RamTst_State.ReadPattern) {
-                    RamTst_RecordError(addr, RamTst_State.ReadPattern,
-                                       REG_READ32(addr), 2U);
-                    if ((RamTst_State.StopOnError) != 0U) { RamTst_State.Result = RAMTST_RESULT_FAILED; return; }
-                }
-                REG_WRITE32(addr, RamTst_State.WritePattern);
-                RamTst_State.CurrentAddress += stepSize;
-                stepComplete = TRUE;
-                break;
-
-            case 3U: /* M3: Read(0), Write(1) descending */
-                if (RamTst_State.CurrentAddress < RamTst_State.Config.StartAddress) {
-                    RamTst_State.CurrentMarchStep = 4U;
-                    RamTst_State.CurrentAddress = RamTst_State.EndAddress - stepSize;
-                    break;
-                }
-                addr = RamTst_State.CurrentAddress;
-                if (REG_READ32(addr) != RamTst_State.WritePattern) {
-                    RamTst_RecordError(addr, RamTst_State.WritePattern,
-                                       REG_READ32(addr), 3U);
-                    if ((RamTst_State.StopOnError) != 0U) { RamTst_State.Result = RAMTST_RESULT_FAILED; return; }
-                }
-                REG_WRITE32(addr, RamTst_State.ReadPattern);
-                RamTst_State.CurrentAddress = (RamTst_State.CurrentAddress > stepSize)
-                                              ? (RamTst_State.CurrentAddress - stepSize) : 0U;
-                stepComplete = TRUE;
-                break;
-
-            case 4U: /* M4: Read(1), Write(0) descending */
-                if (RamTst_State.CurrentAddress < RamTst_State.Config.StartAddress) {
-                    RamTst_State.CurrentMarchStep = 5U;
-                    RamTst_State.CurrentAddress = RamTst_State.Config.StartAddress;
-                    RamTst_State.DirectionAscending = TRUE;
-                    break;
-                }
-                addr = RamTst_State.CurrentAddress;
-                if (REG_READ32(addr) != RamTst_State.ReadPattern) {
-                    RamTst_RecordError(addr, RamTst_State.ReadPattern,
-                                       REG_READ32(addr), 4U);
-                    if ((RamTst_State.StopOnError) != 0U) { RamTst_State.Result = RAMTST_RESULT_FAILED; return; }
-                }
-                REG_WRITE32(addr, RamTst_State.WritePattern);
-                RamTst_State.CurrentAddress = (RamTst_State.CurrentAddress > stepSize)
-                                              ? (RamTst_State.CurrentAddress - stepSize) : 0U;
-                stepComplete = TRUE;
-                break;
-
-            case 5U: /* M5: Read(0) ascending */
-                if (RamTst_State.CurrentAddress >= RamTst_State.EndAddress) {
-                    /* Test complete */
-                    if (RamTst_State.Result != RAMTST_RESULT_FAILED) {
-                        RamTst_State.Result = RAMTST_RESULT_OK;
-                    }
-                    RamTst_State.Status = RAMTST_STATUS_COMPLETED;
-                    return;
-                }
-                addr = RamTst_State.CurrentAddress;
-                if (REG_READ32(addr) != RamTst_State.WritePattern) {
-                    RamTst_RecordError(addr, RamTst_State.WritePattern,
-                                       REG_READ32(addr), 5U);
-                    if ((RamTst_State.StopOnError) != 0U) { RamTst_State.Result = RAMTST_RESULT_FAILED; return; }
-                }
-                RamTst_State.CurrentAddress += stepSize;
-                stepComplete = TRUE;
-                break;
-
-            default:
-                /* Unknown step, abort */
-                RamTst_State.Result = RAMTST_RESULT_ABORTED;
-                RamTst_State.Status = RAMTST_STATUS_ERROR;
-                return;
+        if (step >= 6U) {
+            /* Unknown step, abort */
+            RamTst_State.Result = RAMTST_RESULT_ABORTED;
+            RamTst_State.Status = RAMTST_STATUS_ERROR;
+            return;
         }
 
-        /* Check timeout */
-        if (RamTst_State.TimeoutMs > 0U) {
-            if (RamTst_State.TickCount > RamTst_State.TimeoutMs) {
-                RamTst_State.Result = RAMTST_RESULT_TIMEOUT;
-                RamTst_State.Status = RAMTST_STATUS_IDLE;
-                return;
-            }
+        stepResult = RamTst_MarchStepTable[step]();
+        if (stepResult == RAMTST_MARCH_EXIT) {
+            return;
+        }
+        stepComplete = (boolean)(stepResult == RAMTST_MARCH_STEP_DONE);
+
+        if (!RamTst_MarchTimeoutOk()) {
+            return;
         }
     }
 }

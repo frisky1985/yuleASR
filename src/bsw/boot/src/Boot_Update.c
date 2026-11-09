@@ -287,30 +287,16 @@ Boot_Result Boot_Update_WriteBlock(const uint8_t *data,
     return ret;
 }
 
-Boot_Result Boot_Update_Finalize(Boot_ImageType image_type, uint32_t version)
+/* Boot_Update_Finalize 等价重构助手 */
+
+/**
+ * @brief 填充镜像负载哈希 (等价重构助手)
+ */
+static void Boot_Update_ComputeHeaderHash(Boot_ImageHeader* hdr)
 {
-    if (g_ctx_valid == 0U) {
-        return BOOT_E_NOT_INIT;
-    }
-
-    /* 用户确认门控: 未确认/拒绝/超时 → 拒绝完成升级 */
-    Boot_Result confirm_ret = confirm_gate();
-    if (confirm_ret != BOOT_OK) {
-        return confirm_ret;
-    }
-
-    /* 1. Build and write image header */
-    Boot_ImageHeader hdr;
-    (void)memset(&hdr, 0, sizeof(hdr));
-    hdr.magic        = BOOT_IMAGE_MAGIC;
-    hdr.image_type   = (uint32_t)image_type;
-    hdr.version      = version;
-    hdr.payload_size = g_ctx.bytes_written;
-
-    /* Obtain the complete payload hash */
 #if defined(MBEDTLS_USE)
     if (g_ctx.hash_active) {
-        mbedtls_sha256_finish(&g_ctx.hash_ctx, hdr.hash);
+        mbedtls_sha256_finish(&g_ctx.hash_ctx, hdr->hash);
         mbedtls_sha256_free(&g_ctx.hash_ctx);
         g_ctx.hash_active = FALSE;
     }
@@ -330,50 +316,32 @@ Boot_Result Boot_Update_Finalize(Boot_ImageType image_type, uint32_t version)
             off += chunk;
             remaining -= chunk;
         }
-        (void)sha256_final(&hash_ctx, hdr.hash);
+        (void)sha256_final(&hash_ctx, hdr->hash);
     }
 #endif
+}
 
-    hdr.header_crc   = Boot_Image_CalcHeaderCrc(&hdr);
+/**
+ * @brief 注入模式抗回滚: 读计数器/版本校验/stage/BIB 版本记录 (等价重构助手)
+ * @note  失败路径: g_ctx_valid=FALSE + BIB update_state 恢复 IDLE (与原实现一致)
+ */
+static Boot_Result Boot_Update_AntiRollbackStage(Boot_ImageType image_type, uint32_t version)
+{
+    Boot_Result ret;
+    uint32_t arb_counter = 0U;
 
-    Boot_Result ret = Boot_Flash_Write(g_ctx.slot_addr,
-                                       (const uint8_t *)&hdr,
-                                       sizeof(hdr));
-    if (ret != BOOT_OK) {
+    if (s_antrollback_api->read_counter(s_antrollback_ctx, &arb_counter)
+            != BL_ROLLBACK_STORAGE_OK) {
         g_ctx_valid = FALSE;
-        return ret;
+        (void)bib_set_update_state(BOOT_UPDATE_IDLE);   /* 失败恢复 */
+        return BOOT_E_GENERAL;   /* NVM 不可用: 拒绝完成升级 (fail-closed) */
     }
-
-    /* 2. Verify written payload hash */
-    const uint8_t *payload_buf ; /* In production, read-back from flash and verify */
-    /* For stub, trust the hash was correct during write */
-
-    /* 掉电保护节点② (RS-OTA-06): 校验通过 → BIB(update_state=PENDING),
-     * 升级进入待验证/确认阶段; 全部成功后再落盘 IDLE。 */
-    ret = bib_set_update_state(BOOT_UPDATE_PENDING);
-    if (ret != BOOT_OK) {
+    if (version <= arb_counter) {
         g_ctx_valid = FALSE;
-        (void)bib_set_update_state(BOOT_UPDATE_IDLE);   /* 尽力恢复 */
-        return ret;
+        (void)bib_set_update_state(BOOT_UPDATE_IDLE);   /* 失败恢复 */
+        return BOOT_E_VERSION;   /* 低于已确认地板: 拒绝 (防回滚攻击) */
     }
-
-    /* 3. 抗回滚延后递增 (RS-OTA-01 / P1-4): 不立即提升计数器,
-     *    先记录待确认版本, 新版本成功启动 N 次后由 NotifyBootSuccess 提交 */
-    if (s_antrollback_api != NULL_PTR) {
-        /* 注入模式 (方案 C): 计数器唯一来源 = 注入的 NVM 存储 (bl_antrollback),
-         * BIB 只做版本管理 (不写 anti_rollback_counter/pending 字段) */
-        uint32_t arb_counter = 0U;
-        if (s_antrollback_api->read_counter(s_antrollback_ctx, &arb_counter)
-                != BL_ROLLBACK_STORAGE_OK) {
-            g_ctx_valid = FALSE;
-            (void)bib_set_update_state(BOOT_UPDATE_IDLE);   /* 失败恢复 */
-            return BOOT_E_GENERAL;   /* NVM 不可用: 拒绝完成升级 (fail-closed) */
-        }
-        if (version <= arb_counter) {
-            g_ctx_valid = FALSE;
-            (void)bib_set_update_state(BOOT_UPDATE_IDLE);   /* 失败恢复 */
-            return BOOT_E_VERSION;   /* 低于已确认地板: 拒绝 (防回滚攻击) */
-        }
+    {
         bl_rollback_storage_error_t st_ret =
             s_antrollback_api->stage(s_antrollback_ctx, version);
         if (st_ret != BL_ROLLBACK_STORAGE_OK) {
@@ -382,8 +350,10 @@ Boot_Result Boot_Update_Finalize(Boot_ImageType image_type, uint32_t version)
             return (st_ret == BL_ROLLBACK_STORAGE_ERROR_DECREMENT_ATTEMPT)
                        ? BOOT_E_VERSION : BOOT_E_GENERAL;
         }
+    }
 
-        /* BIB 仅记录版本信息 (版本管理) */
+    /* BIB 仅记录版本信息 (版本管理) */
+    {
         Boot_InfoBlock bib;
         ret = bib_read(&bib);
         if (ret != BOOT_OK) {
@@ -400,19 +370,23 @@ Boot_Result Boot_Update_Finalize(Boot_ImageType image_type, uint32_t version)
 
         ret = bib_write(&bib);
         if (ret == BOOT_OK) {
-            /* 升级完成: 一次性确认授权复位 + BIB(update_state=IDLE),
-             * 状态机无残留 */
+            /* 升级完成: 一次性确认授权复位, 状态机无残留 */
             g_ctx.confirm_state = BOOT_CONFIRM_IDLE;
-            (void)bib_set_update_state(BOOT_UPDATE_IDLE);
-        } else {
-            (void)bib_set_update_state(BOOT_UPDATE_IDLE);   /* 失败恢复 */
         }
-        g_ctx_valid = FALSE;
-        return ret;
+        (void)bib_set_update_state(BOOT_UPDATE_IDLE);
     }
+    g_ctx_valid = FALSE;
+    return ret;
+}
 
-    /* 旧模式 (未注入): BIB 自带 pending 机制 (兼容既有集成/测试) */
+/**
+ * @brief 旧模式 (未注入): BIB 自带 pending 机制 (等价重构助手)
+ */
+static Boot_Result Boot_Update_LegacyRecord(Boot_ImageType image_type, uint32_t version)
+{
+    Boot_Result ret;
     Boot_InfoBlock bib;
+
     ret = bib_read(&bib);
     if (ret != BOOT_OK) {
         g_ctx_valid = FALSE;
@@ -441,12 +415,69 @@ Boot_Result Boot_Update_Finalize(Boot_ImageType image_type, uint32_t version)
         /* 升级完成: 一次性确认授权复位 + BIB(update_state=IDLE),
          * 状态机无残留 */
         g_ctx.confirm_state = BOOT_CONFIRM_IDLE;
-        (void)bib_set_update_state(BOOT_UPDATE_IDLE);
-    } else {
-        (void)bib_set_update_state(BOOT_UPDATE_IDLE);   /* 失败恢复 */
     }
+    (void)bib_set_update_state(BOOT_UPDATE_IDLE);
     g_ctx_valid = FALSE;
     return ret;
+}
+
+Boot_Result Boot_Update_Finalize(Boot_ImageType image_type, uint32_t version)
+{
+    Boot_Result ret;
+    Boot_ImageHeader hdr;
+
+    if (g_ctx_valid == 0U) {
+        return BOOT_E_NOT_INIT;
+    }
+
+    /* 用户确认门控: 未确认/拒绝/超时 → 拒绝完成升级 */
+    ret = confirm_gate();
+    if (ret != BOOT_OK) {
+        return ret;
+    }
+
+    /* 1. Build and write image header */
+    (void)memset(&hdr, 0, sizeof(hdr));
+    hdr.magic        = BOOT_IMAGE_MAGIC;
+    hdr.image_type   = (uint32_t)image_type;
+    hdr.version      = version;
+    hdr.payload_size = g_ctx.bytes_written;
+
+    /* Obtain the complete payload hash */
+    Boot_Update_ComputeHeaderHash(&hdr);
+
+    hdr.header_crc   = Boot_Image_CalcHeaderCrc(&hdr);
+
+    ret = Boot_Flash_Write(g_ctx.slot_addr,
+                                       (const uint8_t *)&hdr,
+                                       sizeof(hdr));
+    if (ret != BOOT_OK) {
+        g_ctx_valid = FALSE;
+        return ret;
+    }
+
+    /* 2. Verify written payload hash */
+    /* In production, read-back from flash and verify */
+    /* For stub, trust the hash was correct during write */
+
+    /* 掉电保护节点② (RS-OTA-06): 校验通过 → BIB(update_state=PENDING),
+     * 升级进入待验证/确认阶段; 全部成功后再落盘 IDLE。 */
+    ret = bib_set_update_state(BOOT_UPDATE_PENDING);
+    if (ret != BOOT_OK) {
+        g_ctx_valid = FALSE;
+        (void)bib_set_update_state(BOOT_UPDATE_IDLE);   /* 尽力恢复 */
+        return ret;
+    }
+
+    /* 3. 抗回滚延后递增 (RS-OTA-01 / P1-4): 不立即提升计数器,
+     *    先记录待确认版本, 新版本成功启动 N 次后由 NotifyBootSuccess 提交 */
+    if (s_antrollback_api != NULL_PTR) {
+        /* 注入模式 (方案 C): 计数器唯一来源 = 注入的 NVM 存储 (bl_antrollback),
+         * BIB 只做版本管理 (不写 anti_rollback_counter/pending 字段) */
+        return Boot_Update_AntiRollbackStage(image_type, version);
+    }
+
+    return Boot_Update_LegacyRecord(image_type, version);
 }
 
 Boot_Result Boot_Update_Abort(void)
