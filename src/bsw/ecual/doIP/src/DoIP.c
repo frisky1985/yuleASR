@@ -328,6 +328,62 @@ void DoIP_GetVersionInfo(Std_VersionInfoType* versioninfo)
 #endif
 
 /*================================================================================
+**  INTERNAL FUNCTIONS - RX PAYLOAD DISPATCH
+================================================================================*/
+
+/* 报文类型分发助手 (等价重构): payload type 分支与路由激活最小长度校验路径逐条保留 */
+static void DoIP_DispatchRxPayload(
+    PduIdType RxPduId,
+    uint16 payloadType,
+    uint32 payloadLength,
+    const uint8* payloadPtr)
+{
+    switch (payloadType)
+    {
+        case DOIP_PAYLOAD_TYPE_VID_REQUEST:
+            (void)DoIP_ProcessVehicleIdRequest(RxPduId);
+            break;
+
+        case DOIP_PAYLOAD_TYPE_ROUTING_ACTIVATION_REQUEST:
+            if (payloadLength >= DOIP_ROUTING_ACTIVATION_REQ_MIN_LEN)
+            {
+                (void)DoIP_ProcessRoutingActivation(
+                    RxPduId,
+                    payloadPtr,
+                    (uint16)payloadLength
+                );
+            }
+            else
+            {
+                (void)DoIP_SendGenericNack(RxPduId, DOIP_NACK_CODE_INVALID_PAYLOAD_LENGTH);
+            }
+            break;
+
+        case DOIP_PAYLOAD_TYPE_DIAGNOSTIC_MESSAGE:
+            (void)DoIP_ProcessDiagnosticMessage(
+                RxPduId,
+                payloadPtr,
+                payloadLength
+            );
+            break;
+
+        case DOIP_PAYLOAD_TYPE_ALIVE_CHECK_RESPONSE:
+            DoIP_ProcessAliveCheckResponse(RxPduId, payloadPtr);
+            break;
+
+        case DOIP_PAYLOAD_TYPE_ENTITY_STATUS_REQUEST:
+        case DOIP_PAYLOAD_TYPE_DIAGNOSTIC_POWER_MODE_REQUEST:
+            /* Handle additional requests */
+            break;
+
+        default:
+            /* Unknown payload type */
+            (void)DoIP_SendGenericNack(RxPduId, DOIP_NACK_CODE_UNKNOWN_PAYLOAD_TYPE);
+            break;
+    }
+}
+
+/*================================================================================
 **  EXTERNAL FUNCTIONS - SOAD CALLBACKS
 ================================================================================*/
 
@@ -337,8 +393,6 @@ void DoIP_SoAdIfRxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
     uint16 payloadType;
     uint32 payloadLength;
     uint8* dataPtr;
-    uint16 headerLength;
-    uint8 nackCode;
 
     #if (DOIP_DEV_ERROR_DETECT == STD_ON)
     if (DoIP_ModuleState != DOIP_STATE_INIT)
@@ -390,53 +444,13 @@ void DoIP_SoAdIfRxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
         return;
     }
 
-    headerLength = DOIP_HEADER_LENGTH;
-
     /* Process based on payload type */
-    switch (payloadType)
-    {
-        case DOIP_PAYLOAD_TYPE_VID_REQUEST:
-            (void)DoIP_ProcessVehicleIdRequest(RxPduId);
-            break;
-
-        case DOIP_PAYLOAD_TYPE_ROUTING_ACTIVATION_REQUEST:
-            if (payloadLength >= DOIP_ROUTING_ACTIVATION_REQ_MIN_LEN)
-            {
-                (void)DoIP_ProcessRoutingActivation(
-                    RxPduId,
-                    &dataPtr[headerLength],
-                    (uint16)payloadLength
-                );
-            }
-            else
-            {
-                (void)DoIP_SendGenericNack(RxPduId, DOIP_NACK_CODE_INVALID_PAYLOAD_LENGTH);
-            }
-            break;
-
-        case DOIP_PAYLOAD_TYPE_DIAGNOSTIC_MESSAGE:
-            (void)DoIP_ProcessDiagnosticMessage(
-                RxPduId,
-                &dataPtr[headerLength],
-                payloadLength
-            );
-            break;
-
-        case DOIP_PAYLOAD_TYPE_ALIVE_CHECK_RESPONSE:
-            DoIP_ProcessAliveCheckResponse(RxPduId, &dataPtr[headerLength]);
-            break;
-
-        case DOIP_PAYLOAD_TYPE_ENTITY_STATUS_REQUEST:
-        case DOIP_PAYLOAD_TYPE_DIAGNOSTIC_POWER_MODE_REQUEST:
-            /* Handle additional requests */
-            break;
-
-        default:
-            /* Unknown payload type */
-            nackCode = DOIP_NACK_CODE_UNKNOWN_PAYLOAD_TYPE;
-            (void)DoIP_SendGenericNack(RxPduId, nackCode);
-            break;
-    }
+    DoIP_DispatchRxPayload(
+        RxPduId,
+        payloadType,
+        payloadLength,
+        &dataPtr[DOIP_HEADER_LENGTH]
+    );
 }
 
 /** @req SWS_DoIP_00013 */
@@ -577,21 +591,10 @@ void DoIP_MainFunction(void)
 **  INTERNAL FUNCTIONS - VEHICLE ANNOUNCEMENT
 ================================================================================*/
 
-Std_ReturnType DoIP_SendVehicleAnnouncement(void)
+/* 车辆声明报文字段填充助手 (等价重构): VIN/LA/EID/GID/FAR/Sync 写入顺序逐条保留 */
+static uint16 DoIP_FillVehicleAnnouncementPayload(uint8* dataPtr)
 {
-    PduInfoType pduInfo;
-    Std_ReturnType result;
-    uint8* dataPtr = DoIP_Buffer;
-    uint16 idx;
-
-    /* Build DoIP header */
-    DoIP_WriteHeader(
-        dataPtr,
-        DOIP_PAYLOAD_TYPE_VID_RESPONSE,
-        32 /* VIN(17) + LA(2) + EID(6) + GID(6) + FAR(1) = 32 */
-    );
-
-    idx = DOIP_HEADER_LENGTH;
+    uint16 idx = 0;
 
     /* VIN */
     dataPtr[idx] = DoIP_VehicleAnnouncement.vin[0];
@@ -668,11 +671,35 @@ Std_ReturnType DoIP_SendVehicleAnnouncement(void)
     idx++;
 
     /* Sync Status (optional) */
+    /* 注: 头部 payload length 固定为 32, syncStatus 非零时会额外写入第 33 字节,
+     * 此为原实现行为 (疑似 bug), 等价重构保持不变 */
     if (DoIP_VehicleAnnouncement.syncStatus != 0U )
     {
         dataPtr[idx] = DoIP_VehicleAnnouncement.syncStatus;
         idx++;
     }
+
+    return idx;
+}
+
+Std_ReturnType DoIP_SendVehicleAnnouncement(void)
+{
+    PduInfoType pduInfo;
+    Std_ReturnType result;
+    uint8* dataPtr = DoIP_Buffer;
+    uint16 idx;
+
+    /* Build DoIP header */
+    DoIP_WriteHeader(
+        dataPtr,
+        DOIP_PAYLOAD_TYPE_VID_RESPONSE,
+        32 /* VIN(17) + LA(2) + EID(6) + GID(6) + FAR(1) = 32 */
+    );
+
+    idx = DOIP_HEADER_LENGTH;
+
+    /* Fill announcement payload (VIN/LA/EID/GID/FAR/Sync) */
+    idx += DoIP_FillVehicleAnnouncementPayload(&dataPtr[idx]);
 
     pduInfo.SduDataPtr = dataPtr;
     pduInfo.SduLength = idx;
@@ -895,88 +922,32 @@ static uint8 DoIP_GetRoutingActivationResponseCode(
 **  INTERNAL FUNCTIONS - DIAGNOSTIC MESSAGE ROUTING
 ================================================================================*/
 
-/** @req SWS_DoIP_00004 */
-Std_ReturnType DoIP_ProcessDiagnosticMessage(
-    uint16 socketId,
-    const uint8* messagePtr,
-    uint32 messageLength)
+/* 测试仪连接查找助手 (等价重构): 按逻辑地址查找, 未找到返回 0xFF */
+static uint8 DoIP_FindTesterConnection(uint16 logicalAddress)
 {
-    uint16 sourceAddress;
-    uint16 targetAddress;
-    PduInfoType pduInfo;
     uint8 connectionIdx;
-    uint8 taConnectionIdx = 0xFF;
-    boolean foundConnection = FALSE;
-    PduIdType pduRTargetPduId;
+    uint8 foundIdx = 0xFFU;
 
-    (void)socketId;
-
-    /* Parse source and target addresses */
-    sourceAddress = ((uint16)messagePtr[0] << 8) | messagePtr[1];
-    targetAddress = ((uint16)messagePtr[2] << 8) | messagePtr[3];
-
-    /* Find connection for source address */
     for (connectionIdx = 0; connectionIdx < DOIP_MAX_TESTER_CONNECTIONS; connectionIdx++)
     {
-        if (DoIP_TesterConnections[connectionIdx].testerLogicalAddress == sourceAddress)
+        if (DoIP_TesterConnections[connectionIdx].testerLogicalAddress == logicalAddress)
         {
-            foundConnection = TRUE;
+            foundIdx = connectionIdx;
             break;
         }
     }
 
-    /* Validate source address */
-    if (!foundConnection)
-    {
-        DoIP_SendDiagnosticAck(
-            socketId,
-            sourceAddress,
-            targetAddress,
-            DOIP_DIAG_NACK_CODE_INVALID_SA,
-            messageLength
-        );
-        return E_NOT_OK;
-    }
+    return foundIdx;
+}
 
-    /* Validate target address */
-    if (targetAddress == DOIP_LOCAL_LOGICAL_ADDRESS)
-    {
-        /* Target is local node */
-        taConnectionIdx = 0xFF;
-    }
-    else
-    {
-        /* Find connection for target address */
-        for (connectionIdx = 0; connectionIdx < DOIP_MAX_TESTER_CONNECTIONS; connectionIdx++)
-        {
-            if (DoIP_TesterConnections[connectionIdx].testerLogicalAddress == targetAddress)
-            {
-                taConnectionIdx = connectionIdx;
-                break;
-            }
-        }
-
-        if (taConnectionIdx == 0xFFU)
-        {
-            DoIP_SendDiagnosticAck(
-                socketId,
-                sourceAddress,
-                targetAddress,
-                DOIP_DIAG_NACK_CODE_UNKNOWN_TA,
-                messageLength
-            );
-            return E_NOT_OK;
-        }
-    }
-
-    /* Send ACK */
-    DoIP_SendDiagnosticAck(
-        socketId,
-        sourceAddress,
-        targetAddress,
-        DOIP_DIAG_ACK_CODE_OK,
-        messageLength
-    );
+/* 诊断消息路由助手 (等价重构): 本地 PduR / 其他测试仪连接两条路由路径逐条保留 */
+static void DoIP_RouteDiagnosticMessage(
+    uint8 taConnectionIdx,
+    const uint8* messagePtr,
+    uint32 messageLength)
+{
+    PduInfoType pduInfo;
+    PduIdType pduRTargetPduId;
 
     /* Route message to target */
     if (taConnectionIdx == 0xFFU)
@@ -1001,6 +972,76 @@ Std_ReturnType DoIP_ProcessDiagnosticMessage(
             &pduInfo
         );
     }
+}
+
+/** @req SWS_DoIP_00004 */
+Std_ReturnType DoIP_ProcessDiagnosticMessage(
+    uint16 socketId,
+    const uint8* messagePtr,
+    uint32 messageLength)
+{
+    uint16 sourceAddress;
+    uint16 targetAddress;
+    uint8 sourceConnectionIdx;
+    uint8 taConnectionIdx = 0xFF;
+
+    (void)socketId;
+
+    /* Parse source and target addresses */
+    sourceAddress = ((uint16)messagePtr[0] << 8) | messagePtr[1];
+    targetAddress = ((uint16)messagePtr[2] << 8) | messagePtr[3];
+
+    /* Find connection for source address */
+    sourceConnectionIdx = DoIP_FindTesterConnection(sourceAddress);
+
+    /* Validate source address */
+    if (sourceConnectionIdx == 0xFFU)
+    {
+        DoIP_SendDiagnosticAck(
+            socketId,
+            sourceAddress,
+            targetAddress,
+            DOIP_DIAG_NACK_CODE_INVALID_SA,
+            messageLength
+        );
+        return E_NOT_OK;
+    }
+
+    /* Validate target address */
+    if (targetAddress == DOIP_LOCAL_LOGICAL_ADDRESS)
+    {
+        /* Target is local node */
+        taConnectionIdx = 0xFF;
+    }
+    else
+    {
+        /* Find connection for target address */
+        taConnectionIdx = DoIP_FindTesterConnection(targetAddress);
+
+        if (taConnectionIdx == 0xFFU)
+        {
+            DoIP_SendDiagnosticAck(
+                socketId,
+                sourceAddress,
+                targetAddress,
+                DOIP_DIAG_NACK_CODE_UNKNOWN_TA,
+                messageLength
+            );
+            return E_NOT_OK;
+        }
+    }
+
+    /* Send ACK */
+    DoIP_SendDiagnosticAck(
+        socketId,
+        sourceAddress,
+        targetAddress,
+        DOIP_DIAG_ACK_CODE_OK,
+        messageLength
+    );
+
+    /* Route message to target */
+    DoIP_RouteDiagnosticMessage(taConnectionIdx, messagePtr, messageLength);
 
     return E_OK;
 }

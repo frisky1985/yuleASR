@@ -101,6 +101,136 @@ void tcpip_dhcp_deinit(void)
     }
 }
 
+/* ----------------------------------------------------------------------------
+ * DHCP main function state handlers (等价重构助手): 各状态事件处理逐路径保留
+ * -------------------------------------------------------------------------- */
+
+static void tcpip_dhcp_handle_state_selecting(uint8_t iface_id)
+{
+    if (g_dhcp_ctx.ifaces[iface_id].timeout_ms == 0u)
+    {
+        /* Timeout - retry discover */
+        if (g_dhcp_ctx.ifaces[iface_id].retry_count > 0u)
+        {
+            g_dhcp_ctx.ifaces[iface_id].retry_count--;
+            (void)tcpip_dhcp_send_discover(iface_id);
+            g_dhcp_ctx.ifaces[iface_id].timeout_ms = TCPIP_DHCP_DISCOVER_TIMEOUT_MS;
+        }
+        else
+        {
+            tcpip_dhcp_set_state(iface_id, TCPIP_DHCP_STATE_INIT);
+        }
+    }
+}
+
+static void tcpip_dhcp_handle_state_requesting(uint8_t iface_id)
+{
+    if (g_dhcp_ctx.ifaces[iface_id].timeout_ms == 0u)
+    {
+        /* Timeout - retry request */
+        if (g_dhcp_ctx.ifaces[iface_id].retry_count > 0u)
+        {
+            g_dhcp_ctx.ifaces[iface_id].retry_count--;
+            (void)tcpip_dhcp_send_request(iface_id);
+            g_dhcp_ctx.ifaces[iface_id].timeout_ms = TCPIP_DHCP_REQUEST_TIMEOUT_MS;
+        }
+        else
+        {
+            tcpip_dhcp_set_state(iface_id, TCPIP_DHCP_STATE_INIT);
+        }
+    }
+}
+
+static void tcpip_dhcp_handle_state_bound(uint8_t iface_id)
+{
+    uint32_t elapsed = tcpip_dhcp_get_elapsed(g_dhcp_ctx.ifaces[iface_id].lease_start);
+
+    if (elapsed >= g_dhcp_ctx.ifaces[iface_id].t1_time)
+    {
+        /* Enter renewal state */
+        tcpip_dhcp_set_state(iface_id, TCPIP_DHCP_STATE_RENEWING);
+        g_dhcp_ctx.ifaces[iface_id].retry_count = TCPIP_DHCP_MAX_RETRIES;
+        (void)tcpip_dhcp_send_request(iface_id);
+    }
+}
+
+static void tcpip_dhcp_handle_state_renewing(uint8_t iface_id)
+{
+    uint32_t elapsed = tcpip_dhcp_get_elapsed(g_dhcp_ctx.ifaces[iface_id].lease_start);
+
+    if (elapsed >= g_dhcp_ctx.ifaces[iface_id].t2_time)
+    {
+        /* Enter rebinding state */
+        tcpip_dhcp_set_state(iface_id, TCPIP_DHCP_STATE_REBINDING);
+        g_dhcp_ctx.ifaces[iface_id].server_id = TCPIP_IP_ANY;
+        g_dhcp_ctx.ifaces[iface_id].retry_count = TCPIP_DHCP_MAX_RETRIES;
+        (void)tcpip_dhcp_send_request(iface_id);
+    }
+    else if (g_dhcp_ctx.ifaces[iface_id].timeout_ms == 0u)
+    {
+        /* Retry renew */
+        if (g_dhcp_ctx.ifaces[iface_id].retry_count > 0u)
+        {
+            g_dhcp_ctx.ifaces[iface_id].retry_count--;
+            (void)tcpip_dhcp_send_request(iface_id);
+            g_dhcp_ctx.ifaces[iface_id].timeout_ms = TCPIP_DHCP_RENEW_TIMEOUT_MS;
+        }
+    }
+}
+
+static void tcpip_dhcp_handle_state_rebinding(uint8_t iface_id)
+{
+    uint32_t elapsed = tcpip_dhcp_get_elapsed(g_dhcp_ctx.ifaces[iface_id].lease_start);
+
+    if (elapsed >= g_dhcp_ctx.ifaces[iface_id].lease_time)
+    {
+        /* Lease expired - restart */
+        tcpip_dhcp_set_state(iface_id, TCPIP_DHCP_STATE_INIT);
+    }
+}
+
+/* Per-interface timer update + state event dispatch (等价重构助手) */
+static void tcpip_dhcp_process_iface(uint8_t iface_id, uint32_t elapsed_ms)
+{
+    /* Update timers */
+    if (g_dhcp_ctx.ifaces[iface_id].timeout_ms > elapsed_ms)
+    {
+        g_dhcp_ctx.ifaces[iface_id].timeout_ms -= elapsed_ms;
+    }
+    else
+    {
+        g_dhcp_ctx.ifaces[iface_id].timeout_ms = 0u;
+    }
+
+    /* State machine handling */
+    switch (g_dhcp_ctx.ifaces[iface_id].state)
+    {
+        case TCPIP_DHCP_STATE_SELECTING:
+            tcpip_dhcp_handle_state_selecting(iface_id);
+            break;
+
+        case TCPIP_DHCP_STATE_REQUESTING:
+            tcpip_dhcp_handle_state_requesting(iface_id);
+            break;
+
+        case TCPIP_DHCP_STATE_BOUND:
+            tcpip_dhcp_handle_state_bound(iface_id);
+            break;
+
+        case TCPIP_DHCP_STATE_RENEWING:
+            tcpip_dhcp_handle_state_renewing(iface_id);
+            break;
+
+        case TCPIP_DHCP_STATE_REBINDING:
+            tcpip_dhcp_handle_state_rebinding(iface_id);
+            break;
+
+        default:
+            /* No action for other states */
+            break;
+    }
+}
+
 void tcpip_dhcp_main_function(uint32_t elapsed_ms)
 {
     uint8_t i;
@@ -115,105 +245,7 @@ void tcpip_dhcp_main_function(uint32_t elapsed_ms)
         {
             if (g_dhcp_ctx.ifaces[i].enabled)
             {
-                /* Update timers */
-                if (g_dhcp_ctx.ifaces[i].timeout_ms > elapsed_ms)
-                {
-                    g_dhcp_ctx.ifaces[i].timeout_ms -= elapsed_ms;
-                }
-                else
-                {
-                    g_dhcp_ctx.ifaces[i].timeout_ms = 0u;
-                }
-
-                /* State machine handling */
-                switch (g_dhcp_ctx.ifaces[i].state)
-                {
-                    case TCPIP_DHCP_STATE_SELECTING:
-                        if (g_dhcp_ctx.ifaces[i].timeout_ms == 0u)
-                        {
-                            /* Timeout - retry discover */
-                            if (g_dhcp_ctx.ifaces[i].retry_count > 0u)
-                            {
-                                g_dhcp_ctx.ifaces[i].retry_count--;
-                                (void)tcpip_dhcp_send_discover(i);
-                                g_dhcp_ctx.ifaces[i].timeout_ms = TCPIP_DHCP_DISCOVER_TIMEOUT_MS;
-                            }
-                            else
-                            {
-                                tcpip_dhcp_set_state(i, TCPIP_DHCP_STATE_INIT);
-                            }
-                        }
-                        break;
-
-                    case TCPIP_DHCP_STATE_REQUESTING:
-                        if (g_dhcp_ctx.ifaces[i].timeout_ms == 0u)
-                        {
-                            /* Timeout - retry request */
-                            if (g_dhcp_ctx.ifaces[i].retry_count > 0u)
-                            {
-                                g_dhcp_ctx.ifaces[i].retry_count--;
-                                (void)tcpip_dhcp_send_request(i);
-                                g_dhcp_ctx.ifaces[i].timeout_ms = TCPIP_DHCP_REQUEST_TIMEOUT_MS;
-                            }
-                            else
-                            {
-                                tcpip_dhcp_set_state(i, TCPIP_DHCP_STATE_INIT);
-                            }
-                        }
-                        break;
-
-                    case TCPIP_DHCP_STATE_BOUND:
-                    {
-                        uint32_t elapsed = tcpip_dhcp_get_elapsed(g_dhcp_ctx.ifaces[i].lease_start);
-                        if (elapsed >= g_dhcp_ctx.ifaces[i].t1_time)
-                        {
-                            /* Enter renewal state */
-                            tcpip_dhcp_set_state(i, TCPIP_DHCP_STATE_RENEWING);
-                            g_dhcp_ctx.ifaces[i].retry_count = TCPIP_DHCP_MAX_RETRIES;
-                            (void)tcpip_dhcp_send_request(i);
-                        }
-                        break;
-                    }
-
-                    case TCPIP_DHCP_STATE_RENEWING:
-                    {
-                        uint32_t elapsed = tcpip_dhcp_get_elapsed(g_dhcp_ctx.ifaces[i].lease_start);
-                        if (elapsed >= g_dhcp_ctx.ifaces[i].t2_time)
-                        {
-                            /* Enter rebinding state */
-                            tcpip_dhcp_set_state(i, TCPIP_DHCP_STATE_REBINDING);
-                            g_dhcp_ctx.ifaces[i].server_id = TCPIP_IP_ANY;
-                            g_dhcp_ctx.ifaces[i].retry_count = TCPIP_DHCP_MAX_RETRIES;
-                            (void)tcpip_dhcp_send_request(i);
-                        }
-                        else if (g_dhcp_ctx.ifaces[i].timeout_ms == 0u)
-                        {
-                            /* Retry renew */
-                            if (g_dhcp_ctx.ifaces[i].retry_count > 0u)
-                            {
-                                g_dhcp_ctx.ifaces[i].retry_count--;
-                                (void)tcpip_dhcp_send_request(i);
-                                g_dhcp_ctx.ifaces[i].timeout_ms = TCPIP_DHCP_RENEW_TIMEOUT_MS;
-                            }
-                        }
-                        break;
-                    }
-
-                    case TCPIP_DHCP_STATE_REBINDING:
-                    {
-                        uint32_t elapsed = tcpip_dhcp_get_elapsed(g_dhcp_ctx.ifaces[i].lease_start);
-                        if (elapsed >= g_dhcp_ctx.ifaces[i].lease_time)
-                        {
-                            /* Lease expired - restart */
-                            tcpip_dhcp_set_state(i, TCPIP_DHCP_STATE_INIT);
-                        }
-                        break;
-                    }
-
-                    default:
-                        /* No action for other states */
-                        break;
-                }
+                tcpip_dhcp_process_iface(i, elapsed_ms);
             }
         }
     }
