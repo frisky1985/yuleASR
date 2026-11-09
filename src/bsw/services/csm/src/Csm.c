@@ -380,7 +380,7 @@ STATIC Std_ReturnType Csm_QueueJob(uint32 jobId, Csm_JobPriorityType priority)
     Csm_JobQueue.items[insertPos].jobId = jobId;
     Csm_JobQueue.items[insertPos].priority = priority;
     Csm_JobQueue.items[insertPos].timestamp = Csm_Cfg_GetTimestamp();
-    Csm_JobQueue.tail = (Csm_JobQueue.tail + 1) % CSM_CFG_QUEUE_SIZE;
+    Csm_JobQueue.tail = (Csm_JobQueue.tail + 1U) % CSM_CFG_QUEUE_SIZE;
     Csm_JobQueue.count++;
     
     return E_OK;
@@ -407,7 +407,7 @@ STATIC Std_ReturnType Csm_DequeueJob(uint32* jobId)
         *jobId = Csm_JobQueue.items[Csm_JobQueue.head].jobId;
     }
     
-    Csm_JobQueue.head = (Csm_JobQueue.head + 1) % CSM_CFG_QUEUE_SIZE;
+    Csm_JobQueue.head = (Csm_JobQueue.head + 1U) % CSM_CFG_QUEUE_SIZE;
     Csm_JobQueue.count--;
     
     return E_OK;
@@ -2290,7 +2290,7 @@ Std_ReturnType Csm_MacVerify(
              * macLength bytes.
              * Result semantics per SWS_Csm_00041 Csm_VerifyResultType:
              * CSM_E_VER_OK (0) on match, CSM_E_VER_NOT_OK (1) on mismatch. */
-            *verifyPtr = (Mcal_MemCompare(calculatedMac, macPtr, macLength) == 0U )
+            *verifyPtr = (Mcal_MemCompare(calculatedMac, macPtr, macLength) == 0 )
                             ? (boolean)CSM_E_VER_OK : (boolean)CSM_E_VER_NOT_OK;
         }
         else

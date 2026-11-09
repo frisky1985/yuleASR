@@ -784,7 +784,7 @@ Std_ReturnType DoIP_ProcessRoutingActivation(
     );
 
     /* Update connection state */
-    if (responseCode == DOIP_ROUTING_ACTIVATION_RES_CODE_SUCCESS)
+    if (responseCode == (uint8)DOIP_ROUTING_ACTIVATION_RES_CODE_SUCCESS)
     {
         DoIP_TesterConnections[connectionIdx].testerLogicalAddress = sourceAddress;
         DoIP_TesterConnections[connectionIdx].routingActivationType = activationType;
@@ -802,7 +802,7 @@ Std_ReturnType DoIP_ProcessRoutingActivation(
         NULL_PTR
     );
 
-    return (responseCode == DOIP_ROUTING_ACTIVATION_RES_CODE_SUCCESS) ? E_OK : E_NOT_OK;
+    return (responseCode == (uint8)DOIP_ROUTING_ACTIVATION_RES_CODE_SUCCESS) ? E_OK : E_NOT_OK;
 }
 
 /** @req SWS_DoIP_00003 */

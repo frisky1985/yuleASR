@@ -42,7 +42,7 @@
 #define CAN_RXMGMASK                    (0x10)
 #define CAN_RX14MASK                    (0x14)
 #define CAN_RX15MASK                    (0x18)
-#define CAN_ECR                         (0x1C)
+#define CAN_ECR                         (0x1CU)
 #define CAN_ESR1                        (0x20U)
 #define CAN_IMASK2                      (0x24U)
 #define CAN_IMASK1                      (0x28U)

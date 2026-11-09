@@ -136,7 +136,7 @@ STATIC void Swc_EngineControl_UpdateParameters(void)
     }
 
     /* Limit engine load */
-    if (swcEngineControl.parameters.engineLoad > 100) {
+    if (swcEngineControl.parameters.engineLoad > 100U) {
         swcEngineControl.parameters.engineLoad = 100;
     }
 
@@ -144,11 +144,11 @@ STATIC void Swc_EngineControl_UpdateParameters(void)
     switch (swcEngineControl.controlMode) {
         case ENGINE_MODE_ECO:
             swcEngineControl.parameters.engineSpeed = ENG_NORMAL_IDLE_SPEED +
-                (swcEngineControl.parameters.engineLoad * 20);
+                (swcEngineControl.parameters.engineLoad * 20U);
             break;
         case ENGINE_MODE_SPORT:
             swcEngineControl.parameters.engineSpeed = ENG_NORMAL_IDLE_SPEED +
-                (swcEngineControl.parameters.engineLoad * 40);
+                (swcEngineControl.parameters.engineLoad * 40U);
             break;
         case ENGINE_MODE_LIMP_HOME:
             swcEngineControl.parameters.engineSpeed = ENG_MIN_IDLE_SPEED;
@@ -156,7 +156,7 @@ STATIC void Swc_EngineControl_UpdateParameters(void)
         case ENGINE_MODE_NORMAL:
         default:
             swcEngineControl.parameters.engineSpeed = ENG_NORMAL_IDLE_SPEED +
-                (swcEngineControl.parameters.engineLoad * 30);
+                (swcEngineControl.parameters.engineLoad * 30U);
             break;
     }
 }
@@ -192,7 +192,7 @@ STATIC void Swc_EngineControl_UpdateStateMachine(void)
             break;
 
         case ENGINE_STATE_STOPPING:
-            if (swcEngineControl.parameters.engineSpeed < 100) {
+            if (swcEngineControl.parameters.engineSpeed < 100U) {
                 nextState = ENGINE_STATE_OFF;
             }
             break;
@@ -250,7 +250,7 @@ STATIC void Swc_EngineControl_CalculateOutputs(void)
         }
 
         /* Check fuel cutoff conditions */
-        if (swcEngineControl.parameters.engineTemperature > ENG_FUEL_CUTOFF_TEMP) {
+        if (swcEngineControl.parameters.engineTemperature > (sint16)ENG_FUEL_CUTOFF_TEMP) {
             swcEngineControl.output.fuelCutoff = TRUE;
         } else {
             swcEngineControl.output.fuelCutoff = FALSE;
@@ -273,19 +273,19 @@ STATIC void Swc_EngineControl_CalculateOutputs(void)
 STATIC void Swc_EngineControl_HandleFaults(void)
 {
     /* Check temperature faults */
-    if (swcEngineControl.parameters.engineTemperature > ENG_OVERHEAT_THRESHOLD) {
+    if (swcEngineControl.parameters.engineTemperature > (sint16)ENG_OVERHEAT_THRESHOLD) {
         swcEngineControl.faultCounter++;
     }
 
     /* Check unrealistic sensor values */
-    if (swcEngineControl.parameters.throttlePosition > 110) {
+    if (swcEngineControl.parameters.throttlePosition > 110U) {
         swcEngineControl.faultCounter++;
     }
 
     /* Decrement fault counter if conditions are normal */
     if ((swcEngineControl.faultCounter > 0U) &&
-        ((swcEngineControl.parameters.engineTemperature < ENG_OVERHEAT_THRESHOLD)) &&
-        (swcEngineControl.parameters.throttlePosition <= 100)) {
+        ((swcEngineControl.parameters.engineTemperature < (sint16)ENG_OVERHEAT_THRESHOLD)) &&
+        (swcEngineControl.parameters.throttlePosition <= 100U)) {
         swcEngineControl.faultCounter--;
     }
 }
@@ -297,7 +297,7 @@ STATIC boolean Swc_EngineControl_CheckStartConditions(void)
 {
     /* Check coolant temperature within range */
     if ((swcEngineControl.parameters.engineTemperature < ENG_MIN_OPERATING_TEMP) ||
-        (swcEngineControl.parameters.engineTemperature > ENG_MAX_OPERATING_TEMP)) {
+        (swcEngineControl.parameters.engineTemperature > (sint16)ENG_MAX_OPERATING_TEMP)) {
         return FALSE;
     }
 
@@ -315,7 +315,7 @@ STATIC boolean Swc_EngineControl_CheckStartConditions(void)
 STATIC boolean Swc_EngineControl_CheckStopConditions(void)
 {
     /* Check if throttle is at idle position and vehicle stopped */
-    if ((swcEngineControl.parameters.throttlePosition < 5) &&
+    if ((swcEngineControl.parameters.throttlePosition < 5U) &&
         (swcEngineControl.parameters.engineSpeed <= ENG_MIN_IDLE_SPEED)) {
         return TRUE;
     }
@@ -500,7 +500,7 @@ uint16 Swc_EngineControl_CalculateFuelInjection(uint16 speed, uint16 load, sint1
     }
 
     /* Apply fuel trim from PIM */
-    fuelTime = (fuelTime * pimFuelTrim) / 100;
+    fuelTime = (fuelTime * pimFuelTrim) / 100U;
 
     /* Limit fuel time */
     if (fuelTime > FUEL_INJ_MAX_TIME_US) {
@@ -541,9 +541,9 @@ uint16 Swc_EngineControl_CalculateIgnitionTiming(uint16 speed, uint16 load, sint
     ignitionAdvance += pimIgnitionOffset;
 
     /* Limit ignition advance */
-    if (ignitionAdvance > IGNITION_ADVANCE_MAX_DEG) {
+    if (ignitionAdvance > (sint16)IGNITION_ADVANCE_MAX_DEG) {
         ignitionAdvance = IGNITION_ADVANCE_MAX_DEG;
-    } else if (ignitionAdvance < IGNITION_ADVANCE_MIN_DEG) {
+    } else if (ignitionAdvance < (sint16)IGNITION_ADVANCE_MIN_DEG) {
         ignitionAdvance = IGNITION_ADVANCE_MIN_DEG;
     }
 

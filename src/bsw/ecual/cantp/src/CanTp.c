@@ -425,10 +425,10 @@ static boolean CanTp_RxQueueEnqueue(PduIdType RxPduId, const PduInfoType* PduInf
     if (PduInfoPtr->MetaDataPtr != NULL_PTR) {
         const CanTp_RxNsduConfigType* rxNsduConfig = CanTp_GetRxNsduConfig(RxPduId);
         if (rxNsduConfig != NULL_PTR) {
-            if (rxNsduConfig->CanTpRxAddressingFormat == CANTP_MIXED) {
+            if (rxNsduConfig->CanTpRxAddressingFormat == (uint8)CANTP_MIXED) {
                 entry->MetaData[0] = PduInfoPtr->MetaDataPtr[0];
                 entry->MetaDataValid = TRUE;
-            } else if (rxNsduConfig->CanTpRxAddressingFormat == CANTP_NORMALFIXED) {
+            } else if (rxNsduConfig->CanTpRxAddressingFormat == (uint8)CANTP_NORMALFIXED) {
                 for (uint8 i = 0U; i < CANTP_RX_QUEUE_MAX_METADATA; i++) {
                     entry->MetaData[i] = PduInfoPtr->MetaDataPtr[i];
                 }
@@ -495,7 +495,7 @@ static uint8* CanTp_BuildTxMetaData(uint8 AddressingFormat, boolean UlMetaValid,
 {
     uint8* metaPtr = NULL_PTR;
 
-    if (AddressingFormat == CANTP_MIXED) {
+    if (AddressingFormat == (uint8)CANTP_MIXED) {
         if (UlMetaValid == TRUE) {
             MetaBuf[0] = UlMeta[0];
         } else if (CanTp_LastRxMetaDataValid == TRUE) {
@@ -504,7 +504,7 @@ static uint8* CanTp_BuildTxMetaData(uint8 AddressingFormat, boolean UlMetaValid,
             MetaBuf[0] = FallbackAddr;
         }
         metaPtr = MetaBuf;
-    } else if (AddressingFormat == CANTP_NORMALFIXED) {
+    } else if (AddressingFormat == (uint8)CANTP_NORMALFIXED) {
         if (UlMetaValid == TRUE) {
             for (uint8 i = 0U; i < CANTP_RX_QUEUE_MAX_METADATA; i++) {
                 MetaBuf[i] = UlMeta[i];
@@ -805,10 +805,10 @@ Std_ReturnType CanTp_Transmit(PduIdType CanTpTxSduId, const PduInfoType* CanTpTx
      * address / CAN ID via MetaData; keep it for the CanIf_Transmit calls. */
     runtime->TxMetaDataValid = FALSE;
     if (CanTpTxInfoPtr->MetaDataPtr != NULL_PTR) {
-        if (txNsduConfig->CanTpTxAddressingFormat == CANTP_MIXED) {
+        if (txNsduConfig->CanTpTxAddressingFormat == (uint8)CANTP_MIXED) {
             runtime->TxMetaData[0] = CanTpTxInfoPtr->MetaDataPtr[0];
             runtime->TxMetaDataValid = TRUE;
-        } else if (txNsduConfig->CanTpTxAddressingFormat == CANTP_NORMALFIXED) {
+        } else if (txNsduConfig->CanTpTxAddressingFormat == (uint8)CANTP_NORMALFIXED) {
             for (uint8 i = 0U; i < CANTP_RX_QUEUE_MAX_METADATA; i++) {
                 runtime->TxMetaData[i] = CanTpTxInfoPtr->MetaDataPtr[i];
             }
@@ -1007,8 +1007,8 @@ static void CanTp_StoreRxMetaData(const CanTp_RxNsduConfigType* rxNsduConfig,
                                   boolean MetaDataValid, const uint8* MetaData)
 {
     if ((MetaDataValid == TRUE) && (rxNsduConfig != NULL_PTR) &&
-        ((rxNsduConfig->CanTpRxAddressingFormat == CANTP_MIXED) ||
-         (rxNsduConfig->CanTpRxAddressingFormat == CANTP_NORMALFIXED))) {
+        ((rxNsduConfig->CanTpRxAddressingFormat == (uint8)CANTP_MIXED) ||
+         (rxNsduConfig->CanTpRxAddressingFormat == (uint8)CANTP_NORMALFIXED))) {
         for (uint8 i = 0U; i < CANTP_RX_QUEUE_MAX_METADATA; i++) {
             CanTp_LastRxMetaData[i] = MetaData[i];
         }
@@ -1094,8 +1094,8 @@ static void CanTp_ProcessRxFF(const uint8* SduDataPtr, PduLengthType SduLength,
 
             /* Store the addressing MetaData in the channel runtime */
             if ((MetaDataValid == TRUE) &&
-                ((rxNsduConfig->CanTpRxAddressingFormat == CANTP_MIXED) ||
-                 (rxNsduConfig->CanTpRxAddressingFormat == CANTP_NORMALFIXED))) {
+                ((rxNsduConfig->CanTpRxAddressingFormat == (uint8)CANTP_MIXED) ||
+                 (rxNsduConfig->CanTpRxAddressingFormat == (uint8)CANTP_NORMALFIXED))) {
                 for (uint8 i = 0U; i < CANTP_RX_QUEUE_MAX_METADATA; i++) {
                     runtime->RxMetaData[i] = MetaData[i];
                 }

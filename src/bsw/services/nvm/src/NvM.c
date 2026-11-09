@@ -2347,7 +2347,7 @@ STATIC void Nvm_HandleBusyState(void)
 
     memIfStatus = MemIf_GetStatus(blockDesc->DeviceId);
 
-    if (memIfStatus == MEMIF_IDLE)
+    if (memIfStatus == (MemIf_StatusType)MEMIF_IDLE)
     {
         MemIf_JobResultType jobResult = MemIf_GetJobResult(blockDesc->DeviceId);
         jobComplete = TRUE;
@@ -2367,7 +2367,7 @@ STATIC void Nvm_HandleBusyState(void)
             Nvm_FinishJob(blockDesc);
         }
     }
-    else if ((memIfStatus != MEMIF_BUSY) && (memIfStatus != MEMIF_BUSY_INTERNAL))
+    else if ((memIfStatus != (MemIf_StatusType)MEMIF_BUSY) && (memIfStatus != (MemIf_StatusType)MEMIF_BUSY_INTERNAL))
     {
         Nvm_HandleJobErrorState();
     }

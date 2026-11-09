@@ -438,11 +438,11 @@ Std_ReturnType CanIf_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
     const CanIf_TxPduConfigType* txPduConfig = &CanIf_ConfigPtr->TxPdus[TxPduId];
     uint8 controllerId = txPduConfig->ControllerId;
 
-    if (CanIf_ControllerMode[controllerId] != CANIF_CS_STARTED) {
+    if (CanIf_ControllerMode[controllerId] != (CanIf_ControllerModeType)CANIF_CS_STARTED) {
         return E_NOT_OK;
     }
 
-    if (CanIf_PduMode[controllerId] == CANIF_OFFLINE) {
+    if (CanIf_PduMode[controllerId] == (CanIf_PduModeType)CANIF_OFFLINE) {
         return E_NOT_OK;
     }
 

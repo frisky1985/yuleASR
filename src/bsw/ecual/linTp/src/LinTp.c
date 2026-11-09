@@ -45,7 +45,7 @@
 #define LINTP_BUILD_PCI_SF(dl)                  (0x00U | ((dl) & 0x0FU))
 #define LINTP_BUILD_PCI_FF(dl_high, dl_low)     (0x10U | ((dl_high) & 0x0FU)), (dl_low)
 #define LINTP_BUILD_PCI_CF(sn)                  (0x20U | ((sn) & 0x0FU))
-#define LINTP_BUILD_PCI_FC(fs)                  (0x30U | ((fs) & 0x0FU))
+#define LINTP_BUILD_PCI_FC(fs)                  (0x30U | ((uint8)(fs) & 0x0FU))
 
 /* Timeout decrementation value per MainFunction call (assuming 1ms cycle) */
 #define LINTP_TIMEOUT_DECREMENT                 1U

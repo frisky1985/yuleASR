@@ -68,7 +68,7 @@ static boolean bib_pending_valid(const Boot_InfoBlock *bib)
     /* 掉电保护 (RS-OTA-06): DOWNLOADING = 升级写入未完成 (Prepare 落盘后
      * 擦除/写入中途掉电), 待确认状态不可信 → 视为无 pending。
      * 旧 BIB 无 update_state 字段 (reserved=0) → 读为 IDLE, 天然兼容。 */
-    if (bib->update_state == BOOT_UPDATE_DOWNLOADING) {
+    if (bib->update_state == (uint8_t)BOOT_UPDATE_DOWNLOADING) {
         return FALSE;
     }
     if (bib->pending_counter == 0U) {

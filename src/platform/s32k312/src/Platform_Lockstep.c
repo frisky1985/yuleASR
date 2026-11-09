@@ -145,7 +145,7 @@ Std_ReturnType Platform_Lockstep_Init(const Lockstep_ConfigType* config)
     /* 配置Lockstep控制寄存器 */
     regValue = 0U;
     
-    if (config->enableLockstep && (LOCKSTEP_MODE_ENABLED == config->mode))
+    if (config->enableLockstep && ((uint8)LOCKSTEP_MODE_ENABLED == config->mode))
     {
         /* 使能锁步模式 */
         regValue |= MSCM_LOCKSTEP_CTRL_ENABLE;

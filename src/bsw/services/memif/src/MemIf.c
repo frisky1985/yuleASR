@@ -273,7 +273,7 @@ Std_ReturnType MemIf_Read(uint8 DeviceIndex, uint16 BlockNumber, uint16 BlockOff
     }
 #endif
 
-    if (MemIf_DeviceState[DeviceIndex].status == MEMIF_IDLE) {
+    if (MemIf_DeviceState[DeviceIndex].status == (MemIf_StatusType)MEMIF_IDLE) {
         /* Route to appropriate underlying driver */
         if (DeviceIndex == MEMIF_DEVICE_INDEX_FEE) {
 #if (MEMIF_FEE_ENABLED == STD_ON)
@@ -317,7 +317,7 @@ Std_ReturnType MemIf_Write(uint8 DeviceIndex, uint16 BlockNumber, const uint8* D
     }
 #endif
 
-    if (MemIf_DeviceState[DeviceIndex].status == MEMIF_IDLE) {
+    if (MemIf_DeviceState[DeviceIndex].status == (MemIf_StatusType)MEMIF_IDLE) {
         /* Route to appropriate underlying driver */
         if (DeviceIndex == MEMIF_DEVICE_INDEX_FEE) {
 #if (MEMIF_FEE_ENABLED == STD_ON)
@@ -456,7 +456,7 @@ Std_ReturnType MemIf_InvalidateBlock(uint8 DeviceIndex, uint16 BlockNumber)
     }
 #endif
 
-    if (MemIf_DeviceState[DeviceIndex].status == MEMIF_IDLE) {
+    if (MemIf_DeviceState[DeviceIndex].status == (MemIf_StatusType)MEMIF_IDLE) {
         /* Route to appropriate underlying driver */
         if (DeviceIndex == MEMIF_DEVICE_INDEX_FEE) {
 #if (MEMIF_FEE_ENABLED == STD_ON)
@@ -498,7 +498,7 @@ Std_ReturnType MemIf_EraseBlock(uint8 DeviceIndex, uint16 BlockNumber)
     }
 #endif
 
-    if (MemIf_DeviceState[DeviceIndex].status == MEMIF_IDLE) {
+    if (MemIf_DeviceState[DeviceIndex].status == (MemIf_StatusType)MEMIF_IDLE) {
         /* Route to appropriate underlying driver */
         if (DeviceIndex == MEMIF_DEVICE_INDEX_FEE) {
 #if (MEMIF_FEE_ENABLED == STD_ON)
@@ -545,7 +545,7 @@ Std_ReturnType MemIf_EraseImmediateBlock(uint8 DeviceIndex, uint16 BlockNumber)
     }
 #endif
 
-    if (MemIf_DeviceState[DeviceIndex].status == MEMIF_IDLE) {
+    if (MemIf_DeviceState[DeviceIndex].status == (MemIf_StatusType)MEMIF_IDLE) {
         /* Route to appropriate underlying driver */
         if (DeviceIndex == MEMIF_DEVICE_INDEX_FEE) {
 #if (MEMIF_FEE_ENABLED == STD_ON)
@@ -591,7 +591,7 @@ void MemIf_MainFunction(uint8 DeviceIndex)
     }
 
     /* Update status after main function processing */
-    if (MemIf_DeviceState[DeviceIndex].status == MEMIF_BUSY) {
+    if (MemIf_DeviceState[DeviceIndex].status == (MemIf_StatusType)MEMIF_BUSY) {
         MemIf_JobResultType jobResult = MemIf_GetJobResult(DeviceIndex);
         
         if (jobResult != MEMIF_JOB_PENDING) {

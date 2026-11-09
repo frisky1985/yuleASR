@@ -447,7 +447,7 @@ Std_ReturnType Dem_GetEventFailed(Dem_EventIdType EventId, boolean* EventFailed)
     if (Dem_IntFindEventConfig(EventId) != NULL_PTR)
     {
         *EventFailed = (Dem_InternalState.EventStates[EventId - 1U].FaultDetectionCounter >= 
-                        DEM_DEBOUNCE_COUNTER_FAILED_THRESHOLD);
+                        (sint16)DEM_DEBOUNCE_COUNTER_FAILED_THRESHOLD);
         result = E_OK;
     }
 

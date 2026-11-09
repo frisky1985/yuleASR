@@ -129,8 +129,8 @@ STATIC void Swc_VehicleDynamics_UpdateMotionData(void)
     /* Calculate lateral acceleration from yaw rate and speed */
     if (swcVehicleDynamics.motionData.vehicleSpeed > 0U ) {
         swcVehicleDynamics.motionData.lateralAccel =
-            (sint16)((swcVehicleDynamics.motionData.yawRate *
-                     swcVehicleDynamics.motionData.vehicleSpeed) / 100);
+            (sint16)(((sint32)swcVehicleDynamics.motionData.yawRate *
+                     (sint32)swcVehicleDynamics.motionData.vehicleSpeed) / 100);
     }
 }
 
@@ -145,7 +145,7 @@ STATIC void Swc_VehicleDynamics_CalculateTargetYawRate(void)
 
     sint32 targetYaw;
 
-    if (swcVehicleDynamics.motionData.vehicleSpeed > 5) {
+    if (swcVehicleDynamics.motionData.vehicleSpeed > 5U) {
         /* Linear approximation */
         targetYaw = ((sint32)swcVehicleDynamics.motionData.steeringAngle *
                      (sint32)swcVehicleDynamics.motionData.vehicleSpeed) / 100;
@@ -493,7 +493,7 @@ sint16 Swc_VehicleDynamics_CalculateBrakeIntervention(sint16 yawRate,
     intervention += (ABS(lateralAccel) / 10);
 
     /* Apply stability control sensitivity from PIM */
-    intervention = (intervention * pimStabilityControlSensitivity) / 100;
+    intervention = (intervention * (sint32)pimStabilityControlSensitivity) / 100;
 
     /* Limit intervention */
     if (intervention > 100) {

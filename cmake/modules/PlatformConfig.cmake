@@ -34,8 +34,8 @@ endif()
 if(YULE_ENABLE_MCAL)
     add_compile_definitions(
         MCAL_ENABLE
-        STD_ON=1
-        STD_OFF=0
+        STD_ON=1U
+        STD_OFF=0U
     )
 endif()
 

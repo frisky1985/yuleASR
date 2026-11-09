@@ -107,7 +107,7 @@ static uint32 Mem_CalculateChecksum(const Mem_BlockType* block)
     const uint8* ptr = (const uint8*)block;
     uint32 i;
     
-    for (i = 0u; i < offsetof(Mem_BlockType, checksum); i++) {
+    for (i = 0u; i < (uint32)offsetof(Mem_BlockType, checksum); i++) {
         checksum ^= ((uint32)ptr[i]) << ((i % 4u) * 8u);
     }
     return checksum;

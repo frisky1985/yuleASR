@@ -77,7 +77,7 @@ Boot_Result Boot_Flash_Write(uint32_t dst_addr, const uint8_t *src, uint32_t len
                     match = FALSE;
                     break;
                 }
-                if (memcmp(verify_buf, src + off, chunk) != 0U ) {
+                if (memcmp(verify_buf, src + off, chunk) != 0 ) {
                     match = FALSE;
                     break;
                 }

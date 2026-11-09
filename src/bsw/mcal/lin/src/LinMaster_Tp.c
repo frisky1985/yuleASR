@@ -8,11 +8,11 @@
 /* 重用HAL层 */
 #include <string.h>
 /* 内部宏 */
-#define LINMASTER_TP_PCI_MASK 0xF0
-#define LINMASTER_TP_PCI_SF_MASK 0x0F
-#define LINMASTER_TP_PCI_FF_LEN_MASK 0x0F
-#define LINMASTER_TP_PCI_CF_SN_MASK 0x0F
-#define LINMASTER_TP_PCI_FC_FS_MASK 0x0F
+#define LINMASTER_TP_PCI_MASK 0xF0U
+#define LINMASTER_TP_PCI_SF_MASK 0x0FU
+#define LINMASTER_TP_PCI_FF_LEN_MASK 0x0FU
+#define LINMASTER_TP_PCI_CF_SN_MASK 0x0FU
+#define LINMASTER_TP_PCI_FC_FS_MASK 0x0FU
 /* 流控状态 */
 #define LINMASTER_TP_FC_CTS 0x00
 /* Continue To Send */
@@ -67,7 +67,7 @@ static LinMaster_Tp_StatusType LinMaster_Tp_SendSingleFrame(uint16 Length, const
     uint8 SfFrame[8];
     uint8 i;
     /* 构建单帧: PCI(1字节) + 数据(1-7字节) */
-    SfFrame[0] = LINMASTER_TP_PCI_SF | (Length & LINMASTER_TP_PCI_SF_MASK);
+    SfFrame[0] = (uint8)LINMASTER_TP_PCI_SF | (Length & LINMASTER_TP_PCI_SF_MASK);
     /* 复制数据 */
     for (i = 0U; i < Length; i++)
     {
@@ -97,8 +97,8 @@ static LinMaster_Tp_StatusType LinMaster_Tp_SendFirstFrame(uint16 Length, const 
     TpChannel.TxLength = Length;
     TpChannel.TxOffset = 0;
     /* 构建首帧: PCI(1字节) + 长度(1字节) + 数据(5字节) */
-    FfFrame[0] = LINMASTER_TP_PCI_FF | ((Length >> 8) & LINMASTER_TP_PCI_FF_LEN_MASK);
-    FfFrame[1] = Length & 0xFF;
+    FfFrame[0] = (uint8)LINMASTER_TP_PCI_FF | ((Length >> 8) & LINMASTER_TP_PCI_FF_LEN_MASK);
+    FfFrame[1] = Length & 0xFFU;
     /* 复制前5个字节数据 */
     for (i = 0U; i < (uint8)5 && i < Length; i++)
     {
@@ -135,7 +135,7 @@ static LinMaster_Tp_StatusType LinMaster_Tp_SendConsecutiveFrame(void)
     /* 确定帧长度 (PCI 1字节 + 数据 1-7字节) */
     FrameLength = (RemainingBytes > LINMASTER_TP_MAX_SEG_LEN) ? LINMASTER_TP_MAX_SEG_LEN : (uint8)RemainingBytes;
     /* 构建连续帧: PCI(1字节) + 数据(1-6字节) */
-    CfFrame[0] = LINMASTER_TP_PCI_CF | (TpChannel.SeqNumber & LINMASTER_TP_PCI_CF_SN_MASK);
+    CfFrame[0] = (uint8)LINMASTER_TP_PCI_CF | (TpChannel.SeqNumber & LINMASTER_TP_PCI_CF_SN_MASK);
     for (i = 0U; i < FrameLength; i++)
     {
         CfFrame[i + (uint8)1] = TpChannel.TxBuffer[TpChannel.TxOffset + i];
@@ -144,7 +144,7 @@ static LinMaster_Tp_StatusType LinMaster_Tp_SendConsecutiveFrame(void)
     LinSlave_Hal_UartSendBuffer(CfFrame, FrameLength + (uint8)1);
     /* 更新偏移和序列号 */
     TpChannel.TxOffset += FrameLength;
-    TpChannel.SeqNumber = (TpChannel.SeqNumber + 1) & 0x0F;
+    TpChannel.SeqNumber = (TpChannel.SeqNumber + 1U) & 0x0FU;
     TpChannel.LastFrameTime = LinSlave_Hal_GetTimestampMs();
     /* 增加BS计数器 */
     TpChannel.BS_Counter++;

@@ -83,9 +83,9 @@ LinSlave_Uds_StatusType LinSlave_Uds_ProcessRequest(const uint8* DataPtr, uint16
     }
     /* 解析请求 */
     Request.Sid = DataPtr[0];
-    Request.SubFunction = (Length > (uint16)1) ? DataPtr[1] : 0;
+    Request.SubFunction = (Length > (uint16)1) ? DataPtr[1] : 0U;
     Request.DataPtr = (Length > (uint16)1) ? &DataPtr[1] : NULL_PTR;
-    Request.DataLength = (Length > (uint16)1) ? Length - 1 : 0;
+    Request.DataLength = (Length > (uint16)1) ? Length - 1U : 0U;
     /* 重置S3计时器 */
     UdsRuntime.S3ServerTimer = 0;
     /* 检查TesterPresent */
@@ -138,12 +138,12 @@ LinSlave_Uds_StatusType LinSlave_Uds_SendPositiveResponse(const LinSlave_Uds_Res
         return LINSLAVE_UDS_E_NOT_OK;
     }
     /* 构建响应消息 */
-    ResponseBuffer[0] = ResponsePtr->Sid + 0x40;
+    ResponseBuffer[0] = ResponsePtr->Sid + 0x40U;
     /* 正响响应: SID + 0x40 */
     if (ResponsePtr->DataLength > 0U && ResponsePtr->DataPtr != NULL_PTR)
     {
         (void)memcpy(&ResponseBuffer[1], ResponsePtr->DataPtr, ResponsePtr->DataLength);
-        ResponseLength = ResponsePtr->DataLength + 1;
+        ResponseLength = ResponsePtr->DataLength + 1U;
     }
     else
     {
@@ -210,7 +210,7 @@ void LinSlave_Uds_MainFunction(void)
     /* S3计时器管理 */
     UdsRuntime.S3ServerTimer++;
     /* 检查S3超时 (S3Server: 通常为5000ms) */
-    if (UdsRuntime.S3ServerTimer > 5000)
+    if (UdsRuntime.S3ServerTimer > 5000U)
     {
         /* 超时，返回默认会话 */
         UdsRuntime.CurrentSession = LINSLAVE_UDS_SESSION_DEFAULT;
@@ -249,14 +249,14 @@ void LinSlave_Uds_SetSecurityLevel(LinSlave_Uds_SecurityLevelType SecurityLevel)
 /** @req SWS_Lin_00171 */
 boolean LinSlave_Uds_IsSessionTimeout(void)
 {
-    return (UdsRuntime.S3ServerTimer > 5000);
+    return (UdsRuntime.S3ServerTimer > 5000U);
 }
 /* ==================== 默认服务处理函数 ==================== */
 /** * @brief 诊断会话控制服务 (0x10) */
 static LinSlave_Uds_StatusType Uds_SessionControl(const LinSlave_Uds_RequestType* Request,
                                                   LinSlave_Uds_ResponseType* Response)
 {
-    uint8 SessionType = Request->SubFunction & 0x7F;
+    uint8 SessionType = Request->SubFunction & 0x7FU;
     /* 设置会话 */
     /** @req SWS_Lin_00169 */
     LinSlave_Uds_SetSessionType((LinSlave_Uds_SessionType)SessionType);
@@ -281,7 +281,7 @@ static LinSlave_Uds_StatusType Uds_SessionControl(const LinSlave_Uds_RequestType
 static LinSlave_Uds_StatusType Uds_EcuReset(const LinSlave_Uds_RequestType* Request,
                                             LinSlave_Uds_ResponseType* Response)
 {
-    uint8 ResetType = Request->SubFunction & 0x7F;
+    uint8 ResetType = Request->SubFunction & 0x7FU;
     (void)ResetType;
     /* 根据复位类型执行不同操作 */
     Response->Sid = LINSLAVE_UDS_SID_ECU_RESET;
@@ -296,12 +296,12 @@ static LinSlave_Uds_StatusType Uds_EcuReset(const LinSlave_Uds_RequestType* Requ
 static LinSlave_Uds_StatusType Uds_TesterPresent(const LinSlave_Uds_RequestType* Request,
                                                  LinSlave_Uds_ResponseType* Response)
 {
-    uint8 SubFunction = Request->SubFunction & 0x7F;
+    uint8 SubFunction = Request->SubFunction & 0x7FU;
     /* 重置S3计时器 */
     UdsRuntime.S3ServerTimer = 0;
     UdsRuntime.TesterPresentReceived = TRUE;
     /* 如果子功能不是0x80 (无响应)，则发送响应 */
-    if (SubFunction != 0x80)
+    if (SubFunction != 0x80U)
     {
         Response->Sid = LINSLAVE_UDS_SID_TESTER_PRESENT;
         Response->DataPtr[0] = SubFunction;

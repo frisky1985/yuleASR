@@ -763,7 +763,7 @@ static Std_ReturnType CanSm_ProcessCheckWakeupState(uint8 NetworkIndex)
 #endif
             result = E_NOT_OK;
         }
-    } else if ((netState->CtrlMode == CANIF_CS_STOPPED) &&
+    } else if ((netState->CtrlMode == (CanIf_ControllerModeType)CANIF_CS_STOPPED) &&
                ((netConfig->TransceiverSupport == FALSE) ||
                 ((netState->TrcvMode == CANIF_TRCV_MODE_NORMAL) &&
                  (netState->TrcvWufFlagIndication == FALSE)))) {

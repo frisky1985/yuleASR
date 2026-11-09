@@ -14,7 +14,7 @@
 #define LIN_WAKEUP_SUPPORT                 STD_ON
 
 /* Number of Channels */
-#define LIN_MAX_CHANNELS                   2
+#define LIN_MAX_CHANNELS                   2U
 
 /* Channel IDs */
 #define LIN_CHANNEL_0                      0x00
@@ -29,7 +29,7 @@
 #define LIN_WAKEUP_TIMEOUT                 50
 
 /* Frame Configuration */
-#define LIN_MAX_FRAME_LENGTH               8
+#define LIN_MAX_FRAME_LENGTH               8U
 #define LIN_MAX_PID                        0x3F
 
 /* Channel 0 Configuration */

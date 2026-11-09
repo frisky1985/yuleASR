@@ -324,7 +324,7 @@ STATIC void Swc_DiagnosticManager_ProcessReadDtc(const Swc_DiagnosticRequestType
     switch (subFunction) {
         case UDS_DTC_SUBFUNC_REPORT_BY_STATUS:  /* Report DTC by status mask */
             response->responseId = request->serviceId + UDS_POSITIVE_RESPONSE_OFFSET;
-            response->dataLength = 2 + (swcDiagManager.numDtcs * 4);
+            response->dataLength = 2U + (swcDiagManager.numDtcs * 4U);
             response->data[0] = UDS_AVAILABILITY_MASK_VAL;
             response->data[1] = swcDiagManager.numDtcs;
 
@@ -469,7 +469,7 @@ void Swc_DiagnosticManager_Init(void)
 {
     uint8 i;
 
-    if (swcDiagManager.status.currentSession != 0U ) {
+    if ((uint8)swcDiagManager.status.currentSession != 0U ) {
         /* Already initialized */
         return;
     }
@@ -742,7 +742,7 @@ Rte_StatusType Swc_DiagnosticManager_GetStatus(Swc_DiagnosticManagerStatusType* 
  */
 void Swc_DiagnosticManager_MainFunction(void)
 {
-    if (swcDiagManager.status.currentSession == 0U ) {
+    if ((uint8)swcDiagManager.status.currentSession == 0U ) {
         return; /* Not initialized */
     }
 
@@ -762,7 +762,7 @@ void Swc_DiagnosticManager_Deinit(void)
 {
     uint8 i;
 
-    if (swcDiagManager.status.currentSession == 0U ) {
+    if ((uint8)swcDiagManager.status.currentSession == 0U ) {
         return;
     }
 

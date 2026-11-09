@@ -236,7 +236,7 @@ Std_ReturnType NvM_RedundantCheckConsistency(NvM_BlockIdType BlockId)
     }
     
     /* Compare */
-    if (memcmp(PrimaryBuffer, MirrorBuffer, BlockLength) == 0U )
+    if (memcmp(PrimaryBuffer, MirrorBuffer, BlockLength) == 0 )
     {
         return E_OK;
     }
@@ -315,7 +315,7 @@ static const NvM_BlockDescriptorType* NvM_Redundant_GetBlockDescriptor(NvM_Block
     const NvM_BlockDescriptorType* result = NULL_PTR;
 
     /* Redundant group uses two consecutive NV blocks: primary = BlockId*2, mirror = BlockId*2+1 */
-    PrimaryBlockId = (NvM_BlockIdType)((uint16)BlockId * NVM_RED_INSTANCE_COUNT);
+    PrimaryBlockId = (NvM_BlockIdType)((uint16)BlockId * (uint16)NVM_RED_INSTANCE_COUNT);
 
     for (i = 0U; i < NvM_Config.NumBlockDescriptors; i++)
     {
@@ -337,7 +337,7 @@ static Std_ReturnType NvM_RedundantReadBlock(
     NvM_BlockIdType ActualBlockId;
     
     /* Calculate actual block ID based on instance */
-    ActualBlockId = (NvM_BlockIdType)((BlockId * NVM_RED_INSTANCE_COUNT) + Instance);
+    ActualBlockId = (NvM_BlockIdType)((BlockId * (uint16)NVM_RED_INSTANCE_COUNT) + (uint16)Instance);
     
     /* Read via standard NVM read */
     return NvM_ReadBlock(ActualBlockId, DestPtr);
@@ -351,7 +351,7 @@ static Std_ReturnType NvM_RedundantWriteBlock(
     NvM_BlockIdType ActualBlockId;
     
     /* Calculate actual block ID based on instance */
-    ActualBlockId = (NvM_BlockIdType)((BlockId * NVM_RED_INSTANCE_COUNT) + Instance);
+    ActualBlockId = (NvM_BlockIdType)((BlockId * (uint16)NVM_RED_INSTANCE_COUNT) + (uint16)Instance);
     
     /* Write via standard NVM write */
     return NvM_WriteBlock(ActualBlockId, SrcPtr);

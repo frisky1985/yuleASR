@@ -244,7 +244,7 @@ STATIC Std_ReturnType SomeIpXf_SerializeOpaque(uint8 DataType,
 {
     Std_ReturnType result = E_NOT_OK;
 
-    if (DataType == SOMEIPXF_DT_STRING)
+    if (DataType == (uint8)SOMEIPXF_DT_STRING)
     {
         uint32 strLen = SourceBuffer->Length;
         if (strLen > SOMEIPXF_MAX_STRING_LENGTH)

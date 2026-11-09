@@ -28,14 +28,14 @@
 #define LINMASTER_TP_PATCH_VERSION      0
 
 /* 协议参数 */
-#define LINMASTER_TP_MAX_FRAME_LEN      4095    /* 最大报文长度 */
-#define LINMASTER_TP_MAX_SEG_LEN        6       /* 每帧最大数据 (6字节) */
+#define LINMASTER_TP_MAX_FRAME_LEN      4095U    /* 最大报文长度 */
+#define LINMASTER_TP_MAX_SEG_LEN        6U      /* 每帧最大数据 (6字节) */
 #define LINMASTER_TP_BS_DEFAULT         5       /* 默认BlockSize */
 #define LINMASTER_TP_STMIN_DEFAULT      10      /* 默认STmin (ms) */
 
 /* 超时参数 (ms) */
-#define LINMASTER_TP_N_AS_TIMEOUT       1000    /* 发送超时 */
-#define LINMASTER_TP_N_BS_TIMEOUT       1000    /* 等待流控超时 */
+#define LINMASTER_TP_N_AS_TIMEOUT       1000U    /* 发送超时 */
+#define LINMASTER_TP_N_BS_TIMEOUT       1000U    /* 等待流控超时 */
 #define LINMASTER_TP_N_CS_TIMEOUT       1000    /* 连续帧发送超时 */
 
 /* PCI (协议控制信息) 类型 */

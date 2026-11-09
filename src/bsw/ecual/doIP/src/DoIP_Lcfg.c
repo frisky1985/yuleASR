@@ -135,8 +135,8 @@ static const DoIP_SocketConfigType DoIP_Sockets[] =
         .localAddr    = {0x00, 0x00, 0x00, 0x00}, /* INADDR_ANY */
         .remotePort   = 0,
         .remoteAddr   = {0x00, 0x00, 0x00, 0x00},
-        .rxPduId      = DOIP_TCP_SOAD_RX_PDU_ID_BASE + 1,
-        .txPduId      = DOIP_TCP_SOAD_TX_PDU_ID_BASE + 1
+        .rxPduId      = DOIP_TCP_SOAD_RX_PDU_ID_BASE + 1U,
+        .txPduId      = DOIP_TCP_SOAD_TX_PDU_ID_BASE + 1U
     },
     /* TCP Data socket - Connection 2 */
     {
@@ -146,8 +146,8 @@ static const DoIP_SocketConfigType DoIP_Sockets[] =
         .localAddr    = {0x00, 0x00, 0x00, 0x00}, /* INADDR_ANY */
         .remotePort   = 0,
         .remoteAddr   = {0x00, 0x00, 0x00, 0x00},
-        .rxPduId      = DOIP_TCP_SOAD_RX_PDU_ID_BASE + 2,
-        .txPduId      = DOIP_TCP_SOAD_TX_PDU_ID_BASE + 2
+        .rxPduId      = DOIP_TCP_SOAD_RX_PDU_ID_BASE + 2U,
+        .txPduId      = DOIP_TCP_SOAD_TX_PDU_ID_BASE + 2U
     },
     /* TCP Data socket - Connection 3 */
     {
@@ -157,8 +157,8 @@ static const DoIP_SocketConfigType DoIP_Sockets[] =
         .localAddr    = {0x00, 0x00, 0x00, 0x00}, /* INADDR_ANY */
         .remotePort   = 0,
         .remoteAddr   = {0x00, 0x00, 0x00, 0x00},
-        .rxPduId      = DOIP_TCP_SOAD_RX_PDU_ID_BASE + 3,
-        .txPduId      = DOIP_TCP_SOAD_TX_PDU_ID_BASE + 3
+        .rxPduId      = DOIP_TCP_SOAD_RX_PDU_ID_BASE + 3U,
+        .txPduId      = DOIP_TCP_SOAD_TX_PDU_ID_BASE + 3U
     }
 };
 
@@ -265,15 +265,15 @@ static const PduIdType DoIP_PduRRoutingTable[] =
 {
     /* RX PDUs - Incoming diagnostic messages to PduR */
     DOIP_PDUR_RX_PDU_ID_BASE + 0,  /* Tester 0 diagnostic requests */
-    DOIP_PDUR_RX_PDU_ID_BASE + 1,  /* Tester 1 diagnostic requests */
-    DOIP_PDUR_RX_PDU_ID_BASE + 2,  /* Tester 2 diagnostic requests */
-    DOIP_PDUR_RX_PDU_ID_BASE + 3,  /* Tester 3 diagnostic requests */
+    DOIP_PDUR_RX_PDU_ID_BASE + 1U,  /* Tester 1 diagnostic requests */
+    DOIP_PDUR_RX_PDU_ID_BASE + 2U,  /* Tester 2 diagnostic requests */
+    DOIP_PDUR_RX_PDU_ID_BASE + 3U,  /* Tester 3 diagnostic requests */
 
     /* TX PDUs - Outgoing diagnostic messages from PduR */
     DOIP_PDUR_TX_PDU_ID_BASE + 0,  /* Responses to Tester 0 */
-    DOIP_PDUR_TX_PDU_ID_BASE + 1,  /* Responses to Tester 1 */
-    DOIP_PDUR_TX_PDU_ID_BASE + 2,  /* Responses to Tester 2 */
-    DOIP_PDUR_TX_PDU_ID_BASE + 3   /* Responses to Tester 3 */
+    DOIP_PDUR_TX_PDU_ID_BASE + 1U,  /* Responses to Tester 1 */
+    DOIP_PDUR_TX_PDU_ID_BASE + 2U,  /* Responses to Tester 2 */
+    DOIP_PDUR_TX_PDU_ID_BASE + 3U   /* Responses to Tester 3 */
 };
 
 #define DOIP_NUM_PDUS \

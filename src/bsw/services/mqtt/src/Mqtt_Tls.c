@@ -227,13 +227,13 @@ static int Mqtt_Tls_LoadCertificates(Mqtt_TlsInternalContextType* ctx,
     if ((config->trustStore.caCert != NULL_PTR) && (config->trustStore.caCertLength > 0U) ) {
         if (config->trustStore.caFormat == MQTT_CERT_FORMAT_PEM) {
             ret = mbedtls_x509_crt_parse(&ctx->caCert,
-                config->trustStore.caCert, config->trustStore.caCertLength + 1);
+                config->trustStore.caCert, config->trustStore.caCertLength + 1U);
         } else {
             ret = mbedtls_x509_crt_parse_der(&ctx->caCert,
                 config->trustStore.caCert, config->trustStore.caCertLength);
         }
 
-        if (ret != 0U ) {
+        if (ret != 0 ) {
             ctx->lastError = ret;
             return ret;
         }
@@ -245,13 +245,13 @@ static int Mqtt_Tls_LoadCertificates(Mqtt_TlsInternalContextType* ctx,
     if ((config->clientCert != NULL_PTR) && (config->clientCert->data != NULL_PTR)) {
         if (config->clientCert->format == MQTT_CERT_FORMAT_PEM) {
             ret = mbedtls_x509_crt_parse(&ctx->clientCert,
-                config->clientCert->data, config->clientCert->length + 1);
+                config->clientCert->data, config->clientCert->length + 1U);
         } else {
             ret = mbedtls_x509_crt_parse_der(&ctx->clientCert,
                 config->clientCert->data, config->clientCert->length);
         }
 
-        if (ret != 0U ) {
+        if (ret != 0 ) {
             ctx->lastError = ret;
             return ret;
         }
@@ -261,16 +261,16 @@ static int Mqtt_Tls_LoadCertificates(Mqtt_TlsInternalContextType* ctx,
 
             ret = mbedtls_pk_parse_key(&ctx->clientKey,
                 config->clientKey->data, config->clientKey->length,
-                (const unsigned char*)pwd, pwd ? strlen(pwd) : 0,
+                (const unsigned char*)pwd, pwd ? strlen(pwd) : 0U,
                 mbedtls_ctr_drbg_random, NULL_PTR);
 
-            if (ret != 0U ) {
+            if (ret != 0 ) {
                 ctx->lastError = ret;
                 return ret;
             }
 
             ret = mbedtls_ssl_conf_own_cert(&ctx->conf, &ctx->clientCert, &ctx->clientKey);
-            if (ret != 0U ) {
+            if (ret != 0 ) {
                 ctx->lastError = ret;
                 return ret;
             }
@@ -292,7 +292,7 @@ static int Mqtt_Tls_ApplyAndSetup(Mqtt_TlsInternalContextType* ctx,
     /* 配置SNI */
     if (config->expectedHostname != NULL_PTR) {
         ret = mbedtls_ssl_set_hostname(&ctx->ssl, config->expectedHostname);
-        if (ret != 0U ) {
+        if (ret != 0 ) {
             ctx->lastError = ret;
             return ret;
         }
@@ -304,7 +304,7 @@ static int Mqtt_Tls_ApplyAndSetup(Mqtt_TlsInternalContextType* ctx,
 
     /* 应用配置 */
     ret = mbedtls_ssl_setup(&ctx->ssl, &ctx->conf);
-    if (ret != 0U ) {
+    if (ret != 0 ) {
         ctx->lastError = ret;
         return ret;
     }
@@ -417,7 +417,7 @@ Mqtt_ReturnType Mqtt_Tls_PerformHandshake(
     /* 执行TLS握手 */
     ret = mbedtls_ssl_handshake(&ctx->ssl);
     
-    if (ret == 0U ) {
+    if (ret == 0 ) {
         ctx->handshakeComplete = TRUE;
         
         /* 保存会话(如果启用) */
@@ -472,7 +472,7 @@ Mqtt_ReturnType Mqtt_Tls_Send(
     
     ret = mbedtls_ssl_write(&ctx->ssl, data, length);
     
-    if (ret > 0U ) {
+    if ((uint32)ret > 0U) {
         if (sentLength != NULL_PTR) {
             *sentLength = (uint32)ret;
         }
@@ -576,13 +576,13 @@ Mqtt_ReturnType Mqtt_Tls_VerifyCertificate(
         /* 拷贝颁发者信息 */
         if ((peerCert->issuer.next != NULL_PTR) && (peerCert->issuer.next->val.p != NULL_PTR)) {
             (void)strncpy(result->issuer, (char*)peerCert->issuer.next->val.p,
-                sizeof(result->issuer) - 1);
+                sizeof(result->issuer) - 1U);
         }
         
         /* 拷贝主体信息 */
         if ((peerCert->subject.next != NULL_PTR) && (peerCert->subject.next->val.p != NULL_PTR)) {
             (void)strncpy(result->subject, (char*)peerCert->subject.next->val.p,
-                sizeof(result->subject) - 1);
+                sizeof(result->subject) - 1U);
         }
         
         /* 检查过期: 无下级证书视为未过期 */
@@ -713,7 +713,7 @@ Mqtt_TlsVersionType Mqtt_Tls_GetVersion(Mqtt_TlsContextType context)
     
     /* 获取当前协议版本 */
     int major = mbedtls_ssl_get_version_number(&ctx->ssl) >> 8;
-    int minor = mbedtls_ssl_get_version_number(&ctx->ssl) & 0xFF;
+    int minor = (uint32)mbedtls_ssl_get_version_number(&ctx->ssl) & 0xFFU;
     
     if ((major == 3) && (minor == 3)) {
         return MQTT_TLS_VERSION_1_2;

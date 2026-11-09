@@ -253,7 +253,7 @@ void Dem_IntUpdateDebounceCounter(Dem_EventIdType EventId, Dem_EventStatusType E
                 case DEM_EVENT_STATUS_PREPASSED:
                     if (eventState->DebounceCounter > eventConfig->DebounceCounterPassedThreshold)
                     {
-                        eventState->DebounceCounter -= DEM_DEBOUNCE_COUNTER_DECREMENT_STEP;
+                        eventState->DebounceCounter -= (sint16)DEM_DEBOUNCE_COUNTER_DECREMENT_STEP;
                     }
                     eventState->FaultDetectionCounter = (Dem_FaultDetectionCounterType)eventState->DebounceCounter;
                     break;
@@ -261,7 +261,7 @@ void Dem_IntUpdateDebounceCounter(Dem_EventIdType EventId, Dem_EventStatusType E
                 case DEM_EVENT_STATUS_PREFAILED:
                     if (eventState->DebounceCounter < eventConfig->DebounceCounterFailedThreshold)
                     {
-                        eventState->DebounceCounter += DEM_DEBOUNCE_COUNTER_INCREMENT_STEP;
+                        eventState->DebounceCounter += (sint16)DEM_DEBOUNCE_COUNTER_INCREMENT_STEP;
                     }
                     eventState->FaultDetectionCounter = (Dem_FaultDetectionCounterType)eventState->DebounceCounter;
                     break;

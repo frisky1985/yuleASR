@@ -31,7 +31,7 @@
 
 /* 诊断通信参数 */
 #define LINSLAVE_UDS_MAX_DSL_BUFFER     4095    /* 最大数据长度 */
-#define LINSLAVE_UDS_MAX_SID_SERVICES   32      /* 最大服务数 */
+#define LINSLAVE_UDS_MAX_SID_SERVICES   32U     /* 最大服务数 */
 #define LINSLAVE_UDS_MAX_DID            256     /* 最大DID数 */
 
 /* ==================== UDS 服务ID (SID) ==================== */
@@ -40,7 +40,7 @@
 #define LINSLAVE_UDS_SID_ECU_RESET                      0x11
 #define LINSLAVE_UDS_SID_SECURITY_ACCESS                0x27
 #define LINSLAVE_UDS_SID_COMMUNICATION_CONTROL          0x28
-#define LINSLAVE_UDS_SID_TESTER_PRESENT                 0x3E
+#define LINSLAVE_UDS_SID_TESTER_PRESENT                 0x3EU
 #define LINSLAVE_UDS_SID_CONTROL_DTC_SETTING            0x85
 
 /* 数据传输 */
