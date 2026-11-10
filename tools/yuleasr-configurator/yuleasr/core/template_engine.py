@@ -10,6 +10,46 @@ from typing import Any, Dict, List, Optional
 
 LOG = logging.getLogger(__name__)
 
+# Canonical AUTOSAR module names (lowercase → canonical CamelCase).
+# Used to produce correct output filenames (e.g. can_Cfg.h.j2 → Can_Cfg.h)
+# regardless of whether the config uses CamelCase or lowercase keys.
+# Derived from source-level #include conventions and AUTOSAR standard names.
+_CANONICAL_MODULE_NAMES: Dict[str, str] = {
+    # MCAL
+    "adc": "Adc", "can": "Can", "canif": "CanIf", "canm": "CanM", "cannm": "CanNm",
+    "cansm": "CanSm", "cantp": "CanTp", "cantrcv": "CanTrcv", "cantsyn": "CanTSyn",
+    "crc": "Crc", "cryif": "CryIf", "crypto": "Crypto", "csm": "Csm",
+    "dio": "Dio", "eth": "Eth", "ethif": "EthIf", "ethsm": "EthSM", "ethswt": "EthSwt",
+    "ethtrcv": "EthTrcv", "ethtsyn": "EthTSyn",
+    "eep": "Eep", "fee": "Fee", "flash": "Flash", "fls": "Fls", "gpt": "Gpt",
+    "i2c": "I2c", "icu": "Icu", "iohwab": "IoHwAb", "lin": "Lin", "linif": "LinIf",
+    "linm": "LinM", "linnm": "LinNm", "linsm": "LinSM", "lintp": "LinTp",
+    "lintrcv": "LinTrcv", "mcu": "Mcu", "mem": "Mem", "memif": "MemIf",
+    "ocu": "Ocu", "port": "Port", "pwm": "Pwm", "ramtst": "RamTst", "spi": "Spi",
+    "uart": "Uart", "wdg": "Wdg",
+    # ECUAL
+    "doip": "DoIP", "docan": "DoCan", "e2e": "E2E", "ea": "Ea", "ecuc": "EcuC",
+    "ecum": "EcuM", "fim": "FiM", "flstst": "FlStSt", "frif": "FrIf", "frtp": "FrTp",
+    "ipdum": "IpduM", "j1939nm": "J1939Nm", "j1939tp": "J1939Tp", "keym": "KeyM",
+    "ldcom": "LdCom", "lntm": "LnTm", "soad": "SoAd", "someip": "SomeIp",
+    "someipif": "SomeIpIf", "someipsd": "SomeIpSd", "someiptp": "SomeIpTp",
+    "someipxf": "SomeIpXf", "srp": "Srp", "wdgif": "WdgIf",
+    # Services
+    "com": "Com", "comm": "ComM", "det": "Det", "dlt": "Dlt", "dcm": "Dcm",
+    "dem": "Dem", "ldcom": "LdCom", "mem": "Mem", "memif": "MemIf", "mqtt": "Mqtt",
+    "nm": "Nm", "nvm": "NvM", "pdur": "PduR", "ramsafety": "RamSafety", "schm": "SchM",
+    "sd": "Sd", "secoc": "SecOC", "stbm": "StbM", "swc": "Swc", "tcpip": "TcpIp",
+    "tm": "Tm", "udpnm": "UdpNm", "wdgm": "WdgM", "xcp": "Xcp",
+    # OS / Integration
+    "bswm": "BswM", "os": "Os",
+}
+
+
+def _canonicalize(module_name: str) -> str:
+    """Return the canonical CamelCase form of an AUTOSAR module name."""
+    key = module_name.lower()
+    return _CANONICAL_MODULE_NAMES.get(key, module_name)
+
 
 @dataclass
 class RenderResult:
@@ -129,7 +169,19 @@ class TemplateEngine:
         }
 
         content = self._env.get_template(str(rel_path)).render(**context)
-        output_name = tpl_path.stem.replace(".j2", "")
+
+        # Build output filename from the canonical AUTOSAR module name,
+        # preserving the template's target suffix (_Cfg.h / _Cfg.c / ...).
+        # This ensures correct CamelCase regardless of config-key casing:
+        #   template   can_Cfg.h.j2 + key  can          → Can_Cfg.h
+        #   template    com_Cfg.h.j2 + key  Com          → Com_Cfg.h
+        #   template   BswM_Cfg.h.j2 + key  BswM         → BswM_Cfg.h
+        #   template   secoc_Cfg.h.j2 + key  SecOC        → SecOC_Cfg.h
+        tpl_base = tpl_path.stem.replace(".j2", "")
+        tpl_mod = self.module_name_from_template(tpl_path)
+        tpl_suffix = tpl_base[len(tpl_mod):]
+        canonical = _canonicalize(module_name)
+        output_name = f"{canonical}{tpl_suffix}"
 
         return RenderResult(
             template_name=tpl_path.name,

@@ -1112,35 +1112,8 @@
         "version_info_api": true
       }
     },
-    "bswm": {
-      "name": "bswm",
-      "enabled": true,
-      "version": "1.0.0",
-      "general": {
-        "dev_error_detect": true,
-        "version_info_api": true
-      }
-    },
-    "can": {
-      "name": "can",
-      "enabled": true,
-      "version": "1.0.0",
-      "general": {
-        "dev_error_detect": true,
-        "version_info_api": true
-      }
-    },
     "canNm": {
       "name": "canNm",
-      "enabled": true,
-      "version": "1.0.0",
-      "general": {
-        "dev_error_detect": true,
-        "version_info_api": true
-      }
-    },
-    "canif": {
-      "name": "canif",
       "enabled": true,
       "version": "1.0.0",
       "general": {
@@ -1166,15 +1139,6 @@
         "version_info_api": true
       }
     },
-    "cantp": {
-      "name": "cantp",
-      "enabled": true,
-      "version": "1.0.0",
-      "general": {
-        "dev_error_detect": true,
-        "version_info_api": true
-      }
-    },
     "cantrcv": {
       "name": "cantrcv",
       "enabled": true,
@@ -1186,15 +1150,6 @@
     },
     "cantsyn": {
       "name": "cantsyn",
-      "enabled": true,
-      "version": "1.0.0",
-      "general": {
-        "dev_error_detect": true,
-        "version_info_api": true
-      }
-    },
-    "com": {
-      "name": "com",
       "enabled": true,
       "version": "1.0.0",
       "general": {
@@ -1247,24 +1202,6 @@
         "version_info_api": true
       }
     },
-    "dcm": {
-      "name": "dcm",
-      "enabled": true,
-      "version": "1.0.0",
-      "general": {
-        "dev_error_detect": true,
-        "version_info_api": true
-      }
-    },
-    "dem": {
-      "name": "dem",
-      "enabled": true,
-      "version": "1.0.0",
-      "general": {
-        "dev_error_detect": true,
-        "version_info_api": true
-      }
-    },
     "det": {
       "name": "det",
       "enabled": true,
@@ -1303,15 +1240,6 @@
     },
     "docan": {
       "name": "docan",
-      "enabled": true,
-      "version": "1.0.0",
-      "general": {
-        "dev_error_detect": true,
-        "version_info_api": true
-      }
-    },
-    "doip": {
-      "name": "doip",
       "enabled": true,
       "version": "1.0.0",
       "general": {
@@ -1384,15 +1312,6 @@
     },
     "ethif": {
       "name": "ethif",
-      "enabled": true,
-      "version": "1.0.0",
-      "general": {
-        "dev_error_detect": true,
-        "version_info_api": true
-      }
-    },
-    "ethsm": {
-      "name": "ethsm",
       "enabled": true,
       "version": "1.0.0",
       "general": {
@@ -1490,15 +1409,6 @@
         "version_info_api": true
       }
     },
-    "gpt": {
-      "name": "gpt",
-      "enabled": true,
-      "version": "1.0.0",
-      "general": {
-        "dev_error_detect": true,
-        "version_info_api": true
-      }
-    },
     "i2c": {
       "name": "i2c",
       "enabled": true,
@@ -1510,15 +1420,6 @@
     },
     "icu": {
       "name": "icu",
-      "enabled": true,
-      "version": "1.0.0",
-      "general": {
-        "dev_error_detect": true,
-        "version_info_api": true
-      }
-    },
-    "iohwab": {
-      "name": "iohwab",
       "enabled": true,
       "version": "1.0.0",
       "general": {
@@ -1625,15 +1526,6 @@
         "version_info_api": true
       }
     },
-    "linsm": {
-      "name": "linsm",
-      "enabled": true,
-      "version": "1.0.0",
-      "general": {
-        "dev_error_detect": true,
-        "version_info_api": true
-      }
-    },
     "lintrcv": {
       "name": "lintrcv",
       "enabled": true,
@@ -1645,15 +1537,6 @@
     },
     "lntm": {
       "name": "lntm",
-      "enabled": true,
-      "version": "1.0.0",
-      "general": {
-        "dev_error_detect": true,
-        "version_info_api": true
-      }
-    },
-    "mcu": {
-      "name": "mcu",
       "enabled": true,
       "version": "1.0.0",
       "general": {
@@ -1697,35 +1580,8 @@
         "version_info_api": true
       }
     },
-    "nvm": {
-      "name": "nvm",
-      "enabled": true,
-      "version": "1.0.0",
-      "general": {
-        "dev_error_detect": true,
-        "version_info_api": true
-      }
-    },
     "ocu": {
       "name": "ocu",
-      "enabled": true,
-      "version": "1.0.0",
-      "general": {
-        "dev_error_detect": true,
-        "version_info_api": true
-      }
-    },
-    "pdur": {
-      "name": "pdur",
-      "enabled": true,
-      "version": "1.0.0",
-      "general": {
-        "dev_error_detect": true,
-        "version_info_api": true
-      }
-    },
-    "port": {
-      "name": "port",
       "enabled": true,
       "version": "1.0.0",
       "general": {
@@ -1771,15 +1627,6 @@
     },
     "sd": {
       "name": "sd",
-      "enabled": true,
-      "version": "1.0.0",
-      "general": {
-        "dev_error_detect": true,
-        "version_info_api": true
-      }
-    },
-    "secoc": {
-      "name": "secoc",
       "enabled": true,
       "version": "1.0.0",
       "general": {
@@ -1834,15 +1681,6 @@
     },
     "someipxf": {
       "name": "someipxf",
-      "enabled": true,
-      "version": "1.0.0",
-      "general": {
-        "dev_error_detect": true,
-        "version_info_api": true
-      }
-    },
-    "spi": {
-      "name": "spi",
       "enabled": true,
       "version": "1.0.0",
       "general": {
@@ -1924,15 +1762,6 @@
     },
     "wdgif": {
       "name": "wdgif",
-      "enabled": true,
-      "version": "1.0.0",
-      "general": {
-        "dev_error_detect": true,
-        "version_info_api": true
-      }
-    },
-    "wdgm": {
-      "name": "wdgm",
       "enabled": true,
       "version": "1.0.0",
       "general": {

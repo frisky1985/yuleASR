@@ -124,7 +124,11 @@ class SchemaRegistry:
             mod_result = self.validate_module(mod_name, mod_cfg)
             mod_result.errors = [
                 ValidationError(
-                    path=f"modules.{mod_name}.{e.path}" if e.path != mod_name else f"modules.{mod_name}",
+                    path=(
+                        f"modules.{mod_name}{e.path[len(mod_name):] if e.path.startswith(mod_name) else '.' + e.path}"
+                        if e.path != mod_name
+                        else f"modules.{mod_name}"
+                    ),
                     message=e.message,
                     severity=e.severity,
                 )
