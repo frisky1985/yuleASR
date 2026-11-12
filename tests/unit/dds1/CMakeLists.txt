@@ -1,6 +1,11 @@
 # =============================================================================
 # tests/unit/dds1/CMakeLists.txt
 # DDS 第一批自包含子模块单元测试 (cdr / rtps / pubsub / core+runtime)
+#
+# gcda 隔离策略: 每个 test target 直接编译原始产品源, 不同 target 的
+# .o 在不同 CMakeFiles/<target>.dir/ 目录下, gcda 路径天然不同,
+# 不会交叉覆盖。不需要 GCOV_PREFIX (macOS lcov 2.4 不识别) 也不需要
+# gen/ 副本 (gen/ 导致 SF: 路径不正确)。
 # =============================================================================
 set(DDS1_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(DDS1_FRAMEWORK ${CMAKE_SOURCE_DIR}/tests/unit/framework)
@@ -12,10 +17,56 @@ set(DDS1_MDDS_INC ${CMAKE_SOURCE_DIR}/src/middleware/microdds/include)
 
 set(DDS1_CFLAGS -Wall -Wextra -g -O0 -Wno-unused-parameter -Wno-unused-function)
 
-# add_dds1_test(<target> <test.c> <product src...> [extra defines...])
+# =============================================================================
+# 预补丁: 用 python3 在 gen/patch 目录里生成修复副本
+# 4 个产品源有静态池声明在 struct 之前的缺陷, 必须用补丁副本编译
+# (否则编译不过), 但补丁副本只被一个 target 编译 → gcda 不冲突
+# =============================================================================
+set(DDS1_PATCH_DIR ${CMAKE_BINARY_DIR}/gen/dds1_patch)
+file(MAKE_DIRECTORY ${DDS1_PATCH_DIR})
+
+execute_process(
+    COMMAND python3 ${DDS1_DIR}/dds1_patch.py
+        ${DDS1_DDS}/pubsub/content_filtered_topic.c
+        ${DDS1_DDS}/pubsub/time_filter.c
+        ${DDS1_DDS}/pubsub/ownership.c
+        ${DDS1_DDS}/pubsub/persistence.c
+        --outdir ${DDS1_PATCH_DIR}
+    RESULT_VARIABLE _patch_rc
+)
+if(NOT _patch_rc EQUAL 0)
+    message(FATAL_ERROR "dds1_patch.py failed")
+endif()
+
+# NOTE(产品缺陷): ownership.h/persistence.h 使用 dds_guid_t 但其 include 链
+# 未定义该类型(位于未包含的 dds_eth_transport.h)。用 -include 注入垫片。
+set(DDS1_GUID_SHIM ${CMAKE_CURRENT_SOURCE_DIR}/dds1_shim.h)
+
+# =============================================================================
+# add_dds1_test(<target> <test.c> [compile-opts...] <product-srcs...>)
+# 直接编译原始产品源, 不复制 → SF: 路径正确, gcda 在各自 CMakeFiles 目录。
+# =============================================================================
 function(add_dds1_test TARGET TEST_SRC)
-    add_executable(${TARGET} ${TEST_SRC} ${ARGN} ${DDS1_FRAMEWORK}/unity.c)
-    target_compile_options(${TARGET} PRIVATE ${DDS1_CFLAGS})
+    set(_c_sources "")
+    set(_compile_opts "")
+    set(_stub_sources "")
+    foreach(_item ${ARGN})
+        if(_item MATCHES "^-")
+            list(APPEND _compile_opts ${_item})
+        elseif(_item MATCHES "\\.c$")
+            list(APPEND _c_sources ${_item})
+        else()
+            list(APPEND _stub_sources ${_item})
+        endif()
+    endforeach()
+
+    add_executable(${TARGET}
+        ${TEST_SRC}
+        ${_c_sources}
+        ${_stub_sources}
+        ${DDS1_FRAMEWORK}/unity.c
+    )
+    target_compile_options(${TARGET} PRIVATE ${DDS1_CFLAGS} ${_compile_opts})
     set_property(TARGET ${TARGET} PROPERTY C_STANDARD 99)
     target_include_directories(${TARGET} PRIVATE
         ${DDS1_FRAMEWORK}
@@ -32,96 +83,55 @@ function(add_dds1_test TARGET TEST_SRC)
     )
     set_target_properties(${TARGET} PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tests)
-    # 给每个 target 独立 GCOV_PREFIX 路径，避免交叉编译的产品源 gcda 覆盖
     add_test(NAME ${TARGET} COMMAND ${TARGET}
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tests)
-    set_tests_properties(${TARGET} PROPERTIES
-        ENVIRONMENT "GCOV_PREFIX=${CMAKE_BINARY_DIR}/coverage_dds1/${TARGET}/")
 endfunction()
 
-# --- 1. CDR 序列化 (纯算法, stub 头补齐产品头缺失类型) ---
+# =============================================================================
+# 9 个 test target
+# 直接编译原始产品源 (rtps_discovery/rtps_state/rtps_message/dds_runtime),
+# pubsub 4 个必须用补丁副本 (静态池 + persistence 笔误)
+# =============================================================================
+
+# 1. CDR 序列化 (原始源)
 add_dds1_test(test_dds1_cdr test_cdr.c
     ${CMAKE_SOURCE_DIR}/src/middleware/microdds/src/serialization/cdr.c)
 
-# --- 2. RTPS 报文 (guid/seqnum 工具在 rtps_discovery.c) ---
+# 2. RTPS 报文
 add_dds1_test(test_dds1_rtps_msg test_rtps_message.c
     ${DDS1_DDS}/rtps/rtps_message.c
     ${DDS1_DDS}/rtps/rtps_discovery.c)
 
-# --- 3. RTPS 状态机 (依赖 rtps_discovery.c 中的 guid/seqnum 工具) ---
+# 3. RTPS 状态机
 add_dds1_test(test_dds1_rtps_state test_rtps_state.c
     ${DDS1_DDS}/rtps/rtps_state.c
     ${DDS1_DDS}/rtps/rtps_discovery.c)
 
-# --- 4. RTPS 发现 ---
+# 4. RTPS 发现
 add_dds1_test(test_dds1_rtps_disc test_rtps_discovery.c
     ${DDS1_DDS}/rtps/rtps_discovery.c)
 
-# --- 5-8. Pubsub 四模块 (stub 日志头 + dds_guid_t 垫片) ---
-# NOTE(产品缺陷): content_filtered_topic.c 第28行静态池在 struct cft_handle
-# 定义(第36行)之前声明不完整类型, 该文件从未通过编译。测试侧在 build 目录
-# 生成"池声明移到 struct 之后"的补丁副本, 不改动仓库产品代码。
-set(DDS1_CFT_GEN_DIR ${CMAKE_BINARY_DIR}/tests/unit/dds1/gen)
-file(MAKE_DIRECTORY ${DDS1_CFT_GEN_DIR})
-file(READ ${DDS1_DDS}/pubsub/content_filtered_topic.c DDS1_CFT_SRC)
-string(REPLACE
-    "static cft_handle_t s_cft_handle_pool[CFT_MAX_PARALLEL_FILTERS];"
-    "/* pool decl moved after struct cft_handle by dds1 test harness */"
-    DDS1_CFT_SRC "${DDS1_CFT_SRC}")
-string(REPLACE
-    "    uint32_t eval_count;\n};"
-    "    uint32_t eval_count;\n};\nstatic cft_handle_t s_cft_handle_pool[CFT_MAX_PARALLEL_FILTERS];"
-    DDS1_CFT_SRC "${DDS1_CFT_SRC}")
-file(WRITE ${DDS1_CFT_GEN_DIR}/content_filtered_topic.c "${DDS1_CFT_SRC}")
-
+# 5. CFT (必须用补丁副本, 静态池缺陷)
 add_dds1_test(test_dds1_cft test_content_filtered_topic.c
-    ${DDS1_CFT_GEN_DIR}/content_filtered_topic.c)
+    ${DDS1_PATCH_DIR}/content_filtered_topic.c)
 
-# 同类缺陷: time_filter.c / ownership.c / persistence.c 的静态池声明
-# 也位于各自 handle struct 定义之前, 同样在 build 目录生成补丁副本。
-function(dds1_patch_pool SRC_PATH POOL_DECL ANCHOR_TAIL OUT_VAR)
-    file(READ ${SRC_PATH} _src)
-    string(REPLACE "${POOL_DECL}" "/* pool decl moved by dds1 test harness */" _src "${_src}")
-    string(REPLACE "${ANCHOR_TAIL}" "${ANCHOR_TAIL}\n${POOL_DECL}" _src "${_src}")
-    get_filename_component(_name ${SRC_PATH} NAME)
-    set(_out ${CMAKE_BINARY_DIR}/tests/unit/dds1/gen/${_name})
-    file(WRITE ${_out} "${_src}")
-    set(${OUT_VAR} ${_out} PARENT_SCOPE)
-endfunction()
+# 6. Time Filter (必须用补丁副本)
+add_dds1_test(test_dds1_tbf test_time_filter.c
+    ${DDS1_PATCH_DIR}/time_filter.c)
 
-dds1_patch_pool(${DDS1_DDS}/pubsub/time_filter.c
-    "static tbf_handle_t s_tbf_pool[TBF_MAX_COMPRESSION_SLOTS];"
-    "    tbf_sample_node_t *active_head;\n};"
-    DDS1_TBF_SRC)
+# 7. Ownership (必须用补丁副本 + guid shim)
+add_dds1_test(test_dds1_own test_ownership.c
+    -include${DDS1_GUID_SHIM}
+    ${DDS1_PATCH_DIR}/ownership.c)
 
-dds1_patch_pool(${DDS1_DDS}/pubsub/ownership.c
-    "static own_handle_t s_own_pool[OWN_MAX_OWNERS];"
-    "    dds_guid_t pending_transfer_target;\n};"
-    DDS1_OWN_SRC)
+# 8. Persistence (必须用补丁副本 + guid shim)
+add_dds1_test(test_dds1_per test_persistence.c
+    -include${DDS1_GUID_SHIM}
+    ${DDS1_PATCH_DIR}/persistence.c)
 
-dds1_patch_pool(${DDS1_DDS}/pubsub/persistence.c
-    "static per_handle_t s_per_handle_pool[PER_MAX_HANDLES];"
-    "    uint64_t last_standby_sync;\n};"
-    DDS1_PER_SRC)
-# NOTE(产品缺陷): persistence.c:753 字段名笔误 last_standby_standby
-file(READ ${DDS1_PER_SRC} _per_src)
-string(REPLACE "per->last_standby_standby" "per->last_standby_sync" _per_src "${_per_src}")
-file(WRITE ${DDS1_PER_SRC} "${_per_src}")
-
-# NOTE(产品缺陷): ownership.h/persistence.h 使用 dds_guid_t 但其 include 链
-# 未定义该类型(位于未包含的 dds_eth_transport.h)。用 -include 注入垫片。
-set(DDS1_GUID_SHIM ${CMAKE_CURRENT_SOURCE_DIR}/dds1_shim.h)
-
-add_dds1_test(test_dds1_tbf test_time_filter.c ${DDS1_TBF_SRC})
-
-add_dds1_test(test_dds1_own test_ownership.c ${DDS1_OWN_SRC})
-target_compile_options(test_dds1_own PRIVATE -include ${DDS1_GUID_SHIM})
-
-add_dds1_test(test_dds1_per test_persistence.c ${DDS1_PER_SRC})
-target_compile_options(test_dds1_per PRIVATE -include ${DDS1_GUID_SHIM})
-
-# --- 9. DDS core + runtime (真实 rtps 源码 + security 时间桩) ---
-add_dds1_test(test_dds1_domain test_dds_domain.c dds1_stubs.c
+# 9. DDS core + runtime (原始源)
+add_dds1_test(test_dds1_domain test_dds_domain.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/dds1_stubs.c
     ${DDS1_DDS}/core/dds_domain.c
     ${DDS1_DDS}/core/dds_entity.c
     ${DDS1_DDS}/core/dds_qos.c
