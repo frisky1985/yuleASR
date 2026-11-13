@@ -44,6 +44,9 @@ extern void OsTask_Background_Entry(void);
 extern void OsTask_ComMainFunctionRx_Entry(void);
 extern void OsTask_ComMainFunctionTx_Entry(void);
 extern void OsTask_Diagnostic_Entry(void);
+#if (OS_CFG_UARTSX_SENDER_TASK == STD_ON)
+extern void OsTask_UartSxSender_Entry(void);
+#endif
 
 /*==================================================================================================
 *                                    ALARM CALLBACK DECLARATIONS
@@ -152,6 +155,20 @@ STATIC Os_TaskConfigType Os_TaskConfigs[OS_CFG_NUM_TASKS] =
         /* IsExtended        */ TRUE,
         /* EntryPoint        */ OsTask_Diagnostic_Entry
     }
+#if (OS_CFG_UARTSX_SENDER_TASK == STD_ON)
+    ,
+
+    /* Task 8: UartSx async log sender (ECUAL) */
+    {
+        /* TaskID            */ OsTask_UartSxSender,
+        /* FreeRTOS_Task     */ NULL_PTR,
+        /* FreeRTOS_EventGroup */ NULL_PTR,
+        /* Priority          */ OS_TASK_PRIORITY_LOW,
+        /* IsAutoStart       */ TRUE,
+        /* IsExtended        */ TRUE,
+        /* EntryPoint        */ OsTask_UartSxSender_Entry
+    }
+#endif
 };
 
 #define OS_STOP_SEC_CONFIG_DATA_UNSPECIFIED

@@ -23,9 +23,19 @@
 /*==================================================================================================
 *                                    Module Configuration Counts
 *================================================================================================*/
+/* UartSx async-log sender task (ECUAL). Disable for standalone OS-only
+ * builds/tests that do not link the UartSx module. */
+#ifndef OS_CFG_UARTSX_SENDER_TASK
+#define OS_CFG_UARTSX_SENDER_TASK    STD_ON
+#endif
+
+#if (OS_CFG_UARTSX_SENDER_TASK == STD_ON)
+#define OS_CFG_NUM_TASKS    (9U)
+#else
 #define OS_CFG_NUM_TASKS    (8U)
+#endif
 #ifndef OS_TASK_COUNT
-#define OS_TASK_COUNT    (8U)
+#define OS_TASK_COUNT    (9U)
 #endif
 #ifndef OS_RESOURCE_COUNT
 #define OS_RESOURCE_COUNT    (0U)
@@ -46,6 +56,9 @@
 *================================================================================================*/
 #define OsTask_ComMainFunctionRx    (5U)
 #define OsTask_ComMainFunctionTx    (6U)
+#if (OS_CFG_UARTSX_SENDER_TASK == STD_ON)
+#define OsTask_UartSxSender    (8U)
+#endif
 
 /*==================================================================================================
 *                                    Timing Configuration
