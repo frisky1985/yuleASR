@@ -150,6 +150,7 @@ target_include_directories(OsCfg_UnitTest
         ${CMAKE_CURRENT_SOURCE_DIR}/../../third_party/freertos/portable/posix
 )
 target_link_libraries(OsCfg_UnitTest PRIVATE Unity)
+target_compile_definitions(OsCfg_UnitTest PRIVATE OS_CFG_UARTSX_SENDER_TASK=STD_OFF)
 target_compile_options(OsCfg_UnitTest PRIVATE -Wno-unused-parameter)
 set_target_properties(OsCfg_UnitTest PROPERTIES
     C_STANDARD 99
@@ -271,3 +272,6 @@ set_target_properties(Crypto_UnitTest PROPERTIES
 )
 add_test(NAME Crypto_UnitTest COMMAND Crypto_UnitTest)
 message(STATUS "  Unit test: Crypto_UnitTest (MCAL Crypto driver, 29 cases)")
+
+# UartSx (ECUAL) — 异步串口日志模块主机侧测试
+add_subdirectory(uartsx)

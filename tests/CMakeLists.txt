@@ -251,6 +251,8 @@ endif()
 if(NOT CMAKE_CROSSCOMPILING)
     add_executable(s0_smoke_test
         ${CMAKE_CURRENT_SOURCE_DIR}/s0_smoke_test.c
+        # Host stubs for the MCAL UART DMA backend pulled in via UartSx
+        ${CMAKE_CURRENT_SOURCE_DIR}/mock/dma_mock.c
     )
 
     target_link_libraries(s0_smoke_test
@@ -278,6 +280,10 @@ if(NOT CMAKE_CROSSCOMPILING)
             ecual_memif
             # CanIf_SetTrcvMode -> CanTrcv driver -> Dio/EcuM wakeup path
             ecual_cantrcv
+            # UartSx async-log sender task (referenced by the OS task table)
+            ecual_uartsx
+            mcal_uart
+            mcal_gpt
             # MCAL Can + ECUAL Ea/Fee (CanIf and NvM-MemIf hardware backends)
             mcal_can
             mcal_dio
