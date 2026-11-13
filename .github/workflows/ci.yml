@@ -67,6 +67,29 @@ jobs:
           fi
           bash config/tools/check_config_drift.sh
 
+      - name: Report config vs source-tree drift (calibration baseline)
+        # 数据校准门禁（先报告模式）：check_cfg_drift.py 用权威生成器重新渲染
+        # 各 *_Cfg.h，与 src/ 下手写权威头文件逐一对比"两侧都定义的宏"的值。
+        # 生成的头文件是手写版本的超集（-idirafter 兜底），故仅值不一致计为漂移。
+        # 当前基线存在已知漂移（Port/Pwm/Spi/Wdg 等模块的 API 开关与通道计数），
+        # 需逐步校准，因此先 --report-only 上传 JSON 基线，校准收敛后再转为阻断。
+        run: |
+          if ! python3 -c "import jinja2, jsonschema" 2>/dev/null; then
+            python3 -m pip install --quiet jinja2 jsonschema \
+              || python3 -m pip install --break-system-packages --quiet jinja2 jsonschema
+          fi
+          mkdir -p reports
+          python3 config/tools/check_cfg_drift.py \
+            --report-only --json reports/cfg-source-drift.json
+
+      - name: Upload config-source drift report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: cfg-source-drift-report
+          path: reports/cfg-source-drift.json
+          retention-days: 30
+
       - name: Traceability evidence gate
         # WP4: 需求→实现映射必须指向真实 C 源码, 禁止 Python 脚本/测试文件
         # 充当实现; has_code/has_test 标志必须与数据一致; 单文件承接 >20 条需求拦截。

@@ -7,7 +7,7 @@
   "properties": {
     "name": {
       "type": "string",
-      "const": "doIP",
+      "const": "DoIP",
       "description": "Module name"
     },
     "enabled": {

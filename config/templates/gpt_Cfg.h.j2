@@ -40,10 +40,16 @@
 #define GPT_PREDEF_TIMER_100US_32BIT_ENABLE    {% if module.general.predef_timer_100us_32bit_enable is defined and module.general.predef_timer_100us_32bit_enable %}STD_ON{% else %}STD_OFF{% endif %}
 
 
+{%- if module.channels is number -%}
+{%- set _gpt_num_channels = module.channels -%}
+{%- else -%}
+{%- set _gpt_num_channels = module.channels | default([]) | length -%}
+{%- endif %}
+
 /*==================================================================================================
 *                                    Module Configuration Counts
 *================================================================================================*/
-#define GPT_NUM_CHANNELS    ({{ module.channels | default(8) }}U)
+#define GPT_NUM_CHANNELS    ({{ _gpt_num_channels }}U)
 
 /*==================================================================================================
 *                                    Timing Configuration
@@ -53,7 +59,7 @@
 /*==================================================================================================
 *                                    Channel Definitions
 *================================================================================================*/
-{% for i in range(module.channels | default(8)) %}
+{% for i in range(_gpt_num_channels) %}
 #define GPT_CHANNEL_{{ i }}    ({{ i }}U)
 {% endfor %}
 

@@ -184,10 +184,30 @@ def build_environment(templates_dir: Path):
     return env
 
 
+def resolve_module_node(cfg: Dict[str, Any], module_name: str) -> Dict[str, Any]:
+    """Resolve a module's config node, tolerating filename/key case drift.
+
+    Template filenames are not always cased like their config keys
+    (``can_Cfg.h.j2`` -> ``can`` vs JSON key ``Can``).  A plain ``dict.get``
+    silently resolved those modules to an empty node, so every parameter fell
+    back to its template default (e.g. ``Can`` baudrate count rendered as 0).
+    Resolve case-insensitively so the real configuration is always used.
+    """
+    modules = cfg.get("modules", {})
+    node = modules.get(module_name)
+    if node:
+        return node
+    lowered = module_name.lower()
+    for key, val in modules.items():
+        if key.lower() == lowered:
+            return val
+    return {}
+
+
 def render_template(env, tpl_path: Path, cfg: Dict[str, Any]) -> str:
     """Render one template against the unified configuration document."""
     module_name = module_name_from_template(tpl_path)
-    module_node = cfg.get("modules", {}).get(module_name, {})
+    module_node = resolve_module_node(cfg, module_name)
     context = {
         "module": module_node,
         "cfg": cfg,
@@ -217,9 +237,10 @@ def generate(
     ok = True
 
     enabled_map = cfg.get("modules", {})
+    filter_lower = {m.lower() for m in module_filter} if module_filter else None
     for tpl in templates:
         mod = module_name_from_template(tpl)
-        if module_filter and mod not in module_filter:
+        if filter_lower is not None and mod.lower() not in filter_lower:
             continue
         node = enabled_map.get(mod)
         if isinstance(node, dict) and node.get("enabled") is False:

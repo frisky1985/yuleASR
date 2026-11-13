@@ -19,10 +19,14 @@ app = typer.Typer(
 console = Console()
 
 REPO_ROOT = Path(__file__).resolve().parents[4]
+PACKAGE_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_CONFIG = REPO_ROOT / "config" / "bsw_config.json"
 DEFAULT_TEMPLATES = REPO_ROOT / "config" / "templates"
 DEFAULT_OUTPUT = REPO_ROOT / "config" / "generated"
-DEFAULT_SCHEMA = REPO_ROOT / "config"
+# Per-module JSON Schemas ship inside the configurator package, not in config/.
+# Pointing this at config/ made every module report "no schema found" and
+# reduced validation to a silent no-op.
+DEFAULT_SCHEMA = PACKAGE_ROOT / "schemas"
 
 
 def _setup_logging(verbose: bool) -> None:

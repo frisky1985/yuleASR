@@ -194,9 +194,16 @@ class TemplateEngine:
         self,
         config: Dict[str, Any],
         module_filter: Optional[List[str]] = None,
-    ) -> List[RenderResult]:
+    ) -> "tuple[List[RenderResult], List[str]]":
+        """Render every template, isolating per-template failures.
+
+        A single broken template must not abort the whole run: the failing
+        module is reported in the returned ``errors`` list while all remaining
+        modules are still rendered and returned.
+        """
         templates = self.discover_templates()
-        results = []
+        results: List[RenderResult] = []
+        errors: List[str] = []
         # Build case-insensitive filter lookup
         filter_lower = [m.lower() for m in module_filter] if module_filter else None
         for tpl in templates:
@@ -208,5 +215,5 @@ class TemplateEngine:
                 results.append(result)
             except Exception as e:
                 LOG.error("template render failed for %s: %s", tpl.name, e)
-                raise
-        return results
+                errors.append(f"{tpl.name}: {e}")
+        return results, errors

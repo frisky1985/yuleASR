@@ -64,7 +64,7 @@ class CodeGenerator:
 
         engine = TemplateEngine(self._templates_dir)
         try:
-            results = engine.render_all(config, module_filter=module_filter)
+            results, render_errors = engine.render_all(config, module_filter=module_filter)
         except Exception as e:
             report.ok = False
             report.errors.append(f"template rendering failed: {e}")
@@ -72,6 +72,12 @@ class CodeGenerator:
 
         for r in results:
             report.rendered.append(r.output_name)
+
+        # Per-template failures are isolated: every healthy module is still
+        # generated, but the run is flagged as failed so CI/CLI can react.
+        if render_errors:
+            report.ok = False
+            report.errors.extend(f"template rendering failed: {e}" for e in render_errors)
 
         if write:
             self._write(results, report)
