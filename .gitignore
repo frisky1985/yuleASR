@@ -215,3 +215,6 @@ projects/
 
 # Files uploaded into the agent workspace for one-off analysis (never source)
 .uploads/
+
+# Trae IDE 自动生成的 HTML 分享产物（e2e 覆盖报告、追溯性摘要等），每次运行都会重写
+.trae-html-share-packages/
