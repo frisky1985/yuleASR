@@ -268,6 +268,7 @@ void tearDown(void) {}
 void test_Com_RepositoryLcfg_ShouldContainEveryDeclaredIpdu(void) {
     uint8 i;
 
+    TEST_ASSERT_EQUAL_UINT16(256U, COM_NUM_OF_SIGNALS);
     TEST_ASSERT_NOT_NULL(Com_Config.IPdus);
     TEST_ASSERT_EQUAL_UINT8(5U, Com_Config.NumIPdus);
     for (i = 0U; i < Com_Config.NumIPdus; i++) {
