@@ -44,11 +44,16 @@ static void LinTest_RxCallback(uint8 Pid, uint8* ResponseDataPtr, uint8* Respons
     LinTest_RxCallbackCount++;
 }
 
-static void LinTest_ErrorCallback(uint8 Pid, LinSlave_ErrorType ErrorCode)
+static void LinTest_ErrorCallback(LinSlave_ErrorType ErrorCode, uint8 Pid)
 {
     (void)ErrorCode;
     (void)Pid;
     LinTest_ErrorCallbackCount++;
+}
+
+static void LinTest_FrameErrorCallback(uint8 Pid, LinSlave_ErrorType ErrorCode)
+{
+    LinTest_ErrorCallback(ErrorCode, Pid);
 }
 
 static void LinTest_UncondRx(uint8 FrameIndex, const uint8* DataPtr, uint8 Length, void* UserData)
@@ -195,7 +200,7 @@ static void LinTest_BuildConfigTable(boolean UseDiagnostic)
     LinTest_ConfigTable.SporadicFrames = LinTest_SporadicFrames;
     LinTest_ConfigTable.DiagnosticFrames = LinTest_DiagFrames;
     LinTest_ConfigTable.UseDiagnostic = UseDiagnostic;
-    LinTest_ConfigTable.GlobalErrorCallback = LinTest_ErrorCallback;
+    LinTest_ConfigTable.GlobalErrorCallback = LinTest_FrameErrorCallback;
 }
 
 static void LinTest_FeedHeader(uint8 Pid)

@@ -10,15 +10,11 @@
 #   memstack_benchmark  — NvM CRC lookup-table equivalence gate + throughput
 #                         (8/64/256/1024/4096 B), NvM write/read job cycles
 #
-# Test-side pre-compile configuration (same pattern as com_test):
-#   - Com.c is compiled against the test shadow Com_Cfg.h
-#     (tests/bsw/services/com/Com_Cfg.h, COM_NUM_OF_SIGNALS=255U) via -include,
-#     because the production value (256U) overflows Com_Init's uint8 loop
-#     counter. These targets therefore do NOT link service_com.
+# Test-side pre-compile configuration:
 #   - CanIf.c is compiled against the local shadow CanIf_Cfg.h
 #     (CANIF_NUM_RX_PDUS=64U) via -include, to benchmark Rx dispatch over a
-#     64-entry lookup bucket. Both shadow headers are force-included into
-#     every TU of comstack_benchmark (the macros do not overlap).
+#     64-entry lookup bucket. The shadow header is force-included into every
+#     TU of comstack_benchmark.
 #   - memstack_benchmark #includes NvM.c directly (no service_nvm link) so
 #     the STATIC CRC helpers stay reachable for the micro-benchmarks.
 #
@@ -27,7 +23,6 @@
 
 cmake_minimum_required(VERSION 3.16)
 
-set(PERF_COM_SHADOW_CFG   ${CMAKE_SOURCE_DIR}/tests/bsw/services/com/Com_Cfg.h)
 set(PERF_CANIF_SHADOW_CFG ${CMAKE_CURRENT_SOURCE_DIR}/CanIf_Cfg.h)
 
 # ------------------------------------------------------------------
@@ -39,12 +34,6 @@ set(PERF_OS_SOURCES
     ${CMAKE_SOURCE_DIR}/src/bsw/mcal/mcu/src/Mcal.c
 )
 add_executable(os_benchmark ${PERF_OS_SOURCES})
-# Raw-flag string (NOT a list): keeps the "-include <file>" two-word pair
-# intact for every TU of the target. List-based -include items get
-# deduplicated/space-mangled by CMake.
-set_source_files_properties(${PERF_OS_SOURCES} PROPERTIES
-    COMPILE_FLAGS "-include ${PERF_COM_SHADOW_CFG}"
-)
 
 target_include_directories(os_benchmark
     PRIVATE
@@ -83,12 +72,11 @@ set(PERF_COMSTACK_SOURCES
     ${CMAKE_SOURCE_DIR}/src/bsw/services/com/src/Com.c
 )
 add_executable(comstack_benchmark ${PERF_COMSTACK_SOURCES})
-# Raw-flag string (NOT a list): keeps each "-include <file>" two-word pair
-# intact. Bare list items get deduplicated by CMake, so the second -include
-# vanished and the shadow CanIf_Cfg.h became an orphan extra input file for
-# clang ("cannot specify -o when generating multiple output files").
+# Raw-flag string (NOT a list): keeps the "-include <file>" two-word pair
+# intact for every TU of the target. List-based -include items get
+# deduplicated/space-mangled by CMake.
 set_source_files_properties(${PERF_COMSTACK_SOURCES} PROPERTIES
-    COMPILE_FLAGS "-include ${PERF_COM_SHADOW_CFG} -include ${PERF_CANIF_SHADOW_CFG}"
+    COMPILE_FLAGS "-include ${PERF_CANIF_SHADOW_CFG}"
 )
 
 target_include_directories(comstack_benchmark

@@ -19,10 +19,8 @@
  *                                          every tick; jitter = wake-up
  *                                          overshoot past the tick deadline
  *
- * The production Com.c is compiled into this executable against the test
- * shadow Com_Cfg.h (-include, see tests/bsw/services/com/CMakeLists.txt for
- * the rationale — production COM_NUM_OF_SIGNALS=256U overflows Com_Init's
- * uint8 loop counter).
+ * The production Com.c and Com_Cfg.h are used directly; the benchmark
+ * supplies one active signal and I-PDU in osComConfig.
  *
  * @note Platform: this is a host-side benchmark (macOS/Linux). On Apple hosts
  *       Mcal_DisableAllInterrupts/Enable are user-space no-ops by design (the

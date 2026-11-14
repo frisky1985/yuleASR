@@ -1899,7 +1899,8 @@ void test_Schedule_UninitErrorPaths_AllGuards(void)
 /** Init with (Entries == NULL) and with (Entries != NULL, EntryCount == 0). */
 void test_Schedule_Init_NullOrZeroEntryTables(void)
 {
-    LinMaster_ScheduleTableType zeroCount = {
+    /* The scheduler retains this table until tearDown calls DeInit. */
+    static LinMaster_ScheduleTableType zeroCount = {
         .Entries = &test_SchEntry0, .EntryCount = 0U, .EntryIndex = 0U,
         .IsRunning = FALSE, .IsCyclic = FALSE, .LastEntryTime = 0U, .Name = "zero"
     };

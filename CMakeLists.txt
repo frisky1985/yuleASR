@@ -62,6 +62,11 @@ set(CMAKE_C_EXTENSIONS OFF)
 # via yule_add_module().  The goal is to surface real issues while suppressing
 # warnings that are unavoidable in AUTOSAR code (e.g. unused parameters in
 # callback signatures mandated by the specification).
+include(CheckCCompilerFlag)
+check_c_compiler_flag(
+    "-Wno-unterminated-string-initialization"
+    YULE_HAS_WNO_UNTERMINATED_STRING_INITIALIZATION
+)
 add_compile_options(
     -Wall
     -Wextra
@@ -103,7 +108,6 @@ add_compile_options(
     # redefinitions — all verified non-issues for 32-bit MCU target.
     -Wno-unused-variable
     -Wno-unused-const-variable
-    -Wno-unterminated-string-initialization
     -Wno-constant-conversion
     -Wno-typedef-redefinition
     # Test functions follow Unity convention (no forward prototypes);
@@ -114,6 +118,9 @@ add_compile_options(
     -Wno-int-to-pointer-cast
     -Wno-missing-braces
 )
+if(YULE_HAS_WNO_UNTERMINATED_STRING_INITIALIZATION)
+    add_compile_options(-Wno-unterminated-string-initialization)
+endif()
 
 # Debug/Release specific flags
 add_compile_options(

@@ -11,10 +11,9 @@
  *   dispatch loops all use i < CANIF_NUM_RX_PDUS and index
  *   ConfigPtr->RxPdus[i]. Benchmarking CanIf_RxIndication dispatch latency
  *   "at different PDU counts" therefore requires a pre-compile configuration
- *   with a larger Rx table, exactly like the com_test shadow Com_Cfg.h
- *   pattern: this header is force-included (-include) into every translation
- *   unit of comstack_benchmark BEFORE any production header, so its include
- *   guard (CANIF_CFG_H) neuters the production
+ *   with a larger Rx table. This header is force-included (-include) into every
+ *   translation unit of comstack_benchmark BEFORE any production header, so its
+ *   include guard (CANIF_CFG_H) neuters the production
  *   src/bsw/ecual/canif/include/CanIf_Cfg.h pulled in via CanIf.h.
  *
  *   The benchmark runtime configuration then provides the full 64-entry Rx

@@ -184,6 +184,25 @@ class GenerateBswConfigTest(unittest.TestCase):
         self.assertTrue(any("Dcm.protocols[0].rx_pdu_id" in error for error in errors))
         self.assertTrue(any("Dcm.protocols[0].tx_pdu_id" in error for error in errors))
 
+    def test_semantic_validation_rejects_dcm_duplicate_pdu_endpoints(self):
+        cfg = copy.deepcopy(GENERATOR.load_json(GENERATOR.DEFAULT_CONFIG))
+        cfg["modules"]["Dcm"]["protocols"].append(
+            {"name": "SECONDARY", "id": 1, "rx_pdu_id": 6, "tx_pdu_id": 5}
+        )
+
+        errors = self.semantic_errors(cfg)
+
+        self.assertTrue(any("Dcm.protocols.rx_pdu_id" in error for error in errors))
+        self.assertTrue(any("Dcm.protocols.tx_pdu_id" in error for error in errors))
+
+    def test_semantic_validation_requires_dense_dcm_protocol_ids(self):
+        cfg = copy.deepcopy(GENERATOR.load_json(GENERATOR.DEFAULT_CONFIG))
+        cfg["modules"]["Dcm"]["protocols"][0]["id"] = 1
+
+        errors = self.semantic_errors(cfg)
+
+        self.assertTrue(any("Dcm.protocols[0].id" in error for error in errors))
+
     def test_semantic_validation_checks_group_route_references(self):
         cfg = copy.deepcopy(GENERATOR.load_json(GENERATOR.DEFAULT_CONFIG))
         cfg["modules"]["PduR"]["groups"][0]["pdu_ids"][0] = 99
@@ -291,6 +310,7 @@ class GenerateBswConfigTest(unittest.TestCase):
 
             self.assertTrue(ok)
             generated = (output_dir / "Com_Lcfg.c").read_text(encoding="utf-8")
+            self.assertIn("Com_Signals[COM_MAX_SIGNALS]", generated)
             for pdu_id in range(5):
                 self.assertIn(f".PduId = {pdu_id}U", generated)
             self.assertIn(".NumIPdus = 5U", generated)

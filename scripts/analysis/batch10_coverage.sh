@@ -213,7 +213,8 @@ echo "=== Phase 1: 覆盖测试 (coverage_run 生产代码) ==="
 build_and_run "test_crc"   "coverage_run/Det.c coverage_run/test_crc_coverage.c src/bsw/services/crc/src/Crc.c tests/unit/middleware/unity.c"
 build_and_run "test_det"   "coverage_run/Det.c coverage_run/test_det_coverage.c"
 build_and_run "test_buffer_pool" "coverage_run/Det.c coverage_run/test_buffer_pool_coverage.c"
-build_and_run "test_pdur"  "coverage_run/Det.c coverage_run/stubs_pdur.c coverage_run/test_pdur_coverage.c src/bsw/services/pdur/src/PduR.c src/bsw/services/pdur/src/PduR_Lcfg.c"
+python3 config/tools/generate_bsw_config.py --module PduR --no-rte
+build_and_run "test_pdur"  "coverage_run/Det.c coverage_run/stubs_pdur.c coverage_run/test_pdur_coverage.c src/bsw/services/pdur/src/PduR.c config/generated/PduR_Lcfg.c"
 # Com coverage disabled: Com.c has init-time infinite-loop regression with default config
 # build_and_run "test_com"  "coverage_run/Det.c coverage_run/stubs_com.c coverage_run/test_com_coverage.c src/bsw/services/com/src/Com.c"
 

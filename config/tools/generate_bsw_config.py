@@ -200,12 +200,24 @@ def validate_semantics(cfg: Dict[str, Any]) -> List[str]:
     protocols = dcm.get("protocols", [])
     check_duplicates("Dcm.protocols.id", [protocol.get("id") for protocol in protocols])
     check_duplicates("Dcm.protocols.name", [protocol.get("name") for protocol in protocols])
+    check_duplicates(
+        "Dcm.protocols.rx_pdu_id", [protocol.get("rx_pdu_id") for protocol in protocols]
+    )
+    check_duplicates(
+        "Dcm.protocols.tx_pdu_id", [protocol.get("tx_pdu_id") for protocol in protocols]
+    )
     check_capacity(
         "Dcm.counts.protocols",
         dcm.get("counts", {}).get("protocols", len(protocols)),
         len(protocols),
     )
     for protocol_index, protocol in enumerate(protocols):
+        protocol_id = protocol.get("id")
+        if protocol_id != protocol_index:
+            errors.append(
+                f"modules.Dcm.protocols[{protocol_index}].id: expected dense zero-based "
+                f"ID {protocol_index}, got {protocol_id}"
+            )
         if protocol.get("rx_pdu_id") not in dcm_rx_pdu_ids:
             errors.append(
                 f"modules.Dcm.protocols[{protocol_index}].rx_pdu_id: "
