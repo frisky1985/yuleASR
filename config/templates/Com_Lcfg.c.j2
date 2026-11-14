@@ -1,0 +1,53 @@
+/*
+ * Auto-generated Com link-time configuration.
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with config/tools/generate_bsw_config.py.
+ */
+
+#include "Com.h"
+#include "Com_Cfg.h"
+
+static const Com_SignalConfigType Com_Signals[] = {
+    {
+        .SignalId = 0U,
+        .BitPosition = 0U,
+        .BitSize = 8U,
+        .Endianness = COM_LITTLE_ENDIAN,
+        .TransferProperty = COM_TX_MODE_DIRECT,
+        .FilterAlgorithm = 0U,
+        .FilterMask = 0U,
+        .FilterX = 0U,
+        .SignalGroupRef = 0U
+    },
+    {
+        .SignalId = 1U,
+        .BitPosition = 9U,
+        .BitSize = 16U,
+        .Endianness = COM_LITTLE_ENDIAN,
+        .TransferProperty = COM_TX_MODE_PERIODIC,
+        .FilterAlgorithm = 0U,
+        .FilterMask = 0U,
+        .FilterX = 0U,
+        .SignalGroupRef = 0U
+    }
+};
+
+static const Com_IPduConfigType Com_IPdus[] = {
+{% for pdu_id in module.ipdu_ids %}
+    {
+        .PduId = {{ pdu_id }}U,
+        .DataLength = 8U,
+        .RepeatingEnabled = FALSE,
+        .NumRepetitions = 0U,
+        .TimeBetweenRepetitions = 0U,
+        .TimePeriod = {% if pdu_id == 0 %}100U{% else %}0U{% endif %}
+    }{% if not loop.last %},{% endif %}
+{% endfor %}
+};
+
+const Com_ConfigType Com_Config = {
+    .Signals = Com_Signals,
+    .NumSignals = 2U,
+    .IPdus = Com_IPdus,
+    .NumIPdus = {{ module.ipdu_ids | length }}U
+};

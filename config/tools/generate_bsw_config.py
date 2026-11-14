@@ -118,6 +118,108 @@ def validate_config(cfg: Any, schema_path: Path) -> Tuple[bool, List[str]]:
     return (not msgs), msgs
 
 
+def validate_semantics(cfg: Dict[str, Any]) -> List[str]:
+    """Validate capacities, unique identifiers, and cross-module PDU references."""
+    errors: List[str] = []
+    modules = cfg.get("modules", {})
+    com = modules.get("Com", {})
+    pdur = modules.get("PduR", {})
+    dcm = modules.get("Dcm", {})
+
+    def check_duplicates(label: str, values: List[Any]) -> None:
+        seen = set()
+        for value in values:
+            if value in seen:
+                errors.append(f"modules.{label}: duplicate value {value}")
+            seen.add(value)
+
+    def check_capacity(label: str, capacity: int, element_count: int) -> None:
+        if element_count > capacity:
+            errors.append(
+                f"modules.{label}: capacity {capacity} is smaller than "
+                f"configured element count {element_count}"
+            )
+
+    com_ipdu_ids = com.get("ipdu_ids", [])
+    check_duplicates("Com.ipdu_ids", com_ipdu_ids)
+    check_capacity("Com.ipdus", com.get("ipdus", len(com_ipdu_ids)), len(com_ipdu_ids))
+
+    paths = pdur.get("paths", [])
+    groups = pdur.get("groups", [])
+    check_duplicates("PduR.paths.name", [path.get("name") for path in paths])
+    check_duplicates(
+        "PduR.paths.source",
+        [
+            (path.get("source", {}).get("module"), path.get("source", {}).get("pdu_id"))
+            for path in paths
+        ],
+    )
+    check_capacity("PduR.routing_paths", pdur.get("routing_paths", len(paths)), len(paths))
+    check_capacity(
+        "PduR.routing_path_groups", pdur.get("routing_path_groups", len(groups)), len(groups)
+    )
+    check_duplicates("PduR.groups.id", [group.get("id") for group in groups])
+
+    source_pdu_ids = {path.get("source", {}).get("pdu_id") for path in paths}
+    dcm_rx_pdu_ids = set()
+    dcm_tx_pdu_ids = set()
+    for path_index, path in enumerate(paths):
+        source = path.get("source", {})
+        if source.get("module") == "COM" and source.get("pdu_id") not in com_ipdu_ids:
+            errors.append(
+                f"modules.PduR.paths[{path_index}].source.pdu_id: "
+                f"{source.get('pdu_id')} is not listed in modules.Com.ipdu_ids"
+            )
+        if source.get("module") == "DCM":
+            dcm_tx_pdu_ids.add(source.get("pdu_id"))
+        destinations = path.get("destinations", [])
+        check_capacity(
+            "PduR.max_destinations_per_path",
+            pdur.get("max_destinations_per_path", len(destinations)),
+            len(destinations),
+        )
+        for dest_index, destination in enumerate(destinations):
+            if destination.get("module") == "COM" and destination.get("pdu_id") not in com_ipdu_ids:
+                errors.append(
+                    f"modules.PduR.paths[{path_index}].destinations[{dest_index}].pdu_id: "
+                    f"{destination.get('pdu_id')} is not listed in modules.Com.ipdu_ids"
+                )
+            if destination.get("module") == "DCM":
+                dcm_rx_pdu_ids.add(destination.get("pdu_id"))
+
+    for group_index, group in enumerate(groups):
+        group_pdu_ids = group.get("pdu_ids", [])
+        check_duplicates(f"PduR.groups[{group_index}].pdu_ids", group_pdu_ids)
+        for pdu_index, pdu_id in enumerate(group_pdu_ids):
+            if pdu_id not in source_pdu_ids:
+                errors.append(
+                    f"modules.PduR.groups[{group_index}].pdu_ids[{pdu_index}]: "
+                    f"PDU ID {pdu_id} has no matching routing path source"
+                )
+
+    protocols = dcm.get("protocols", [])
+    check_duplicates("Dcm.protocols.id", [protocol.get("id") for protocol in protocols])
+    check_duplicates("Dcm.protocols.name", [protocol.get("name") for protocol in protocols])
+    check_capacity(
+        "Dcm.counts.protocols",
+        dcm.get("counts", {}).get("protocols", len(protocols)),
+        len(protocols),
+    )
+    for protocol_index, protocol in enumerate(protocols):
+        if protocol.get("rx_pdu_id") not in dcm_rx_pdu_ids:
+            errors.append(
+                f"modules.Dcm.protocols[{protocol_index}].rx_pdu_id: "
+                f"PDU ID {protocol.get('rx_pdu_id')} has no PduR route into DCM"
+            )
+        if protocol.get("tx_pdu_id") not in dcm_tx_pdu_ids:
+            errors.append(
+                f"modules.Dcm.protocols[{protocol_index}].tx_pdu_id: "
+                f"PDU ID {protocol.get('tx_pdu_id')} has no PduR route from DCM"
+            )
+
+    return errors
+
+
 # ---------------------------------------------------------------------------
 # Template discovery / rendering
 # ---------------------------------------------------------------------------
@@ -129,8 +231,8 @@ def discover_templates(templates_dir: Path) -> List[Path]:
 
 
 def module_name_from_template(tpl_path: Path) -> str:
-    """BswM_Cfg.h.j2 -> BswM ; Can_Cfg.h.j2 -> Can."""
-    return tpl_path.name.split("_Cfg")[0]
+    """BswM_Cfg.h.j2 -> BswM ; Com_Lcfg.c.j2 -> Com."""
+    return tpl_path.name.split("_Cfg")[0].split("_Lcfg")[0]
 
 
 def display_path(path: Path) -> str:
@@ -442,6 +544,14 @@ def main(argv: Optional[List[str]] = None) -> int:
             print("[WARN] jsonschema not installed — used fallback structural validation")
     else:
         print("[SKIP] Schema validation disabled (--no-schema)")
+
+    semantic_errors = validate_semantics(cfg)
+    if semantic_errors:
+        print("[FAIL] Configuration failed semantic validation:", file=sys.stderr)
+        for err in semantic_errors:
+            print(f"       - {err}", file=sys.stderr)
+        return 1
+    print("[OK] Semantic validation passed")
 
     if args.validate_only:
         print("[OK] Validate-only mode: configuration is valid")

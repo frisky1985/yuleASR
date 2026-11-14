@@ -82,6 +82,11 @@ static Dcm_DIDConfigType testDIDs[] = {
     {0xF18CU, 4U, DCM_DEFAULT_SESSION, DCM_SEC_LEV_LOCKED, testReadDidF18C, NULL_PTR}
 };
 
+static const Dcm_ProtocolConfigType testProtocols[] = {
+    { .ProtocolId = 0U, .RxPduId = 0U, .TxPduId = 0U },
+    { .ProtocolId = 1U, .RxPduId = 1U, .TxPduId = 1U }
+};
+
 const Dcm_ConfigType Dcm_Config = {
     DCM_NUM_PROTOCOLS,
     DCM_NUM_CONNECTIONS,
@@ -97,7 +102,8 @@ const Dcm_ConfigType Dcm_Config = {
     TRUE,  /* DevErrorDetect */
     TRUE,  /* VersionInfoApi */
     TRUE,  /* RespondAllRequest */
-    TRUE   /* DcmTaskTime */
+    TRUE,  /* DcmTaskTime */
+    testProtocols /* Protocols */
 };
 
 /*==================================================================================================

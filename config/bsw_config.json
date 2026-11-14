@@ -184,6 +184,7 @@
       "signals": 64,
       "group_signals": 16,
       "ipdus": 32,
+      "ipdu_ids": [0, 1, 2, 3, 4],
       "ipdu_groups": 4,
       "max_ipdu_buffer_size": 64,
       "num_signal_gw_mappings": 8,
@@ -208,7 +209,64 @@
       "routing_path_groups": 4,
       "max_destinations_per_path": 4,
       "fifo_depth": 8,
-      "main_function_period_ms": 10
+      "main_function_period_ms": 10,
+      "paths": [
+        {
+          "name": "EngineStatusTx",
+          "source": {"pdu_id": 0, "module": "COM", "sdu_length": 8},
+          "destinations": [{"pdu_id": 0, "module": "CANIF"}],
+          "path_type": "DIRECT",
+          "gateway_operation": false
+        },
+        {
+          "name": "VehicleSpeedTx",
+          "source": {"pdu_id": 1, "module": "COM", "sdu_length": 8},
+          "destinations": [{"pdu_id": 1, "module": "CANIF"}],
+          "path_type": "DIRECT",
+          "gateway_operation": false
+        },
+        {
+          "name": "BatteryStatusTx",
+          "source": {"pdu_id": 2, "module": "COM", "sdu_length": 8},
+          "destinations": [{"pdu_id": 2, "module": "CANIF"}],
+          "path_type": "DIRECT",
+          "gateway_operation": false
+        },
+        {
+          "name": "EngineCmdRx",
+          "source": {"pdu_id": 3, "module": "CANIF", "sdu_length": 8},
+          "destinations": [{"pdu_id": 3, "module": "COM"}],
+          "path_type": "DIRECT",
+          "gateway_operation": false
+        },
+        {
+          "name": "VehicleCmdRx",
+          "source": {"pdu_id": 4, "module": "CANIF", "sdu_length": 8},
+          "destinations": [{"pdu_id": 4, "module": "COM"}],
+          "path_type": "DIRECT",
+          "gateway_operation": false
+        },
+        {
+          "name": "DiagResponseTx",
+          "source": {"pdu_id": 5, "module": "DCM", "sdu_length": 8},
+          "destinations": [{"pdu_id": 5, "module": "CANIF"}],
+          "path_type": "DIRECT",
+          "gateway_operation": false
+        },
+        {
+          "name": "DiagRequestRx",
+          "source": {"pdu_id": 6, "module": "CANIF", "sdu_length": 8},
+          "destinations": [{"pdu_id": 6, "module": "DCM"}],
+          "path_type": "DIRECT",
+          "gateway_operation": false
+        }
+      ],
+      "groups": [
+        {"id": 0, "pdu_ids": [0, 1, 2], "default_enabled": true},
+        {"id": 1, "pdu_ids": [3, 4], "default_enabled": true},
+        {"id": 2, "pdu_ids": [5, 6], "default_enabled": true},
+        {"id": 3, "pdu_ids": [], "default_enabled": false}
+      ]
     },
     "NvM": {
       "name": "NvM",
@@ -591,19 +649,9 @@
       "protocols": [
         {
           "name": "OBD_ON_CAN",
-          "id": 0
-        },
-        {
-          "name": "UDS_ON_CAN",
-          "id": 1
-        },
-        {
-          "name": "UDS_ON_FLEXRAY",
-          "id": 2
-        },
-        {
-          "name": "UDS_ON_IP",
-          "id": 3
+          "id": 0,
+          "rx_pdu_id": 6,
+          "tx_pdu_id": 5
         }
       ],
       "sessions": [

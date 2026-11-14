@@ -14,6 +14,7 @@
 extern uint32 stub_PduR_Transmit_calls;
 extern const uint8 *stub_PduR_lastPdu;
 extern PduLengthType stub_PduR_lastLength;
+extern PduIdType stub_PduR_lastTxPduId;
 
 /* ---- DET recorder (test-local mock; tests/mocks/mock_det.c is NOT linked) ---- */
 static uint8 mock_DetCalls = 0;
@@ -81,8 +82,13 @@ static const Dcm_RIDConfigType testRIDs[] = {
 };
 #define NUM_TEST_RIDS (sizeof(testRIDs) / sizeof(testRIDs[0]))
 
+static const Dcm_ProtocolConfigType testProtocols[] = {
+    { .ProtocolId = 0U, .RxPduId = 0U, .TxPduId = 0U }
+};
 static Dcm_ConfigType testConfig;
 void setUp(void) {
+    testConfig.NumProtocols = 1U;
+    testConfig.Protocols = testProtocols;
     testConfig.NumDIDs = (uint8)NUM_TEST_DIDS;
     testConfig.NumRIDs = (uint8)NUM_TEST_RIDS;
     testConfig.DIDs = testDIDs;
@@ -1615,6 +1621,44 @@ void test_Transfer_MapAddr_FlashEnd_ShouldOk(void) {
     TEST_ASSERT_EQUAL_HEX32(0x081FFFFF, phys);
 }
 
+void test_Dcm_ProductionConfig_ShouldContainOnlyConfiguredProtocols(void) {
+    TEST_ASSERT_EQUAL_UINT8(1U, Dcm_Config.NumProtocols);
+    TEST_ASSERT_EQUAL_UINT8(0U, Dcm_Config.Protocols[0].ProtocolId);
+    TEST_ASSERT_EQUAL_UINT16(6U, Dcm_Config.Protocols[0].RxPduId);
+    TEST_ASSERT_EQUAL_UINT16(5U, Dcm_Config.Protocols[0].TxPduId);
+}
+
+void test_Dcm_ExternalPduIds_ShouldMapProtocolCallbacks(void) {
+    uint8 req[] = {0x3E, 0x00};
+    PduInfoType pdu;
+    pdu.SduDataPtr = req;
+    pdu.SduLength = 2U;
+    pdu.MetaDataPtr = NULL_PTR;
+
+    Dcm_Init(&Dcm_Config);
+    stub_PduR_Transmit_calls = 0U;
+    mock_DetCalls = 0U;
+
+    Dcm_RxIndication(6U, &pdu);
+    TEST_ASSERT_EQUAL_UINT32(1U, stub_PduR_Transmit_calls);
+    TEST_ASSERT_EQUAL_UINT16(5U, stub_PduR_lastTxPduId);
+    TEST_ASSERT_EQUAL(E_OK, Dcm_TriggerTransmit(5U, &pdu));
+    Dcm_TxConfirmation(5U, E_OK);
+    TEST_ASSERT_EQUAL(0, mock_DetCalls);
+}
+
+void test_Dcm_TransferResponse_ShouldUseConfiguredTxPduId(void) {
+    uint8 data[] = {0x44, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04};
+
+    Dcm_Init(&Dcm_Config);
+    Dcm_TransferInit();
+    stub_PduR_Transmit_calls = 0U;
+
+    TEST_ASSERT_EQUAL(E_OK, Dcm_TransferProcessRequestDownload(0U, data, 9U));
+    TEST_ASSERT_EQUAL_UINT32(1U, stub_PduR_Transmit_calls);
+    TEST_ASSERT_EQUAL_UINT16(5U, stub_PduR_lastTxPduId);
+}
+
 int main(void)
 {
     UNITY_BEGIN();
@@ -1792,5 +1836,8 @@ int main(void)
     RUN_TEST(test_Transfer_ValidateMemRange_UploadOutsideAll_ShouldNotOk);
     RUN_TEST(test_Transfer_MapAddr_FlashStart_ShouldOk);
     RUN_TEST(test_Transfer_MapAddr_FlashEnd_ShouldOk);
+    RUN_TEST(test_Dcm_ProductionConfig_ShouldContainOnlyConfiguredProtocols);
+    RUN_TEST(test_Dcm_ExternalPduIds_ShouldMapProtocolCallbacks);
+    RUN_TEST(test_Dcm_TransferResponse_ShouldUseConfiguredTxPduId);
     return UnityEnd();
 }

@@ -28,6 +28,7 @@ Std_ReturnType Det_ReportError(uint16 ModuleId, uint8 InstanceId, uint8 ApiId, u
 extern uint32 mock_PduR_Transmit_Count;
 extern PduIdType mock_PduR_Transmit_LastPduId;
 extern uint16 mock_PduR_Transmit_LastSduLength;
+extern const Com_ConfigType Com_Config;
 
 /* Forward declarations for functions defined in Com.c but not in public header */
 extern Std_ReturnType Com_SendDynSignal(Com_SignalIdType SignalId, const void* SignalDataPtr, uint16 Length);
@@ -263,6 +264,18 @@ static void ensure_uninit(void) {
 
 void setUp(void) { ensure_uninit(); }
 void tearDown(void) {}
+
+void test_Com_RepositoryLcfg_ShouldContainEveryDeclaredIpdu(void) {
+    uint8 i;
+
+    TEST_ASSERT_NOT_NULL(Com_Config.IPdus);
+    TEST_ASSERT_EQUAL_UINT8(5U, Com_Config.NumIPdus);
+    for (i = 0U; i < Com_Config.NumIPdus; i++) {
+        TEST_ASSERT_EQUAL_UINT8(i, Com_Config.IPdus[i].PduId);
+        TEST_ASSERT_EQUAL_UINT16(8U, Com_Config.IPdus[i].DataLength);
+    }
+    TEST_ASSERT_EQUAL_UINT16(100U, Com_Config.IPdus[0].TimePeriod);
+}
 
 /** @req SWS_Com_00001 */
 void test_Com_Init_NullPtr_ShouldNotCrash(void) {
@@ -1235,6 +1248,7 @@ int main(void) {
     UNITY_BEGIN();
     RUN_TEST(test_Com_Init_NullPtr_ShouldNotCrash);
     RUN_TEST(test_Com_Init_ValidConfig_ShouldSucceed);
+    RUN_TEST(test_Com_RepositoryLcfg_ShouldContainEveryDeclaredIpdu);
     RUN_TEST(test_Com_DeInit_AfterInit_ShouldSucceed);
     RUN_TEST(test_Com_SendSignal_BeforeInit_ShouldFail);
     RUN_TEST(test_Com_SendSignal_NullData_ShouldFail);

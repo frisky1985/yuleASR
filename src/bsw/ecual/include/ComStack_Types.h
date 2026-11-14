@@ -71,7 +71,8 @@ typedef enum {
 typedef enum {
     BUFREQ_E_OK     = 0U,  /**< Buffer request succeeded */
     BUFREQ_E_NOT_OK = 1U,  /**< Buffer request failed */
-    BUFREQ_E_BUSY   = 2U   /**< Buffer request busy */
+    BUFREQ_E_BUSY   = 2U,  /**< Buffer request busy */
+    BUFREQ_E_OVFL   = 3U   /**< Buffer request overflow */
 } BufReq_ReturnType;
 #endif
 
@@ -81,6 +82,15 @@ typedef enum {
 #ifndef TPPARAMETERTYPE_DEFINED
 #define TPPARAMETERTYPE_DEFINED
 typedef uint8 TPParameterType;
+#ifndef TP_STMIN
+#define TP_STMIN (0U)
+#endif
+#ifndef TP_BS
+#define TP_BS (1U)
+#endif
+#ifndef TP_BC
+#define TP_BC (2U)
+#endif
 #endif
 
 /*==================================================================================================

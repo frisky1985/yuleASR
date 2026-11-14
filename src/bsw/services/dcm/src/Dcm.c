@@ -125,6 +125,7 @@ STATIC Std_ReturnType Dcm_ProcessTransferData(uint8 ProtocolId, const uint8* Dat
 STATIC Std_ReturnType Dcm_ProcessRequestTransferExit(uint8 ProtocolId, const uint8* Data, uint16 Length);
 STATIC const Dcm_DIDConfigType* Dcm_FindDID(uint16 DID);
 STATIC const Dcm_RIDConfigType* Dcm_FindRID(uint16 RID);
+STATIC uint8 Dcm_FindProtocolByPdu(PduIdType PduId, boolean IsRx);
 
 /*==================================================================================================
 *                                      LOCAL FUNCTIONS
@@ -178,6 +179,52 @@ STATIC const Dcm_RIDConfigType* Dcm_FindRID(uint16 RID)
     return result;
 }
 
+Std_ReturnType Dcm_GetTxPduId(uint8 ProtocolId, PduIdType* TxPduId)
+{
+    Std_ReturnType result = E_NOT_OK;
+    uint8 i;
+
+    if ((TxPduId != NULL_PTR) && (Dcm_InternalState.ConfigPtr != NULL_PTR) &&
+        (Dcm_InternalState.ConfigPtr->Protocols != NULL_PTR))
+    {
+        for (i = 0U; i < Dcm_InternalState.ConfigPtr->NumProtocols; i++)
+        {
+            const Dcm_ProtocolConfigType* protocol = &Dcm_InternalState.ConfigPtr->Protocols[i];
+            if (protocol->ProtocolId == ProtocolId)
+            {
+                *TxPduId = protocol->TxPduId;
+                result = E_OK;
+                break;
+            }
+        }
+    }
+
+    return result;
+}
+
+STATIC uint8 Dcm_FindProtocolByPdu(PduIdType PduId, boolean IsRx)
+{
+    uint8 protocolId = DCM_NUM_PROTOCOLS;
+    uint8 i;
+
+    if ((Dcm_InternalState.ConfigPtr != NULL_PTR) &&
+        (Dcm_InternalState.ConfigPtr->Protocols != NULL_PTR))
+    {
+        for (i = 0U; i < Dcm_InternalState.ConfigPtr->NumProtocols; i++)
+        {
+            const Dcm_ProtocolConfigType* protocol = &Dcm_InternalState.ConfigPtr->Protocols[i];
+            PduIdType configuredPduId = (IsRx != FALSE) ? protocol->RxPduId : protocol->TxPduId;
+            if ((configuredPduId == PduId) && (protocol->ProtocolId < DCM_NUM_PROTOCOLS))
+            {
+                protocolId = protocol->ProtocolId;
+                break;
+            }
+        }
+    }
+
+    return protocolId;
+}
+
 /**
  * @brief   Send positive response
  * @req SWS_Dcm_00102
@@ -206,7 +253,11 @@ STATIC void Dcm_SendPositiveResponse(uint8 ProtocolId, uint8 SID, const uint8* D
         pduInfo.SduLength = protocolState->TxDataLength;
         pduInfo.MetaDataPtr = NULL_PTR;
 
-        (void)PduR_Transmit(ProtocolId, &pduInfo);
+        PduIdType txPduId;
+        if (Dcm_GetTxPduId(ProtocolId, &txPduId) == E_OK)
+        {
+            (void)PduR_Transmit(txPduId, &pduInfo);
+        }
     }
 }
 
@@ -233,7 +284,11 @@ STATIC void Dcm_SendNegativeResponse(uint8 ProtocolId, uint8 SID, uint8 NRC)
         pduInfo.SduLength = protocolState->TxDataLength;
         pduInfo.MetaDataPtr = NULL_PTR;
 
-        (void)PduR_Transmit(ProtocolId, &pduInfo);
+        PduIdType txPduId;
+        if (Dcm_GetTxPduId(ProtocolId, &txPduId) == E_OK)
+        {
+            (void)PduR_Transmit(txPduId, &pduInfo);
+        }
     }
 }
 
@@ -1349,11 +1404,14 @@ void Dcm_TxConfirmation(PduIdType TxPduId, Std_ReturnType result)
     }
 #endif
 
-    if (TxPduId < DCM_NUM_PROTOCOLS)
     {
-        /* Reset protocol state to idle after transmission complete */
-        Dcm_InternalState.ProtocolStates[TxPduId].State = DCM_PROTOCOL_IDLE;
-        Dcm_InternalState.ProtocolStates[TxPduId].TxDataLength = 0U;
+        uint8 protocolId = Dcm_FindProtocolByPdu(TxPduId, FALSE);
+        if (protocolId < DCM_NUM_PROTOCOLS)
+        {
+            /* Reset protocol state to idle after transmission complete */
+            Dcm_InternalState.ProtocolStates[protocolId].State = DCM_PROTOCOL_IDLE;
+            Dcm_InternalState.ProtocolStates[protocolId].TxDataLength = 0U;
+        }
     }
 }
 
@@ -1377,22 +1435,25 @@ void Dcm_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
     }
 #endif
 
-    if ((RxPduId < DCM_NUM_PROTOCOLS) && (PduInfoPtr != NULL_PTR))
     {
-        Dcm_ProtocolStateType* protocolState = &Dcm_InternalState.ProtocolStates[RxPduId];
-
-        /* Copy received data to RX buffer */
-        if ((PduInfoPtr->SduDataPtr != NULL_PTR) && (PduInfoPtr->SduLength > 0U))
+        uint8 protocolId = Dcm_FindProtocolByPdu(RxPduId, TRUE);
+        if ((protocolId < DCM_NUM_PROTOCOLS) && (PduInfoPtr != NULL_PTR))
         {
-            uint16 copyLength = (PduInfoPtr->SduLength < DCM_RX_BUFFER_SIZE) ?
-                                PduInfoPtr->SduLength : DCM_RX_BUFFER_SIZE;
+            Dcm_ProtocolStateType* protocolState = &Dcm_InternalState.ProtocolStates[protocolId];
 
-            (void)memcpy(protocolState->RxBuffer, PduInfoPtr->SduDataPtr, copyLength);
-            protocolState->RxDataLength = copyLength;
-            protocolState->State = DCM_PROTOCOL_PROCESSING;
+            /* Copy received data to RX buffer */
+            if ((PduInfoPtr->SduDataPtr != NULL_PTR) && (PduInfoPtr->SduLength > 0U))
+            {
+                uint16 copyLength = (PduInfoPtr->SduLength < DCM_RX_BUFFER_SIZE) ?
+                                    PduInfoPtr->SduLength : DCM_RX_BUFFER_SIZE;
 
-            /* Process the request */
-            Dcm_ProcessRequest(RxPduId);
+                (void)memcpy(protocolState->RxBuffer, PduInfoPtr->SduDataPtr, copyLength);
+                protocolState->RxDataLength = copyLength;
+                protocolState->State = DCM_PROTOCOL_PROCESSING;
+
+                /* Process the request */
+                Dcm_ProcessRequest(protocolId);
+            }
         }
     }
 }
@@ -1419,15 +1480,18 @@ Std_ReturnType Dcm_TriggerTransmit(PduIdType TxPduId, PduInfoType* PduInfoPtr)
     }
 #endif
 
-    if ((TxPduId < DCM_NUM_PROTOCOLS) && (PduInfoPtr != NULL_PTR))
     {
-        Dcm_ProtocolStateType* protocolState = &Dcm_InternalState.ProtocolStates[TxPduId];
+        uint8 protocolId = Dcm_FindProtocolByPdu(TxPduId, FALSE);
+        if ((protocolId < DCM_NUM_PROTOCOLS) && (PduInfoPtr != NULL_PTR))
+        {
+            Dcm_ProtocolStateType* protocolState = &Dcm_InternalState.ProtocolStates[protocolId];
 
-        /* Provide TX data */
-        PduInfoPtr->SduDataPtr = protocolState->TxBuffer;
-        PduInfoPtr->SduLength = protocolState->TxDataLength;
+            /* Provide TX data */
+            PduInfoPtr->SduDataPtr = protocolState->TxBuffer;
+            PduInfoPtr->SduLength = protocolState->TxDataLength;
 
-        result = E_OK;
+            result = E_OK;
+        }
     }
 
     return result;

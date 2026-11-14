@@ -755,6 +755,10 @@ static const Dcm_DIDConfigType itDcm_DIDs[1] = {
     { .DID = 0xF190U, .DataLength = 17U, .SessionType = DCM_DEFAULT_SESSION, .SecurityLevel = 0U, .ReadDataFnc = itDcm_ReadVIN, .WriteDataFnc = NULL_PTR }
 };
 
+static const Dcm_ProtocolConfigType itDcm_Protocols[] = {
+    { .ProtocolId = 0U, .RxPduId = 0U, .TxPduId = 0U }
+};
+
 const Dcm_ConfigType Dcm_Config = {
     .NumProtocols = 1U,
     .NumConnections = 1U,
@@ -770,7 +774,8 @@ const Dcm_ConfigType Dcm_Config = {
     .DevErrorDetect = TRUE,
     .VersionInfoApi = TRUE,
     .RespondAllRequest = TRUE,
-    .DcmTaskTime = TRUE
+    .DcmTaskTime = TRUE,
+    .Protocols = itDcm_Protocols
 };
 
 /*==================================================================================================

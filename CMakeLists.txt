@@ -188,13 +188,11 @@ target_include_directories(yule_debug PUBLIC
 link_libraries(yule_debug)
 
 # ── BSW configuration closed loop (JSON + Jinja2) ───────────────────────────
-# config/generated/*_Cfg.h are rendered from config/bsw_config.json by
-# config/tools/generate_bsw_config.py.  Regeneration runs at configure time
-# when the config, schema, generator script or any template is newer than the
-# stamp file.  Generated headers are strict supersets of the handwritten
-# module headers and the include path is appended AFTER the module directories
-# above, so a missing or failed generation never breaks the build — the
-# handwritten headers stay authoritative.
+# config/generated/*_Cfg.h and selected *_Lcfg.c files are rendered from
+# config/bsw_config.json by config/tools/generate_bsw_config.py. Regeneration
+# runs at configure time when an input is newer than the stamp file. Generated
+# headers remain after handwritten module headers in the include search path;
+# generated link-time sources are authoritative and generation failure is fatal.
 set(YULE_CFG_DIR           ${CMAKE_CURRENT_SOURCE_DIR}/config)
 set(YULE_CFG_GENERATED_DIR ${YULE_CFG_DIR}/generated)
 
@@ -237,10 +235,9 @@ if(EXISTS ${YULE_CFG_DIR}/tools/generate_bsw_config.py)
                 ERROR_VARIABLE  _cfggen_stderr
             )
             if(NOT _cfggen_result EQUAL 0)
-                message(WARNING
+                message(FATAL_ERROR
                     "BSW configuration generation failed (exit ${_cfggen_result}).\n"
-                    "${_cfggen_stdout}${_cfggen_stderr}"
-                    "Continuing with handwritten *_Cfg.h headers.")
+                    "${_cfggen_stdout}${_cfggen_stderr}")
             else()
                 file(TOUCH ${YULE_CFG_STAMP})
             endif()

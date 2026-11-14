@@ -22,7 +22,7 @@
 /*==================================================================================================
 *                                    Module Configuration Counts
 *================================================================================================*/
-#define DCM_NUM_PROTOCOLS    (2U)
+#define DCM_NUM_PROTOCOLS    (1U)
 #define DCM_NUM_CONNECTIONS    (4U)
 #define DCM_NUM_RX_PDU_IDS    (4U)
 #define DCM_NUM_TX_PDU_IDS    (4U)

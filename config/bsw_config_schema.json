@@ -622,7 +622,18 @@
         },
         "ipdus": {
           "type": "integer",
-          "minimum": 0
+          "minimum": 0,
+          "description": "I-PDU capacity; not the list of configured I-PDUs"
+        },
+        "ipdu_ids": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "minItems": 1,
+          "uniqueItems": true,
+          "description": "Explicit configured I-PDU element IDs"
         },
         "ipdu_groups": {
           "type": "integer",
@@ -648,19 +659,24 @@
     "pdur": {
       "type": "object",
       "additionalProperties": true,
+      "required": ["paths", "groups"],
       "properties": {
         "routing_paths": {
           "type": "integer",
-          "minimum": 0
+          "minimum": 0,
+          "maximum": 255,
+          "description": "Routing path capacity; not the configured route list"
         },
         "routing_path_groups": {
           "type": "integer",
-          "minimum": 0
+          "minimum": 0,
+          "maximum": 255,
+          "description": "Routing path group capacity; not the configured group list"
         },
         "max_destinations_per_path": {
           "type": "integer",
-          "minimum": 0,
-          "description": "Configuration for max destinations per path"
+          "minimum": 1,
+          "maximum": 255
         },
         "fifo_depth": {
           "type": "integer",
@@ -670,6 +686,64 @@
           "type": "integer",
           "minimum": 0,
           "description": "Timing configuration for main function period ms"
+        },
+        "paths": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "source", "destinations", "path_type", "gateway_operation"],
+            "properties": {
+              "name": {
+                "type": "string",
+                "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+              },
+              "source": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["pdu_id", "module", "sdu_length"],
+                "properties": {
+                  "pdu_id": {"type": "integer", "minimum": 0, "maximum": 65535},
+                  "module": {"enum": ["CANIF", "CANTP", "LINIF", "COM", "DCM", "SOAD"]},
+                  "sdu_length": {"type": "integer", "minimum": 0}
+                }
+              },
+              "destinations": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["pdu_id", "module"],
+                  "properties": {
+                    "pdu_id": {"type": "integer", "minimum": 0, "maximum": 65535},
+                    "module": {"enum": ["CANIF", "CANTP", "LINIF", "COM", "DCM", "SOAD"]}
+                  }
+                }
+              },
+              "path_type": {"enum": ["DIRECT", "FIFO", "GATEWAY"]},
+              "gateway_operation": {"type": "boolean"}
+            }
+          }
+        },
+        "groups": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "pdu_ids", "default_enabled"],
+            "properties": {
+              "id": {"type": "integer", "minimum": 0, "maximum": 255},
+              "pdu_ids": {
+                "type": "array",
+                "uniqueItems": true,
+                "items": {"type": "integer", "minimum": 0, "maximum": 65535}
+              },
+              "default_enabled": {"type": "boolean"}
+            }
+          }
         }
       }
     },
@@ -866,9 +940,32 @@
         },
         "protocols": {
           "type": "array",
+          "minItems": 1,
           "items": {
             "type": "object",
-            "additionalProperties": true
+            "additionalProperties": false,
+            "required": ["name", "id", "rx_pdu_id", "tx_pdu_id"],
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "id": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 255
+              },
+              "rx_pdu_id": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 65535
+              },
+              "tx_pdu_id": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 65535
+              }
+            }
           }
         },
         "sessions": {

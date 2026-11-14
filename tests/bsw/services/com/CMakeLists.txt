@@ -7,8 +7,8 @@
 #   256U. The uint8 counter wraps 255 -> 0 and the loop never terminates,
 #   hanging any process that calls Com_Init().
 #
-#   com_test therefore compiles the UNMODIFIED production sources Com.c and
-#   Com_Lcfg.c directly, against the test-private Com_Cfg.h in this directory
+#   com_test therefore compiles the UNMODIFIED production Com.c and the
+#   generated Com_Lcfg.c directly, against the test-private Com_Cfg.h here
 #   (COM_NUM_OF_SIGNALS = 255U, the largest bound a uint8 loop counter can
 #   reach; every other parameter identical to production). That shadow header
 #   is force-included via -include so its include guard (COM_CFG_H) neuters
@@ -27,8 +27,12 @@ add_executable(com_test
     test_com.c
     stubs.c
     ${CMAKE_SOURCE_DIR}/src/bsw/services/com/src/Com.c
-    ${CMAKE_SOURCE_DIR}/src/bsw/services/com/src/Com_Lcfg.c
+    ${YULE_CFG_GENERATED_DIR}/Com_Lcfg.c
 )
+
+if(TARGET generate_bsw_config)
+    add_dependencies(com_test generate_bsw_config)
+endif()
 
 target_include_directories(com_test
     PRIVATE

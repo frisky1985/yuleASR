@@ -22,6 +22,7 @@
 #define DCM_NUM_OF_SERVICES    ({{ module.num_of_services | default(16) }}U)
 #define DCM_NUM_OF_DIDS    ({{ module.num_of_dids | default(32) }}U)
 #define DCM_NUM_OF_ROUTINES    ({{ module.num_of_routines | default(8) }}U)
+#define DCM_NUM_PROTOCOLS    ({{ module.protocols | length }}U)
 
 /*==================================================================================================
 *                                    Protocol Configuration

@@ -163,10 +163,11 @@ build_run srv_wdgm \
     $DET_C
 
 echo "--- Com (host cfg override: COM_NUM_OF_SIGNALS=8) ---"
+python3 config/tools/generate_bsw_config.py --module Com --no-rte
 build_run srv_com \
     "coverage_run/asil/test_com_coverage.c" "coverage_run/stubs_com.c" \
     -include coverage_run/asil/com_cfg_override.h \
-    src/bsw/services/com/src/Com.c src/bsw/services/com/src/Com_Lcfg.c \
+    src/bsw/services/com/src/Com.c config/generated/Com_Lcfg.c \
     $DET_C
 
 echo "--- OS timing protection ---"

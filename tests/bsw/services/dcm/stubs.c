@@ -71,21 +71,4 @@ const Dem_ConfigType Dem_Config = {
     0, 0, 0              /* notification callbacks */
 };
 
-/* ---- Minimal Dcm_Config for test initialization ---- */
-const Dcm_ConfigType Dcm_Config = {
-    2U,       /* NumProtocols */
-    4U,       /* NumConnections */
-    4U,       /* NumRxPduIds */
-    4U,       /* NumTxPduIds */
-    4U,       /* NumSessions */
-    3U,       /* NumSecurityLevels */
-    16U,      /* NumServices */
-    0U,       /* NumDIDs */
-    0U,       /* NumRIDs */
-    NULL_PTR, /* DIDs */
-    NULL_PTR, /* RIDs */
-    TRUE,     /* DevErrorDetect */
-    TRUE,     /* VersionInfoApi */
-    TRUE,     /* RespondAllRequest */
-    TRUE      /* DcmTaskTime */
-};
+/* Dcm_Config is supplied by the generated Dcm_Lcfg.c in service_dcm. */

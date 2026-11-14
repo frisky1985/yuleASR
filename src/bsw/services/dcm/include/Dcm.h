@@ -244,6 +244,15 @@ typedef struct {
 } Dcm_MsgContextType;
 
 /*==================================================================================================
+*                                    DCM PROTOCOL CONFIG TYPE
+==================================================================================================*/
+typedef struct {
+    uint8 ProtocolId;
+    PduIdType RxPduId;
+    PduIdType TxPduId;
+} Dcm_ProtocolConfigType;
+
+/*==================================================================================================
 *                                    DCM CONFIG TYPE
 ==================================================================================================*/
 typedef struct {
@@ -262,6 +271,7 @@ typedef struct {
     boolean VersionInfoApi;
     boolean RespondAllRequest;
     boolean DcmTaskTime;
+    const Dcm_ProtocolConfigType* Protocols;
 } Dcm_ConfigType;
 
 /*==================================================================================================
@@ -286,6 +296,9 @@ extern const Dcm_ConfigType Dcm_Config;
  * @param ConfigPtr Pointer to configuration structure
  */
 void Dcm_Init(const Dcm_ConfigType* ConfigPtr);
+
+/** @brief Resolve the configured PduR transmission ID for a protocol. */
+Std_ReturnType Dcm_GetTxPduId(uint8 ProtocolId, PduIdType* TxPduId);
 
 /**
  * @brief Starts the DCM

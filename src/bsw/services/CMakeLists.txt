@@ -93,11 +93,31 @@ foreach(subdir ${SERVICES_SUBDIRS})
     # Exclude *_impl.c files. 历史遗留实现已随 P0-5 删除（原 <module>/legacy/），
     # 此处 FILTER 作为防守保留, 防止误编译 unity-build 风格文件
     list(FILTER module_sources EXCLUDE REGEX ".*_impl\\.c$")
-    
+
+    if(module_name STREQUAL "com" OR module_name STREQUAL "dcm" OR module_name STREQUAL "pdur")
+        string(TOUPPER ${module_name} module_upper)
+        if(module_upper STREQUAL "COM")
+            set(module_config_name "Com")
+        elseif(module_upper STREQUAL "DCM")
+            set(module_config_name "Dcm")
+        else()
+            set(module_config_name "PduR")
+        endif()
+        if(NOT EXISTS ${YULE_CFG_GENERATED_DIR}/${module_config_name}_Lcfg.c)
+            message(FATAL_ERROR "Generated ${module_config_name}_Lcfg.c is required; run the BSW configuration generator")
+        endif()
+        list(REMOVE_ITEM module_sources ${subdir}/src/${module_config_name}_Lcfg.c)
+        list(APPEND module_sources ${YULE_CFG_GENERATED_DIR}/${module_config_name}_Lcfg.c)
+    endif()
+
     if(module_sources)
         set(target_name "service_${module_name}")
         add_library(${target_name} STATIC ${module_sources})
-        
+
+        if((module_name STREQUAL "com" OR module_name STREQUAL "dcm" OR module_name STREQUAL "pdur") AND TARGET generate_bsw_config)
+            add_dependencies(${target_name} generate_bsw_config)
+        endif()
+
         if(IS_DIRECTORY ${subdir}/include)
             target_include_directories(${target_name}
                 PUBLIC ${subdir}/include

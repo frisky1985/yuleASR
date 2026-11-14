@@ -11,10 +11,29 @@
 #include "dcm_transfer.h"
 #include "Dcm.h"
 #include "Dcm_Cfg.h"
+#include "Dem.h"
 
 /*==================================================================================================
 *                                    STUBS
 ==================================================================================================*/
+
+/* Dcm_Config is supplied by the generated Dcm_Lcfg.c in service_dcm. */
+
+const Dem_ConfigType Dem_Config = {
+    .DtcParameters = NULL_PTR,
+    .NumDtcs = 0U
+};
+
+Std_ReturnType Dem_GetStatusOfDTC(
+    Dem_DtcType DTC,
+    Dem_DTCOriginType DTCOrigin,
+    Dem_UdsStatusByteType* DTCStatus)
+{
+    (void)DTC;
+    (void)DTCOrigin;
+    (void)DTCStatus;
+    return E_NOT_OK;
+}
 
 static uint32 stub_pduR_transmit_calls = 0U;
 
@@ -41,6 +60,7 @@ void Det_ReportError(uint16 ModuleId, uint8 InstanceId, uint8 ApiId, uint8 Error
 void setUp(void)
 {
     stub_pduR_transmit_calls = 0U;
+    Dcm_Init(&Dcm_Config);
     Dcm_TransferInit();
 }
 

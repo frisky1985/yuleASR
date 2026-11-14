@@ -1,0 +1,71 @@
+/*
+ * Auto-generated PduR link-time configuration.
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with config/tools/generate_bsw_config.py.
+ */
+
+#include "PduR.h"
+#include "PduR_Cfg.h"
+
+#define PDUR_START_SEC_CONFIG_DATA_UNSPECIFIED
+#include "MemMap.h"
+
+{% for path in module.paths %}
+static const PduR_DestPduConfigType PduR_{{ path.name }}_Dest[] = {
+{% for destination in path.destinations %}
+    {
+        .DestPduId = (PduIdType){{ destination.pdu_id }}U,
+        .DestModule = PDUR_MODULE_{{ destination.module }},
+        .Processing = PDUR_DESTPDU_PROCESSING_IMMEDIATE,
+        .FifoDepth = 0U
+    }{% if not loop.last %},{% endif %}
+{% endfor %}
+};
+
+{% endfor %}
+static const PduR_RoutingPathConfigType PduR_RoutingPaths[PDUR_NUMBER_OF_ROUTING_PATHS] = {
+{% for path in module.paths %}
+    {
+        .SrcPdu = {
+            .SourcePduId = (PduIdType){{ path.source.pdu_id }}U,
+            .SourceModule = PDUR_MODULE_{{ path.source.module }},
+            .SduLength = {{ path.source.sdu_length }}U
+        },
+        .DestPdus = PduR_{{ path.name }}_Dest,
+        .NumDestPdus = {{ path.destinations | length }}U,
+        .PathType = PDUR_ROUTING_PATH_{{ path.path_type }},
+        .GatewayOperation = {% if path.gateway_operation %}TRUE{% else %}FALSE{% endif %}
+    }{% if not loop.last %},{% endif %}
+{% endfor %}
+};
+
+{% for group in module.groups if group.pdu_ids %}
+static const PduIdType PduR_Group{{ group.id }}_PduIds[] = {
+{% for pdu_id in group.pdu_ids %}
+    (PduIdType){{ pdu_id }}U{% if not loop.last %},{% endif %}
+{% endfor %}
+};
+
+{% endfor %}
+static const PduR_RoutingPathGroupConfigType PduR_RoutingPathGroups[PDUR_NUMBER_OF_ROUTING_PATH_GROUPS] = {
+{% for group in module.groups %}
+    {
+        .GroupId = {{ group.id }}U,
+        .PduIds = {% if group.pdu_ids %}PduR_Group{{ group.id }}_PduIds{% else %}NULL_PTR{% endif %},
+        .NumPduIds = {{ group.pdu_ids | length }}U,
+        .DefaultEnabled = {% if group.default_enabled %}TRUE{% else %}FALSE{% endif %}
+    }{% if not loop.last %},{% endif %}
+{% endfor %}
+};
+
+const PduR_ConfigType PduR_Config = {
+    .RoutingPaths = PduR_RoutingPaths,
+    .NumRoutingPaths = {{ module.paths | length }}U,
+    .RoutingPathGroups = PduR_RoutingPathGroups,
+    .NumRoutingPathGroups = {{ module.groups | length }}U,
+    .DevErrorDetect = {% if module.general.dev_error_detect %}TRUE{% else %}FALSE{% endif %},
+    .VersionInfoApi = {% if module.general.version_info_api %}TRUE{% else %}FALSE{% endif %}
+};
+
+#define PDUR_STOP_SEC_CONFIG_DATA_UNSPECIFIED
+#include "MemMap.h"

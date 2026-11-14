@@ -1,0 +1,37 @@
+/*
+ * Auto-generated Dcm link-time configuration.
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with config/tools/generate_bsw_config.py.
+ */
+
+#include "Dcm.h"
+#include "Dcm_Cfg.h"
+
+static const Dcm_ProtocolConfigType Dcm_Protocols[] = {
+{% for protocol in module.protocols %}
+    {
+        .ProtocolId = {{ protocol.id }}U,
+        .RxPduId = {{ protocol.rx_pdu_id }}U,
+        .TxPduId = {{ protocol.tx_pdu_id }}U
+    }{% if not loop.last %},{% endif %}
+{% endfor %}
+};
+
+const Dcm_ConfigType Dcm_Config = {
+    .NumProtocols = DCM_NUM_PROTOCOLS,
+    .NumConnections = DCM_NUM_CONNECTIONS,
+    .NumRxPduIds = DCM_NUM_RX_PDU_IDS,
+    .NumTxPduIds = DCM_NUM_TX_PDU_IDS,
+    .NumSessions = DCM_NUM_SESSIONS,
+    .NumSecurityLevels = DCM_NUM_SECURITY_LEVELS,
+    .NumServices = DCM_NUM_SERVICES,
+    .NumDIDs = 0U,
+    .NumRIDs = 0U,
+    .DIDs = NULL_PTR,
+    .RIDs = NULL_PTR,
+    .DevErrorDetect = DCM_DEV_ERROR_DETECT,
+    .VersionInfoApi = DCM_VERSION_INFO_API,
+    .RespondAllRequest = DCM_RESPOND_ALL_REQUEST,
+    .DcmTaskTime = DCM_TASK_TIME,
+    .Protocols = Dcm_Protocols
+};

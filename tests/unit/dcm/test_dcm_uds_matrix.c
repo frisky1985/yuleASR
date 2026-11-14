@@ -224,6 +224,9 @@ static const Dcm_RIDConfigType matrix_RIDs[] = {
     { MATRIX_RID_RESULT_FAILS,  DCM_DEFAULT_SESSION, DCM_SEC_LEV_LOCKED, matrix_Rid_Start,       matrix_Rid_Stop, matrix_Rid_Result_Fails },
     { MATRIX_RID_SECURED,       DCM_DEFAULT_SESSION, 1U /* level 1 */,   NULL_PTR,               NULL_PTR,        NULL_PTR }
 };
+static const Dcm_ProtocolConfigType matrix_Protocols[] = {
+    { .ProtocolId = 0U, .RxPduId = 0U, .TxPduId = 0U }
+};
 static Dcm_ConfigType matrix_Config;
 
 /*==============================================================================
@@ -233,6 +236,7 @@ static Dcm_ConfigType matrix_Config;
 void setUp(void)
 {
     matrix_Config.NumProtocols = 1U;
+    matrix_Config.Protocols = matrix_Protocols;
     matrix_Config.NumDIDs = (uint8)(sizeof(matrix_DIDs) / sizeof(matrix_DIDs[0]));
     matrix_Config.NumRIDs = (uint8)(sizeof(matrix_RIDs) / sizeof(matrix_RIDs[0]));
     matrix_Config.DIDs = matrix_DIDs;

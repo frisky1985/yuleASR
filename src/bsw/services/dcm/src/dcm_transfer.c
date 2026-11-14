@@ -261,7 +261,9 @@ STATIC Std_ReturnType Dcm_TransferSendPositiveResponse(
             pduInfo.SduLength = txLength;
             pduInfo.MetaDataPtr = NULL_PTR;
 
-            if (PduR_Transmit(ProtocolId, &pduInfo) == E_OK)
+            PduIdType txPduId;
+            if ((Dcm_GetTxPduId(ProtocolId, &txPduId) == E_OK) &&
+                (PduR_Transmit(txPduId, &pduInfo) == E_OK))
             {
                 result = E_OK;
             }
@@ -292,7 +294,9 @@ STATIC Std_ReturnType Dcm_TransferSendNegativeResponse(
     pduInfo.SduLength = 3U;
     pduInfo.MetaDataPtr = NULL_PTR;
 
-    if (PduR_Transmit(ProtocolId, &pduInfo) == E_OK)
+    PduIdType txPduId;
+    if ((Dcm_GetTxPduId(ProtocolId, &txPduId) == E_OK) &&
+        (PduR_Transmit(txPduId, &pduInfo) == E_OK))
     {
         result = E_OK;
     }

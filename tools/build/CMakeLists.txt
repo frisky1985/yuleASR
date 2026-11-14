@@ -8,12 +8,29 @@ set(PROJECT_ROOT ${CMAKE_CURRENT_LIST_DIR}/../..)
 # 源代码目录
 set(SRC_DIR ${PROJECT_ROOT}/src/bsw)
 
+# Generated link-time configuration is an authoritative build input.
+find_package(Python3 COMPONENTS Interpreter REQUIRED)
+execute_process(
+    COMMAND ${Python3_EXECUTABLE} ${PROJECT_ROOT}/config/tools/generate_bsw_config.py
+            --module Com --module Dcm --module PduR --no-rte
+    WORKING_DIRECTORY ${PROJECT_ROOT}
+    RESULT_VARIABLE CFGGEN_RESULT
+)
+if(NOT CFGGEN_RESULT EQUAL 0)
+    message(FATAL_ERROR "Failed to generate the standalone BSW configuration")
+endif()
+
 # ============ 通用头文件 ============
 include_directories(
     ${PROJECT_ROOT}/config/generated
     ${PROJECT_ROOT}/config/input/mcal
     ${SRC_DIR}/os/include
+    ${SRC_DIR}/ecual/include
     ${PROJECT_ROOT}/include/autosar
+    ${PROJECT_ROOT}/src/common/include
+    ${PROJECT_ROOT}/src/platform/s32k312/include
+    ${PROJECT_ROOT}/third_party/freertos/include
+    ${PROJECT_ROOT}/third_party/freertos/portable/posix
     ${SRC_DIR}/general/inc
     ${SRC_DIR}/mcal/mcu/include
     ${SRC_DIR}/mcal/port/include
@@ -26,6 +43,7 @@ include_directories(
     ${SRC_DIR}/mcal/wdg/include
     ${SRC_DIR}/mcal/eth/include
     ${SRC_DIR}/mcal/icu/include
+    ${SRC_DIR}/mcal/lin/include
     ${SRC_DIR}/mcal/ocu/include
     ${SRC_DIR}/mcal/fls/include
     ${SRC_DIR}/ecual/fee/include
@@ -33,11 +51,13 @@ include_directories(
     ${SRC_DIR}/mcal/flash/include
     ${SRC_DIR}/mcal/ramtst/include
     ${SRC_DIR}/ecual/canif/include
+    ${SRC_DIR}/ecual/cantrcv/include
     ${SRC_DIR}/ecual/frtp/include
     ${SRC_DIR}/ecual/cantp/include
     ${SRC_DIR}/ecual/ethif/include
     ${SRC_DIR}/ecual/frif/include
     ${SRC_DIR}/ecual/linif/include
+    ${SRC_DIR}/ecual/lintrcv/include
     ${SRC_DIR}/ecual/iohwab/include
     ${SRC_DIR}/ecual/memif/include
     ${SRC_DIR}/ecual/ea/include
@@ -47,6 +67,7 @@ include_directories(
     ${SRC_DIR}/services/dcm/include
     ${SRC_DIR}/services/dem/include
     ${SRC_DIR}/services/det/include
+    ${SRC_DIR}/services/ecum/include
     ${SRC_DIR}/os/include
     ${SRC_DIR}/rte/include
 )
@@ -84,15 +105,18 @@ set(BSW_SOURCES
     ${SRC_DIR}/ecual/frif/src/FrIf.c
     ${SRC_DIR}/ecual/linif/src/LinIf.c
     ${SRC_DIR}/ecual/iohwab/src/IoHwAb.c
-    ${SRC_DIR}/ecual/memif/src/MemIf.c
+    ${SRC_DIR}/services/memif/src/MemIf.c
     ${SRC_DIR}/ecual/fee/src/Fee.c
     ${SRC_DIR}/ecual/ea/src/Ea.c
     
     # Service 层
     ${SRC_DIR}/services/com/src/Com.c
+    ${PROJECT_ROOT}/config/generated/Com_Lcfg.c
     ${SRC_DIR}/services/pdur/src/PduR.c
+    ${PROJECT_ROOT}/config/generated/PduR_Lcfg.c
     ${SRC_DIR}/services/nvm/src/NvM.c
     ${SRC_DIR}/services/dcm/src/Dcm.c
+    ${PROJECT_ROOT}/config/generated/Dcm_Lcfg.c
     ${SRC_DIR}/services/dem/src/Dem.c
     
     # OS 层
@@ -100,6 +124,12 @@ set(BSW_SOURCES
     
     # RTE 层
     # ${SRC_DIR}/rte/src/Rte.c  # 暂不存在，后续添加
+)
+
+# MemIf's canonical service implementation must use its matching service header;
+# ECUAL users keep the legacy ECUAL declarations used by the main build.
+set_property(SOURCE ${SRC_DIR}/services/memif/src/MemIf.c
+    PROPERTY INCLUDE_DIRECTORIES ${SRC_DIR}/services/memif/include
 )
 
 # ============ 库目标 ============
