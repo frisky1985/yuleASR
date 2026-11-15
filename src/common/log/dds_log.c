@@ -56,6 +56,9 @@ typedef struct {
     pthread_cond_t      cond_not_empty;
     pthread_cond_t      cond_not_full;
     volatile bool       shutdown;
+    /* Portable replacement for inspecting glibc-internal pthread_mutex_t
+     * fields from tests: tracks whether mutex/cond are still initialised. */
+    bool                mutex_initialized;
 } log_queue_t;
 
 /* 模块级别映射节点 */
@@ -226,6 +229,7 @@ static int queue_init(log_queue_t* queue, uint32_t capacity) {
     pthread_mutex_init(&queue->mutex, NULL);
     pthread_cond_init(&queue->cond_not_empty, NULL);
     pthread_cond_init(&queue->cond_not_full, NULL);
+    queue->mutex_initialized = true;
     return 0;
 }
 
@@ -342,6 +346,7 @@ static void queue_destroy(log_queue_t* queue) {
     pthread_mutex_destroy(&queue->mutex);
     pthread_cond_destroy(&queue->cond_not_empty);
     pthread_cond_destroy(&queue->cond_not_full);
+    queue->mutex_initialized = false;
 }
 
 /*==============================================================================

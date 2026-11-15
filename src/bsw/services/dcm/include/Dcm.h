@@ -323,6 +323,34 @@ Std_ReturnType Dcm_GetSecurityLevel(uint8* SecLevel);
 Std_ReturnType Dcm_GetSesCtrlType(uint8* SesCtrlType);
 
 /**
+ * @brief Security access seed callout
+ *
+ * Weak default implementation. Production integrators must override this
+ * (and Dcm_CompareKey) with an HSM/Csm-backed implementation; the default
+ * only keeps the stack functional for integration testing.
+ *
+ * @param SecurityLevel Security level from the requestSeed sub-function
+ * @param Seed Output buffer (SeedLength bytes)
+ * @param SeedLength Number of seed bytes to generate
+ * @return E_OK on success, E_NOT_OK to reject the request
+ */
+Std_ReturnType Dcm_GetSeed(uint8 SecurityLevel, uint8* Seed, uint8 SeedLength);
+
+/**
+ * @brief Security access key verification callout
+ *
+ * Weak default implementation. Production integrators must override this
+ * together with Dcm_GetSeed.
+ *
+ * @param SecurityLevel Security level from the sendKey sub-function
+ * @param Key Received key bytes
+ * @param KeyLength Number of key bytes
+ * @return E_OK if the key matches the issued seed, E_NOT_OK otherwise
+ */
+Std_ReturnType Dcm_CompareKey(uint8 SecurityLevel, const uint8* Key, uint8 KeyLength);
+
+
+/**
  * @brief Gets active diagnostic status
  * @return Active diagnostic flag
  */

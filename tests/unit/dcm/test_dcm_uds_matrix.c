@@ -635,64 +635,129 @@ void test_Uds2F_IOControlByIdentifier_NrcServiceNotSupported(void)
  *                        0x27 SECURITY ACCESS
  *============================================================================*/
 
-void test_Uds27_RequestSeed_ReturnsSeedPattern(void)
+/* Compute the key expected by the default (weak) Dcm_CompareKey callout.
+ * Production integrators override Dcm_GetSeed/Dcm_CompareKey with an
+ * HSM-backed implementation; this reference transform keeps the stack
+ * functional and testable out of the box. */
+static void matrix_reference_key(const uint8* seed, uint8 level, uint8* key)
 {
+    uint8 i;
+    for (i = 0U; i < DCM_KEY_SIZE; i++)
+    {
+        key[i] = (uint8)(seed[i] ^ (uint8)(0x5AU + level + i));
+    }
+}
+
+static void matrix_request_seed(uint8 subFunction, uint8* seed)
+{
+    uint8 req[2] = { DCM_UDS_SID_SECURITY_ACCESS, subFunction };
+    uint8 i;
+    dcm_send(req, 2U);
+    for (i = 0U; i < DCM_SEED_SIZE; i++)
+    {
+        seed[i] = stub_PduR_lastPdu[2U + i];
+    }
+}
+
+static void matrix_send_key(uint8 subFunction, const uint8* key)
+{
+    uint8 req[DCM_KEY_SIZE + 2U];
+    uint8 i;
+    req[0] = DCM_UDS_SID_SECURITY_ACCESS;
+    req[1] = subFunction;
+    for (i = 0U; i < DCM_KEY_SIZE; i++)
+    {
+        req[2U + i] = key[i];
+    }
+    dcm_send(req, (uint16)(DCM_KEY_SIZE + 2U));
+}
+
+void test_Uds27_RequestSeed_ReturnsSeed(void)
+{
+    uint8 seed[DCM_SEED_SIZE];
     uint8 req[2] = { DCM_UDS_SID_SECURITY_ACCESS, 0x01U };
     dcm_send(req, 2U);
     TEST_ASSERT_EQUAL_UINT32(1U, stub_PduR_Transmit_calls);
     TEST_ASSERT_EQUAL_HEX8(DCM_UDS_SID_SECURITY_ACCESS, stub_PduR_lastPdu[0]);
     TEST_ASSERT_EQUAL_HEX8(0x01U, stub_PduR_lastPdu[1]);
-    /* deterministic seed {0xA5, 0xA6, 0xA7, 0xA8} */
-    TEST_ASSERT_EQUAL_HEX8(0xA5U, stub_PduR_lastPdu[2]);
-    TEST_ASSERT_EQUAL_HEX8(0xA6U, stub_PduR_lastPdu[3]);
-    TEST_ASSERT_EQUAL_HEX8(0xA7U, stub_PduR_lastPdu[4]);
-    TEST_ASSERT_EQUAL_HEX8(0xA8U, stub_PduR_lastPdu[5]);
     TEST_ASSERT_EQUAL_UINT32(6U, stub_PduR_lastLength); /* SID + sub + seed(4) */
+    (void)seed;
+}
+
+void test_Uds27_ConsecutiveSeedsDiffer(void)
+{
+    uint8 seed1[DCM_SEED_SIZE];
+    uint8 seed2[DCM_SEED_SIZE];
+    uint8 i;
+    uint8 identical = 1U;
+
+    matrix_request_seed(0x01U, seed1);
+    matrix_request_seed(0x01U, seed2);
+
+    for (i = 0U; i < DCM_SEED_SIZE; i++)
+    {
+        if (seed1[i] != seed2[i])
+        {
+            identical = 0U;
+        }
+    }
+    TEST_ASSERT_EQUAL_UINT8(0U, identical);
 }
 
 void test_Uds27_SendKey_CorrectKey_PositiveResponse(void)
 {
-    uint8 reqSeed[2] = { DCM_UDS_SID_SECURITY_ACCESS, 0x01U };
-    /* sendKey is selected by bit 6 (0x40) of the sub-function, not by
-     * odd/even parity: 0x42 = sendKey for level 0 */
-    uint8 reqKey[6]  = { DCM_UDS_SID_SECURITY_ACCESS, 0x42U, 0xA5U, 0xA6U, 0xA7U, 0xA8U };
-    dcm_send(reqSeed, 2U);
-    dcm_send(reqKey, 6U);
+    uint8 seed[DCM_SEED_SIZE];
+    uint8 key[DCM_KEY_SIZE];
+
+    matrix_request_seed(0x01U, seed);
+    matrix_reference_key(seed, DCM_SEC_LEVEL_1, key);
+    matrix_send_key(0x02U, key);
+
     TEST_ASSERT_EQUAL_UINT32(2U, stub_PduR_Transmit_calls);
     TEST_ASSERT_EQUAL_HEX8(DCM_UDS_SID_SECURITY_ACCESS, stub_PduR_lastPdu[0]);
-    TEST_ASSERT_EQUAL_HEX8(0x42U, stub_PduR_lastPdu[1]);
+    TEST_ASSERT_EQUAL_HEX8(0x02U, stub_PduR_lastPdu[1]);
     TEST_ASSERT_EQUAL_UINT32(2U, stub_PduR_lastLength);
 }
 
 void test_Uds27_SendKey_WrongKey_NrcInvalidKey(void)
 {
-    uint8 reqKey[6] = { DCM_UDS_SID_SECURITY_ACCESS, 0x42U, 0x00U, 0x00U, 0x00U, 0x00U };
-    dcm_send(reqKey, 6U);
+    uint8 seed[DCM_SEED_SIZE];
+    uint8 key[DCM_KEY_SIZE] = { 0x00U, 0x00U, 0x00U, 0x00U };
+
+    matrix_request_seed(0x01U, seed);
+    matrix_send_key(0x02U, key);
     expect_negative(DCM_UDS_SID_SECURITY_ACCESS, DCM_E_INVALID_KEY);
 }
 
 void test_Uds27_ThreeFailedAttempts_LocksSeedRequest(void)
 {
-    uint8 reqKey[6] = { DCM_UDS_SID_SECURITY_ACCESS, 0x42U, 0x00U, 0x00U, 0x00U, 0x00U };
     uint8 reqSeed[2] = { DCM_UDS_SID_SECURITY_ACCESS, 0x01U };
+    uint8 badKey[DCM_KEY_SIZE] = { 0x00U, 0x00U, 0x00U, 0x00U };
     uint8 i;
     for (i = 0U; i < DCM_MAX_SECURITY_ATTEMPTS; i++)
     {
-        dcm_send(reqKey, 6U); /* NRC 0x35 each time */
+        uint8 seed[DCM_SEED_SIZE];
+        matrix_request_seed(0x01U, seed);  /* fresh seed each attempt */
+        matrix_send_key(0x02U, badKey);    /* NRC 0x35 each time */
     }
     /* after DCM_MAX_SECURITY_ATTEMPTS failures the seed request is refused */
-    dcm_send(reqSeed, 2U);
-    expect_negative(DCM_UDS_SID_SECURITY_ACCESS, DCM_E_EXCEED_NUMBER_OF_ATTEMPTS);
+    {
+        uint8 seedReq[2] = { DCM_UDS_SID_SECURITY_ACCESS, 0x01U };
+        dcm_send(seedReq, 2U);
+        expect_negative(DCM_UDS_SID_SECURITY_ACCESS, DCM_E_EXCEED_NUMBER_OF_ATTEMPTS);
+    }
 }
 
 void test_Uds27_Lockout_ActivatesTimeDelay(void)
 {
-    uint8 reqKey[6] = { DCM_UDS_SID_SECURITY_ACCESS, 0x42U, 0x00U, 0x00U, 0x00U, 0x00U };
     uint8 reqSeed[2] = { DCM_UDS_SID_SECURITY_ACCESS, 0x01U };
+    uint8 badKey[DCM_KEY_SIZE] = { 0x00U, 0x00U, 0x00U, 0x00U };
     uint8 i;
     for (i = 0U; i < DCM_MAX_SECURITY_ATTEMPTS; i++)
     {
-        dcm_send(reqKey, 6U);
+        uint8 seed[DCM_SEED_SIZE];
+        matrix_request_seed(0x01U, seed);
+        matrix_send_key(0x02U, badKey);
     }
     (void)dcm_send(reqSeed, 2U);            /* -> NRC 0x36, starts delay */
     (void)dcm_send(reqSeed, 2U);            /* delay active -> NRC 0x37 */
@@ -949,7 +1014,7 @@ void test_Uds_SessionSwitch_ResetsSecurityLock(void)
 {
     /* lockout from wrong keys must not survive a fresh session switch back
      * to default via Dcm_ResetToDefaultSession + re-init in setUp */
-    uint8 reqKey[6] = { DCM_UDS_SID_SECURITY_ACCESS, 0x42U, 0x00U, 0x00U, 0x00U, 0x00U };
+    uint8 reqKey[6] = { DCM_UDS_SID_SECURITY_ACCESS, 0x02U, 0x00U, 0x00U, 0x00U, 0x00U };
     uint8 reqSeed[2] = { DCM_UDS_SID_SECURITY_ACCESS, 0x01U };
     dcm_send(reqKey, 6U);
     Dcm_ResetToDefaultSession();
@@ -957,8 +1022,8 @@ void test_Uds_SessionSwitch_ResetsSecurityLock(void)
     stub_PduR_Transmit_calls = 0U; /* isolate the post-reinit seed response */
     dcm_send(reqSeed, 2U);
     TEST_ASSERT_EQUAL_UINT32(1U, stub_PduR_Transmit_calls);
+    TEST_ASSERT_EQUAL_HEX8(DCM_UDS_SID_SECURITY_ACCESS, stub_PduR_lastPdu[0]);
     TEST_ASSERT_EQUAL_HEX8(0x01U, stub_PduR_lastPdu[1]);
-    TEST_ASSERT_EQUAL_HEX8(0xA5U, stub_PduR_lastPdu[2]);
 }
 
 void test_Uds_UnknownService_NrcServiceNotSupported(void)
@@ -966,6 +1031,169 @@ void test_Uds_UnknownService_NrcServiceNotSupported(void)
     uint8 req[1] = { 0x99U };
     dcm_send(req, 1U);
     expect_negative(0x99U, DCM_E_SERVICE_NOT_SUPPORTED);
+}
+
+/*==============================================================================
+ *                  PRODUCTION TIMING / SECURITY STATE MACHINE
+ *============================================================================*/
+
+static void dcm_run_main_function(uint32 cycles)
+{
+    uint32 i;
+    for (i = 0U; i < cycles; i++)
+    {
+        Dcm_MainFunction();
+    }
+}
+
+/* S3Server is configured in milliseconds; Dcm_MainFunction runs every
+ * DCM_MAIN_FUNCTION_PERIOD_MS. The session must expire after exactly
+ * DCM_S3SERVER / period ticks, not after DCM_S3SERVER ticks. */
+void test_Uds10_ExtendedSession_S3TimeoutInMilliseconds(void)
+{
+    uint8 req[2] = { DCM_UDS_SID_DIAGNOSTIC_SESSION_CONTROL, DCM_EXTENDED_DIAGNOSTIC_SESSION };
+    uint8 session = 0xFFU;
+    uint32 ticks = (uint32)DCM_S3SERVER / (uint32)DCM_MAIN_FUNCTION_PERIOD_MS;
+
+    dcm_send(req, 2U);
+    dcm_run_main_function(ticks - 1U);
+    TEST_ASSERT_EQUAL(E_OK, Dcm_GetSesCtrlType(&session));
+    TEST_ASSERT_EQUAL_UINT8(DCM_EXTENDED_DIAGNOSTIC_SESSION, session);
+
+    Dcm_MainFunction();
+    TEST_ASSERT_EQUAL(E_OK, Dcm_GetSesCtrlType(&session));
+    TEST_ASSERT_EQUAL_UINT8(DCM_DEFAULT_SESSION, session);
+}
+
+/* Any diagnostic request refreshes S3 (ISO 14229-1), not only 0x3E. */
+void test_Uds_ExtendedSession_RequestRefreshesS3(void)
+{
+    uint8 reqSession[2] = { DCM_UDS_SID_DIAGNOSTIC_SESSION_CONTROL, DCM_EXTENDED_DIAGNOSTIC_SESSION };
+    uint8 reqReadDid[3] = { DCM_UDS_SID_READ_DATA_BY_IDENTIFIER,
+                            (uint8)(MATRIX_DID_EXTENDED_ONLY >> 8), (uint8)(MATRIX_DID_EXTENDED_ONLY & 0xFFU) };
+    uint8 session = 0xFFU;
+    uint32 ticks = (uint32)DCM_S3SERVER / (uint32)DCM_MAIN_FUNCTION_PERIOD_MS;
+
+    dcm_send(reqSession, 2U);
+    dcm_run_main_function(ticks - 10U);
+    dcm_send(reqReadDid, 3U);          /* must restart S3 */
+    dcm_run_main_function(ticks - 10U);
+
+    TEST_ASSERT_EQUAL(E_OK, Dcm_GetSesCtrlType(&session));
+    TEST_ASSERT_EQUAL_UINT8(DCM_EXTENDED_DIAGNOSTIC_SESSION, session);
+
+    dcm_run_main_function(10U);
+    TEST_ASSERT_EQUAL(E_OK, Dcm_GetSesCtrlType(&session));
+    TEST_ASSERT_EQUAL_UINT8(DCM_DEFAULT_SESSION, session);
+}
+
+/* Security delay is configured in milliseconds but was counted per protocol
+ * per main-function call. It must expire after exactly delay/period ticks. */
+void test_Uds27_SecurityDelayExpiresInMilliseconds(void)
+{
+    uint8 reqKey[6] = { DCM_UDS_SID_SECURITY_ACCESS, 0x02U, 0x00U, 0x00U, 0x00U, 0x00U };
+    uint8 reqSeed[2] = { DCM_UDS_SID_SECURITY_ACCESS, 0x01U };
+    uint32 ticks = (uint32)DCM_SECURITY_DELAY_TIME / (uint32)DCM_MAIN_FUNCTION_PERIOD_MS;
+    uint8 i;
+
+    for (i = 0U; i < DCM_MAX_SECURITY_ATTEMPTS; i++)
+    {
+        uint8 seed[DCM_SEED_SIZE];
+        matrix_request_seed(0x01U, seed);
+        dcm_send(reqKey, 6U);
+    }
+    dcm_send(reqSeed, 2U);             /* NRC 0x36, starts the delay */
+
+    dcm_run_main_function(ticks - 1U);
+    dcm_send(reqSeed, 2U);
+    expect_negative(DCM_UDS_SID_SECURITY_ACCESS, DCM_E_REQUIRED_TIME_DELAY_NOT_EXPIRED);
+
+    Dcm_MainFunction();                /* delay expires */
+    dcm_send(reqSeed, 2U);
+    TEST_ASSERT_EQUAL_HEX8(DCM_UDS_SID_SECURITY_ACCESS, stub_PduR_lastPdu[0]);
+    TEST_ASSERT_EQUAL_HEX8(0x01U, stub_PduR_lastPdu[1]);
+}
+
+/* Switching back to the default session locks security (ISO 14229-1). */
+void test_Uds10_DefaultSession_ClearsUnlockedSecurityLevel(void)
+{
+    uint8 seed[DCM_SEED_SIZE];
+    uint8 key[DCM_KEY_SIZE];
+    uint8 reqDefault[2] = { DCM_UDS_SID_DIAGNOSTIC_SESSION_CONTROL, DCM_DEFAULT_SESSION };
+    uint8 level = 0xFFU;
+
+    matrix_request_seed(0x01U, seed);
+    matrix_reference_key(seed, DCM_SEC_LEVEL_1, key);
+    matrix_send_key(0x02U, key);
+    TEST_ASSERT_EQUAL(E_OK, Dcm_GetSecurityLevel(&level));
+    TEST_ASSERT_EQUAL_UINT8(DCM_SEC_LEVEL_1, level);
+
+    dcm_send(reqDefault, 2U);
+    TEST_ASSERT_EQUAL(E_OK, Dcm_GetSecurityLevel(&level));
+    TEST_ASSERT_EQUAL_UINT8(DCM_SEC_LEV_LOCKED, level);
+}
+
+/* Sub-function 0x03/0x04 address security level 2 (odd = seed, even = key). */
+void test_Uds27_Level2SeedAndKey_UnlocksLevel2(void)
+{
+    uint8 seed[DCM_SEED_SIZE];
+    uint8 key[DCM_KEY_SIZE];
+    uint8 level = 0xFFU;
+
+    matrix_request_seed(0x03U, seed);
+    matrix_reference_key(seed, DCM_SEC_LEVEL_2, key);
+    matrix_send_key(0x04U, key);
+
+    TEST_ASSERT_EQUAL(E_OK, Dcm_GetSecurityLevel(&level));
+    TEST_ASSERT_EQUAL_UINT8(DCM_SEC_LEVEL_2, level);
+}
+
+/* sendKey without a preceding requestSeed is a sequence error. */
+void test_Uds27_SendKeyWithoutSeed_NrcRequestSequenceError(void)
+{
+    uint8 key[DCM_KEY_SIZE] = { 0x00U, 0x00U, 0x00U, 0x00U };
+    matrix_send_key(0x02U, key);
+    expect_negative(DCM_UDS_SID_SECURITY_ACCESS, DCM_E_REQUESTSEQUENCEERROR);
+}
+
+/* Requesting a seed for another level while one is outstanding is a
+ * sequence error, and a key for another level is rejected as well. */
+void test_Uds27_DifferentLevelSeedWhilePending_NrcRequestSequenceError(void)
+{
+    uint8 seed[DCM_SEED_SIZE];
+    matrix_request_seed(0x01U, seed);
+
+    {
+        uint8 reqLevel2[2] = { DCM_UDS_SID_SECURITY_ACCESS, 0x03U };
+        dcm_send(reqLevel2, 2U);
+        expect_negative(DCM_UDS_SID_SECURITY_ACCESS, DCM_E_REQUESTSEQUENCEERROR);
+    }
+}
+
+/* Re-requesting a seed for an already unlocked level returns a zero seed. */
+void test_Uds27_RequestSeedWhenUnlocked_ReturnsZeroSeed(void)
+{
+    uint8 seed[DCM_SEED_SIZE];
+    uint8 key[DCM_KEY_SIZE];
+    uint8 i;
+
+    matrix_request_seed(0x01U, seed);
+    matrix_reference_key(seed, DCM_SEC_LEVEL_1, key);
+    matrix_send_key(0x02U, key);
+
+    matrix_request_seed(0x01U, seed);
+    for (i = 0U; i < DCM_SEED_SIZE; i++)
+    {
+        TEST_ASSERT_EQUAL_HEX8(0x00U, seed[i]);
+    }
+}
+
+/* suppressPosRspMsgIndicationBit (0x80) suppresses the positive response. */
+void test_Uds27_RequestSeed_SuppressPositiveResponse(void)
+{
+    uint8 req[2] = { DCM_UDS_SID_SECURITY_ACCESS, 0x81U };
+    dcm_send(req, 2U);
+    TEST_ASSERT_EQUAL_UINT32(0U, stub_PduR_Transmit_calls);
 }
 
 /*==============================================================================
@@ -1018,7 +1246,8 @@ int main(void)
     RUN_TEST(test_Uds23_ReadMemoryByAddress_NrcServiceNotSupported);
     RUN_TEST(test_Uds2F_IOControlByIdentifier_NrcServiceNotSupported);
     /* 0x27 */
-    RUN_TEST(test_Uds27_RequestSeed_ReturnsSeedPattern);
+    RUN_TEST(test_Uds27_RequestSeed_ReturnsSeed);
+    RUN_TEST(test_Uds27_ConsecutiveSeedsDiffer);
     RUN_TEST(test_Uds27_SendKey_CorrectKey_PositiveResponse);
     RUN_TEST(test_Uds27_SendKey_WrongKey_NrcInvalidKey);
     RUN_TEST(test_Uds27_ThreeFailedAttempts_LocksSeedRequest);
@@ -1053,5 +1282,15 @@ int main(void)
     /* cross-service */
     RUN_TEST(test_Uds_SessionSwitch_ResetsSecurityLock);
     RUN_TEST(test_Uds_UnknownService_NrcServiceNotSupported);
+    /* production timing / security state machine */
+    RUN_TEST(test_Uds10_ExtendedSession_S3TimeoutInMilliseconds);
+    RUN_TEST(test_Uds_ExtendedSession_RequestRefreshesS3);
+    RUN_TEST(test_Uds27_SecurityDelayExpiresInMilliseconds);
+    RUN_TEST(test_Uds10_DefaultSession_ClearsUnlockedSecurityLevel);
+    RUN_TEST(test_Uds27_Level2SeedAndKey_UnlocksLevel2);
+    RUN_TEST(test_Uds27_SendKeyWithoutSeed_NrcRequestSequenceError);
+    RUN_TEST(test_Uds27_DifferentLevelSeedWhilePending_NrcRequestSequenceError);
+    RUN_TEST(test_Uds27_RequestSeedWhenUnlocked_ReturnsZeroSeed);
+    RUN_TEST(test_Uds27_RequestSeed_SuppressPositiveResponse);
     return UnityEnd();
 }

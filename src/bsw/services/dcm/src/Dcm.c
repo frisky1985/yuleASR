@@ -71,7 +71,6 @@ typedef struct
     uint8 RxBuffer[DCM_RX_BUFFER_SIZE];
     uint8 TxBuffer[DCM_TX_BUFFER_SIZE];
     uint32 P2Timer;
-    uint32 S3Timer;
     boolean ResponsePending;
 } Dcm_ProtocolStateType;
 
@@ -85,6 +84,11 @@ typedef struct
     uint8 SecurityAttempts;
     uint32 SecurityDelayTimer;
     boolean SecurityDelayActive;
+    uint32 S3Timer;
+    uint8 IssuedSeed[DCM_SEED_SIZE];
+    uint8 IssuedSeedLevel;
+    boolean SeedValid;
+    uint32 SeedRequestCounter;
     Dcm_ProtocolStateType ProtocolStates[DCM_NUM_PROTOCOLS];
     /* Download/Transfer state */
     uint32 DownloadAddress;
@@ -97,10 +101,23 @@ typedef struct
 /*==================================================================================================
 *                                  LOCAL VARIABLE DECLARATIONS
 ==================================================================================================*/
+/* Configuration values are expressed in milliseconds; Dcm_MainFunction is
+ * scheduled every DCM_MAIN_FUNCTION_PERIOD_MS. Convert once at load time. */
+#define DCM_MS_TO_TICKS(ms) \
+    ((((uint32)(ms)) + ((uint32)DCM_MAIN_FUNCTION_PERIOD_MS) - 1U) / ((uint32)DCM_MAIN_FUNCTION_PERIOD_MS))
+
+#if defined(__GNUC__)
+#define DCM_WEAK __attribute__((weak))
+#else
+#define DCM_WEAK
+#endif
+
 #define DCM_START_SEC_VAR_CLEARED_UNSPECIFIED
 #include "MemMap.h"
 
 STATIC Dcm_InternalStateType Dcm_InternalState;
+/* Reference PRNG state used by the default (weak) Dcm_GetSeed callout. */
+STATIC uint32 Dcm_SeedRandom = 0x9E3779B9U;
 
 #define DCM_STOP_SEC_VAR_CLEARED_UNSPECIFIED
 #include "MemMap.h"
@@ -261,6 +278,13 @@ STATIC Std_ReturnType Dcm_ProcessDiagnosticSessionControl(uint8 ProtocolId, cons
                 /* Update current session */
                 Dcm_InternalState.CurrentSession = sessionType;
 
+                /* Returning to the default session locks security access. */
+                if (sessionType == DCM_DEFAULT_SESSION)
+                {
+                    Dcm_InternalState.CurrentSecurityLevel = DCM_SEC_LEV_LOCKED;
+                    Dcm_InternalState.SeedValid = FALSE;
+                }
+
                 /* Build response: session type + P2 + P2* */
                 responseData[0] = sessionType;
                 responseData[1] = (uint8)(DCM_P2SERVER_MAX >> 8);
@@ -338,38 +362,81 @@ STATIC Std_ReturnType Dcm_ProcessSecurityAccess(uint8 ProtocolId, const uint8* D
 {
     Std_ReturnType result = E_NOT_OK;
     uint8 subFunction;
+    uint8 sub;
     uint8 securityLevel;
+    boolean isKeyRequest;
+    boolean suppressResponse;
     uint8 responseData[DCM_SEED_SIZE + 1U];
-    uint8 i;
 
     if (Length >= 1U)
     {
         subFunction = Data[0];
-        securityLevel = subFunction & (uint32_t)(DCM_E_GENERALREJECT);
+        /* Bit 7 is suppressPosRspMsgIndicationBit; bits 0-6 carry the
+         * sub-function. Odd values request a seed, even values send a key
+         * (ISO 14229-1). Level identifier = (sub + 1) / 2. */
+        suppressResponse = ((subFunction & 0x80U) != 0U) ? TRUE : FALSE;
+        sub = (uint8)(subFunction & 0x7FU);
+        isKeyRequest = ((sub & 0x01U) == 0U) ? TRUE : FALSE;
+        securityLevel = (uint8)((sub + 1U) / 2U);
 
-        if ((subFunction & 0x40U) == 0U)
+        if ((sub == 0U) || (securityLevel >= DCM_NUM_SECURITY_LEVELS))
         {
-            /* Request Seed */
-            if ((Dcm_InternalState.SecurityDelayActive) != 0U)
-            {
-                Dcm_SendNegativeResponse(ProtocolId, DCM_SERVICE_SECURITY_ACCESS, DCM_E_REQUIRED_TIME_DELAY_NOT_EXPIRED);
-            }
-            else if (Dcm_InternalState.SecurityAttempts >= DCM_MAX_SECURITY_ATTEMPTS)
+            Dcm_SendNegativeResponse(ProtocolId, DCM_SERVICE_SECURITY_ACCESS, DCM_E_SUBFUNCTION_NOT_SUPPORTED);
+        }
+        else if ((Dcm_InternalState.SecurityDelayActive) != 0U)
+        {
+            Dcm_SendNegativeResponse(ProtocolId, DCM_SERVICE_SECURITY_ACCESS, DCM_E_REQUIRED_TIME_DELAY_NOT_EXPIRED);
+        }
+        else if (isKeyRequest == FALSE)
+        {
+            uint8 seed[DCM_SEED_SIZE];
+            uint8 i;
+
+            if (Dcm_InternalState.SecurityAttempts >= DCM_MAX_SECURITY_ATTEMPTS)
             {
                 Dcm_SendNegativeResponse(ProtocolId, DCM_SERVICE_SECURITY_ACCESS, DCM_E_EXCEED_NUMBER_OF_ATTEMPTS);
                 Dcm_InternalState.SecurityDelayActive = TRUE;
-                Dcm_InternalState.SecurityDelayTimer = DCM_SECURITY_DELAY_TIME;
+                Dcm_InternalState.SecurityDelayTimer = DCM_MS_TO_TICKS(DCM_SECURITY_DELAY_TIME);
+            }
+            else if ((Dcm_InternalState.CurrentSecurityLevel >= securityLevel) &&
+                     (securityLevel != DCM_SEC_LEV_LOCKED))
+            {
+                /* Already unlocked: return a zero seed (ISO 14229-1). */
+                responseData[0] = sub;
+                for (i = 0U; i < DCM_SEED_SIZE; i++)
+                {
+                    responseData[i + 1U] = 0x00U;
+                }
+                if (suppressResponse == FALSE)
+                {
+                    Dcm_SendPositiveResponse(ProtocolId, DCM_SERVICE_SECURITY_ACCESS, responseData, DCM_SEED_SIZE + 1U);
+                }
+                result = E_OK;
+            }
+            else if ((Dcm_InternalState.SeedValid != FALSE) &&
+                     (Dcm_InternalState.IssuedSeedLevel != securityLevel))
+            {
+                Dcm_SendNegativeResponse(ProtocolId, DCM_SERVICE_SECURITY_ACCESS, DCM_E_REQUESTSEQUENCEERROR);
+            }
+            else if (Dcm_GetSeed(securityLevel, seed, DCM_SEED_SIZE) != E_OK)
+            {
+                Dcm_SendNegativeResponse(ProtocolId, DCM_SERVICE_SECURITY_ACCESS, DCM_E_CONDITIONSNOTCORRECT);
             }
             else
             {
-                /* Generate seed (simplified - should be random) */
-                responseData[0] = subFunction;
+                responseData[0] = sub;
                 for (i = 0U; i < DCM_SEED_SIZE; i++)
                 {
-                    responseData[i + 1U] = (uint8)(0xA5U + i);
+                    Dcm_InternalState.IssuedSeed[i] = seed[i];
+                    responseData[i + 1U] = seed[i];
                 }
+                Dcm_InternalState.IssuedSeedLevel = securityLevel;
+                Dcm_InternalState.SeedValid = TRUE;
 
-                Dcm_SendPositiveResponse(ProtocolId, DCM_SERVICE_SECURITY_ACCESS, responseData, DCM_SEED_SIZE + 1U);
+                if (suppressResponse == FALSE)
+                {
+                    Dcm_SendPositiveResponse(ProtocolId, DCM_SERVICE_SECURITY_ACCESS, responseData, DCM_SEED_SIZE + 1U);
+                }
                 result = E_OK;
             }
         }
@@ -378,31 +445,28 @@ STATIC Std_ReturnType Dcm_ProcessSecurityAccess(uint8 ProtocolId, const uint8* D
             /* Send Key */
             if (Length >= (DCM_KEY_SIZE + 1U))
             {
-                /* Validate key (simplified - should compare calculated key) */
-                boolean keyValid = TRUE;
-
-                /* Check if key matches expected value */
-                for (i = 0U; i < DCM_KEY_SIZE; i++)
+                if ((Dcm_InternalState.SeedValid == FALSE) ||
+                    (Dcm_InternalState.IssuedSeedLevel != securityLevel))
                 {
-                    if (Data[i + 1U] != (uint8)(0xA5U + i))
-                    {
-                        keyValid = FALSE;
-                        break;
-                    }
+                    Dcm_SendNegativeResponse(ProtocolId, DCM_SERVICE_SECURITY_ACCESS, DCM_E_REQUESTSEQUENCEERROR);
                 }
-
-                if ((keyValid) != 0U)
+                else if (Dcm_CompareKey(securityLevel, &Data[1], DCM_KEY_SIZE) == E_OK)
                 {
                     Dcm_InternalState.CurrentSecurityLevel = securityLevel;
                     Dcm_InternalState.SecurityAttempts = 0U;
+                    Dcm_InternalState.SeedValid = FALSE;
 
-                    responseData[0] = subFunction;
-                    Dcm_SendPositiveResponse(ProtocolId, DCM_SERVICE_SECURITY_ACCESS, responseData, 1U);
+                    responseData[0] = sub;
+                    if (suppressResponse == FALSE)
+                    {
+                        Dcm_SendPositiveResponse(ProtocolId, DCM_SERVICE_SECURITY_ACCESS, responseData, 1U);
+                    }
                     result = E_OK;
                 }
                 else
                 {
                     Dcm_InternalState.SecurityAttempts++;
+                    Dcm_InternalState.SeedValid = FALSE;
                     Dcm_SendNegativeResponse(ProtocolId, DCM_SERVICE_SECURITY_ACCESS, DCM_E_INVALID_KEY);
                 }
             }
@@ -437,7 +501,7 @@ STATIC Std_ReturnType Dcm_ProcessTesterPresent(uint8 ProtocolId, const uint8* Da
         if ((subFunction == 0x00U) || (subFunction == 0x80U))
         {
             /* Reset S3 timer */
-            Dcm_InternalState.ProtocolStates[ProtocolId].S3Timer = DCM_S3SERVER;
+            Dcm_InternalState.S3Timer = DCM_MS_TO_TICKS(DCM_S3SERVER);
 
             /* Send response (suppress for subFunction 0x80 if required) */
             if (subFunction == 0x00U)
@@ -1195,6 +1259,13 @@ STATIC void Dcm_ProcessRequest(uint8 ProtocolId)
                 Dcm_SendNegativeResponse(ProtocolId, serviceId, DCM_E_SERVICE_NOT_SUPPORTED);
                 break;
         }
+
+        /* Any request received in a non-default session restarts S3
+         * (ISO 14229-1); 0x3E is not the only keep-alive. */
+        if (Dcm_InternalState.CurrentSession != DCM_DEFAULT_SESSION)
+        {
+            Dcm_InternalState.S3Timer = DCM_MS_TO_TICKS(DCM_S3SERVER);
+        }
     }
 }
 
@@ -1227,6 +1298,11 @@ void Dcm_Init(const Dcm_ConfigType* ConfigPtr)
     Dcm_InternalState.SecurityAttempts = 0U;
     Dcm_InternalState.SecurityDelayActive = FALSE;
     Dcm_InternalState.SecurityDelayTimer = 0U;
+    Dcm_InternalState.S3Timer = DCM_MS_TO_TICKS(DCM_S3SERVER);
+    Dcm_InternalState.IssuedSeedLevel = DCM_SEC_LEV_LOCKED;
+    Dcm_InternalState.SeedValid = FALSE;
+    Dcm_InternalState.SeedRequestCounter = 0U;
+    Dcm_SeedRandom = 0x9E3779B9U;
 
     /* Initialize transfer state */
     Dcm_InternalState.DownloadAddress = 0U;
@@ -1243,7 +1319,6 @@ void Dcm_Init(const Dcm_ConfigType* ConfigPtr)
         Dcm_InternalState.ProtocolStates[i].RxDataLength = 0U;
         Dcm_InternalState.ProtocolStates[i].TxDataLength = 0U;
         Dcm_InternalState.ProtocolStates[i].P2Timer = 0U;
-        Dcm_InternalState.ProtocolStates[i].S3Timer = DCM_S3SERVER;
         Dcm_InternalState.ProtocolStates[i].ResponsePending = FALSE;
     }
 
@@ -1286,36 +1361,39 @@ void Dcm_MainFunction(void)
 
     if (Dcm_InternalState.State == DCM_STATE_INIT)
     {
+        /* S3 is one global timer because this implementation keeps a single
+         * active session across protocols. */
+        if (Dcm_InternalState.S3Timer > 0U)
+        {
+            Dcm_InternalState.S3Timer--;
+            if (Dcm_InternalState.S3Timer == 0U)
+            {
+                /* Session timeout - return to default session and lock */
+                Dcm_InternalState.CurrentSession = DCM_DEFAULT_SESSION;
+                Dcm_InternalState.CurrentSecurityLevel = DCM_SEC_LEV_LOCKED;
+                Dcm_InternalState.SeedValid = FALSE;
+            }
+        }
+
+        /* Security delay is global and must be decremented once per call,
+         * not once per protocol. */
+        if ((Dcm_InternalState.SecurityDelayActive) != 0U)
+        {
+            if (Dcm_InternalState.SecurityDelayTimer > 0U)
+            {
+                Dcm_InternalState.SecurityDelayTimer--;
+            }
+            if (Dcm_InternalState.SecurityDelayTimer == 0U)
+            {
+                Dcm_InternalState.SecurityDelayActive = FALSE;
+                Dcm_InternalState.SecurityAttempts = 0U;
+            }
+        }
+
         /* Process each protocol */
         for (i = 0U; i < DCM_NUM_PROTOCOLS; i++)
         {
             Dcm_ProtocolStateType* protocolState = &Dcm_InternalState.ProtocolStates[i];
-
-            /* Handle S3 timeout (session timeout) */
-            if (protocolState->S3Timer > 0U)
-            {
-                protocolState->S3Timer--;
-                if (protocolState->S3Timer == 0U)
-                {
-                    /* Session timeout - return to default session */
-                    Dcm_InternalState.CurrentSession = DCM_DEFAULT_SESSION;
-                    Dcm_InternalState.CurrentSecurityLevel = DCM_SEC_LEV_LOCKED;
-                }
-            }
-
-            /* Handle security delay timer */
-            if ((Dcm_InternalState.SecurityDelayActive) != 0U)
-            {
-                if (Dcm_InternalState.SecurityDelayTimer > 0U)
-                {
-                    Dcm_InternalState.SecurityDelayTimer--;
-                }
-                else
-                {
-                    Dcm_InternalState.SecurityDelayActive = FALSE;
-                    Dcm_InternalState.SecurityAttempts = 0U;
-                }
-            }
 
             /* Handle P2 timeout */
             if (protocolState->P2Timer > 0U)
@@ -1434,6 +1512,70 @@ Std_ReturnType Dcm_TriggerTransmit(PduIdType TxPduId, PduInfoType* PduInfoPtr)
 }
 
 /**
+ * @brief   Default security access seed callout (weak)
+ * @req SWS_Dcm_00102
+ *
+ * Keeps the stack functional for integration testing with a non-cryptographic
+ * xorshift32 generator. Production projects must provide a strong override
+ * backed by the HSM/Csm and a per-ECU seed/key algorithm.
+ */
+DCM_WEAK Std_ReturnType Dcm_GetSeed(uint8 SecurityLevel, uint8* Seed, uint8 SeedLength)
+{
+    uint8 i;
+    uint32 x;
+
+    if (Seed == NULL_PTR)
+    {
+        return E_NOT_OK;
+    }
+
+    Dcm_InternalState.SeedRequestCounter++;
+    x = Dcm_SeedRandom ^ ((uint32)SecurityLevel << 24U) ^ Dcm_InternalState.SeedRequestCounter;
+
+    for (i = 0U; i < SeedLength; i++)
+    {
+        x ^= (x << 13U);
+        x ^= (x >> 17U);
+        x ^= (x << 5U);
+        Seed[i] = (uint8)(x & 0xFFU);
+    }
+
+    Dcm_SeedRandom = x;
+    return E_OK;
+}
+
+/**
+ * @brief   Default security access key verification callout (weak)
+ * @req SWS_Dcm_00102
+ *
+ * Mirrors the reference transform used by the default Dcm_GetSeed. Production
+ * projects must override this with the OEM key derivation/verification.
+ */
+DCM_WEAK Std_ReturnType Dcm_CompareKey(uint8 SecurityLevel, const uint8* Key, uint8 KeyLength)
+{
+    uint8 i;
+
+    if ((Key == NULL_PTR) ||
+        (Dcm_InternalState.SeedValid == FALSE) ||
+        (Dcm_InternalState.IssuedSeedLevel != SecurityLevel) ||
+        (KeyLength > DCM_SEED_SIZE))
+    {
+        return E_NOT_OK;
+    }
+
+    for (i = 0U; i < KeyLength; i++)
+    {
+        uint8 expected = (uint8)(Dcm_InternalState.IssuedSeed[i] ^ (uint8)(0x5AU + SecurityLevel + i));
+        if (Key[i] != expected)
+        {
+            return E_NOT_OK;
+        }
+    }
+
+    return E_OK;
+}
+
+/**
  * @brief   Get current security level
  * @req SWS_Dcm_00007
  */
@@ -1513,6 +1655,11 @@ void Dcm_ResetToDefaultSession(void)
 
     Dcm_InternalState.CurrentSession = DCM_DEFAULT_SESSION;
     Dcm_InternalState.CurrentSecurityLevel = DCM_SEC_LEV_LOCKED;
+    Dcm_InternalState.SecurityAttempts = 0U;
+    Dcm_InternalState.SecurityDelayActive = FALSE;
+    Dcm_InternalState.SecurityDelayTimer = 0U;
+    Dcm_InternalState.SeedValid = FALSE;
+    Dcm_InternalState.S3Timer = 0U;
     /* void return — matches Dcm.h declaration */
 }
 

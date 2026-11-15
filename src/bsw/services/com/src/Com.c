@@ -87,6 +87,8 @@ typedef struct
     boolean Updated;
     boolean FilterPassed;
     uint32 LastValue;
+    uint16 TimeoutCounter;
+    boolean TimeoutActive;
 } Com_SignalStateType;
 
 /* Module internal state */
@@ -126,6 +128,14 @@ STATIC boolean Com_ApplyFilter(const Com_SignalConfigType* SignalPtr, uint32 New
 STATIC uint32 Com_GetSignalValueAsUint32(const Com_SignalConfigType* SignalPtr, const void* SignalDataPtr);
 /** @req SWS_Com_00105 */
 STATIC void Com_SetSignalValueFromUint32(const Com_SignalConfigType* SignalPtr, void* SignalDataPtr, uint32 Value);
+/** @req SWS_Com_00110 */
+STATIC void Com_StoreSignalValueAsUint32(const Com_SignalConfigType* SignalPtr, uint32 Value, uint8* IPduDataPtr);
+/** @req SWS_Com_00111 */
+STATIC void Com_SetSignalUpdateBit(const Com_SignalConfigType* SignalPtr, boolean Value);
+/** @req SWS_Com_00112 */
+STATIC void Com_ResetSignalTimeouts(PduIdType PduId);
+/** @req SWS_Com_00113 */
+STATIC void Com_ProcessSignalTimeouts(void);
 /** @req SWS_Com_00106 */
 STATIC Std_ReturnType Com_TransmitIPdu(PduIdType PduId);
 /** @req SWS_Com_00107 */
@@ -411,6 +421,111 @@ STATIC void Com_SetSignalValueFromUint32(const Com_SignalConfigType* SignalPtr, 
 }
 
 /**
+ * @brief   Write a numeric value into an I-PDU buffer using the signal layout
+ */
+/** @req SWS_Com_00110 */
+STATIC void Com_StoreSignalValueAsUint32(const Com_SignalConfigType* SignalPtr, uint32 Value, uint8* IPduDataPtr)
+{
+    uint8 staged[4] = {0U, 0U, 0U, 0U};
+
+    if ((SignalPtr != NULL_PTR) && (IPduDataPtr != NULL_PTR))
+    {
+        Com_SetSignalValueFromUint32(SignalPtr, staged, Value);
+        Com_PackSignal(SignalPtr, staged, IPduDataPtr);
+    }
+}
+
+/**
+ * @brief   Set or clear the AUTOSAR update bit of a signal
+ */
+/** @req SWS_Com_00111 */
+STATIC void Com_SetSignalUpdateBit(const Com_SignalConfigType* SignalPtr, boolean Value)
+{
+    if ((SignalPtr != NULL_PTR) && (SignalPtr->UpdateBitEnabled != FALSE) &&
+        (SignalPtr->SignalGroupRef < COM_NUM_OF_IPDUS))
+    {
+        COM_SET_BIT(Com_InternalState.IPduBuffer[SignalPtr->SignalGroupRef],
+                    SignalPtr->UpdateBitPosition, Value);
+        COM_SET_BIT(Com_InternalState.ShadowBuffer,
+                    SignalPtr->UpdateBitPosition, Value);
+    }
+}
+
+/**
+ * @brief   Restart the reception timeout supervision of one I-PDU's signals
+ */
+/** @req SWS_Com_00112 */
+STATIC void Com_ResetSignalTimeouts(PduIdType PduId)
+{
+    uint16 i;
+    const Com_ConfigType* config = Com_InternalState.ConfigPtr;
+
+    if (config != NULL_PTR)
+    {
+        uint16 numSignals = (config->NumSignals > COM_NUM_OF_SIGNALS) ?
+                            COM_NUM_OF_SIGNALS : config->NumSignals;
+
+        for (i = 0U; i < numSignals; i++)
+        {
+            const Com_SignalConfigType* signalConfig = &config->Signals[i];
+
+            if ((signalConfig->TimeoutLimit > 0U) && (signalConfig->SignalGroupRef == PduId))
+            {
+                Com_InternalState.SignalStates[i].TimeoutCounter = signalConfig->TimeoutLimit;
+                Com_InternalState.SignalStates[i].TimeoutActive = FALSE;
+            }
+        }
+    }
+}
+
+/**
+ * @brief   Decrement reception timeouts and apply substitution values
+ */
+/** @req SWS_Com_00113 */
+STATIC void Com_ProcessSignalTimeouts(void)
+{
+    uint16 i;
+    const Com_ConfigType* config = Com_InternalState.ConfigPtr;
+
+    if (config != NULL_PTR)
+    {
+        uint16 numSignals = (config->NumSignals > COM_NUM_OF_SIGNALS) ?
+                            COM_NUM_OF_SIGNALS : config->NumSignals;
+
+        for (i = 0U; i < numSignals; i++)
+        {
+            const Com_SignalConfigType* signalConfig = &config->Signals[i];
+            Com_SignalStateType* signalState = &Com_InternalState.SignalStates[i];
+
+            if ((signalConfig->TimeoutLimit == 0U) ||
+                (signalConfig->SignalGroupRef >= COM_NUM_OF_IPDUS) ||
+                (Com_InternalState.IPduStates[signalConfig->SignalGroupRef].GroupEnabled == FALSE))
+            {
+                continue;
+            }
+
+            if (signalState->TimeoutCounter > 0U)
+            {
+                signalState->TimeoutCounter--;
+            }
+
+            if ((signalState->TimeoutCounter == 0U) && (signalState->TimeoutActive == FALSE))
+            {
+                signalState->TimeoutActive = TRUE;
+                /* Make the substitution value available to Com_ReceiveSignal */
+                Com_StoreSignalValueAsUint32(signalConfig,
+                                             signalConfig->TimeoutSubstitutionValue,
+                                             Com_InternalState.IPduBuffer[signalConfig->SignalGroupRef]);
+                if (signalConfig->TimeoutNotification != NULL_PTR)
+                {
+                    signalConfig->TimeoutNotification((Com_SignalIdType)i);
+                }
+            }
+        }
+    }
+}
+
+/**
  * @brief   Transmit IPDU via PduR
  */
 /** @req SWS_Com_00106 */
@@ -525,6 +640,13 @@ void Com_Init(const Com_ConfigType* config)
         Com_InternalState.SignalStates[i].Updated = FALSE;
         Com_InternalState.SignalStates[i].FilterPassed = FALSE;
         Com_InternalState.SignalStates[i].LastValue = 0U;
+        Com_InternalState.SignalStates[i].TimeoutActive = FALSE;
+        Com_InternalState.SignalStates[i].TimeoutCounter = 0U;
+
+        if ((config->Signals != NULL_PTR) && (i < config->NumSignals))
+        {
+            Com_InternalState.SignalStates[i].TimeoutCounter = config->Signals[i].TimeoutLimit;
+        }
     }
 
     /* Clear IPDU group vector */
@@ -605,6 +727,9 @@ Std_ReturnType Com_SendSignal(Com_SignalIdType SignalId, const void* SignalDataP
                 /* Pack signal into IPDU buffer */
                 Com_PackSignal(signalConfig, SignalDataPtr, Com_InternalState.IPduBuffer[signalConfig->SignalGroupRef]);
 
+                /* Set the AUTOSAR update bit for receiver-side change detection */
+                Com_SetSignalUpdateBit(signalConfig, TRUE);
+
                 /* Update signal state */
                 Com_InternalState.SignalStates[SignalId].Updated = TRUE;
                 Com_InternalState.SignalStates[SignalId].FilterPassed = TRUE;
@@ -665,13 +790,37 @@ Std_ReturnType Com_ReceiveSignal(Com_SignalIdType SignalId, void* SignalDataPtr)
 
     if (signalConfig != NULL_PTR)
     {
-        /* Unpack signal from IPDU buffer */
+        /* Unpack signal from IPDU buffer (for timeout this returns the
+         * substitution value written by Com_ProcessSignalTimeouts) */
         Com_UnpackSignal(signalConfig, Com_InternalState.IPduBuffer[signalConfig->SignalGroupRef], SignalDataPtr);
 
         /* Clear update flag */
         Com_InternalState.SignalStates[SignalId].Updated = FALSE;
 
-        result = COM_SERVICE_OK;
+        if (Com_InternalState.SignalStates[SignalId].TimeoutActive != FALSE)
+        {
+            /* Timed out: data is the configured substitution value */
+            result = COM_SERVICE_NOT_OK;
+        }
+        else if (signalConfig->UpdateBitEnabled != FALSE)
+        {
+            /* Consume the AUTOSAR update bit: only report new data once */
+            if (COM_GET_BIT(Com_InternalState.IPduBuffer[signalConfig->SignalGroupRef],
+                            signalConfig->UpdateBitPosition) == 0U)
+            {
+                result = COM_SERVICE_NOT_OK;
+            }
+            else
+            {
+                COM_SET_BIT(Com_InternalState.IPduBuffer[signalConfig->SignalGroupRef],
+                            signalConfig->UpdateBitPosition, FALSE);
+                result = COM_SERVICE_OK;
+            }
+        }
+        else
+        {
+            result = COM_SERVICE_OK;
+        }
     }
 
     return result;
@@ -961,6 +1110,9 @@ void Com_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
                     Com_InternalState.IPduStates[RxPduId].DMActive = TRUE;
                 }
             }
+
+            /* Restart per-signal reception timeout supervision */
+            Com_ResetSignalTimeouts(RxPduId);
         }
     }
 }
@@ -1014,6 +1166,9 @@ void Com_MainFunctionRx(void)
                 }
             }
         }
+
+        /* Reception timeout supervision and substitution values */
+        Com_ProcessSignalTimeouts();
     }
 }
 

@@ -28,6 +28,7 @@ Std_ReturnType Det_ReportError(uint16 ModuleId, uint8 InstanceId, uint8 ApiId, u
 extern uint32 mock_PduR_Transmit_Count;
 extern PduIdType mock_PduR_Transmit_LastPduId;
 extern uint16 mock_PduR_Transmit_LastSduLength;
+extern uint8 mock_PduR_Transmit_LastSdu[8];
 
 /* Forward declarations for functions defined in Com.c but not in public header */
 extern Std_ReturnType Com_SendDynSignal(Com_SignalIdType SignalId, const void* SignalDataPtr, uint16 Length);
@@ -239,6 +240,49 @@ static const Com_IPduConfigType testIPdus_DefaultFilter[1] = {
 static const Com_ConfigType defaultFilterConfig =
     { testSignals_DefaultFilter, 1U, testIPdus_DefaultFilter, 1U };
 
+/* --- Production reception supervision --- */
+
+/* 8-bit signal at bit 0 with the AUTOSAR update bit at position 12. */
+static const Com_SignalConfigType testSignals_UpdateBit[1] = {
+    { 0U, 0U, 8U, COM_LITTLE_ENDIAN, COM_PENDING, COM_ALWAYS, 0U, 0U, 0U,
+      TRUE, 12U, 0U, 0U, NULL_PTR }
+};
+static const Com_IPduConfigType testIPdus_UpdateBit[1] = {
+    { 0U, 8U, FALSE, 0U, 0U, 0U }
+};
+static const Com_ConfigType updateBitConfig =
+    { testSignals_UpdateBit, 1U, testIPdus_UpdateBit, 1U };
+
+/* Same signal, but transmitted on Com_SendSignal so the frame can be checked. */
+static const Com_SignalConfigType testSignals_UpdateBitTx[1] = {
+    { 0U, 0U, 8U, COM_LITTLE_ENDIAN, COM_TRIGGERED, COM_ALWAYS, 0U, 0U, 0U,
+      TRUE, 12U, 0U, 0U, NULL_PTR }
+};
+static const Com_IPduConfigType testIPdus_UpdateBitTx[1] = {
+    { 0U, 8U, FALSE, 0U, 0U, 0U }
+};
+static const Com_ConfigType updateBitTxConfig =
+    { testSignals_UpdateBitTx, 1U, testIPdus_UpdateBitTx, 1U };
+
+/* 8-bit signal with a 3-cycle reception timeout and 0x5A substitution. */
+static uint8 mock_SignalTimeoutCount;
+static Com_SignalIdType mock_SignalTimeoutId;
+
+static void mock_SignalTimeoutNotification(Com_SignalIdType SignalId) {
+    mock_SignalTimeoutCount++;
+    mock_SignalTimeoutId = SignalId;
+}
+
+static const Com_SignalConfigType testSignals_Timeout[1] = {
+    { 0U, 0U, 8U, COM_LITTLE_ENDIAN, COM_PENDING, COM_ALWAYS, 0U, 0U, 0U,
+      FALSE, 0U, 3U, 0x5AU, mock_SignalTimeoutNotification }
+};
+static const Com_IPduConfigType testIPdus_Timeout[1] = {
+    { 0U, 8U, FALSE, 0U, 0U, 0U }
+};
+static const Com_ConfigType timeoutConfig =
+    { testSignals_Timeout, 1U, testIPdus_Timeout, 1U };
+
 /* -------------------------------------------------------------------------- */
 /* Helpers                                                                    */
 /* -------------------------------------------------------------------------- */
@@ -251,6 +295,8 @@ static void mock_reset(void) {
     mock_PduR_Transmit_LastSduLength = 0;
     mock_DeadlineMissCount = 0;
     mock_DeadlineMissPduId = 0;
+    mock_SignalTimeoutCount = 0U;
+    mock_SignalTimeoutId = 0U;
 }
 
 /* Bring the static SUT state deterministically to COM_UNINIT. Com_Init()
@@ -1231,6 +1277,107 @@ void test_RxIndication_LE16_UnpackCorrectly(void) {
     TEST_ASSERT_EQUAL_HEX16(0x1234, recvVal);
 }
 
+/* --- Production reception supervision: update bit --- */
+
+void test_Com_UpdateBit_SetOnSendAndConsumedOnReceive(void) {
+    uint8 value = 0x11U;
+    uint8 received = 0U;
+
+    Com_Init(&updateBitConfig);
+
+    TEST_ASSERT_EQUAL_UINT8(COM_SERVICE_OK, Com_SendSignal(0U, &value));
+
+    /* First receive consumes the update bit and reports new data. */
+    TEST_ASSERT_EQUAL_UINT8(COM_SERVICE_OK, Com_ReceiveSignal(0U, &received));
+    TEST_ASSERT_EQUAL_HEX8(0x11U, received);
+
+    /* Second receive: no new data since the update bit was cleared. */
+    TEST_ASSERT_EQUAL_UINT8(COM_SERVICE_NOT_OK, Com_ReceiveSignal(0U, &received));
+}
+
+void test_Com_UpdateBit_SetOnTransmittedFrame(void) {
+    uint8 value = 0x11U;
+
+    Com_Init(&updateBitTxConfig);
+    TEST_ASSERT_EQUAL_UINT8(COM_SERVICE_OK, Com_SendSignal(0U, &value));
+
+    /* Triggered signal: the frame is sent by Com_SendSignal */
+    TEST_ASSERT_EQUAL_UINT32(1U, mock_PduR_Transmit_Count);
+    TEST_ASSERT_EQUAL_HEX8(0x11U, mock_PduR_Transmit_LastSdu[0]);
+    /* MSB-first update bit 12 -> byte 1, bit 3 */
+    TEST_ASSERT_EQUAL_HEX8(0x08U, (uint8)(mock_PduR_Transmit_LastSdu[1] & 0x08U));
+}
+
+void test_Com_UpdateBit_ReceivedFrameReportedOnce(void) {
+    uint8 data[8] = { 0x22U, 0x08U, 0U, 0U, 0U, 0U, 0U, 0U }; /* MSB-first bit 12 set */
+    PduInfoType pdu;
+    uint8 received = 0U;
+
+    pdu.SduDataPtr = data;
+    pdu.SduLength = 8U;
+    pdu.MetaDataPtr = NULL_PTR;
+
+    Com_Init(&updateBitConfig);
+    Com_RxIndication(0U, &pdu);
+
+    TEST_ASSERT_EQUAL_UINT8(COM_SERVICE_OK, Com_ReceiveSignal(0U, &received));
+    TEST_ASSERT_EQUAL_HEX8(0x22U, received);
+    TEST_ASSERT_EQUAL_UINT8(COM_SERVICE_NOT_OK, Com_ReceiveSignal(0U, &received));
+}
+
+/* --- Production reception supervision: timeout substitution --- */
+
+void test_Com_SignalTimeout_SubstitutionAndNotification(void) {
+    uint8 received = 0U;
+    uint16 i;
+
+    Com_Init(&timeoutConfig);
+
+    /* TimeoutLimit = 3: no alarm before the third main-function cycle. */
+    for (i = 0U; i < 2U; i++) {
+        Com_MainFunctionRx();
+    }
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_SignalTimeoutCount);
+
+    Com_MainFunctionRx();
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_SignalTimeoutCount);
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_SignalTimeoutId);
+
+    /* Substitution value is visible but reported as invalid. */
+    TEST_ASSERT_EQUAL_UINT8(COM_SERVICE_NOT_OK, Com_ReceiveSignal(0U, &received));
+    TEST_ASSERT_EQUAL_HEX8(0x5AU, received);
+
+    /* Further cycles must not re-trigger the notification. */
+    Com_MainFunctionRx();
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_SignalTimeoutCount);
+}
+
+void test_Com_SignalTimeout_RxIndicationRestartsSupervision(void) {
+    uint8 received = 0U;
+    uint8 data[8] = { 0x33U, 0U, 0U, 0U, 0U, 0U, 0U, 0U };
+    PduInfoType pdu;
+    uint16 i;
+
+    pdu.SduDataPtr = data;
+    pdu.SduLength = 8U;
+    pdu.MetaDataPtr = NULL_PTR;
+
+    Com_Init(&timeoutConfig);
+    for (i = 0U; i < 3U; i++) {
+        Com_MainFunctionRx();
+    }
+    TEST_ASSERT_EQUAL_UINT8(COM_SERVICE_NOT_OK, Com_ReceiveSignal(0U, &received));
+
+    /* Fresh reception clears the timeout and restarts the counter. */
+    Com_RxIndication(0U, &pdu);
+    TEST_ASSERT_EQUAL_UINT8(COM_SERVICE_OK, Com_ReceiveSignal(0U, &received));
+    TEST_ASSERT_EQUAL_HEX8(0x33U, received);
+
+    Com_MainFunctionRx();
+    Com_MainFunctionRx();
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_SignalTimeoutCount); /* no second alarm */
+}
+
 int main(void) {
     UNITY_BEGIN();
     RUN_TEST(test_Com_Init_NullPtr_ShouldNotCrash);
@@ -1347,5 +1494,11 @@ int main(void) {
     RUN_TEST(test_TriggerIPDUSendWithMetaData_ShouldReturnNotOk);
     RUN_TEST(test_TpRxIndication_ShouldNotCrash);
     RUN_TEST(test_TpTxConfirmation_ShouldNotCrash);
+    /* Production reception supervision */
+    RUN_TEST(test_Com_UpdateBit_SetOnSendAndConsumedOnReceive);
+    RUN_TEST(test_Com_UpdateBit_SetOnTransmittedFrame);
+    RUN_TEST(test_Com_UpdateBit_ReceivedFrameReportedOnce);
+    RUN_TEST(test_Com_SignalTimeout_SubstitutionAndNotification);
+    RUN_TEST(test_Com_SignalTimeout_RxIndicationRestartsSupervision);
     return UnityEnd();
 }

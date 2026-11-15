@@ -206,6 +206,19 @@ typedef struct {
     uint32 FilterMask;
     uint32 FilterX;
     uint16 SignalGroupRef;
+    /** @brief Enable the AUTOSAR update bit for this signal. Appended so
+     *  existing positional initializers default to disabled. */
+    boolean UpdateBitEnabled;
+    /** @brief Update bit position inside the I-PDU (used when enabled). */
+    uint16 UpdateBitPosition;
+    /** @brief Reception timeout in Com_MainFunctionRx cycles.
+     *  0 = timeout monitoring disabled. */
+    uint16 TimeoutLimit;
+    /** @brief Value written to the signal when the reception times out. */
+    uint32 TimeoutSubstitutionValue;
+    /** @brief Optional notification invoked once when the timeout expires.
+     *  NULL = no notification. */
+    void (*TimeoutNotification)(Com_SignalIdType SignalId);
 } Com_SignalConfigType;
 
 /** @brief Type for IPDU configuration */

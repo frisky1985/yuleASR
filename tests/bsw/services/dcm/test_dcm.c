@@ -251,36 +251,43 @@ void test_Dcm_SecurityAccess_RequestSeed(void) {
     TEST_ASSERT_EQUAL(1U, stub_PduR_Transmit_calls);
     TEST_ASSERT_EQUAL_HEX8(0x27, stub_PduR_lastPdu[0]);
     TEST_ASSERT_EQUAL_HEX8(0x01, stub_PduR_lastPdu[1]);
-    TEST_ASSERT_EQUAL_HEX8(0xA5, stub_PduR_lastPdu[2]);
-    TEST_ASSERT_EQUAL_HEX8(0xA6, stub_PduR_lastPdu[3]);
-    TEST_ASSERT_EQUAL_HEX8(0xA7, stub_PduR_lastPdu[4]);
-    TEST_ASSERT_EQUAL_HEX8(0xA8, stub_PduR_lastPdu[5]);
     TEST_ASSERT_EQUAL_UINT32(6U, stub_PduR_lastLength);
 }
 
 void test_Dcm_SecurityAccess_SendKey_Valid(void) {
-    uint8 req[] = {0x27, 0x41, 0xA5, 0xA6, 0xA7, 0xA8};
+    uint8 seedReq[] = {0x27, 0x01};
+    uint8 req[6] = {0x27, 0x02, 0x00, 0x00, 0x00, 0x00};
+    uint8 i;
+    sendRequest(seedReq, 2);
+    /* Default reference key transform: seed[i] ^ (0x5A + level + i) */
+    for (i = 0U; i < DCM_KEY_SIZE; i++) {
+        req[2U + i] = (uint8)(stub_PduR_lastPdu[2U + i] ^ (uint8)(0x5AU + 1U + i));
+    }
     sendRequest(req, 6);
-    TEST_ASSERT_EQUAL(1U, stub_PduR_Transmit_calls);
+    TEST_ASSERT_EQUAL(2U, stub_PduR_Transmit_calls);
     TEST_ASSERT_EQUAL_HEX8(0x27, stub_PduR_lastPdu[0]);
-    TEST_ASSERT_EQUAL_HEX8(0x41, stub_PduR_lastPdu[1]);
+    TEST_ASSERT_EQUAL_HEX8(0x02, stub_PduR_lastPdu[1]);
     TEST_ASSERT_EQUAL_UINT32(2U, stub_PduR_lastLength);
 }
 
 void test_Dcm_SecurityAccess_SendKey_Invalid(void) {
-    uint8 req[] = {0x27, 0x41, 0x00, 0x00, 0x00, 0x00};
+    uint8 seedReq[] = {0x27, 0x01};
+    uint8 req[] = {0x27, 0x02, 0x00, 0x00, 0x00, 0x00};
+    sendRequest(seedReq, 2);
     sendRequest(req, 6);
     assertNegResponse(0x27, DCM_E_INVALID_KEY);
 }
 
 void test_Dcm_SecurityAccess_DelayActive(void) {
-    /* 3 invalid keys: each returns NRC invalid key (0x35), attempts goes to 3 */
-    uint8 badKey[] = {0x27, 0x41, 0x00, 0x00, 0x00, 0x00};
+    uint8 seedReq[] = {0x27, 0x01};
+    uint8 badKey[] = {0x27, 0x02, 0x00, 0x00, 0x00, 0x00};
+    sendRequest(seedReq, 2);
     sendRequest(badKey, 6); /* attempt 1 → NRC 0x35 */
+    sendRequest(seedReq, 2);
     sendRequest(badKey, 6); /* attempt 2 → NRC 0x35 */
+    sendRequest(seedReq, 2);
     sendRequest(badKey, 6); /* attempt 3 → NRC 0x35, attempts now = 3 */
     /* Next seed request: attempts=3 >= MAX → NRC exceed attempts, delay activated */
-    uint8 seedReq[] = {0x27, 0x01};
     sendRequest(seedReq, 2);
     assertNegResponse(0x27, DCM_E_EXCEED_NUMBER_OF_ATTEMPTS);
     /* Next seed request: delay now active → NRC delay-not-expired */
@@ -289,7 +296,9 @@ void test_Dcm_SecurityAccess_DelayActive(void) {
 }
 
 void test_Dcm_SecurityAccess_KeyShortData(void) {
-    uint8 req[] = {0x27, 0x41, 0xA5};
+    uint8 seedReq[] = {0x27, 0x01};
+    uint8 req[] = {0x27, 0x02, 0x01};
+    sendRequest(seedReq, 2);
     sendRequest(req, 3);
     assertNegResponse(0x27, DCM_E_INCORRECT_MESSAGE_LENGTH);
 }
@@ -615,17 +624,20 @@ void test_Dcm_MainFunction_S3Timeout_ResetsSession(void) {
 }
 
 void test_Dcm_MainFunction_SecurityDelayExpiry(void) {
-    /* 3 invalid keys → attempts=3 */
-    uint8 badKey[] = {0x27, 0x41, 0x00, 0x00, 0x00, 0x00};
+    uint8 seedReq[] = {0x27, 0x01};
+    uint8 badKey[] = {0x27, 0x02, 0x00, 0x00, 0x00, 0x00};
+    /* 3 invalid keys (each preceded by a seed) → attempts=3 */
+    sendRequest(seedReq, 2);
     sendRequest(badKey, 6);
+    sendRequest(seedReq, 2);
     sendRequest(badKey, 6);
+    sendRequest(seedReq, 2);
     sendRequest(badKey, 6);
     /* Seed request: attempts=3 → NRC exceed attempts, delay activated */
-    uint8 seedReq[] = {0x27, 0x01};
     sendRequest(seedReq, 2);
     assertNegResponse(0x27, DCM_E_EXCEED_NUMBER_OF_ATTEMPTS);
-    /* Run MainFunction enough to expire delay (10000 ticks) */
-    for (uint32 i = 0; i < 10001; i++) { Dcm_MainFunction(); }
+    /* Run MainFunction for the configured delay (ms → 10 ms ticks) */
+    for (uint32 i = 0; i < (uint32)(DCM_SECURITY_DELAY_TIME / DCM_MAIN_FUNCTION_PERIOD_MS); i++) { Dcm_MainFunction(); }
     /* Now seed request should succeed (delay expired, attempts reset to 0) */
     sendRequest(seedReq, 2);
     TEST_ASSERT_EQUAL_HEX8(0x27, stub_PduR_lastPdu[0]);
@@ -777,7 +789,7 @@ void test_Dcm_SecurityAccess_SendKey_TooShort_ShouldReturnNegLength(void) {
     sendRequest(seedReq, 2);
     TEST_ASSERT_EQUAL(1U, stub_PduR_Transmit_calls);
     /* Send key with only 2 bytes (need 4+1=5 total, we send 3: SID+subFunc+2bytes) */
-    uint8 req[] = {0x27, 0x41, 0xA5, 0xA6};
+    uint8 req[] = {0x27, 0x02, 0xA5, 0xA6};
     sendRequest(req, 4);
     assertNegResponse(0x27, DCM_E_INCORRECT_MESSAGE_LENGTH);
 }
@@ -958,18 +970,21 @@ void test_Dcm_MainFunction_P2TimerExpiry_ResponsePending_ShouldSendNegResponse(v
 /* --- MainFunction security delay timer decrement (lines 1245/1247) --- */
 
 void test_Dcm_MainFunction_SecurityDelayTimerDecrements(void) {
-    /* 3 invalid keys → attempts=3 */
-    uint8 badKey[] = {0x27, 0x41, 0x00, 0x00, 0x00, 0x00};
+    uint8 seedReq[] = {0x27, 0x01};
+    uint8 badKey[] = {0x27, 0x02, 0x00, 0x00, 0x00, 0x00};
+    /* 3 invalid keys (each preceded by a seed) → attempts=3 */
+    sendRequest(seedReq, 2);
     sendRequest(badKey, 6);
+    sendRequest(seedReq, 2);
     sendRequest(badKey, 6);
+    sendRequest(seedReq, 2);
     sendRequest(badKey, 6);
     /* Seed request: attempts=3 → NRC exceed attempts, delay activated */
-    uint8 seedReq[] = {0x27, 0x01};
     sendRequest(seedReq, 2);
     assertNegResponse(0x27, DCM_E_EXCEED_NUMBER_OF_ATTEMPTS);
     /* Run MainFunction for a few iterations to exercise timer decrement */
     for (uint32 i = 0; i < 100U; i++) { Dcm_MainFunction(); }
-    /* Delay should still be active (10000 > 100) */
+    /* Delay should still be active (1000 ticks > 100) */
     sendRequest(seedReq, 2);
     assertNegResponse(0x27, DCM_E_REQUIRED_TIME_DELAY_NOT_EXPIRED);
 }

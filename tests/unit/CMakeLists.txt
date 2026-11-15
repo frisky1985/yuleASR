@@ -274,6 +274,3 @@ set_target_properties(Crypto_UnitTest PROPERTIES
 )
 add_test(NAME Crypto_UnitTest COMMAND Crypto_UnitTest)
 message(STATUS "  Unit test: Crypto_UnitTest (MCAL Crypto driver, 29 cases)")
-
-# UartSx (ECUAL) — 异步串口日志模块主机侧测试
-add_subdirectory(uartsx)

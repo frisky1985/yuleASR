@@ -181,7 +181,7 @@ void dds_log_test_force_cleanup(void) {
 
     if (g_log_state.config.enable_async) {
         /* queue.mutex 可能已被 destroy (比如之前手动调过 queue_destroy) */
-        if (g_log_state.queue.mutex.__sig != 0) {
+        if (g_log_state.queue.mutex_initialized) {
             dds_log_test_stop_flush_thread();
             queue_destroy(&g_log_state.queue);
         }
