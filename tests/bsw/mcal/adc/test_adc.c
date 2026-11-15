@@ -331,6 +331,30 @@ void test_Adc_StartGroupConversion_AfterInit_ShouldCompleteAndStoreResults(void)
 }
 
 /** @req SWS_Adc_00003 */
+void test_Adc_StartGroupConversion_InvalidHwUnit_ShouldRejectWithoutAccess(void) {
+    /* Reconfigure group 7 to reference an unmapped HW unit so Adc_GetBaseAddr
+     * returns 0. The API must report DET E_PARAM_CONFIG and leave the group
+     * idle instead of touching register address 0. */
+    test_Adc_ResetDriver();
+    test_Adc_SetupConfig();
+    Adc_HWUnitType savedHwUnit = testGroups[7].HwUnit;
+    testGroups[7].HwUnit = (Adc_HWUnitType)99U;
+    Adc_Init(&testConfig);
+    Det_Mock_Reset();
+
+    Adc_StartGroupConversion(7U);
+
+    TEST_ASSERT_TRUE(Det_MockData.LastCallValid);
+    TEST_ASSERT_EQUAL(ADC_MODULE_ID, Det_MockData.ModuleId);
+    TEST_ASSERT_EQUAL(ADC_SID_STARTGROUPCONVERSION, Det_MockData.ApiId);
+    TEST_ASSERT_EQUAL(ADC_E_PARAM_CONFIG, Det_MockData.ErrorId);
+    TEST_ASSERT_EQUAL(ADC_IDLE, Adc_GetGroupStatus(7U));
+
+    /* restore config for subsequent tests */
+    testGroups[7].HwUnit = savedHwUnit;
+}
+
+/** @req SWS_Adc_00003 */
 void test_Adc_StartGroupConversion_NotificationEnabled_ShouldCallCallback(void) {
     test_Adc_EnsureInitialized();
     MockRegisters_Write32(ADC1_BASE + ADC_HS_OFF, ADC_HS_COCO0);

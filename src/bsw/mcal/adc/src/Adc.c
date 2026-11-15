@@ -229,6 +229,13 @@ void Adc_StartGroupConversion(Adc_GroupType Group)
     const Adc_GroupConfigType* groupConfig = &Adc_ConfigPtr->Groups[Group];
     uint32 baseAddr = Adc_GetBaseAddr(groupConfig->HwUnit);
 
+    if (baseAddr == 0U) {
+        #if (ADC_DEV_ERROR_DETECT == STD_ON)
+        (void)Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_STARTGROUPCONVERSION, ADC_E_PARAM_CONFIG);
+        #endif
+        return;
+    }
+
     Adc_GroupStatus[Group] = ADC_BUSY;
 
     /* Configure for software trigger */

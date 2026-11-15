@@ -310,6 +310,13 @@ void Gpt_StartTimer(Gpt_ChannelType Channel, Gpt_ValueType Value)
     uint32 baseAddr = Gpt_GetBaseAddr(Gpt_ConfigPtr->Channels[Channel].ChannelId);
     uint8 chOffset = Gpt_GetChannelOffset(Gpt_ConfigPtr->Channels[Channel].ChannelId);
 
+    if (baseAddr == 0U) {
+        #if (GPT_DEV_ERROR_DETECT == STD_ON)
+        (void)Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_STARTTIMER, GPT_E_PARAM_CONFIG);
+        #endif
+        return;
+    }
+
     Gpt_ChannelTargetValue[Channel] = Value;
     Gpt_ChannelRunning[Channel] = TRUE;
 
@@ -345,6 +352,13 @@ void Gpt_StopTimer(Gpt_ChannelType Channel)
     #endif
 
     uint32 baseAddr = Gpt_GetBaseAddr(Gpt_ConfigPtr->Channels[Channel].ChannelId);
+
+    if (baseAddr == 0U) {
+        #if (GPT_DEV_ERROR_DETECT == STD_ON)
+        (void)Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_STOPTIMER, GPT_E_PARAM_CONFIG);
+        #endif
+        return;
+    }
 
     /* Disable interrupt */
     uint32 irValue = REG_READ32(baseAddr + GPT_IR);

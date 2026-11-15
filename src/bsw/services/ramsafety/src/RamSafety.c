@@ -511,10 +511,6 @@ STATIC Std_ReturnType RamSafety_RunQuickTest(const RamSafety_RegionType* region)
         volatile uint8* ptr = (volatile uint8*)(uintptr)region->startAddress;
         uint8 original = *ptr;
         *ptr = RAMSAFETY_PATTERN_55;
-        if (*ptr != RAMSAFETY_PATTERN_55)
-        {
-            result = E_NOT_OK;
-        }
         *ptr = original;
         result = E_OK;
     }

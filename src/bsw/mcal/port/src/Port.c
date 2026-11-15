@@ -323,6 +323,13 @@ void Port_Init(const Port_ConfigType* ConfigPtr)
             uint32 gpioBase = Port_GetGpioBaseAddr(port);
             uint32 gdirValue;
 
+            if (gpioBase == 0U) {
+                #if (PORT_DEV_ERROR_DETECT == STD_ON)
+                (void)Det_ReportError(PORT_MODULE_ID, 0U, PORT_SID_INIT, PORT_E_PARAM_PIN);
+                #endif
+                continue;
+            }
+
             gdirValue = REG_READ32(gpioBase + PORT_GPIO_GDIR);
 
             if (pinConfig->Direction == PORT_PIN_OUT) {

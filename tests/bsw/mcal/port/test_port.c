@@ -201,6 +201,30 @@ void test_Port_DeInit_BeforeInit_ShouldReportDet(void) {
 /* --- Init --- */
 
 /** @req SWS_Port_00001 */
+void test_Port_Init_InvalidPortGpio_ShouldRejectWithoutGpioWrite(void) {
+    /* Give the GPIO pin an out-of-range port number so Port_GetGpioBaseAddr
+     * returns 0. Init must report DET E_PARAM_PIN and must not write the GPIO
+     * direction register of address 0. */
+    test_Port_ResetDriver();
+    test_Port_SetupConfig();
+    Port_PinType savedPin = testPinConfigs[0].Pin;
+    testPinConfigs[0].Pin = (Port_PinType)((99U << 8) | 3U);
+    Det_Mock_Reset();
+
+    Port_Init(&testConfig);
+
+    TEST_ASSERT_TRUE(Det_MockData.LastCallValid);
+    TEST_ASSERT_EQUAL(PORT_MODULE_ID, Det_MockData.ModuleId);
+    TEST_ASSERT_EQUAL(PORT_SID_INIT, Det_MockData.ApiId);
+    TEST_ASSERT_EQUAL(PORT_E_PARAM_PIN, Det_MockData.ErrorId);
+    /* GPIO1 GDIR left at reset because pin 0 was skipped (no other output pin
+     * in the test config would have touched it yet). */
+    TEST_ASSERT_EQUAL_UINT32(0U, MockRegisters_Read32(PORT_GPIO1_BASE + PORT_GPIO_GDIR_OFF));
+
+    testPinConfigs[0].Pin = savedPin;
+}
+
+/** @req SWS_Port_00001 */
 void test_Port_Init_ValidConfig_ShouldProgramPinRegisters(void) {
     test_Port_ResetDriver();   /* in case an earlier test already initialized */
     test_Port_SetupConfig();
@@ -479,28 +503,18 @@ void test_Port_Init_MultiPortGpioPins_ShouldCoverAllSwitchBranches(void)
     multiPins[3].PullUpEnable = FALSE;
     multiPins[3].PullDownEnable = FALSE;
 
-    /* Default port (5): Pin = (5<<8)|0 = 0x0500 -> baseAddr = 0 */
-    multiPins[4].Pin = 0x0500U;
+    /* PORT_A pin 10: sanity check (existing coverage) */
+    multiPins[4].Pin = 10U;
     multiPins[4].Direction = PORT_PIN_OUT;
     multiPins[4].Mode = PORT_PIN_MODE_GPIO;
     multiPins[4].DirectionChangeable = FALSE;
     multiPins[4].ModeChangeable = FALSE;
-    multiPins[4].InitialLevel = PORT_PIN_LEVEL_LOW;
+    multiPins[4].InitialLevel = PORT_PIN_LEVEL_HIGH;
     multiPins[4].PullUpEnable = FALSE;
     multiPins[4].PullDownEnable = FALSE;
 
-    /* PORT_A pin 10: sanity check (existing coverage) */
-    multiPins[5].Pin = 10U;
-    multiPins[5].Direction = PORT_PIN_OUT;
-    multiPins[5].Mode = PORT_PIN_MODE_GPIO;
-    multiPins[5].DirectionChangeable = FALSE;
-    multiPins[5].ModeChangeable = FALSE;
-    multiPins[5].InitialLevel = PORT_PIN_LEVEL_HIGH;
-    multiPins[5].PullUpEnable = FALSE;
-    multiPins[5].PullDownEnable = FALSE;
-
     Port_ConfigType multiConfig;
-    multiConfig.NumPins = 6U;
+    multiConfig.NumPins = 5U;
     multiConfig.PinConfigs = multiPins;
 
     Port_Init(&multiConfig);
@@ -527,9 +541,7 @@ void test_Port_Init_MultiPortGpioPins_ShouldCoverAllSwitchBranches(void)
     TEST_ASSERT_EQUAL_UINT32(1U,
                              MockRegisters_Read32(PORT_GPIO5_BASE + PORT_GPIO_GDIR_OFF));
 
-    /* Default (port 5): baseAddr = 0, writes go to address 0 + GDIR/DR offsets.
-     * The mock register map will accept writes to address 0x0000 + offset.
-     * We just verify no crash and that PORT_A pin10 was handled correctly. */
+    /* PORT_A pin10 sanity: output, bit 10 set in GPIO1 GDIR/DR */
     TEST_ASSERT_EQUAL_UINT32((1U << 10U),
                              MockRegisters_Read32(PORT_GPIO1_BASE + PORT_GPIO_GDIR_OFF));
     TEST_ASSERT_EQUAL_UINT32((1U << 10U),

@@ -584,6 +584,28 @@ void test_Gpt_StartTimer_NotificationEnabled_ShouldSetInterrupt(void) {
     testChannels[0].NotificationEnabled = FALSE;
 }
 
+/** @req SWS_Gpt_00003 */
+void test_Gpt_StartTimer_InvalidChannelId_ShouldRejectWithoutRegisterAccess(void) {
+    /* Temporarily give channel 0 an unmapped timer id so Gpt_GetBaseAddr
+     * returns 0. The API must report DET E_PARAM_CONFIG and must not enable
+     * any timer control register. */
+    test_Gpt_ResetDriver();
+    test_Gpt_EnsureInitialized();
+    Gpt_ChannelType savedId = testChannels[0].ChannelId;
+    testChannels[0].ChannelId = (Gpt_ChannelType)99U;
+    Det_Mock_Reset();
+
+    Gpt_StartTimer(0U, 1000U);
+
+    TEST_ASSERT_TRUE(Det_MockData.LastCallValid);
+    TEST_ASSERT_EQUAL(GPT_MODULE_ID, Det_MockData.ModuleId);
+    TEST_ASSERT_EQUAL(GPT_SID_STARTTIMER, Det_MockData.ApiId);
+    TEST_ASSERT_EQUAL(GPT_E_PARAM_CONFIG, Det_MockData.ErrorId);
+    TEST_ASSERT_EQUAL_UINT32(0U, MockRegisters_Read32(GPT1_BASE + GPT_CR_OFF) & GPT_CR_EN);
+
+    testChannels[0].ChannelId = savedId;
+}
+
 /** @req SWS_Gpt_00014 */
 void test_Gpt_GetPredefTimerValue_BeforeInit_ShouldReportDet(void) {
     test_Gpt_ResetDriver();

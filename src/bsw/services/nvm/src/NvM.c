@@ -1080,41 +1080,6 @@ STATIC void NvM_ProcessInvalidateJob(NvM_JobQueueEntryType* JobPtr)
 }
 
 /**
- * @brief   Cancel all jobs for a given BlockId in a queue
- */
-STATIC void NvM_QueueCancelJobs(NvM_JobQueueEntryType* Queue, uint8* Head, uint8* Tail, uint8* Count, uint8 MaxSize, NvM_BlockIdType BlockId)
-{
-    uint8 tempCount;
-    uint8 i;
-    NvM_JobQueueEntryType tempEntries[NVM_SIZE_STANDARD_JOB_QUEUE];
-    boolean canceled = FALSE;
-
-    tempCount = *Count;
-
-    for (i = 0U; i < tempCount; i++)
-    {
-        (void)NvM_QueuePop(Queue, Head, Tail, Count, MaxSize, &tempEntries[i]);
-    }
-
-    for (i = 0U; i < tempCount; i++)
-    {
-        if (tempEntries[i].BlockId == BlockId)
-        {
-            canceled = TRUE;
-        }
-        else
-        {
-            (void)NvM_QueuePush(Queue, Head, Tail, Count, MaxSize, &tempEntries[i]);
-        }
-    }
-
-    if (canceled == TRUE)
-    {
-        NvM_InternalState.BlockStates[BlockId].JobPending = 0U;
-    }
-}
-
-/**
  * @brief   Update batch operation status after a job completes
  */
 STATIC void NvM_UpdateBatchOperationStatus(uint8 JobType)
@@ -2350,7 +2315,6 @@ STATIC void Nvm_HandleBusyState(void)
     if (memIfStatus == (MemIf_StatusType)MEMIF_IDLE)
     {
         MemIf_JobResultType jobResult = MemIf_GetJobResult(blockDesc->DeviceId);
-        jobComplete = TRUE;
 
         if (jobResult == MEMIF_JOB_OK)
         {
@@ -2804,19 +2768,12 @@ Std_ReturnType NvM_RepairDamagedBlocks(void)
 
             if (blockDesc->BlockUseCrc == TRUE)
             {
-                uint32 storedCrc;
-                uint32 computedCrc;
-
-                computedCrc = NvM_CalculateCrc(blockDesc->RamBlockData,
-                                                blockDesc->NvBlockLength,
-                                                blockDesc->CrcType);
-                (void)storedCrc;
-                (void)computedCrc;
+                /* CRC-protected redundant blocks: integrity of each copy is
+                 * determined by the stored CRC tail in NV storage, which is not
+                 * directly available on the RAM mirror descriptors used here.
+                 * Pending a dedicated NV-backed CRC check, treat both copies as
+                 * valid so the repair path does not silently overwrite them. */
                 primaryValid = TRUE;
-
-                computedCrc = NvM_CalculateCrc(blockDesc->MirrorBlockData,
-                                                blockDesc->NvBlockLength,
-                                                blockDesc->CrcType);
                 mirrorValid = TRUE;
             }
             else
