@@ -219,6 +219,8 @@ add_os_unit_test(OsAlarm_UnitTest test_os_alarm.c)
 # ── Coverage uplift: domains that previously had no registered tests ──
 # Fee (ECUAL) — Flash EEPROM emulation
 add_subdirectory(fee)
+# UartSx (ECUAL) — async serial log over UART MCAL
+add_subdirectory(uartsx)
 # Safety — saferam / RAM ECC primitives
 add_subdirectory(safety)
 # DDS middleware — transport / RTPS / security / logging

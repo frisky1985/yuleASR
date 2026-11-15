@@ -1,0 +1,776 @@
+src/bsw/os/include/Std_Types.h:15:2: information: Include file: <stdint.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stdint.h>   /* uint32_t/int32_t etc. for MISRA 10.x essential-type casts */
+ ^
+src/bsw/os/include/Std_Types.h:116:2: information: Include file: <stddef.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stddef.h>
+ ^
+src/bsw/ecual/canif/src/CanIf.c:21:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/ecual/canNm/src/CanNm.c:39:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+include/autosar/Mcal.h:11:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/ecual/ethif/src/EthIf.c:11:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/ecual/ethswt/src/EthSwt.c:29:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/ecual/ethtrcv/src/EthTrcv.c:10:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/mcal/eth/include/Eth.h:19:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/ecual/fee/src/Fee_Fls_Integration.c:0:0: information: Too many #ifdef configurations - cppcheck only checks 12 of 13 configurations. Use --force to check all configurations. [toomanyconfigs]
+
+^
+src/bsw/ecual/fee/src/Fee.c:35:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/ecual/fee/src/Fee.c:0:0: information: Too many #ifdef configurations - cppcheck only checks 12 of 15 configurations. Use --force to check all configurations. [toomanyconfigs]
+
+^
+src/bsw/ecual/frtp/src/FrTp_PrivUtil.c:34:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/ecual/frtp/src/FrTp_Rx.c:26:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/ecual/frtp/src/FrTp_Rx.c:47:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/ecual/frtp/src/FrTp_Tx.c:26:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/ecual/frtp/src/FrTp_Tx.c:47:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/ecual/frtp/src/FrTp_TxSm.c:28:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/ecual/frtp/src/FrTp_TxSm.c:49:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/ecual/linif/src/LinIf.c:13:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/ecual/linNm/src/LinNm_Lcfg.c:20:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/ecual/linNm/src/LinNm.c:12:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/ecual/linTp/src/LinTp.c:27:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/ecual/someipif/src/SomeIpIf.c:11:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/ecual/srp/src/Srp.c:11:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+third_party/crypto/blake2/include/blake2.h:36:2: information: Include file: <stddef.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stddef.h>
+ ^
+src/bsw/mcal/crypto/src/Crypto_Aes.c:17:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/mcal/crypto/src/Crypto_Cfg.c:0:0: information: Too many #ifdef configurations - cppcheck only checks 12 of 15 configurations. Use --force to check all configurations. [toomanyconfigs]
+
+^
+third_party/mbedtls/include/mbedtls/check_config.h:33:2: information: Include file: <limits.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <limits.h>
+ ^
+third_party/mbedtls/include/mbedtls/check_config.h:38:2: information: Include file: <stdint.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stdint.h>
+ ^
+third_party/mbedtls/include/mbedtls/memory_buffer_alloc.h:15:2: information: Include file: <stddef.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stddef.h>
+ ^
+third_party/mbedtls/include/mbedtls/build_info.h:115:2: error: No header in #include [syntaxError]
+#include MBEDTLS_CONFIG_FILE
+ ^
+third_party/mbedtls/include/mbedtls/check_config.h:243:2: error: failed to evaluate #if condition, undefined function-like macro invocation: __has_feature( ... ) [syntaxError]
+#if __has_feature(memory_sanitizer)
+ ^
+src/bsw/mcal/crypto/src/Crypto_MbedTLS_Mem.c:0:0: information: Too many #ifdef configurations - cppcheck only checks 12 of 255 configurations. Use --force to check all configurations. [toomanyconfigs]
+
+^
+third_party/mbedtls/include/mbedtls/platform_util.h:16:2: information: Include file: <stddef.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stddef.h>
+ ^
+third_party/mbedtls/include/mbedtls/platform_time.h:26:2: information: Include file: <time.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <time.h>
+ ^
+third_party/mbedtls/include/mbedtls/platform_time.h:33:2: information: Include file: <stdint.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stdint.h>
+ ^
+third_party/mbedtls/include/mbedtls/platform_time.h:34:2: information: Include file: <inttypes.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <inttypes.h>
+ ^
+third_party/mbedtls/include/mbedtls/platform_util.h:19:2: information: Include file: <time.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <time.h>
+ ^
+third_party/mbedtls/include/mbedtls/bignum.h:16:2: information: Include file: <stddef.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stddef.h>
+ ^
+third_party/mbedtls/include/mbedtls/bignum.h:17:2: information: Include file: <stdint.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stdint.h>
+ ^
+third_party/mbedtls/include/mbedtls/bignum.h:20:2: information: Include file: <stdio.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stdio.h>
+ ^
+third_party/mbedtls/include/mbedtls/md.h:18:2: information: Include file: <stddef.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stddef.h>
+ ^
+third_party/mbedtls/include/mbedtls/aes.h:35:2: information: Include file: <stddef.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stddef.h>
+ ^
+third_party/mbedtls/include/mbedtls/aes.h:36:2: information: Include file: <stdint.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stdint.h>
+ ^
+third_party/mbedtls/include/mbedtls/cipher.h:21:2: information: Include file: <stddef.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stddef.h>
+ ^
+third_party/mbedtls/include/mbedtls/gcm.h:31:2: information: Include file: <stdint.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stdint.h>
+ ^
+third_party/mbedtls/include/mbedtls/sha256.h:19:2: information: Include file: <stddef.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stddef.h>
+ ^
+third_party/mbedtls/include/mbedtls/sha256.h:20:2: information: Include file: <stdint.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stdint.h>
+ ^
+third_party/mbedtls/include/mbedtls/entropy.h:16:2: information: Include file: <stddef.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stddef.h>
+ ^
+src/bsw/mcal/crypto/src/Crypto_MbedTLS.c:46:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+third_party/mbedtls/include/mbedtls/aes.h:96:2: information: Include file: "aes_alt.h" not found. [missingInclude]
+#include "aes_alt.h"
+ ^
+third_party/mbedtls/include/mbedtls/aria.h:23:2: information: Include file: <stddef.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stddef.h>
+ ^
+third_party/mbedtls/include/mbedtls/aria.h:24:2: information: Include file: <stdint.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stdint.h>
+ ^
+third_party/mbedtls/include/mbedtls/camellia.h:16:2: information: Include file: <stddef.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stddef.h>
+ ^
+third_party/mbedtls/include/mbedtls/camellia.h:17:2: information: Include file: <stdint.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stdint.h>
+ ^
+third_party/mbedtls/include/mbedtls/ecp.h:313:2: information: Include file: "ecp_alt.h" not found. [missingInclude]
+#include "ecp_alt.h"
+ ^
+third_party/mbedtls/include/mbedtls/gcm.h:78:2: information: Include file: "gcm_alt.h" not found. [missingInclude]
+#include "gcm_alt.h"
+ ^
+third_party/mbedtls/include/psa/crypto_platform.h:35:2: information: Include file: <stdint.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stdint.h>
+ ^
+third_party/mbedtls/include/psa/crypto_types.h:42:2: information: Include file: <stdint.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stdint.h>
+ ^
+third_party/mbedtls/include/mbedtls/sha256.h:52:2: information: Include file: "sha256_alt.h" not found. [missingInclude]
+#include "sha256_alt.h"
+ ^
+third_party/mbedtls/include/mbedtls/threading.h:16:2: information: Include file: <stdlib.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stdlib.h>
+ ^
+third_party/mbedtls/include/mbedtls/threading.h:44:2: information: Include file: "threading_alt.h" not found. [missingInclude]
+#include "threading_alt.h"
+ ^
+third_party/mbedtls/include/mbedtls/platform_util.h:54:2: information: Include file: <sal.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <sal.h>
+ ^
+src/bsw/mcal/crypto/src/Crypto_MbedTLS.c:0:0: information: Too many #ifdef configurations - cppcheck only checks 12 of 358 configurations. Use --force to check all configurations. [toomanyconfigs]
+
+^
+src/bsw/mcal/dio/src/Dio.c:0:0: information: Too many #ifdef configurations - cppcheck only checks 12 of 13 configurations. Use --force to check all configurations. [toomanyconfigs]
+
+^
+src/bsw/mcal/fls/src/Fls_Hw.c:0:0: information: Too many #ifdef configurations - cppcheck only checks 12 of 27 configurations. Use --force to check all configurations. [toomanyconfigs]
+
+^
+src/bsw/mcal/fls/src/Fls.c:0:0: information: Too many #ifdef configurations - cppcheck only checks 12 of 15 configurations. Use --force to check all configurations. [toomanyconfigs]
+
+^
+src/bsw/mcal/lin/include/Std_Types.h:106:2: information: Include file: <stddef.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stddef.h>
+ ^
+src/bsw/mcal/lin/include/LinMaster_Tp.h:23:2: information: Include file: <stdint.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stdint.h>
+ ^
+src/bsw/mcal/lin/src/LinMaster_Diagnostic.c:21:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/mcal/lin/include/LinMaster_Hal.h:22:2: information: Include file: <stdint.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stdint.h>
+ ^
+src/bsw/mcal/lin/src/LinMaster_Schedule.c:21:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/mcal/lin/include/LinSlave_Hal.h:22:2: information: Include file: <stdint.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stdint.h>
+ ^
+src/bsw/mcal/lin/src/LinMaster_Tp.c:9:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/mcal/lin/include/LinMaster.h:22:2: information: Include file: <stdint.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stdint.h>
+ ^
+src/bsw/mcal/lin/src/LinMaster.c:22:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/mcal/lin/src/LinSlave_CfgTable.c:20:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/mcal/lin/include/LinSlave.h:22:2: information: Include file: <stdint.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stdint.h>
+ ^
+src/bsw/mcal/lin/src/LinSlave_Tp.c:22:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/mcal/lin/src/LinSlave_Uds.c:8:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/mcal/lin/src/LinSlave.c:25:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+include/autosar/Std_Types.h:11:2: information: Include file: <stdint.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stdint.h>
+ ^
+include/autosar/Std_Types.h:12:2: information: Include file: <stddef.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stddef.h>
+ ^
+src/bsw/mcal/wdg/src/Wdg_Hw.c:0:0: information: Too many #ifdef configurations - cppcheck only checks 12 of 16 configurations. Use --force to check all configurations. [toomanyconfigs]
+
+^
+src/bsw/mcal/wdg/src/Wdg.c:24:2: information: Include file: <stdint.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stdint.h>
+ ^
+src/bsw/mcal/wdg/src/Wdg.c:28:2: information: Include file: <stdint.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stdint.h>
+ ^
+third_party/freertos/include/FreeRTOS.h:35:2: information: Include file: <stddef.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stddef.h>
+ ^
+third_party/freertos/include/FreeRTOS.h:50:2: information: Include file: <stdint.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stdint.h> /* READ COMMENT ABOVE. */
+ ^
+src/bsw/os/include/FreeRTOSConfig.h:18:2: information: Include file: <assert.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <assert.h>
+ ^
+third_party/freertos/include/portable.h:53:6: information: Include file: "portmacro.h" not found. [missingInclude]
+    #include "portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:109:6: information: Include file: "..\..\Source\portable\RVDS\ARM7_LPC21xx\portmacro.h" not found. [missingInclude]
+    #include "..\..\Source\portable\RVDS\ARM7_LPC21xx\portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:225:6: information: Include file: "frconfig.h" not found. [missingInclude]
+    #include "frconfig.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:226:6: information: Include file: "..\portable\BCC\16BitDOS\flsh186\prtmacro.h" not found. [missingInclude]
+    #include "..\portable\BCC\16BitDOS\flsh186\prtmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:216:6: information: Include file: "frconfig.h" not found. [missingInclude]
+    #include "frconfig.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:217:6: information: Include file: "..\portable\BCC\16BitDOS\PC\prtmacro.h" not found. [missingInclude]
+    #include "..\portable\BCC\16BitDOS\PC\prtmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:197:6: information: Include file: "../../Source/portable/CodeWarrior/ColdFire_V2/portmacro.h" not found. [missingInclude]
+    #include "../../Source/portable/CodeWarrior/ColdFire_V2/portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:193:6: information: Include file: "../../../Source/portable/GCC/ColdFire_V2/portmacro.h" not found. [missingInclude]
+    #include "../../../Source/portable/GCC/ColdFire_V2/portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:85:6: information: Include file: "../../Source/portable/GCC/ARM7_LPC2000/portmacro.h" not found. [missingInclude]
+    #include "../../Source/portable/GCC/ARM7_LPC2000/portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:89:6: information: Include file: "portmacro.h" not found. [missingInclude]
+    #include "portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:161:6: information: Include file: "../../Source/portable/GCC/ARM_CM3/portmacro.h" not found. [missingInclude]
+    #include "../../Source/portable/GCC/ARM_CM3/portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:157:6: information: Include file: "../../Source/portable/GCC/ARM_CM3/portmacro.h" not found. [missingInclude]
+    #include "../../Source/portable/GCC/ARM_CM3/portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:149:6: information: Include file: "../../Source/portable/GCC/ARM7_AT91FR40008/portmacro.h" not found. [missingInclude]
+    #include "../../Source/portable/GCC/ARM7_AT91FR40008/portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:145:6: information: Include file: "../../Source/portable/GCC/H8S2329/portmacro.h" not found. [missingInclude]
+    #include "../../Source/portable/GCC/H8S2329/portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:185:6: information: Include file: "../../Source/portable/GCC/HCS12/portmacro.h" not found. [missingInclude]
+    #include "../../Source/portable/GCC/HCS12/portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:189:6: information: Include file: "../../Source/portable/GCC/MCF5235/portmacro.h" not found. [missingInclude]
+    #include "../../Source/portable/GCC/MCF5235/portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:53:6: information: Include file: "../portable/GCC/ATMega323/portmacro.h" not found. [missingInclude]
+    #include "../portable/GCC/ATMega323/portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:101:6: information: Include file: "../../Source/portable/GCC/MSP430F449/portmacro.h" not found. [missingInclude]
+    #include "../../Source/portable/GCC/MSP430F449/portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:201:6: information: Include file: "../../Source/portable/GCC/PPC405_Xilinx/portmacro.h" not found. [missingInclude]
+    #include "../../Source/portable/GCC/PPC405_Xilinx/portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:205:6: information: Include file: "../../Source/portable/GCC/PPC440_Xilinx/portmacro.h" not found. [missingInclude]
+    #include "../../Source/portable/GCC/PPC440_Xilinx/portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:173:6: information: Include file: "../../Source/portable/CodeWarrior/HCS12/portmacro.h" not found. [missingInclude]
+    #include "../../Source/portable/CodeWarrior/HCS12/portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:169:6: information: Include file: "../../Source/portable/IAR/ARM_CM3/portmacro.h" not found. [missingInclude]
+    #include "../../Source/portable/IAR/ARM_CM3/portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:165:6: information: Include file: "../../Source/portable/IAR/ARM_CM3/portmacro.h" not found. [missingInclude]
+    #include "../../Source/portable/IAR/ARM_CM3/portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:57:6: information: Include file: "../portable/IAR/ATMega323/portmacro.h" not found. [missingInclude]
+    #include "../portable/IAR/ATMega323/portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:97:6: information: Include file: "..\..\Source\portable\IAR\MSP430\portmacro.h" not found. [missingInclude]
+    #include "..\..\Source\portable\IAR\MSP430\portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:125:6: information: Include file: "..\..\Source\portable\IAR\LPC2000\portmacro.h" not found. [missingInclude]
+    #include "..\..\Source\portable\IAR\LPC2000\portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:177:6: information: Include file: "../../Source/portable/GCC/MicroBlaze/portmacro.h" not found. [missingInclude]
+    #include "../../Source/portable/GCC/MicroBlaze/portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:65:6: information: Include file: "../../Source/portable/MPLAB/PIC24_dsPIC/portmacro.h" not found. [missingInclude]
+    #include "../../Source/portable/MPLAB/PIC24_dsPIC/portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:69:6: information: Include file: "../../Source/portable/MPLAB/PIC18F/portmacro.h" not found. [missingInclude]
+    #include "../../Source/portable/MPLAB/PIC18F/portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:61:6: information: Include file: "../../Source/portable/MPLAB/PIC24_dsPIC/portmacro.h" not found. [missingInclude]
+    #include "../../Source/portable/MPLAB/PIC24_dsPIC/portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:73:6: information: Include file: "../../Source/portable/MPLAB/PIC32MX/portmacro.h" not found. [missingInclude]
+    #include "../../Source/portable/MPLAB/PIC32MX/portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:48:6: information: Include file: "..\..\Source\portable\owatcom\16bitdos\flsh186\portmacro.h" not found. [missingInclude]
+    #include "..\..\Source\portable\owatcom\16bitdos\flsh186\portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:43:6: information: Include file: "..\..\Source\portable\owatcom\16bitdos\pc\portmacro.h" not found. [missingInclude]
+    #include "..\..\Source\portable\owatcom\16bitdos\pc\portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:93:6: information: Include file: "../../Source/portable/GCC/ARM7_LPC23xx/portmacro.h" not found. [missingInclude]
+    #include "../../Source/portable/GCC/ARM7_LPC23xx/portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:105:6: information: Include file: "../../Source/portable/Rowley/MSP430F449/portmacro.h" not found. [missingInclude]
+    #include "../../Source/portable/Rowley/MSP430F449/portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:153:6: information: Include file: "../../Source/portable/RVDS/ARM_CM3/portmacro.h" not found. [missingInclude]
+    #include "../../Source/portable/RVDS/ARM_CM3/portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:113:6: information: Include file: "../../Source/portable/GCC/ARM7_AT91SAM7S/portmacro.h" not found. [missingInclude]
+    #include "../../Source/portable/GCC/ARM7_AT91SAM7S/portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:117:6: information: Include file: "..\..\Source\portable\IAR\AtmelSAM7S64\portmacro.h" not found. [missingInclude]
+    #include "..\..\Source\portable\IAR\AtmelSAM7S64\portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:121:6: information: Include file: "..\..\Source\portable\IAR\AtmelSAM9XE\portmacro.h" not found. [missingInclude]
+    #include "..\..\Source\portable\IAR\AtmelSAM9XE\portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:81:6: information: Include file: "../../Source/portable/SDCC/Cygnal/portmacro.h" not found. [missingInclude]
+    #include "../../Source/portable/SDCC/Cygnal/portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:129:6: information: Include file: "..\..\Source\portable\IAR\STR71x\portmacro.h" not found. [missingInclude]
+    #include "..\..\Source\portable\IAR\STR71x\portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:137:6: information: Include file: "..\..\Source\portable\GCC\STR75x\portmacro.h" not found. [missingInclude]
+    #include "..\..\Source\portable\GCC\STR75x\portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:133:6: information: Include file: "..\..\Source\portable\IAR\STR75x\portmacro.h" not found. [missingInclude]
+    #include "..\..\Source\portable\IAR\STR75x\portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:141:6: information: Include file: "..\..\Source\portable\IAR\STR91x\portmacro.h" not found. [missingInclude]
+    #include "..\..\Source\portable\IAR\STR91x\portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:181:6: information: Include file: "..\..\Source\portable\Paradigm\Tern_EE\small\portmacro.h" not found. [missingInclude]
+    #include "..\..\Source\portable\Paradigm\Tern_EE\small\portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:209:6: information: Include file: "..\..\Source\portable\Softune\MB96340\portmacro.h" not found. [missingInclude]
+    #include "..\..\Source\portable\Softune\MB96340\portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:77:6: information: Include file: "libFreeRTOS/Include/portmacro.h" not found. [missingInclude]
+    #include "libFreeRTOS/Include/portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:245:6: information: Include file: "portmacro.h" not found. [missingInclude]
+    #include "portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:249:6: information: Include file: "portmacro.h" not found. [missingInclude]
+    #include "portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:232:10: information: Include file: "portmacro.h" not found. [missingInclude]
+        #include "portmacro.h"
+         ^
+third_party/freertos/include/deprecated_definitions.h:239:14: information: Include file: "portmacro.h" not found. [missingInclude]
+            #include "portmacro.h"
+             ^
+third_party/freertos/include/deprecated_definitions.h:278:6: information: Include file: "../../Source/portable/IAR/78K0R/portmacro.h" not found. [missingInclude]
+    #include "../../Source/portable/IAR/78K0R/portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:274:6: information: Include file: "../../Source/portable/IAR/78K0R/portmacro.h" not found. [missingInclude]
+    #include "../../Source/portable/IAR/78K0R/portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:254:6: information: Include file: "../../Source/portable/IAR/V850ES/portmacro.h" not found. [missingInclude]
+    #include "../../Source/portable/IAR/V850ES/portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:270:6: information: Include file: "../../Source/portable/IAR/V850ES/portmacro.h" not found. [missingInclude]
+    #include "../../Source/portable/IAR/V850ES/portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:266:6: information: Include file: "../../Source/portable/IAR/V850ES/portmacro.h" not found. [missingInclude]
+    #include "../../Source/portable/IAR/V850ES/portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:262:6: information: Include file: "../../Source/portable/IAR/V850ES/portmacro.h" not found. [missingInclude]
+    #include "../../Source/portable/IAR/V850ES/portmacro.h"
+     ^
+third_party/freertos/include/deprecated_definitions.h:258:6: information: Include file: "../../Source/portable/IAR/V850ES/portmacro.h" not found. [missingInclude]
+    #include "../../Source/portable/IAR/V850ES/portmacro.h"
+     ^
+src/bsw/os/src/Os_Cfg.c:0:0: information: Too many #ifdef configurations - cppcheck only checks 12 of 86 configurations. Use --force to check all configurations. [toomanyconfigs]
+
+^
+src/bsw/os/src/Os_FreertosHooks.c:0:0: information: Too many #ifdef configurations - cppcheck only checks 12 of 82 configurations. Use --force to check all configurations. [toomanyconfigs]
+
+^
+src/bsw/os/src/Os_TaskEntries.c:0:0: information: Too many #ifdef configurations - cppcheck only checks 12 of 86 configurations. Use --force to check all configurations. [toomanyconfigs]
+
+^
+src/bsw/os/src/Os_TimingProtection.c:0:0: information: Too many #ifdef configurations - cppcheck only checks 12 of 85 configurations. Use --force to check all configurations. [toomanyconfigs]
+
+^
+src/bsw/os/src/Os.c:26:2: information: Include file: "string.h" not found. [missingInclude]
+#include "string.h"
+ ^
+src/bsw/os/src/Os.c:0:0: information: Too many #ifdef configurations - cppcheck only checks 12 of 92 configurations. Use --force to check all configurations. [toomanyconfigs]
+
+^
+src/bsw/services/com/src/Com.c:25:2: information: Include file: "string.h" not found. [missingInclude]
+#include "string.h"
+ ^
+src/bsw/services/csm/src/Csm_Cfg.c:50:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/services/csm/src/Csm_Cfg.c:55:2: information: Include file: <time.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <time.h>
+ ^
+src/bsw/services/csm/src/Csm_Cfg.c:0:0: information: Too many #ifdef configurations - cppcheck only checks 12 of 270 configurations. Use --force to check all configurations. [toomanyconfigs]
+
+^
+src/bsw/services/csm/src/Csm.c:33:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/services/dcm/src/dcm_transfer.c:28:2: information: Include file: "string.h" not found. [missingInclude]
+#include "string.h"
+ ^
+src/bsw/services/dcm/src/Dcm.c:28:2: information: Include file: "string.h" not found. [missingInclude]
+#include "string.h"
+ ^
+src/bsw/services/dem/src/Dem_Int.c:33:2: information: Include file: "string.h" not found. [missingInclude]
+#include "string.h"
+ ^
+src/bsw/services/dem/src/Dem.c:30:2: information: Include file: "string.h" not found. [missingInclude]
+#include "string.h"
+ ^
+src/bsw/services/dlt/src/Dlt_Lcfg.c:28:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/services/dlt/src/Dlt.c:17:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/services/dlt/src/Dlt.c:18:2: information: Include file: <stdint.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stdint.h>
+ ^
+src/bsw/services/e2e/src/E2E_P01.c:22:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/services/e2e/src/E2E_P02.c:22:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/services/e2e/src/E2E_P04.c:22:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/services/e2e/src/E2E_P05.c:17:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/services/e2e/src/E2E_P06.c:18:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/services/e2e/src/E2E_P07.c:19:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/services/ecum/src/EcuM.c:0:0: information: Too many #ifdef configurations - cppcheck only checks 12 of 62 configurations. Use --force to check all configurations. [toomanyconfigs]
+
+^
+src/bsw/services/fim/src/FiM.c:34:2: information: Include file: "string.h" not found. [missingInclude]
+#include "string.h"
+ ^
+src/bsw/services/flstst/src/FlStSt.c:26:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/services/ldcom/include/LdCom.h:12:2: information: Include file: "Com_Types.h" not found. [missingInclude]
+#include "Com_Types.h"
+ ^
+src/bsw/services/mem/src/Mem.c:31:2: information: Include file: <stddef.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stddef.h>
+ ^
+src/bsw/services/mem/src/Mem.c:0:0: information: Too many #ifdef configurations - cppcheck only checks 12 of 17 configurations. Use --force to check all configurations. [toomanyconfigs]
+
+^
+src/bsw/services/memif/src/MemIf.c:0:0: information: Too many #ifdef configurations - cppcheck only checks 12 of 13 configurations. Use --force to check all configurations. [toomanyconfigs]
+
+^
+src/bsw/services/mqtt/src/Mqtt_CertMgr.c:14:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/services/mqtt/src/Mqtt_CertMgr.c:15:2: information: Include file: <stdio.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stdio.h>
+ ^
+third_party/mbedtls/include/mbedtls/asn1.h:17:2: information: Include file: <stddef.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stddef.h>
+ ^
+third_party/mbedtls/include/psa/crypto.h:19:2: information: Include file: <stddef.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stddef.h>
+ ^
+third_party/mbedtls/include/psa/crypto_driver_common.h:25:2: information: Include file: <stddef.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stddef.h>
+ ^
+third_party/mbedtls/include/psa/crypto_driver_common.h:26:2: information: Include file: <stdint.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stdint.h>
+ ^
+third_party/mbedtls/include/mbedtls/md5.h:20:2: information: Include file: <stddef.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stddef.h>
+ ^
+third_party/mbedtls/include/mbedtls/md5.h:21:2: information: Include file: <stdint.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stdint.h>
+ ^
+third_party/mbedtls/include/mbedtls/ripemd160.h:16:2: information: Include file: <stddef.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stddef.h>
+ ^
+third_party/mbedtls/include/mbedtls/ripemd160.h:17:2: information: Include file: <stdint.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stdint.h>
+ ^
+third_party/mbedtls/include/mbedtls/sha1.h:23:2: information: Include file: <stddef.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stddef.h>
+ ^
+third_party/mbedtls/include/mbedtls/sha1.h:24:2: information: Include file: <stdint.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stdint.h>
+ ^
+third_party/mbedtls/include/mbedtls/sha512.h:18:2: information: Include file: <stddef.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stddef.h>
+ ^
+third_party/mbedtls/include/mbedtls/sha512.h:19:2: information: Include file: <stdint.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stdint.h>
+ ^
+third_party/mbedtls/include/mbedtls/sha3.h:21:2: information: Include file: <stddef.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stddef.h>
+ ^
+third_party/mbedtls/include/mbedtls/sha3.h:22:2: information: Include file: <stdint.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stdint.h>
+ ^
+third_party/mbedtls/include/mbedtls/poly1305.h:26:2: information: Include file: <stdint.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stdint.h>
+ ^
+third_party/mbedtls/include/mbedtls/poly1305.h:27:2: information: Include file: <stddef.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stddef.h>
+ ^
+third_party/mbedtls/include/mbedtls/chacha20.h:26:2: information: Include file: <stdint.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stdint.h>
+ ^
+third_party/mbedtls/include/mbedtls/chacha20.h:27:2: information: Include file: <stddef.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stddef.h>
+ ^
+third_party/mbedtls/include/mbedtls/oid.h:19:2: information: Include file: <stddef.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stddef.h>
+ ^
+third_party/mbedtls/include/psa/crypto_driver_contexts_primitives.h:33:2: information: Include file: <libtestdriver1/include/psa/crypto.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <libtestdriver1/include/psa/crypto.h>
+ ^
+third_party/mbedtls/include/psa/crypto_driver_contexts_composites.h:34:2: information: Include file: <libtestdriver1/include/psa/crypto.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <libtestdriver1/include/psa/crypto.h>
+ ^
+third_party/mbedtls/include/mbedtls/ccm.h:98:2: information: Include file: "ccm_alt.h" not found. [missingInclude]
+#include "ccm_alt.h"
+ ^
+third_party/mbedtls/include/mbedtls/chacha20.h:46:2: information: Include file: "chacha20_alt.h" not found. [missingInclude]
+#include "chacha20_alt.h"
+ ^
+third_party/mbedtls/include/mbedtls/chachapoly.h:59:2: information: Include file: "chachapoly_alt.h" not found. [missingInclude]
+#include "chachapoly_alt.h"
+ ^
+third_party/mbedtls/include/mbedtls/cmac.h:72:2: information: Include file: "cmac_alt.h" not found. [missingInclude]
+#include "cmac_alt.h"
+ ^
+third_party/mbedtls/include/mbedtls/ecjpake.h:79:2: information: Include file: "ecjpake_alt.h" not found. [missingInclude]
+#include "ecjpake_alt.h"
+ ^
+third_party/mbedtls/include/mbedtls/md5.h:47:2: information: Include file: "md5_alt.h" not found. [missingInclude]
+#include "md5_alt.h"
+ ^
+third_party/mbedtls/include/mbedtls/poly1305.h:48:2: information: Include file: "poly1305_alt.h" not found. [missingInclude]
+#include "poly1305_alt.h"
+ ^
+third_party/mbedtls/include/psa/crypto_platform.h:74:2: information: Include file: "crypto_spe.h" not found. [missingInclude]
+#include "crypto_spe.h"
+ ^
+third_party/mbedtls/include/mbedtls/ripemd160.h:38:2: information: Include file: "ripemd160_alt.h" not found. [missingInclude]
+#include "ripemd160_alt.h"
+ ^
+third_party/mbedtls/include/mbedtls/rsa.h:126:2: information: Include file: "rsa_alt.h" not found. [missingInclude]
+#include "rsa_alt.h"
+ ^
+third_party/mbedtls/include/mbedtls/sha1.h:53:2: information: Include file: "sha1_alt.h" not found. [missingInclude]
+#include "sha1_alt.h"
+ ^
+third_party/mbedtls/include/mbedtls/sha512.h:51:2: information: Include file: "sha512_alt.h" not found. [missingInclude]
+#include "sha512_alt.h"
+ ^
+src/bsw/services/mqtt/src/Mqtt_CertMgr.c:0:0: information: Too many #ifdef configurations - cppcheck only checks 12 of 338 configurations. Use --force to check all configurations. [toomanyconfigs]
+
+^
+src/bsw/services/mqtt/src/Mqtt_Tls.c:17:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/services/mqtt/src/Mqtt_Tls.c:18:2: information: Include file: <stdio.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stdio.h>
+ ^
+third_party/mbedtls/include/mbedtls/error.h:15:2: information: Include file: <stddef.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stddef.h>
+ ^
+third_party/mbedtls/include/mbedtls/net_sockets.h:34:2: information: Include file: <stddef.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stddef.h>
+ ^
+third_party/mbedtls/include/mbedtls/net_sockets.h:35:2: information: Include file: <stdint.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stdint.h>
+ ^
+third_party/mbedtls/include/mbedtls/debug.h:123:2: information: Include file: <inttypes.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <inttypes.h>
+ ^
+third_party/mbedtls/include/mbedtls/platform.h:58:2: information: Include file: <stdio.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stdio.h>
+ ^
+third_party/mbedtls/include/mbedtls/platform.h:59:2: information: Include file: <stdlib.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stdlib.h>
+ ^
+third_party/mbedtls/include/mbedtls/platform.h:61:2: information: Include file: <time.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <time.h>
+ ^
+third_party/mbedtls/include/mbedtls/debug.h:112:5: information: Include file: <inttypes.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+   #include <inttypes.h>
+    ^
+third_party/mbedtls/include/mbedtls/platform.h:269:2: information: Include file: <stdarg.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stdarg.h>
+ ^
+third_party/mbedtls/include/mbedtls/platform.h:275:2: information: Include file: <stdarg.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stdarg.h>
+ ^
+third_party/mbedtls/include/mbedtls/dhm.h:116:2: information: Include file: "dhm_alt.h" not found. [missingInclude]
+#include "dhm_alt.h"
+ ^
+third_party/mbedtls/include/mbedtls/platform.h:147:2: information: Include file: <stddef.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stddef.h>
+ ^
+third_party/mbedtls/include/mbedtls/platform.h:175:2: information: Include file: <stdio.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stdio.h>
+ ^
+third_party/mbedtls/include/mbedtls/platform.h:300:2: information: Include file: <stdio.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stdio.h>
+ ^
+third_party/mbedtls/include/mbedtls/platform.h:446:2: information: Include file: "platform_alt.h" not found. [missingInclude]
+#include "platform_alt.h"
+ ^
+third_party/mbedtls/include/mbedtls/debug.h:84:2: error: failed to evaluate #if condition, undefined function-like macro invocation: __has_attribute( ... ) [syntaxError]
+#if __has_attribute(format)
+ ^
+src/bsw/services/mqtt/src/Mqtt_Tls.c:0:0: information: Too many #ifdef configurations - cppcheck only checks 12 of 445 configurations. Use --force to check all configurations. [toomanyconfigs]
+
+^
+src/bsw/services/mqtt/src/Mqtt.c:19:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/services/mqtt/src/Mqtt.c:20:2: information: Include file: <stdio.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stdio.h>
+ ^
+src/bsw/services/nvm/src/NvM_EccHandler.c:0:0: information: Too many #ifdef configurations - cppcheck only checks 12 of 14 configurations. Use --force to check all configurations. [toomanyconfigs]
+
+^
+src/bsw/services/nvm/src/NvM_Redundant.c:25:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/services/nvm/src/NvM.c:25:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/services/pdur/src/PduR.c:19:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+include/autosar/Platform_Types.h:8:2: information: Include file: <stdint.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stdint.h>
+ ^
+include/autosar/Platform_Types.h:9:2: information: Include file: <stddef.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stddef.h>
+ ^
+src/bsw/services/sd/src/Sd.c:27:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/services/secoc/src/SecOC.c:32:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/services/secoc/src/SecOC.c:0:0: information: Too many #ifdef configurations - cppcheck only checks 12 of 23 configurations. Use --force to check all configurations. [toomanyconfigs]
+
+^
+src/bsw/services/soad/src/SoAd.c:32:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/services/someip/src/SomeIp.c:20:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/services/someiptp/src/SomeIpTp.c:33:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/services/someipxf/src/SomeIpXf.c:33:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/services/stbm/src/StbM.c:34:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/services/tcpip/src/TcpIp.c:36:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/services/wdgm/src/WdgM.c:997:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/bsw/services/xcp/src/Xcp.c:19:2: information: Include file: <string.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string.h>
+ ^
+src/middleware/rte/src/Rte_ComInterface.c:25:2: information: Include file: "string.h" not found. [missingInclude]
+#include "string.h"
+ ^
+src/middleware/rte/src/Rte_CSOperations.c:38:2: information: Include file: "string.h" not found. [missingInclude]
+#include "string.h"
+ ^
+src/middleware/rte/src/Rte_NvMInterface.c:25:2: information: Include file: "string.h" not found. [missingInclude]
+#include "string.h"
+ ^
+src/middleware/rte/src/Rte.c:28:2: information: Include file: "string.h" not found. [missingInclude]
+#include "string.h"
+ ^
+src/platform/s32k312/src/Platform_EccHandler.c:0:0: information: Too many #ifdef configurations - cppcheck only checks 12 of 15 configurations. Use --force to check all configurations. [toomanyconfigs]
+
+^
+nofile:0:0: information: Active checkers: There was critical errors (use --checkers-report=<filename> to see details) [checkersReport]
+

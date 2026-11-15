@@ -1,0 +1,439 @@
+{
+ "misra_total": 25136,
+ "misra_config_noise": 6209,
+ "by_category": {
+  "Required": 5534,
+  "Advisory": 15997,
+  "Mandatory": 3605
+ },
+ "unique_rules": 51,
+ "non_misra": {
+  "unusedStructMember": 631,
+  "variableScope": 211,
+  "unreadVariable": 54,
+  "unusedVariable": 49,
+  "constVariablePointer": 15,
+  "preprocessorErrorDirective": 13,
+  "constParameterPointer": 12,
+  "unknownMacro": 8,
+  "redundantAssignment": 7,
+  "badBitmaskCheck": 7,
+  "knownConditionTrueFalse": 4,
+  "unassignedVariable": 3,
+  "uninitvar": 3,
+  "constStatement": 2,
+  "identicalInnerCondition": 2,
+  "shadowArgument": 1,
+  "nullPointerRedundantCheck": 1,
+  "assignIfError": 1,
+  "duplicateConditionalAssign": 1,
+  "constParameterCallback": 1
+ },
+ "examples": {
+  "Rule 2.5": [
+   [
+    "src/bsw/ecual/canif/include/CanIf_Cfg.h",
+    "23",
+    "A project should not contain unused macro declarations"
+   ],
+   [
+    "src/bsw/ecual/canif/include/CanIf_Cfg.h",
+    "24",
+    "A project should not contain unused macro declarations"
+   ],
+   [
+    "src/bsw/ecual/canif/include/CanIf_Cfg.h",
+    "29",
+    "A project should not contain unused macro declarations"
+   ],
+   [
+    "src/bsw/ecual/canif/include/CanIf_Cfg.h",
+    "30",
+    "A project should not contain unused macro declarations"
+   ],
+   [
+    "src/bsw/ecual/canif/include/CanIf_Cfg.h",
+    "31",
+    "A project should not contain unused macro declarations"
+   ]
+  ],
+  "Rule 15.5": [
+   [
+    "src/bsw/ecual/canif/src/CanIf.c",
+    "135",
+    "A function should have a single point of exit"
+   ],
+   [
+    "src/bsw/ecual/canif/src/CanIf.c",
+    "139",
+    "A function should have a single point of exit"
+   ],
+   [
+    "src/bsw/ecual/canif/src/CanIf.c",
+    "143",
+    "A function should have a single point of exit"
+   ],
+   [
+    "src/bsw/ecual/canif/src/CanIf.c",
+    "184",
+    "A function should have a single point of exit"
+   ],
+   [
+    "src/bsw/ecual/canif/src/CanIf.c",
+    "188",
+    "A function should have a single point of exit"
+   ]
+  ],
+  "Rule 17.3": [
+   [
+    "src/bsw/ecual/canif/src/CanIf.c",
+    "213",
+    "A function shall not be declared implicitly"
+   ],
+   [
+    "src/bsw/ecual/canif/src/CanIf.c",
+    "217",
+    "A function shall not be declared implicitly"
+   ],
+   [
+    "src/bsw/ecual/canif/src/CanIf.c",
+    "288",
+    "A function shall not be declared implicitly"
+   ],
+   [
+    "src/bsw/ecual/canif/src/CanIf.c",
+    "340",
+    "A function shall not be declared implicitly"
+   ],
+   [
+    "src/bsw/ecual/canif/src/CanIf.c",
+    "344",
+    "A function shall not be declared implicitly"
+   ]
+  ],
+  "Rule 8.4": [
+   [
+    "src/bsw/ecual/canif/src/CanIf_Lcfg.c",
+    "28",
+    "A compatible declaration shall be visible when an object or function is defined"
+   ],
+   [
+    "src/bsw/ecual/canif/src/CanIf_Lcfg.c",
+    "61",
+    "A compatible declaration shall be visible when an object or function is defined"
+   ],
+   [
+    "src/bsw/ecual/canif/src/CanIf_Lcfg.c",
+    "106",
+    "A compatible declaration shall be visible when an object or function is defined"
+   ],
+   [
+    "src/bsw/ecual/canif/src/CanIf_Lcfg.c",
+    "151",
+    "A compatible declaration shall be visible when an object or function is defined"
+   ],
+   [
+    "src/bsw/ecual/canif/src/CanIf_Lcfg.c",
+    "165",
+    "A compatible declaration shall be visible when an object or function is defined"
+   ]
+  ],
+  "Rule 20.9": [
+   [
+    "src/bsw/ecual/canNm/include/CanNm.h",
+    "333",
+    "Preprocessor identifiers shall be defined before use"
+   ],
+   [
+    "src/bsw/ecual/canif/src/CanIf.c",
+    "75",
+    "Preprocessor identifiers shall be defined before use"
+   ],
+   [
+    "src/bsw/ecual/canif/src/CanIf.c",
+    "177",
+    "Preprocessor identifiers shall be defined before use"
+   ],
+   [
+    "src/bsw/ecual/canif/src/CanIf.c",
+    "211",
+    "Preprocessor identifiers shall be defined before use"
+   ],
+   [
+    "src/bsw/ecual/canif/src/CanIf.c",
+    "254",
+    "Preprocessor identifiers shall be defined before use"
+   ]
+  ],
+  "Rule 5.9": [
+   [
+    "src/bsw/ecual/canNm/src/CanNm_Lcfg.c",
+    "43",
+    "Identifiers that define objects or functions shall be unique before linker stage"
+   ],
+   [
+    "src/bsw/ecual/canNm/src/CanNm_Lcfg.c",
+    "72",
+    "Identifiers that define objects or functions shall be unique before linker stage"
+   ],
+   [
+    "src/bsw/ecual/canNm/src/CanNm_Lcfg.c",
+    "105",
+    "Identifiers that define objects or functions shall be unique before linker stage"
+   ],
+   [
+    "src/bsw/ecual/canNm/src/CanNm_Lcfg.c",
+    "133",
+    "Identifiers that define objects or functions shall be unique before linker stage"
+   ],
+   [
+    "src/bsw/ecual/canNm/src/CanNm_Lcfg.c",
+    "147",
+    "Identifiers that define objects or functions shall be unique before linker stage"
+   ]
+  ],
+  "Rule 20.1": [
+   [
+    "src/bsw/ecual/canif/include/CanIf.h",
+    "321",
+    "misra violation 2001 with no text in the supplied rule-texts-file"
+   ],
+   [
+    "src/bsw/ecual/canif/include/CanIf.h",
+    "326",
+    "misra violation 2001 with no text in the supplied rule-texts-file"
+   ],
+   [
+    "src/bsw/ecual/canif/include/CanIf.h",
+    "340",
+    "misra violation 2001 with no text in the supplied rule-texts-file"
+   ],
+   [
+    "src/bsw/ecual/canif/include/CanIf.h",
+    "679",
+    "misra violation 2001 with no text in the supplied rule-texts-file"
+   ],
+   [
+    "src/bsw/ecual/canif/src/CanIf.c",
+    "41",
+    "misra violation 2001 with no text in the supplied rule-texts-file"
+   ]
+  ],
+  "Rule 2.3": [
+   [
+    "src/bsw/ecual/canif/include/CanIf.h",
+    "333",
+    "The character sequence /* shall not be used within a comment"
+   ],
+   [
+    "src/bsw/ecual/canif/include/CanIf.h",
+    "334",
+    "The character sequence /* shall not be used within a comment"
+   ],
+   [
+    "src/bsw/ecual/canif/include/CanIf.h",
+    "150",
+    "The character sequence /* shall not be used within a comment"
+   ],
+   [
+    "src/bsw/ecual/canif/include/CanIf.h",
+    "332",
+    "The character sequence /* shall not be used within a comment"
+   ],
+   [
+    "src/bsw/ecual/canif/include/CanIf.h",
+    "331",
+    "The character sequence /* shall not be used within a comment"
+   ]
+  ],
+  "Rule 8.5": [
+   [
+    "src/bsw/ecual/doIP/src/DoIP_Lcfg.c",
+    "30",
+    "An external object or function shall be declared once in one file"
+   ],
+   [
+    "src/bsw/ecual/doIP/include/DoIP_Cfg.h",
+    "199",
+    "An external object or function shall be declared once in one file"
+   ],
+   [
+    "src/bsw/ecual/ipdum/src/IpduM_Lcfg.c",
+    "279",
+    "An external object or function shall be declared once in one file"
+   ],
+   [
+    "src/bsw/ecual/ipdum/include/IpduM.h",
+    "200",
+    "An external object or function shall be declared once in one file"
+   ],
+   [
+    "src/bsw/ecual/ipdum/src/IpduM_Lcfg.c",
+    "280",
+    "An external object or function shall be declared once in one file"
+   ]
+  ],
+  "Rule 21.6": [
+   [
+    "src/bsw/mcal/lin/src/LinSlave_Hal.c",
+    "29",
+    "misra violation 2106 with no text in the supplied rule-texts-file"
+   ],
+   [
+    "src/bsw/mcal/lin/src/LinSlave_Hal.c",
+    "36",
+    "misra violation 2106 with no text in the supplied rule-texts-file"
+   ],
+   [
+    "src/bsw/mcal/lin/src/LinSlave_Hal.c",
+    "43",
+    "misra violation 2106 with no text in the supplied rule-texts-file"
+   ],
+   [
+    "src/bsw/mcal/lin/src/LinSlave_Hal.c",
+    "45",
+    "misra violation 2106 with no text in the supplied rule-texts-file"
+   ],
+   [
+    "src/bsw/mcal/lin/src/LinSlave_Hal.c",
+    "47",
+    "misra violation 2106 with no text in the supplied rule-texts-file"
+   ]
+  ],
+  "Rule 2.4": [
+   [
+    "src/bsw/ecual/canif/include/CanIf.h",
+    "142",
+    "A section of code shall not be commented out using slash-star"
+   ],
+   [
+    "src/bsw/ecual/canNm/include/CanNm.h",
+    "132",
+    "A section of code shall not be commented out using slash-star"
+   ],
+   [
+    "src/bsw/ecual/canNm/include/CanNm.h",
+    "143",
+    "A section of code shall not be commented out using slash-star"
+   ],
+   [
+    "src/bsw/ecual/canNm/include/CanNm.h",
+    "194",
+    "A section of code shall not be commented out using slash-star"
+   ],
+   [
+    "src/bsw/ecual/cantp/include/CanTp.h",
+    "124",
+    "A section of code shall not be commented out using slash-star"
+   ]
+  ],
+  "Rule 17.7": [
+   [
+    "src/bsw/ecual/canNm/src/CanNm.c",
+    "141",
+    "Return value of non-void function shall be used"
+   ],
+   [
+    "src/bsw/ecual/canNm/src/CanNm.c",
+    "611",
+    "Return value of non-void function shall be used"
+   ],
+   [
+    "src/bsw/ecual/canNm/src/CanNm.c",
+    "619",
+    "Return value of non-void function shall be used"
+   ],
+   [
+    "src/bsw/ecual/canNm/src/CanNm.c",
+    "620",
+    "Return value of non-void function shall be used"
+   ],
+   [
+    "src/bsw/ecual/canNm/src/CanNm.c",
+    "914",
+    "Return value of non-void function shall be used"
+   ]
+  ],
+  "Rule 5.6": [
+   [
+    "src/bsw/ecual/cantp/include/CanTp.h",
+    "32",
+    "A typedef name shall be a unique identifier"
+   ],
+   [
+    "src/bsw/ecual/frtp/include/FrTp.h",
+    "212",
+    "A typedef name shall be a unique identifier"
+   ],
+   [
+    "src/bsw/ecual/include/ComStack_Types.h",
+    "83",
+    "A typedef name shall be a unique identifier"
+   ],
+   [
+    "src/bsw/ecual/xcp/include/Xcp_Cfg.h",
+    "161",
+    "A typedef name shall be a unique identifier"
+   ],
+   [
+    "src/bsw/ecual/xcp/include/Xcp.h",
+    "590",
+    "A typedef name shall be a unique identifier"
+   ]
+  ],
+  "Rule 12.1": [
+   [
+    "src/bsw/ecual/linNm/src/LinNm.c",
+    "134",
+    "Operator precedence within expressions should be made explicit"
+   ],
+   [
+    "src/bsw/ecual/linNm/src/LinNm.c",
+    "172",
+    "Operator precedence within expressions should be made explicit"
+   ],
+   [
+    "src/bsw/ecual/linNm/src/LinNm.c",
+    "989",
+    "Operator precedence within expressions should be made explicit"
+   ],
+   [
+    "src/bsw/ecual/linNm/src/LinNm.c",
+    "1026",
+    "Operator precedence within expressions should be made explicit"
+   ],
+   [
+    "src/bsw/mcal/adc/src/Adc.c",
+    "602",
+    "Operator precedence within expressions should be made explicit"
+   ]
+  ],
+  "Rule 5.7": [
+   [
+    "src/bsw/ecual/cantp/include/CanTp.h",
+    "28",
+    "A tag name shall be a unique identifier"
+   ],
+   [
+    "src/bsw/ecual/frtp/include/FrTp.h",
+    "208",
+    "A tag name shall be a unique identifier"
+   ],
+   [
+    "src/bsw/ecual/xcp/include/Xcp_Cfg.h",
+    "153",
+    "A tag name shall be a unique identifier"
+   ],
+   [
+    "src/bsw/ecual/xcp/include/Xcp.h",
+    "574",
+    "A tag name shall be a unique identifier"
+   ],
+   [
+    "src/bsw/ecual/memif/include/MemIf.h",
+    "62",
+    "A tag name shall be a unique identifier"
+   ]
+  ]
+ }
+}

@@ -1,3 +1,4 @@
+#pragma clang diagnostic ignored "-Wincompatible-function-pointer-types"
 /**
  * @file test_linslave_stack.c
  * @brief Host unit tests for the LinSlave protocol stack
@@ -44,7 +45,7 @@ static void LinTest_RxCallback(uint8 Pid, uint8* ResponseDataPtr, uint8* Respons
     LinTest_RxCallbackCount++;
 }
 
-static void LinTest_ErrorCallback(uint8 Pid, LinSlave_ErrorType ErrorCode)
+static void LinTest_ErrorCallback(LinSlave_ErrorType ErrorCode, uint8 Pid)
 {
     (void)ErrorCode;
     (void)Pid;
