@@ -341,9 +341,12 @@ void Fee_Init(const Fee_ConfigType* ConfigPtr)
     Fee_ScanSectors();
     Fee_BuildBlockTable();
 
-    /* Set initial state */
+    /* Initialize module state */
     Fee_ModuleStatus = FEE_IDLE;
     Fee_CurrentMode = FEE_MODE_FAST;
+    Fee_EraseCycleCounter = 0u;
+    Fee_WriteCycleCounter = 0u;
+    Fee_GcCycleCounter = 0u;
     Fee_Initialized = TRUE;
 
     FEE_EXIT_CRITICAL_SECTION();
@@ -1302,31 +1305,36 @@ static void Fee_GcEraseSector(void)
 {
     Std_ReturnType result;
 
-    /* Start FLS erase job */
-    result = Fee_StartFlsErase(Fee_SectorInfo[Fee_GcControl.SourceSectorIndex].SectorStartAddress,
-                                Fee_SectorInfo[Fee_GcControl.SourceSectorIndex].SectorSize);
+    /* Start a new erase only when FLS is completely idle — that is, on the
+     * first MainFunction tick of the ERASE state.  After CheckFlsJobStatus
+     * transitions PENDING → COMPLETED, we must NOT re-issue StartFlsErase;
+     * we must go straight to the COMPLETED branch below. */
+    if (Fee_FlsJob.JobState == FEE_FLS_JOB_IDLE)
+    {
+        result = Fee_StartFlsErase(Fee_SectorInfo[Fee_GcControl.SourceSectorIndex].SectorStartAddress,
+                                    Fee_SectorInfo[Fee_GcControl.SourceSectorIndex].SectorSize);
 
-    if (result == E_OK)
-    {
-        /* Wait for erase to complete - check in next MainFunction cycle */
-        if (Fee_FlsJob.JobState == FEE_FLS_JOB_COMPLETED)
+        if (result != E_OK)
         {
-            Fee_EraseCycleCounter++;
-            Fee_SectorInfo[Fee_GcControl.SourceSectorIndex].EraseCycleCount++;
-            Fee_GcControl.GcState = FEE_GC_STATE_FINALIZE;
-        }
-        else if (Fee_FlsJob.JobState == FEE_FLS_JOB_FAILED)
-        {
-            /* Erase failed, abort GC */
             Fee_GcControl.GcState = FEE_GC_STATE_IDLE;
+            return;
         }
-        /* else: still pending, wait */
     }
-    else
+
+    /* Check result (whether just-started or previously-pending —
+     * CheckFlsJobStatus at top of MainFunction already updates Fee_FlsJob.JobState). */
+    if (Fee_FlsJob.JobState == FEE_FLS_JOB_COMPLETED)
     {
-        /* Failed to start erase */
+        Fee_EraseCycleCounter++;
+        Fee_SectorInfo[Fee_GcControl.SourceSectorIndex].EraseCycleCount++;
+        Fee_GcControl.GcState = FEE_GC_STATE_FINALIZE;
+    }
+    else if (Fee_FlsJob.JobState == FEE_FLS_JOB_FAILED)
+    {
+        /* Erase failed, abort GC */
         Fee_GcControl.GcState = FEE_GC_STATE_IDLE;
     }
+    /* else: still pending, wait */
 }
 
 /**

@@ -32,6 +32,7 @@
  *                              Includes
  ******************************************************************************/
 #include "Std_Types.h"
+#include "MemIf_Types.h"   /* canonical MemIf value types */
 #include "MemIf_Cfg.h"
 #include "ModuleId.h"
 
@@ -58,39 +59,7 @@
 
 typedef uint8 MemIf_DeviceIndexType;
 
-/** @brief MemIf mode type */
-typedef enum {
-    MEMIF_MODE_UNINIT = 0,      /**< Uninitialized state */
-    MEMIF_MODE_SLOW,            /**< Slow read/write mode */
-    MEMIF_MODE_FAST             /**< Fast read/write mode */
-} MemIf_ModeType;
-
-/** @brief MemIf job result type */
-typedef enum {
-    MEMIF_JOB_OK = 0,           /**< Job completed successfully */
-    MEMIF_JOB_PENDING,          /**< Job is still pending */
-    MEMIF_JOB_CANCELED,         /**< Job was canceled */
-    MEMIF_JOB_FAILED            /**< Job failed */
-} MemIf_JobResultType;
-
-/** @brief MemIf status type */
-#undef MEMIF_UNINIT
-#undef MEMIF_IDLE
-#undef MEMIF_BUSY
-typedef enum {
-    MEMIF_UNINIT = 0,           /**< Module not initialized */
-    MEMIF_IDLE,                 /**< Module initialized and idle */
-    MEMIF_BUSY                  /**< Module busy with operation */
-} MemIf_StatusType;
-#ifndef MEMIF_UNINIT
-#define MEMIF_UNINIT                        (0x00U)
-#endif
-#ifndef MEMIF_IDLE
-#define MEMIF_IDLE                          (0x01U)
-#endif
-#ifndef MEMIF_BUSY
-#define MEMIF_BUSY                          (0x02U)
-#endif
+/* MemIf_Types.h already provides MemIf_ModeType / MemIf_JobResultType / MemIf_StatusType. */
 
 /** @brief Device abstraction structure */
 typedef struct {

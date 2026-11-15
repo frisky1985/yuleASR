@@ -18,6 +18,7 @@
 *                                          INCLUDE FILES
 ==================================================================================================*/
 #include "Std_Types.h"
+#include "MemIf_Types.h"   /* canonical MemIf value types */
 #include "MemIf_Cfg.h"
 #include "ModuleId.h"
 
@@ -56,34 +57,7 @@
 #define MEMIF_E_PARAM_DATA              (0x05U)
 #define MEMIF_E_UNINIT                  (0x06U)
 
-/*==================================================================================================
-*                                    MEMIF STATUS TYPE
-==================================================================================================*/
-typedef enum {
-    MEMIF_IDLE = 0,
-    MEMIF_BUSY,
-    MEMIF_BUSY_INTERNAL
-} MemIf_StatusType;
-
-/*==================================================================================================
-*                                    MEMIF JOB RESULT TYPE
-==================================================================================================*/
-typedef enum {
-    MEMIF_JOB_OK = 0,
-    MEMIF_JOB_FAILED,
-    MEMIF_JOB_PENDING,
-    MEMIF_JOB_CANCELED,
-    MEMIF_BLOCK_INCONSISTENT,
-    MEMIF_BLOCK_INVALID
-} MemIf_JobResultType;
-
-/*==================================================================================================
-*                                    MEMIF MODE TYPE
-==================================================================================================*/
-typedef enum {
-    MEMIF_MODE_SLOW = 0,
-    MEMIF_MODE_FAST
-} MemIf_ModeType;
+/* MemIf_Types.h already provides MemIf_StatusType / MemIf_JobResultType / MemIf_ModeType. */
 
 /*==================================================================================================
 *                                    MEMIF DEVICE ID TYPE

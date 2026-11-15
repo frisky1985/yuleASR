@@ -31,19 +31,19 @@
  */
 
 
-/* MemIf mode type used by Fls (only when the real MemIf.h is not present) */
-#ifndef MEMIF_H
-#define MEMIF_MODETYPE_DEFINED
+/* Ensure canonical MemIf types are available before any fallback typedefs.
+ * MemIf_Types.h has its own include guard (MEMIF_TYPES_H), so it is safe to
+ * include here even if MemIf.h (which also includes it) comes later. */
+#include "Std_Types.h"
+#include "MemIf_Types.h"
+
+/* Legacy fallback: only provide these when the canonical header is missing
+ * (should not happen after the include above; kept for belt-and-suspenders). */
+#ifndef MEMIF_TYPES_H
 typedef enum {
     MEMIF_MODE_SLOW = 0,
     MEMIF_MODE_FAST
 } MemIf_ModeType;
-#endif
-
-#ifndef MEMIF_BLOCK_INCONSISTENT
-#define MEMIF_BLOCK_INCONSISTENT        (0x00U)
-#define MEMIF_BLOCK_VALID               (0x01U)
-#define MEMIF_BLOCK_INVALID             (0x02U)
 #endif
 
 /* Fls job types (shared with Fee) */
