@@ -202,28 +202,35 @@ STATIC const Dcm_RIDConfigType* Dcm_FindRID(uint16 RID)
 STATIC void Dcm_SendPositiveResponse(uint8 ProtocolId, uint8 SID, const uint8* Data, uint16 Length)
 {
     Dcm_ProtocolStateType* protocolState = &Dcm_InternalState.ProtocolStates[ProtocolId];
-    uint8 i;
+    uint16 i;
 
-    /* Build positive response: SID + 0x40 */
-    protocolState->TxBuffer[0] = SID + (uint32_t)(DCM_E_POSITIVERESPONSE);
-
-    /* Copy response data */
-    for (i = 0U; i < Length; i++)
+    if (Length < DCM_TX_BUFFER_SIZE)
     {
-        protocolState->TxBuffer[i + 1U] = Data[i];
+        /* Build positive response: SID + 0x40 */
+        protocolState->TxBuffer[0] = SID + (uint32_t)(DCM_E_POSITIVERESPONSE);
+
+        /* Copy response data */
+        for (i = 0U; i < Length; i++)
+        {
+            protocolState->TxBuffer[i + 1U] = Data[i];
+        }
+
+        protocolState->TxDataLength = Length + 1U;
+        protocolState->State = DCM_PROTOCOL_TX_IN_PROGRESS;
+
+        /* Trigger transmission via PduR */
+        {
+            PduInfoType pduInfo;
+            pduInfo.SduDataPtr = protocolState->TxBuffer;
+            pduInfo.SduLength = protocolState->TxDataLength;
+            pduInfo.MetaDataPtr = NULL_PTR;
+
+            (void)PduR_Transmit(ProtocolId, &pduInfo);
+        }
     }
-
-    protocolState->TxDataLength = Length + 1U;
-    protocolState->State = DCM_PROTOCOL_TX_IN_PROGRESS;
-
-    /* Trigger transmission via PduR */
+    else
     {
-        PduInfoType pduInfo;
-        pduInfo.SduDataPtr = protocolState->TxBuffer;
-        pduInfo.SduLength = protocolState->TxDataLength;
-        pduInfo.MetaDataPtr = NULL_PTR;
-
-        (void)PduR_Transmit(ProtocolId, &pduInfo);
+        Dcm_SendNegativeResponse(ProtocolId, SID, DCM_E_RESPONSE_TOO_LONG);
     }
 }
 

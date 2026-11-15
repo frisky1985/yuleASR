@@ -104,6 +104,14 @@ static const Com_IPduConfigType testIPdus_BE32[1] = {
 static const Com_ConfigType be32Config =
     { testSignals_BE32, 1U, testIPdus_BE32, 1U };
 
+/* Invalid 40-bit signal: the uint32 signal API must reject it before any
+ * endian-specific shift or transmission takes place. */
+static const Com_SignalConfigType testSignals_OversizedBE[1] = {
+    { 0U, 1U, 40U, COM_BIG_ENDIAN, COM_TRIGGERED, COM_ALWAYS, 0U, 0U, 0U }
+};
+static const Com_ConfigType oversizedBEConfig =
+    { testSignals_OversizedBE, 1U, testIPdus_BE32, 1U };
+
 /* Little-endian 16-bit byte-aligned signal */
 static const Com_SignalConfigType testSignals_LE16[1] = {
     { 0U, 0U, 16U, COM_LITTLE_ENDIAN, COM_PENDING, COM_ALWAYS, 0U, 0U, 0U }
@@ -783,6 +791,37 @@ void test_SendReceive_BitBE_RoundTrip(void) {
     TEST_ASSERT_EQUAL_HEX8(0x2A, recvVal);
 }
 
+void test_SendSignal_OversizedBitSize_ShouldFailWithoutTransmission(void) {
+    uint32 sendVal = 0x12345678UL;
+
+    Com_Init(&oversizedBEConfig);
+    TEST_ASSERT_EQUAL_UINT8(COM_SERVICE_NOT_OK, Com_SendSignal(0U, &sendVal));
+    TEST_ASSERT_EQUAL_UINT32(0U, mock_PduR_Transmit_Count);
+}
+
+void test_ReceiveSignal_OversizedBitSize_ShouldFailWithoutChangingOutput(void) {
+    uint8 data[8] = { 0xFFU, 0xFFU, 0xFFU, 0xFFU, 0xFFU, 0xFFU, 0xFFU, 0xFFU };
+    PduInfoType pdu;
+    uint32 recvVal = 0xA5A55A5AUL;
+
+    Com_Init(&oversizedBEConfig);
+    pdu.SduDataPtr = data;
+    pdu.SduLength = 8U;
+    pdu.MetaDataPtr = NULL_PTR;
+    Com_RxIndication(0U, &pdu);
+
+    TEST_ASSERT_EQUAL_UINT8(COM_SERVICE_NOT_OK, Com_ReceiveSignal(0U, &recvVal));
+    TEST_ASSERT_EQUAL_HEX32(0xA5A55A5AUL, recvVal);
+}
+
+void test_SendSignal_SignalIdBeyondConfiguredCount_ShouldFailWithoutTransmission(void) {
+    uint32 sendVal = 0x12345678UL;
+
+    Com_Init(&be32Config);
+    TEST_ASSERT_EQUAL_UINT8(COM_SERVICE_NOT_OK, Com_SendSignal(1U, &sendVal));
+    TEST_ASSERT_EQUAL_UINT32(0U, mock_PduR_Transmit_Count);
+}
+
 /* --- Filter algorithm tests --- */
 
 void test_SendSignal_NeverFilter_ShouldBlockTransmission(void) {
@@ -1192,9 +1231,7 @@ void test_SendSignal_EmptyConfig_ShouldReturnNotOk(void) {
     Com_Init(&emptyConfig);
     uint8 data = 0x42;
     Std_ReturnType ret = Com_SendSignal(0U, &data);
-    /* GetSignalConfig: SignalId(0) < COM_NUM_OF_SIGNALS but ConfigPtr->Signals is NULL_PTR
-     * so accessing Signals[0] is technically UB, but with NULL config the check
-     * (ConfigPtr != NULL_PTR) in GetSignalConfig fails -> returns NULL_PTR */
+    /* A NULL signal table must be rejected before indexing the configuration. */
     TEST_ASSERT_EQUAL_UINT8(COM_SERVICE_NOT_OK, ret);
 }
 
@@ -1430,6 +1467,9 @@ int main(void) {
     RUN_TEST(test_SendReceive_LE32_RoundTrip);
     RUN_TEST(test_SendReceive_BitLE_RoundTrip);
     RUN_TEST(test_SendReceive_BitBE_RoundTrip);
+    RUN_TEST(test_SendSignal_OversizedBitSize_ShouldFailWithoutTransmission);
+    RUN_TEST(test_ReceiveSignal_OversizedBitSize_ShouldFailWithoutChangingOutput);
+    RUN_TEST(test_SendSignal_SignalIdBeyondConfiguredCount_ShouldFailWithoutTransmission);
     RUN_TEST(test_RxIndication_BE16_UnpackCorrectly);
     RUN_TEST(test_RxIndication_LE16_UnpackCorrectly);
     /* Batch 2: Filter algorithms */

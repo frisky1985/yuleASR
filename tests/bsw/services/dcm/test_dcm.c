@@ -36,6 +36,14 @@ static Std_ReturnType mock_ReadDataFnc(uint8* Data) {
     Data[2] = mockReadData[2]; Data[3] = mockReadData[3];
     return E_OK;
 }
+static Std_ReturnType mock_ReadLargeDataFnc(uint8* Data) {
+    uint16 i;
+    for (i = 0U; i < 254U; i++)
+    {
+        Data[i] = (uint8)i;
+    }
+    return E_OK;
+}
 static Std_ReturnType mock_WriteDataFnc(const uint8* Data, uint16 Len) {
     (void)Data; (void)Len; return E_OK;
 }
@@ -69,6 +77,7 @@ static const Dcm_DIDConfigType testDIDs[] = {
     {0xF194, 4, DCM_DEFAULT_SESSION, 0, mock_ReadDataFnc, NULL_PTR},
     {0xF195, 4, DCM_DEFAULT_SESSION, 0, mock_ReadDataFnc, mock_WriteDataFnc_Fail},
     {0xF196, 4, DCM_DEFAULT_SESSION, 0, mock_ReadDataFnc_Fail, mock_WriteDataFnc},
+    {0xF197, 254, DCM_DEFAULT_SESSION, 0, mock_ReadLargeDataFnc, NULL_PTR},
 };
 #define NUM_TEST_DIDS (sizeof(testDIDs) / sizeof(testDIDs[0]))
 
@@ -346,6 +355,12 @@ void test_Dcm_ReadDID_Valid_OpenDID(void) {
     TEST_ASSERT_EQUAL_HEX8(0x90, stub_PduR_lastPdu[2]);
     TEST_ASSERT_EQUAL_HEX8(0x11, stub_PduR_lastPdu[3]);
     TEST_ASSERT_EQUAL_UINT32(7U, stub_PduR_lastLength);
+}
+
+void test_Dcm_ReadDID_ResponseTooLong_ShouldReturnNrcWithoutOverflow(void) {
+    uint8 req[] = {0x22, 0xF1, 0x97};
+    sendRequest(req, 3);
+    assertNegResponse(0x22, DCM_E_RESPONSE_TOO_LONG);
 }
 
 void test_Dcm_ReadDID_SecurityDenied(void) {
@@ -1660,6 +1675,7 @@ int main(void)
     RUN_TEST(test_Dcm_TesterPresent_InvalidSubFunc);
     /* ReadDataByIdentifier */
     RUN_TEST(test_Dcm_ReadDID_Valid_OpenDID);
+    RUN_TEST(test_Dcm_ReadDID_ResponseTooLong_ShouldReturnNrcWithoutOverflow);
     RUN_TEST(test_Dcm_ReadDID_SecurityDenied);
     RUN_TEST(test_Dcm_ReadDID_SessionMismatch);
     RUN_TEST(test_Dcm_ReadDID_NotFound);

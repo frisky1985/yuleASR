@@ -161,7 +161,8 @@ STATIC void Com_PackSignal(const Com_SignalConfigType* SignalPtr, const void* Si
     uint8 bitSize;
     uint16 i;
 
-    if ((SignalPtr != NULL_PTR) && (SignalDataPtr != NULL_PTR) && (IPduDataPtr != NULL_PTR))
+    if ((SignalPtr != NULL_PTR) && (SignalDataPtr != NULL_PTR) && (IPduDataPtr != NULL_PTR) &&
+        (SignalPtr->BitSize <= 32U))
     {
         uint8 staged[4];
         uint8 numBytes;
@@ -256,7 +257,8 @@ STATIC void Com_UnpackSignal(const Com_SignalConfigType* SignalPtr, const uint8*
     uint8 bitSize;
     uint16 i;
 
-    if ((SignalPtr != NULL_PTR) && (IPduDataPtr != NULL_PTR) && (SignalDataPtr != NULL_PTR))
+    if ((SignalPtr != NULL_PTR) && (IPduDataPtr != NULL_PTR) && (SignalDataPtr != NULL_PTR) &&
+        (SignalPtr->BitSize <= 32U))
     {
         uint8 staged[4];
         uint8 numBytes;
@@ -562,7 +564,9 @@ STATIC const Com_SignalConfigType* Com_GetSignalConfig(Com_SignalIdType SignalId
 {
     const Com_SignalConfigType* result = NULL_PTR;
 
-    if ((SignalId < COM_NUM_OF_SIGNALS) && (Com_InternalState.ConfigPtr != NULL_PTR))
+    if ((SignalId < COM_NUM_OF_SIGNALS) && (Com_InternalState.ConfigPtr != NULL_PTR) &&
+        (Com_InternalState.ConfigPtr->Signals != NULL_PTR) &&
+        (SignalId < Com_InternalState.ConfigPtr->NumSignals))
     {
         result = &Com_InternalState.ConfigPtr->Signals[SignalId];
     }
@@ -713,7 +717,7 @@ Std_ReturnType Com_SendSignal(Com_SignalIdType SignalId, const void* SignalDataP
 
     signalConfig = Com_GetSignalConfig(SignalId);
 
-    if (signalConfig != NULL_PTR)
+    if ((signalConfig != NULL_PTR) && (signalConfig->BitSize <= 32U))
     {
         ipduConfig = Com_GetIPduConfig(signalConfig->SignalGroupRef);
 
@@ -788,7 +792,7 @@ Std_ReturnType Com_ReceiveSignal(Com_SignalIdType SignalId, void* SignalDataPtr)
 
     signalConfig = Com_GetSignalConfig(SignalId);
 
-    if (signalConfig != NULL_PTR)
+    if ((signalConfig != NULL_PTR) && (signalConfig->BitSize <= 32U))
     {
         /* Unpack signal from IPDU buffer (for timeout this returns the
          * substitution value written by Com_ProcessSignalTimeouts) */
