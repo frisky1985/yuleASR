@@ -52,25 +52,41 @@ Std_ReturnType Det_ReportRuntimeError(uint16 ModuleId, uint8 InstanceId, uint8 A
 /* ---------------------------------------------------------------------------
  * Inline PduR_LinTp mocks.
  * The canonical ecual/linTp calls into PduR for buffer management and
- * confirmation/indication. These stubs satisfy the linker.
+ * confirmation/indication. These stubs satisfy the linker and capture the
+ * N-SDU id they were called with, so routing bugs are observable.
  * ------------------------------------------------------------------------- */
+static PduIdType g_pdurStartNsdu        = 0xFFFFU;
+static uint8     g_pdurStartCount       = 0U;
+static PduIdType g_pdurCopyRxNsdu       = 0xFFFFU;
+static PduIdType g_pdurRxIndicationNsdu = 0xFFFFU;
+static PduIdType g_pdurTxConfNsdu       = 0xFFFFU;
+
+static void mock_PduR_Reset(void) {
+    g_pdurStartNsdu        = 0xFFFFU;
+    g_pdurStartCount       = 0U;
+    g_pdurCopyRxNsdu       = 0xFFFFU;
+    g_pdurRxIndicationNsdu = 0xFFFFU;
+    g_pdurTxConfNsdu       = 0xFFFFU;
+}
+
 void PduR_LinTpRxIndication(PduIdType RxPduId, Std_ReturnType result) {
-    (void)RxPduId;
     (void)result;
+    g_pdurRxIndicationNsdu = RxPduId;
 }
 
 void PduR_LinTpTxConfirmation(PduIdType TxPduId, Std_ReturnType result) {
-    (void)TxPduId;
     (void)result;
+    g_pdurTxConfNsdu = TxPduId;
 }
 
 BufReq_ReturnType PduR_LinTpStartOfReception(PduIdType RxPduId,
                                               const PduInfoType* PduInfoPtr,
                                               PduLengthType TpSduLength,
                                               PduLengthType* BufferSizePtr) {
-    (void)RxPduId;
     (void)PduInfoPtr;
     (void)TpSduLength;
+    g_pdurStartNsdu = RxPduId;
+    g_pdurStartCount++;
     if (BufferSizePtr != NULL_PTR) {
         *BufferSizePtr = 256U;
     }
@@ -80,8 +96,8 @@ BufReq_ReturnType PduR_LinTpStartOfReception(PduIdType RxPduId,
 BufReq_ReturnType PduR_LinTpCopyRxData(PduIdType RxPduId,
                                         const PduInfoType* PduInfoPtr,
                                         PduLengthType* BufferSizePtr) {
-    (void)RxPduId;
     (void)PduInfoPtr;
+    g_pdurCopyRxNsdu = RxPduId;
     if (BufferSizePtr != NULL_PTR) {
         *BufferSizePtr = 256U;
     }
@@ -154,6 +170,7 @@ void setUp(void) {
         moduleInitialized = FALSE;
     }
     mock_Det_Reset();
+    mock_PduR_Reset();
 }
 
 void tearDown(void) {
@@ -365,6 +382,48 @@ void test_LinTp_TxConfirmation_AfterInit_RunsWithoutDet(void) {
     TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
 }
 
+/* ---------------------------------------------------------------------------
+ * LinTp_RxIndication — RX N-SDU routing
+ * ------------------------------------------------------------------------- */
+
+/** @req SWS_LinTp_00100 */
+void test_LinTp_RxIndication_SingleFrame_RoutesToIncomingNsdu(void) {
+    /* SF, DL = 6, payload 6 bytes */
+    uint8 rxData[7] = { 0x06U, 0x10U, 0x11U, 0x12U, 0x13U, 0x14U, 0x15U };
+    PduInfoType pduInfo = { rxData, NULL_PTR, 7U };
+
+    test_LinTp_InitSut();
+    /* N-SDU 1 is the Rx connection on channel 0 */
+    LinTp_RxIndication(1U, &pduInfo);
+
+    /* Regression: the channel starts idle with CurrentNsduId = 0xFFFF.
+       Every PduR call must carry the N-SDU id that actually arrived. */
+    TEST_ASSERT_EQUAL_UINT8(1U, g_pdurStartCount);
+    TEST_ASSERT_EQUAL_UINT16(1U, g_pdurStartNsdu);
+    TEST_ASSERT_EQUAL_UINT16(1U, g_pdurCopyRxNsdu);
+    TEST_ASSERT_EQUAL_UINT16(1U, g_pdurRxIndicationNsdu);
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
+}
+
+/** @req SWS_LinTp_00100 */
+void test_LinTp_RxIndication_SingleFrame_WhileTxActive_KeepsTxNsdu(void) {
+    uint8 txData[3] = { 0x22U, 0xF1U, 0x90U };
+    PduInfoType txPduInfo = { txData, NULL_PTR, 3U };
+    uint8 rxData[7] = { 0x06U, 0x10U, 0x11U, 0x12U, 0x13U, 0x14U, 0x15U };
+    PduInfoType rxPduInfo = { rxData, NULL_PTR, 7U };
+
+    test_LinTp_InitSut();
+    /* Channel 0 is now owned by N-SDU 0 (Tx) */
+    TEST_ASSERT_EQUAL_UINT8(E_OK, LinTp_Transmit(0U, &txPduInfo));
+
+    /* An Rx frame on the busy channel must not overwrite the ongoing Tx id */
+    LinTp_RxIndication(1U, &rxPduInfo);
+    TEST_ASSERT_EQUAL_UINT8(0U, g_pdurStartCount);
+
+    LinTp_TxConfirmation(0U, E_OK);
+    TEST_ASSERT_EQUAL_UINT16(0U, g_pdurTxConfNsdu);
+}
+
 int main(void) {
     UNITY_BEGIN();
 
@@ -398,6 +457,10 @@ int main(void) {
     RUN_TEST(test_LinTp_MainFunction_BeforeInit_IsSilentNoDet);
     RUN_TEST(test_LinTp_MainFunction_AfterInit_RunsSilently);
     RUN_TEST(test_LinTp_TxConfirmation_AfterInit_RunsWithoutDet);
+
+    /* LinTp_RxIndication — RX N-SDU routing */
+    RUN_TEST(test_LinTp_RxIndication_SingleFrame_RoutesToIncomingNsdu);
+    RUN_TEST(test_LinTp_RxIndication_SingleFrame_WhileTxActive_KeepsTxNsdu);
 
     return UnityEnd();
 }

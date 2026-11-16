@@ -155,18 +155,14 @@ static void LinNm_ReceiveNmPdu(uint8 channelIndex, const uint8* pduData)
     const LinNm_ChannelConfigType* chConfig;
     LinNm_ChannelRuntimeType* chRuntime;
     uint8 i;
-    boolean activeWakeup = FALSE;
     if (!LinNm_IsChannelValid(channelIndex) || (pduData == NULL_PTR))
     {
         return;
     }
     chConfig = &LinNm_ConfigPtr->ChannelConfig[channelIndex];
     chRuntime = &LinNm_ConfigPtr->ChannelRuntime[channelIndex];
-    /* Check CBV for active wake-up */
-    if ((pduData[LINNM_PDU_CBV_POS] & LINNM_CBV_ACTIVEWAKEUP_MASK) != 0U)
-    {
-        activeWakeup = TRUE;
-    }
+    /* CBV 的 active wake-up 位描述的是发送方唤醒方式，接收侧状态机
+       统一由 LINNM_EVENT_MSG_RECEIVED 处理，不单独分支。 */
 /* Extract user data */
 #if (LINNM_USER_DATA_ENABLED == STD_ON)
     for (i = 0; i < chConfig->UserDataLength && i < LINNM_PDU_USER_DATA_SIZE; i++)

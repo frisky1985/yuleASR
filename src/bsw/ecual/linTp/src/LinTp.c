@@ -496,10 +496,9 @@ void LinTp_MainFunction(void)
 void LinTp_RxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr)
 {
     uint8 channelIdx;
-    uint8 nsduIdx;
     uint8 pciByte;
     uint8 pciType;
-    const LinTp_ChannelRuntimeType *channelPtr;
+    LinTp_ChannelRuntimeType *channelPtr;
 
 #if (LINTP_DEV_ERROR_DETECT == STD_ON)
     if (LinTp_Internal.ModuleState != LINTP_STATE_INIT)
@@ -534,7 +533,14 @@ void LinTp_RxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr)
     }
 
     channelPtr = &LinTp_Internal.ChannelRuntime[channelIdx];
-    nsduIdx = LinTp_GetNsduIdx(RxPduId);
+
+    /* 空闲通道上的 SF/FF 是新一次接收的起点，必须记录本次接收的 N-SDU；
+       否则 PduR 拿到的是复位值 0xFFFF，收到的数据无法路由到目标 N-SDU。
+       CF/FC 属于已建立的多帧接收，发送占用通道时同样不能被覆盖。 */
+    if (channelPtr->State == LINTP_CH_IDLE)
+    {
+        channelPtr->CurrentNsduId = RxPduId;
+    }
 
     /* Get PCI type from first byte */
     pciByte = PduInfoPtr->SduDataPtr[0];
