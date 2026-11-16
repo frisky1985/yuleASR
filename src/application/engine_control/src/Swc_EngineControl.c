@@ -478,7 +478,7 @@ Rte_StatusType Swc_EngineControl_GetEngineParameters(Swc_EngineParametersType* p
 uint16 Swc_EngineControl_CalculateFuelInjection(uint16 speed, uint16 load, sint16 temp)
 {
     uint32 fuelTime;
-    sint16 tempCorrection;
+    sint32 tempCorrection;
 
     /* Base fuel calculation */
     fuelTime = FUEL_INJ_BASE_TIME_US + ((uint32)load * 100U);
@@ -517,7 +517,7 @@ uint16 Swc_EngineControl_CalculateFuelInjection(uint16 speed, uint16 load, sint1
  */
 uint16 Swc_EngineControl_CalculateIgnitionTiming(uint16 speed, uint16 load, sint16 temp)
 {
-    sint16 ignitionAdvance;
+    sint32 ignitionAdvance;
 
     /* Base ignition advance */
     ignitionAdvance = IGNITION_ADVANCE_BASE_DEG;

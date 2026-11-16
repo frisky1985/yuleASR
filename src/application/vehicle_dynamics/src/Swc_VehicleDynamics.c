@@ -168,7 +168,7 @@ STATIC void Swc_VehicleDynamics_CalculateTargetYawRate(void)
  */
 STATIC void Swc_VehicleDynamics_CheckStability(void)
 {
-    sint16 yawRateError;
+    sint32 yawRateError;
 
     /* Calculate yaw rate error */
     yawRateError = swcVehicleDynamics.motionData.yawRate - swcVehicleDynamics.targetYawRate;
@@ -206,7 +206,7 @@ STATIC void Swc_VehicleDynamics_CheckStability(void)
  */
 STATIC void Swc_VehicleDynamics_CalculateIntervention(void)
 {
-    sint16 yawRateError;
+    sint32 yawRateError;
     sint16 brakeIntervention;
 
     if (swcVehicleDynamics.currentState != VDC_STATE_INTERVENING) {
@@ -231,19 +231,19 @@ STATIC void Swc_VehicleDynamics_CalculateIntervention(void)
     );
 
     /* Apply brake forces based on yaw rate error */
-    if ((unsigned int)(yawRateError) > 0U ) {
+    if (yawRateError > 0) {
         /* Oversteer - brake outer wheels */
         swcVehicleDynamics.output.brakeForceLeft = 0;
         swcVehicleDynamics.output.brakeForceRight = brakeIntervention;
     } else {
         /* Understeer - brake inner wheels */
-        swcVehicleDynamics.output.brakeForceLeft = -brakeIntervention;
+        swcVehicleDynamics.output.brakeForceLeft = (sint16)(-brakeIntervention);
         swcVehicleDynamics.output.brakeForceRight = 0;
     }
 
     /* Front/rear brake distribution */
-    swcVehicleDynamics.output.brakeForceFront = (brakeIntervention * 70) / 100;
-    swcVehicleDynamics.output.brakeForceRear = (brakeIntervention * 30) / 100;
+    swcVehicleDynamics.output.brakeForceFront = (sint16)((brakeIntervention * 70) / 100);
+    swcVehicleDynamics.output.brakeForceRear = (sint16)((brakeIntervention * 30) / 100);
 
     /* Torque reduction for traction control */
     if (swcVehicleDynamics.output.tractionControlActive) {
@@ -481,7 +481,7 @@ sint16 Swc_VehicleDynamics_CalculateBrakeIntervention(sint16 yawRate,
                                                        sint16 lateralAccel)
 {
     sint32 intervention;
-    sint16 yawRateError;
+    sint32 yawRateError;
 
     /* Calculate yaw rate error */
     yawRateError = yawRate - targetYawRate;

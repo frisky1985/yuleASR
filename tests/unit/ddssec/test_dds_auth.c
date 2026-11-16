@@ -319,12 +319,10 @@ static void test_generate_dh_keypair(void)
     TEST_ASSERT_TRUE(kp.public_key_len <= 256U);
     TEST_ASSERT_EQUAL(32, (int)kp.private_key_len);
 
-    /* NOTE 产品缺陷: write_binary 对 4096 字节 public_key 缓冲做左填充,
-     * 公钥数据实际落在 public_key[3840..4095], 而 public_key_len=256 使
-     * 消费方只读前 256 字节 → 读到的"公钥"恒为全零 */
+    /* 公钥有效字节必须位于缓冲起始处且非全零 */
     uint8_t zeros[32];
     memset(zeros, 0, sizeof(zeros));
-    TEST_ASSERT_EQUAL_MEMORY(zeros, kp.public_key, 32);
+    TEST_ASSERT_TRUE(memcmp(zeros, kp.public_key, 32) != 0);
 
     TEST_ASSERT_EQUAL((int)DDS_AUTH_ERROR_INVALID_PARAM,
                       (int)dds_auth_generate_dh_keypair(NULL, &kp));
@@ -344,16 +342,37 @@ static void test_compute_shared_secret(void)
     TEST_ASSERT_EQUAL((int)DDS_AUTH_OK, (int)dds_auth_generate_dh_keypair(g_auth, &a));
     TEST_ASSERT_EQUAL((int)DDS_AUTH_OK, (int)dds_auth_generate_dh_keypair(g_auth, &b));
 
-    /* NOTE 产品缺陷链: 对端公钥前 256 字节全零 (见 generate_dh_keypair NOTE)
-     * → read_binary 得 0 → shared = 0^priv mod p = 0 → write_binary(0)
-     * 成功 → 接口返回 OK + 32 字节全零"共享密钥"。真实 DH 协商在此实现下
-     * 已失效。以探针验证的该真实行为为准断言。 */
+    /* 双方基于对方公钥计算出的共享密钥必须一致且非零 */
     TEST_ASSERT_EQUAL((int)DDS_AUTH_OK,
                       (int)dds_auth_compute_shared_secret(g_auth, a.private_key,
                                                           b.public_key, b.public_key_len,
                                                           secret, &secret_len));
     TEST_ASSERT_EQUAL(32, (int)secret_len);
-    TEST_ASSERT_EQUAL_MEMORY(zeros, secret, 32);
+
+    uint8_t secret_b[64];
+    uint32_t secret_b_len = 0;
+    TEST_ASSERT_EQUAL((int)DDS_AUTH_OK,
+                      (int)dds_auth_compute_shared_secret(g_auth, b.private_key,
+                                                          a.public_key, a.public_key_len,
+                                                          secret_b, &secret_b_len));
+    TEST_ASSERT_EQUAL(32, (int)secret_b_len);
+    TEST_ASSERT_EQUAL_MEMORY(secret, secret_b, 32);
+    TEST_ASSERT_TRUE(memcmp(zeros, secret, 32) != 0);
+
+    /* 退化对端公钥 (0/1) 必须被拒绝 */
+    uint8_t zero_pub[256];
+    memset(zero_pub, 0, sizeof(zero_pub));
+    TEST_ASSERT_EQUAL((int)DDS_AUTH_ERROR_HANDSHAKE_FAILED,
+                      (int)dds_auth_compute_shared_secret(g_auth, a.private_key,
+                                                          zero_pub, sizeof(zero_pub),
+                                                          secret, &secret_len));
+    uint8_t one_pub[256];
+    memset(one_pub, 0, sizeof(one_pub));
+    one_pub[255] = 0x01U;
+    TEST_ASSERT_EQUAL((int)DDS_AUTH_ERROR_HANDSHAKE_FAILED,
+                      (int)dds_auth_compute_shared_secret(g_auth, a.private_key,
+                                                          one_pub, sizeof(one_pub),
+                                                          secret, &secret_len));
 
     /* 参数守卫 */
     TEST_ASSERT_EQUAL((int)DDS_AUTH_ERROR_INVALID_PARAM,
@@ -563,9 +582,7 @@ static void test_full_handshake_flow(void)
     TEST_ASSERT_TRUE(reply.dh_public_len > 0U);
     TEST_ASSERT_EQUAL((int)DDS_HANDSHAKE_STATE_REPLY_SENT, (int)hs_b->state);
 
-    /* NOTE 产品缺陷: 公钥经 write_binary 写入 4096 字节缓冲尾部, 消费方
-     * 读前 256 字节得全零 → 双方 shared = 0, 但 shared_secret_len 被置 32,
-     * 接口仍返回成功。 */
+    /* 响应方已基于请求方公钥协商出 32 字节共享密钥 */
     TEST_ASSERT_EQUAL(32, (int)hs_b->identity.shared_secret_len);
 
     /* 请求方 A: 处理 reply → final */
@@ -594,14 +611,15 @@ static void test_full_handshake_flow(void)
     TEST_ASSERT_EQUAL((int)DDS_HANDSHAKE_STATE_COMPLETED, (int)hs_b->state);
     TEST_ASSERT_TRUE(hs_b->verified);
 
-    /* NOTE: 共享密钥因公钥缓冲错位缺陷为全零, get_shared_secret 仍返回成功 */
+    /* 双方协商出的共享密钥必须完全一致且非零 */
     uint8_t secret[64];
     uint32_t secret_len = 0;
     TEST_ASSERT_EQUAL((int)DDS_AUTH_OK, (int)dds_auth_get_shared_secret(hs_b, secret, &secret_len));
     TEST_ASSERT_EQUAL(32, (int)secret_len);
+    TEST_ASSERT_EQUAL_MEMORY(hs_b->identity.shared_secret, hs_a->identity.shared_secret, 32);
     uint8_t zeros[32];
     memset(zeros, 0, sizeof(zeros));
-    TEST_ASSERT_EQUAL_MEMORY(zeros, secret, 32);
+    TEST_ASSERT_TRUE(memcmp(zeros, secret, 32) != 0);
 
     dds_auth_handshake_destroy(g_auth, hs_a);
     dds_auth_handshake_destroy(g_auth, hs_b);
@@ -655,6 +673,46 @@ static void test_check_handshake_timeouts(void)
     TEST_ASSERT_EQUAL(0, (int)dds_auth_check_handshake_timeouts(NULL, 100U));
 }
 
+static void test_process_request_rejects_oversized_dh_public(void)
+{
+    rtps_guid_t l = make_guid(11), r = make_guid(12);
+    dds_auth_handshake_request_t request;
+    dds_auth_handshake_reply_t reply;
+    dds_security_handshake_t *hs = NULL;
+
+    memset(&request, 0, sizeof(request));
+    request.msg_type = DDS_AUTH_MSG_HANDSHAKE_REQUEST;
+    request.dh_public_len = sizeof(request.dh_public) + 1U;
+
+    TEST_ASSERT_EQUAL((int)DDS_AUTH_ERROR_INVALID_PARAM,
+                      (int)dds_auth_process_handshake_request(g_auth, &request, &hs, &reply));
+    TEST_ASSERT_NULL(hs);
+
+    /* 失败时必须释放已占用的握手表项 */
+    hs = dds_auth_handshake_create(g_auth, &l, &r);
+    TEST_ASSERT_NOT_NULL(hs);
+    dds_auth_handshake_destroy(g_auth, hs);
+}
+
+static void test_process_reply_rejects_oversized_dh_public(void)
+{
+    rtps_guid_t l = make_guid(13), r = make_guid(14);
+    dds_auth_handshake_reply_t reply;
+    dds_auth_handshake_final_t final;
+    dds_security_handshake_t *hs = dds_auth_handshake_create(g_auth, &l, &r);
+    TEST_ASSERT_NOT_NULL(hs);
+
+    memset(&reply, 0, sizeof(reply));
+    reply.msg_type = DDS_AUTH_MSG_HANDSHAKE_REPLY;
+    reply.dh_public_len = sizeof(reply.dh_public) + 1U;
+
+    TEST_ASSERT_EQUAL((int)DDS_AUTH_ERROR_INVALID_PARAM,
+                      (int)dds_auth_process_handshake_reply(g_auth, hs, &reply, &final));
+    TEST_ASSERT_EQUAL((int)DDS_HANDSHAKE_STATE_FAILED, (int)hs->state);
+
+    dds_auth_handshake_destroy(g_auth, hs);
+}
+
 int main(void)
 {
     UNITY_BEGIN();
@@ -685,5 +743,7 @@ int main(void)
     RUN_TEST(test_full_handshake_flow);
     RUN_TEST(test_get_shared_secret_guards);
     RUN_TEST(test_check_handshake_timeouts);
+    RUN_TEST(test_process_request_rejects_oversized_dh_public);
+    RUN_TEST(test_process_reply_rejects_oversized_dh_public);
     return UNITY_END();
 }

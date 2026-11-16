@@ -483,15 +483,23 @@ dds_auth_status_t dds_auth_generate_dh_keypair(dds_auth_context_t *ctx,
         rc = mbedtls_mpi_exp_mod(&pub, &g, &priv, &p, NULL);
     }
 
+    /* 只写入公钥的有效字节数, 使公钥数据位于缓冲起始处。
+     * 若按 sizeof(public_key) 写入, mbedtls 会做左侧零填充, 公钥数据落在
+     * 缓冲尾部, 而消费方按 public_key_len 从起始处读取 → 读到全零。 */
+    size_t pub_len = 0U;
     if (rc == 0) {
-        rc = mbedtls_mpi_write_binary(&pub, key_pair->public_key, sizeof(key_pair->public_key));
+        pub_len = mbedtls_mpi_size(&pub);
+        if (pub_len > sizeof(key_pair->public_key)) {
+            rc = -1;
+        } else {
+            rc = mbedtls_mpi_write_binary(&pub, key_pair->public_key, pub_len);
+        }
     }
 
     if (rc == 0) {
         (void)memcpy(key_pair->private_key, priv_bytes, sizeof(priv_bytes));
         key_pair->private_key_len = sizeof(priv_bytes);
-        key_pair->public_key_len = (mbedtls_mpi_size(&pub) < sizeof(key_pair->public_key))
-            ? mbedtls_mpi_size(&pub) : sizeof(key_pair->public_key);
+        key_pair->public_key_len = (uint32_t)pub_len;
     }
 
     mbedtls_mpi_free(&p);
@@ -531,10 +539,25 @@ dds_auth_status_t dds_auth_compute_shared_secret(dds_auth_context_t *ctx,
         rc = mbedtls_mpi_exp_mod(&shared, &pub, &priv, &p, NULL);
     }
     if (rc == 0) {
-        *secret_len = 32;
-        size_t olen = 0;
-        rc = mbedtls_mpi_write_binary(&shared, shared_secret, 32);
-        (void)olen;
+        /* DH 共享值是 2048-bit 大数 (最多 256 字节), 不能直接写入 32 字节
+         * 输出缓冲; 先用 SHA-256 压缩为固定 32 字节密钥材料。 */
+        uint8_t raw_shared[sizeof(dh_p_2048)];
+        size_t raw_len = mbedtls_mpi_size(&shared);
+        if ((raw_len == 0U) || (raw_len > sizeof(raw_shared))) {
+            rc = -1;
+        } else {
+            rc = mbedtls_mpi_write_binary(&shared, raw_shared, raw_len);
+        }
+        /* 拒绝退化共享值 (对端公钥为 0/1), 否则会话密钥可预测 */
+        if ((rc == 0) && (mbedtls_mpi_cmp_int(&shared, 1) <= 0)) {
+            rc = -1;
+        }
+        if (rc == 0) {
+            rc = (dds_auth_sha256(raw_shared, (uint32_t)raw_len, shared_secret) == DDS_AUTH_OK) ? 0 : -1;
+        }
+        if (rc == 0) {
+            *secret_len = 32;
+        }
     }
 
     mbedtls_mpi_free(&p);
@@ -709,7 +732,19 @@ dds_auth_status_t dds_auth_begin_handshake_request(dds_auth_context_t *ctx,
     }
 
     dds_security_key_pair_t dh_keypair;
-    (void)dds_auth_generate_dh_keypair(ctx, &dh_keypair);
+    dds_auth_status_t key_status = dds_auth_generate_dh_keypair(ctx, &dh_keypair);
+    if (key_status != DDS_AUTH_OK) {
+        dds_auth_handshake_destroy(ctx, *handshake);
+        *handshake = NULL;
+        return key_status;
+    }
+
+    if ((dh_keypair.public_key_len > sizeof((*handshake)->local_dh_public)) ||
+        (dh_keypair.private_key_len > sizeof((*handshake)->identity.key_pair.private_key))) {
+        dds_auth_handshake_destroy(ctx, *handshake);
+        *handshake = NULL;
+        return DDS_AUTH_ERROR_HANDSHAKE_FAILED;
+    }
 
     (void)memcpy((*handshake)->local_dh_public, dh_keypair.public_key, dh_keypair.public_key_len);
     (*handshake)->local_dh_public_len = dh_keypair.public_key_len;
@@ -756,12 +791,30 @@ dds_auth_status_t dds_auth_process_handshake_request(dds_auth_context_t *ctx,
         return DDS_AUTH_ERROR_NO_MEMORY;
     }
 
+    if (request->dh_public_len > sizeof((*handshake)->remote_dh_public)) {
+        dds_auth_handshake_destroy(ctx, *handshake);
+        *handshake = NULL;
+        return DDS_AUTH_ERROR_INVALID_PARAM;
+    }
+
     (void)memcpy((*handshake)->remote_dh_public, request->dh_public, request->dh_public_len);
     (*handshake)->remote_dh_public_len = request->dh_public_len;
     (void)memcpy((*handshake)->remote_challenge, request->challenge, 32);
 
     dds_security_key_pair_t dh_keypair;
-    (void)dds_auth_generate_dh_keypair(ctx, &dh_keypair);
+    dds_auth_status_t key_status = dds_auth_generate_dh_keypair(ctx, &dh_keypair);
+    if (key_status != DDS_AUTH_OK) {
+        dds_auth_handshake_destroy(ctx, *handshake);
+        *handshake = NULL;
+        return key_status;
+    }
+
+    if ((dh_keypair.public_key_len > sizeof((*handshake)->local_dh_public)) ||
+        (dh_keypair.private_key_len > sizeof((*handshake)->identity.key_pair.private_key))) {
+        dds_auth_handshake_destroy(ctx, *handshake);
+        *handshake = NULL;
+        return DDS_AUTH_ERROR_HANDSHAKE_FAILED;
+    }
 
     (void)memcpy((*handshake)->local_dh_public, dh_keypair.public_key, dh_keypair.public_key_len);
     (*handshake)->local_dh_public_len = dh_keypair.public_key_len;
@@ -809,6 +862,11 @@ dds_auth_status_t dds_auth_process_handshake_reply(dds_auth_context_t *ctx,
     }
 
     if (reply->msg_type != (uint32_t)(DDS_AUTH_MSG_HANDSHAKE_REPLY)) {
+        return DDS_AUTH_ERROR_INVALID_PARAM;
+    }
+
+    if (reply->dh_public_len > sizeof(handshake->remote_dh_public)) {
+        handshake->state = DDS_HANDSHAKE_STATE_FAILED;
         return DDS_AUTH_ERROR_INVALID_PARAM;
     }
 

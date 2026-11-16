@@ -190,6 +190,6 @@ void test_dds_access_clear_permission_cache(void)
     dds_access_clear_permission_cache(access_ctx);
     
     /* Verify cleared */
-    TEST_ASSERT_EQUAL(0, access_ctx->permission_cache.last_subject[0]);
+    TEST_ASSERT_EQUAL(0, (int)(unsigned char)access_ctx->permission_cache.last_subject[0]);
     TEST_ASSERT_EQUAL(0, access_ctx->permission_cache.cache_time);
 }

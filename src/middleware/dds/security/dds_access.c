@@ -272,7 +272,11 @@ static void parse_domain_rules(struct dds_access_subject *subject,
         if ((id_tag) != 0U) {
             char id_str[16];
             xml_extract_value(id_tag, id_len, id_str, sizeof(id_str));
-            subject->domains[domain_idx].domain_id = atoi(id_str);
+            char *end_ptr = NULL;
+            unsigned long parsed_id = strtoul(id_str, &end_ptr, 10);
+            subject->domains[domain_idx].domain_id =
+                ((end_ptr != id_str) && (parsed_id <= 0xFFFFFFFFUL))
+                ? (dds_domain_id_t)parsed_id : (dds_domain_id_t)0U;
         }
 
         parse_publish_rules(subject, domain_idx, domain_tag);
@@ -432,7 +436,10 @@ dds_access_status_t dds_access_parse_governance_xml(dds_access_context_t *ctx,
         if ((id_tag) != 0U) {
             char id_str[16];
             xml_extract_value(id_tag, id_len, id_str, sizeof(id_str));
-            domain->domain_id = atoi(id_str);
+            char *end_ptr = NULL;
+            unsigned long parsed_id = strtoul(id_str, &end_ptr, 10);
+            domain->domain_id = ((end_ptr != id_str) && (parsed_id <= 0xFFFFFFFFUL))
+                ? (dds_domain_id_t)parsed_id : (dds_domain_id_t)0U;
         }
 
         /* Parse security policies */

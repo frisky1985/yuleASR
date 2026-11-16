@@ -725,7 +725,7 @@ dds_crypto_status_t dds_crypto_encrypt_aes_gcm(dds_crypto_context_t *ctx,
 
     /* Expand key for AES */
     uint8_t round_key[240];
-    aes_key_expansion(round_key, key, key_len * 8U);
+    aes_key_expansion(round_key, key, (int)(key_len * 8U));
 
     aes_ctr_crypt(round_key, key_len, iv, plaintext, plaintext_len, ciphertext);
 

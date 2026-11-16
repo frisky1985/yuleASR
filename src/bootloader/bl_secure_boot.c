@@ -800,7 +800,7 @@ bl_secure_boot_error_t bl_secure_boot_verify_cert_chain(
     }
 
     /* 验证证书链：逐级验证签名（根→叶子，每张证书由上一级公钥签发） */
-    for (int i = chain->num_certs - 1U; i >= 0; i--) {
+    for (int i = (int)chain->num_certs - 1; i >= 0; i--) {
         bl_secure_boot_error_t result = verify_single_cert(ctx, chain, i,
                                                            trusted_root_key, csm);
         if (result != BL_SB_OK) {
