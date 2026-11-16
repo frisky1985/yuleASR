@@ -679,8 +679,21 @@ void test_AlarmCallback_WithCallback(void)
     TEST_ASSERT_EQUAL_INT(1, g_alarm_callback_invoked);
 }
 
-/** @test ACB_002 - NULL alarm pointer => skipped (production code dereferences
- *  alarm->Cycle without NULL guard after callback block; this is a latent bug) */
+/** @test ACB_002 - NULL alarm pointer => callback and cyclic paths must not
+ *  dereference it (regression for the former latent NULL deref) */
+void test_AlarmCallback_NullAlarm(void)
+{
+    g_stub_timer_id = NULL_PTR;
+    g_alarm_callback_invoked = 0;
+    g_stub_timer_change_period_called = 0;
+    g_stub_timer_start_called = 0;
+
+    Os_AlarmCallback(g_stub_timer_handle);
+
+    TEST_ASSERT_EQUAL_INT(0, g_alarm_callback_invoked);
+    TEST_ASSERT_EQUAL_INT(0, g_stub_timer_change_period_called);
+    TEST_ASSERT_EQUAL_INT(0, g_stub_timer_start_called);
+}
 
 /** @test ACB_003 - NULL callback => callback not invoked */
 void test_AlarmCallback_NullCallback(void)
@@ -1071,7 +1084,7 @@ int main(void)
 
     /* Os_AlarmCallback */
     RUN_TEST(test_AlarmCallback_WithCallback);
-    /* test_AlarmCallback_NullAlarm skipped: production code NULL-deref bug */
+    RUN_TEST(test_AlarmCallback_NullAlarm);
     RUN_TEST(test_AlarmCallback_NullCallback);
     RUN_TEST(test_AlarmCallback_CyclicAlarm);
     RUN_TEST(test_AlarmCallback_OneShotAlarm);

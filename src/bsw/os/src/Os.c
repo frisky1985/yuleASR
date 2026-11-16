@@ -1512,7 +1512,7 @@ void Os_AlarmCallback(TimerHandle_t xTimer)
     }
 
     /* Handle cyclic alarms */
-    if (alarm->Cycle > 0U && alarm->State == OS_ALARM_ACTIVE)
+    if (alarm != NULL_PTR && alarm->Cycle > 0U && alarm->State == OS_ALARM_ACTIVE)
     {
         TickType cycleMs = alarm->Cycle / OS_TICKS_PER_MS;
         if (cycleMs == 0U )
