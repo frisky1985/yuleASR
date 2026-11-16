@@ -37,6 +37,13 @@
 static int tests_run = 0;
 static int tests_passed = 0;
 
+extern uint16_t g_mdio_regs[256];
+
+static void test_eth_reset_mdio(void)
+{
+    memset(g_mdio_regs, 0, sizeof(g_mdio_regs));
+}
+
 static automotive_phy_config_t make_config(void)
 {
     automotive_phy_config_t cfg;
@@ -51,8 +58,13 @@ static automotive_phy_config_t make_config(void)
 }
 
 /* 必须在初始化之前执行 */
+/* 访问 mdio 存根写入的控制寄存器 (PHY_REG_CONTROL = 0x00) */
+#define PHY_REG_CONTROL_EXTERNAL   0x00U
+#define PHY_CTRL_POWER_DOWN_EXTERNAL 0x0800U
+
 static int test_run_diagnostics_before_init_should_not_init(void)
 {
+    test_eth_reset_mdio();
     automotive_phy_diagnostics_t diag;
 
     memset(&diag, 0, sizeof(diag));
@@ -62,6 +74,7 @@ static int test_run_diagnostics_before_init_should_not_init(void)
 
 static int test_run_diagnostics_null_should_invalid_param(void)
 {
+    test_eth_reset_mdio();
     automotive_phy_config_t cfg = make_config();
 
     TEST_ASSERT_EQ(ETH_OK, automotive_phy_init(&cfg));
@@ -73,6 +86,7 @@ static int test_run_diagnostics_null_should_invalid_param(void)
 
 static int test_run_diagnostics_unavailable_values(void)
 {
+    test_eth_reset_mdio();
     automotive_phy_config_t cfg = make_config();
     automotive_phy_diagnostics_t diag;
 
@@ -82,7 +96,8 @@ static int test_run_diagnostics_unavailable_values(void)
     memset(&diag, 0xA5, sizeof(diag));
     TEST_ASSERT_EQ(ETH_OK, automotive_phy_run_diagnostics(&diag));
 
-    /* MDIO 存根恒定返回 0xFFFF: 链路正常 */
+    /* MDIO 存根: 读回值等于写回值，init 期间写入的 CONTROL 寄存器会让
+     * link 状态保持为 UP（AUTO_NEG 被置位） */
     TEST_ASSERT(diag.link_pass);
     TEST_ASSERT(diag.cable_ok);
 
@@ -99,6 +114,61 @@ static int test_run_diagnostics_unavailable_values(void)
     return 0;
 }
 
+/* 访问 mdio 存根写入的控制寄存器 (PHY_REG_CONTROL = 0x00) */
+extern uint16_t g_mdio_regs[256];
+
+#define PHY_REG_CONTROL_EXTERNAL   0x00U
+#define PHY_CTRL_POWER_DOWN_EXTERNAL 0x0800U
+
+static int test_enter_low_power_with_wake_on_link(void)
+{
+    test_eth_reset_mdio();
+    automotive_phy_config_t cfg = make_config();
+
+    TEST_ASSERT_EQ(ETH_OK, automotive_phy_init(&cfg));
+
+    uint16_t before = g_mdio_regs[PHY_REG_CONTROL_EXTERNAL];
+
+    /* wake_on_link=true: 保留链路检测 — 不应置 POWER_DOWN */
+    TEST_ASSERT_EQ(ETH_OK, automotive_phy_enter_low_power(true));
+
+    uint16_t after = g_mdio_regs[PHY_REG_CONTROL_EXTERNAL];
+    TEST_ASSERT_EQ((uint16_t)(before & (uint16_t)~PHY_CTRL_POWER_DOWN_EXTERNAL),
+                   after);
+
+    automotive_phy_deinit();
+    return 0;
+}
+
+static int test_enter_low_power_without_wake_on_link(void)
+{
+    test_eth_reset_mdio();
+    automotive_phy_config_t cfg = make_config();
+
+    TEST_ASSERT_EQ(ETH_OK, automotive_phy_init(&cfg));
+
+    uint16_t before = g_mdio_regs[PHY_REG_CONTROL_EXTERNAL];
+
+    /* wake_on_link=false: 彻底低功耗 — 必须置 POWER_DOWN */
+    TEST_ASSERT_EQ(ETH_OK, automotive_phy_enter_low_power(false));
+
+    uint16_t after = g_mdio_regs[PHY_REG_CONTROL_EXTERNAL];
+    TEST_ASSERT(after & PHY_CTRL_POWER_DOWN_EXTERNAL);
+    /* 其他位保持不变 */
+    TEST_ASSERT_EQ((uint16_t)(before | PHY_CTRL_POWER_DOWN_EXTERNAL), after);
+
+    automotive_phy_deinit();
+    return 0;
+}
+
+static int test_enter_low_power_not_init(void)
+{
+    test_eth_reset_mdio();
+    TEST_ASSERT_EQ(ETH_NOT_INIT, automotive_phy_enter_low_power(true));
+    TEST_ASSERT_EQ(ETH_NOT_INIT, automotive_phy_enter_low_power(false));
+    return 0;
+}
+
 typedef int (*test_fn_t)(void);
 
 typedef struct {
@@ -112,6 +182,9 @@ int main(void)
         { "before_init_ShouldNotInit", test_run_diagnostics_before_init_should_not_init },
         { "null_ptr_ShouldInvalidParam", test_run_diagnostics_null_should_invalid_param },
         { "unavailable_values", test_run_diagnostics_unavailable_values },
+        { "lowPower_NotInit", test_enter_low_power_not_init },
+        { "lowPower_WithWakeOnLink", test_enter_low_power_with_wake_on_link },
+        { "lowPower_WithoutWakeOnLink", test_enter_low_power_without_wake_on_link },
     };
 
     printf("=== ethernet PHY diagnostics tests ===\n");

@@ -139,12 +139,27 @@ static eth_status_t automotive_phy_validate_config(const automotive_phy_config_t
 /**
  * @brief 通用MDIO读取(存根 - 需要硬件实现)
  */
+uint16_t g_mdio_regs[256];  /* 存根: 让 mdio_write 对后续 read 可见, 测试可观测 */
 static eth_status_t mdio_read(uint8_t phy_addr, uint8_t reg_addr, uint16_t *value)
 {
     /* 存根: 实际实现需要操作MDIO总线 */
     (void)phy_addr;
-    (void)reg_addr;
-    *value = 0xFFFF;  /* 模拟读取 */
+
+    switch (reg_addr) {
+        case PHY_REG_STATUS:
+            /* 状态寄存器是硬件只读: 恒定返回 LINK_UP + AUTO_NEG_DONE, 模拟链路连好 */
+            *value = PHY_STATUS_LINK_UP | PHY_STATUS_AUTO_NEG_DONE | PHY_STATUS_EXT_CAP;
+            break;
+        case PHY_REG_ID1:
+            *value = 0x0130U;  /* TJA1101 ID1 */
+            break;
+        case PHY_REG_ID2:
+            *value = 0x5070U;  /* TJA1101 ID2 */
+            break;
+        default:
+            *value = g_mdio_regs[reg_addr];
+            break;
+    }
     return ETH_OK;
 }
 
@@ -155,8 +170,7 @@ static eth_status_t mdio_write(uint8_t phy_addr, uint8_t reg_addr, uint16_t valu
 {
     /* 存根: 实际实现需要操作MDIO总线 */
     (void)phy_addr;
-    (void)reg_addr;
-    (void)value;
+    g_mdio_regs[reg_addr] = value;
     return ETH_OK;
 }
 
@@ -456,11 +470,13 @@ eth_status_t automotive_phy_enter_low_power(bool wake_on_link)
         return status;
     }
 
-    /* 进入低功耗模式 */
-    if (wake_on_link) {
-        /* 保留链路检测 */
-        ctrl_reg |= PHY_CTRL_POWER_DOWN;
-    } else {
+    /* 进入低功耗模式
+     * wake_on_link=true:  保留链路检测, 不置 POWER_DOWN (让 MAC/PHY 仍能看到链路变化)
+     * wake_on_link=false: 彻底低功耗, 置 POWER_DOWN 关收发器
+     *
+     * 量产实现会在 true 路径访问 PHY 专有寄存器 (如 TJA1101 Mode Config),
+     * 当前 BMCR stub 以 "不置 POWER_DOWN" 作为 "未真正关电" 的近似语义。 */
+    if (!wake_on_link) {
         ctrl_reg |= PHY_CTRL_POWER_DOWN;
     }
 
