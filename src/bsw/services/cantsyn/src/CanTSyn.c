@@ -30,7 +30,6 @@
 #include "Det.h"
 #include "CanIf.h"
 #include "StbM.h"
-#include "Det.h"
 #include "Os.h"
 
 /*******************************************************************************

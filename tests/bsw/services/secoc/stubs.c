@@ -11,9 +11,20 @@ void Mcal_DisableAllInterrupts(void) {}
 void Mcal_EnableAllInterrupts(void) {}
 
 /* --- PduR stubs --- */
+uint32 PduR_SecOCTransmit_callCount = 0U;
+PduLengthType PduR_SecOCTransmit_lastLength = 0U;
+uint8 PduR_SecOCTransmit_lastData[512];
+
 Std_ReturnType PduR_SecOCTransmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr) {
     (void)TxPduId;
-    (void)PduInfoPtr;
+    PduR_SecOCTransmit_callCount++;
+    if ((PduInfoPtr != NULL) && (PduInfoPtr->SduDataPtr != NULL)) {
+        uint16 n = (PduInfoPtr->SduLength < (PduLengthType)sizeof(PduR_SecOCTransmit_lastData))
+                       ? (uint16)PduInfoPtr->SduLength
+                       : (uint16)sizeof(PduR_SecOCTransmit_lastData);
+        PduR_SecOCTransmit_lastLength = PduInfoPtr->SduLength;
+        (void)memcpy(PduR_SecOCTransmit_lastData, PduInfoPtr->SduDataPtr, n);
+    }
     return E_OK;
 }
 

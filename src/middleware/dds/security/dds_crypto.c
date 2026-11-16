@@ -452,14 +452,16 @@ dds_crypto_status_t dds_crypto_generate_key(dds_crypto_context_t *ctx,
 
     /* Generate random key using system entropy */
     FILE *fp = fopen("/dev/urandom", "rb");
-    if ((fp) != 0U) {
-        (void)fread(key, 1, key_len, fp);
-        (void)fclose(fp);
-    } else {
-        /* Fallback to simple PRNG */
-        for (uint32_t i = 0; i < key_len; i++) {
-            key[i] = (uint8_t)(rand() & 0xFF);
-        }
+    if (fp == NULL) {
+        /* 无系统熵源时必须失败关闭: 退化为 rand() 会产出可预测的密钥 */
+        return DDS_CRYPTO_ERROR_KEY_INVALID;
+    }
+    size_t got = fread(key, 1, key_len, fp);
+    (void)fclose(fp);
+    if (got != (size_t)key_len) {
+        /* 短读同样不可接受: 否则密钥中会残留未初始化/全零字节 */
+        (void)memset(key, 0, key_len);
+        return DDS_CRYPTO_ERROR_KEY_INVALID;
     }
 
     return DDS_CRYPTO_OK;
@@ -474,8 +476,12 @@ dds_crypto_status_t dds_crypto_derive_session_keys(dds_crypto_context_t *ctx,
         return DDS_CRYPTO_ERROR_INVALID_PARAM;
     }
 
-    /* Generate master salt */
-    (void)dds_crypto_generate_key(ctx, key_material->master_salt, 8);
+    /* Generate master salt (熵源不可用时必须终止派生, 不能使用残留盐) */
+    dds_crypto_status_t salt_status =
+        dds_crypto_generate_key(ctx, key_material->master_salt, 8);
+    if (salt_status != DDS_CRYPTO_OK) {
+        return salt_status;
+    }
 
     /* Derive sender key using HKDF-like construction */
     uint8_t prk[32];

@@ -212,7 +212,7 @@ static void SecOC_BuildAuthData(const uint8* pduData, PduLengthType pduLength,
                                  uint8* authData, uint16* authDataLen)
 {
     uint16 idx = 0u;
-    uint8 i;
+    PduLengthType i;   /* pduLength 可达 SECOC_MAX_PDU_LENGTH(256), uint8 会回绕 */
     
     /* Add Data ID */
     authData[idx++] = dataId;
@@ -223,7 +223,7 @@ static void SecOC_BuildAuthData(const uint8* pduData, PduLengthType pduLength,
     }
     
     /* Add PDU data */
-    for (i = 0u; i < (uint16)pduLength; i++) {
+    for (i = 0u; i < pduLength; i++) {
         authData[idx++] = pduData[i];
     }
     
@@ -273,7 +273,7 @@ static Std_ReturnType SecOC_ProcessTxPdu(PduIdType pduId)
     uint32 authCodeLen = SECOC_MAX_AUTH_INFO_LEN;
     uint8 securedPdu[SECOC_MAX_PDU_LENGTH + SECOC_FRESHNESS_TX_BYTE_LEN + SECOC_AUTH_INFO_LENGTH];
     PduLengthType securedPduLen;
-    uint8 i;
+    PduLengthType i;   /* 上界为 PduLengthType, 数据段可达 256 字节 */
     Std_ReturnType result;
     
     idx = SecOC_GetTxPduIndex(pduId);
@@ -307,8 +307,8 @@ static Std_ReturnType SecOC_ProcessTxPdu(PduIdType pduId)
     /* Build secured PDU: [Data][Freshness (truncated)][Auth Code] */
     securedPduLen = 0u;
     
-    /* Add original data */
-    for (i = 0u; i < (uint8)SecOC_TxBuffers[idx].length; i++) {
+    /* Add original data (length <= SECOC_MAX_PDU_LENGTH, 已在 IfTransmit 校验) */
+    for (i = 0u; i < SecOC_TxBuffers[idx].length; i++) {
         securedPdu[securedPduLen++] = SecOC_TxBuffers[idx].data[i];
     }
     
@@ -640,6 +640,16 @@ Std_ReturnType SecOC_IfTransmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr
     }
     
     if (SecOC_TxBuffers[idx].inUse) {
+        return E_NOT_OK;
+    }
+
+    /* SduLength 必须落在发送缓冲容量内, 否则 memcpy 会越界写 SecOC_TxBuffers */
+    if (PduInfoPtr->SduLength > (PduLengthType)SECOC_MAX_PDU_LENGTH)
+    {
+#if (SECOC_DEV_ERROR_DETECT == STD_ON)
+        (void)Det_ReportError(SECOC_MODULE_ID, SECOC_INSTANCE_ID, SECOC_SID_IFTRANSMIT,
+                               SECOC_E_INVALID_PARAMETER);
+#endif
         return E_NOT_OK;
     }
 

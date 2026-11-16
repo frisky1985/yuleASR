@@ -35,6 +35,9 @@ extern uint16 stub_NvMReadBlockDataLen;
 extern uint32 NvM_ReadBlock_callCount;
 extern uint32 NvM_WriteBlock_callCount;
 extern Std_ReturnType stub_NvMWriteBlockReturn;
+extern uint32 PduR_SecOCTransmit_callCount;
+extern PduLengthType PduR_SecOCTransmit_lastLength;
+extern uint8 PduR_SecOCTransmit_lastData[512];
 
 static SecOC_ConfigType testConfig;
 
@@ -51,6 +54,9 @@ static void resetStubs(void) {
     NvM_ReadBlock_callCount = 0;
     NvM_WriteBlock_callCount = 0;
     stub_NvMWriteBlockReturn = E_OK;
+    PduR_SecOCTransmit_callCount = 0U;
+    PduR_SecOCTransmit_lastLength = 0U;
+    (void)memset(PduR_SecOCTransmit_lastData, 0, sizeof(PduR_SecOCTransmit_lastData));
 }
 
 void setUp(void) {
@@ -646,6 +652,56 @@ void test_SecOC_IfTransmit_NullSduDataPtr_ShouldStillReturnOk(void) {
     TEST_ASSERT_EQUAL(E_OK, ret);
 }
 
+/* --- IfTransmit length bounds --- */
+
+void test_SecOC_IfTransmit_OversizePdu_ShouldReject(void) {
+    SecOC_Init(&testConfig);
+    uint8 data[SECOC_MAX_PDU_LENGTH + 1U];
+    (void)memset(data, 0x5A, sizeof(data));
+    PduInfoType pduInfo;
+    pduInfo.SduDataPtr = data;
+    pduInfo.SduLength = (PduLengthType)(SECOC_MAX_PDU_LENGTH + 1U);
+    pduInfo.MetaDataPtr = NULL_PTR;
+
+    Std_ReturnType ret = SecOC_IfTransmit(0U, &pduInfo);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(SECOC_SID_IFTRANSMIT, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8(SECOC_E_INVALID_PARAMETER, mock_DetLastErrorId);
+
+    /* 超长 PDU 不得进入发送缓冲 */
+    SecOC_MainFunctionTx();
+    TEST_ASSERT_EQUAL_UINT32(0U, PduR_SecOCTransmit_callCount);
+
+    /* 缓冲仍可用: 后续合法 PDU 正常接入 */
+    uint8 okData[8] = {0};
+    pduInfo.SduDataPtr = okData;
+    pduInfo.SduLength = 8U;
+    TEST_ASSERT_EQUAL(E_OK, SecOC_IfTransmit(0U, &pduInfo));
+}
+
+void test_SecOC_MainFunctionTx_MaxLengthPdu_ShouldTransmitWholePayload(void) {
+    SecOC_Init(&testConfig);
+    uint8 data[SECOC_MAX_PDU_LENGTH];
+    uint16 i;
+    for (i = 0U; i < (uint16)SECOC_MAX_PDU_LENGTH; i++) {
+        data[i] = (uint8)(i & 0xFFU);
+    }
+    PduInfoType pduInfo;
+    pduInfo.SduDataPtr = data;
+    pduInfo.SduLength = (PduLengthType)SECOC_MAX_PDU_LENGTH;
+    pduInfo.MetaDataPtr = NULL_PTR;
+
+    TEST_ASSERT_EQUAL(E_OK, SecOC_IfTransmit(0U, &pduInfo));
+    SecOC_MainFunctionTx();
+
+    /* 最大长度 PDU 必须完整发出: 数据 + 截断新鲜度 + 认证码 */
+    TEST_ASSERT_EQUAL_UINT32(1U, PduR_SecOCTransmit_callCount);
+    TEST_ASSERT_EQUAL_UINT32(
+        (uint32)(SECOC_MAX_PDU_LENGTH + (SECOC_FRESHNESS_VALUE_TX_LENGTH / 8U) + SECOC_AUTH_INFO_LENGTH),
+        (uint32)PduR_SecOCTransmit_lastLength);
+    TEST_ASSERT_EQUAL_UINT8_ARRAY(data, PduR_SecOCTransmit_lastData, SECOC_MAX_PDU_LENGTH);
+}
+
 /* --- Multiple RX PDUs processing --- */
 
 void test_SecOC_MainFunctionRx_MultiplePdus(void) {
@@ -726,6 +782,8 @@ int main(void) {
     RUN_TEST(test_SecOC_MainFunctionRx_FreshnessWrapAround_Backward);
     RUN_TEST(test_SecOC_MainFunctionTx_NoPdusBuffered_ShouldStillWriteFreshness);
     RUN_TEST(test_SecOC_IfTransmit_NullSduDataPtr_ShouldStillReturnOk);
+    RUN_TEST(test_SecOC_IfTransmit_OversizePdu_ShouldReject);
+    RUN_TEST(test_SecOC_MainFunctionTx_MaxLengthPdu_ShouldTransmitWholePayload);
     RUN_TEST(test_SecOC_MainFunctionRx_MultiplePdus);
     RUN_TEST(test_SecOC_MainFunctionTx_FreshnessNotDirty_ShouldSkipWrite);
     return UnityEnd();
