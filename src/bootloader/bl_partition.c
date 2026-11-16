@@ -375,10 +375,15 @@ bl_partition_error_t bl_partition_table_init_default(
     uint32_t sector_size = BL_FLASH_SECTOR_SIZE;
     if ((mgr->flash_driver != NULL) && (mgr->flash_driver->get_info != NULL)) {
         uint32_t fs;
-        mgr->flash_driver->get_info(&fs, &sector_size);
+        (void)mgr->flash_driver->get_info(&fs, &sector_size);
+        /* align_to_sector() 依赖扇区大小为 2 的幂: 0 或非法值会把所有
+         * 分区起点压到 0, 生成相互重叠的分区表 */
+        if ((sector_size == 0U) || ((sector_size & (sector_size - 1U)) != 0U)) {
+            sector_size = BL_FLASH_SECTOR_SIZE;
+        }
     }
     
-    /* 计算分区布局 (假设16MB Flash) */
+    /* 计算分区布局 (固定 16MB 拓扑; 是否适配实际器件在末尾校验) */
     uint32_t bootloader_size = 256 * 1024;     /* 256KB Bootloader */
     uint32_t app_size = 6 * 1024 * 1024;        /* 6MB per app partition */
     uint32_t cal_size = 1 * 1024 * 1024;        /* 1MB Calibration */
@@ -431,6 +436,17 @@ bl_partition_error_t bl_partition_table_init_default(
         mgr->table.partitions[2].end_address + 1U, sector_size);
     mgr->table.partitions[3].end_address = mgr->table.partitions[3].start_address + cal_size - 1U;
     mgr->table.partitions[3].size = cal_size;
+    
+    /* 固定布局之后还需为 OTA 元数据保留 1 个扇区 (不属于分区表条目)。
+     * 若实际 Flash 容不下该布局, 必须在生成阶段拒绝, 否则表项会描述
+     * 器件之外的地址区间。flash_size == 0 表示容量未知, 保持兼容。 */
+    uint32_t layout_end = align_to_sector(
+        mgr->table.partitions[3].end_address + 1U, sector_size) + ota_meta_size;
+    if ((flash_size != 0U) && (layout_end > flash_size)) {
+        DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_PARTITION_MODULE_NAME,
+                "Default layout %u exceeds flash size %u", layout_end, flash_size);
+        return BL_ERROR_INVALID_PARAM;
+    }
     
     /* 计算CRC */
     update_partition_table_crc(&mgr->table);

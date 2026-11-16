@@ -233,6 +233,9 @@ add_subdirectory(adaptive)
 # J1939Tp / J1939Nm / LinM (LIN) unit tests — coverage uplift
 add_subdirectory(j1939lin)
 
+# Bootloader — 默认分区表与 Flash 几何边界
+add_subdirectory(bootloader)
+
 # ── Crypto (MCAL) 单元测试 (2026-10-26: 注册 mcal/test_crypto.c, 首次纳入构建) ──
 # 链接真实 Crypto.c + 真实 blake2b/blake2s (third_party/crypto/blake2/src)。
 # HSM / MbedTLS 后端符号由 tests/unit/crypto_stubs/crypto_backend_stubs.c 提供:
