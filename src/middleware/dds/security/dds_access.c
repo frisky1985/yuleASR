@@ -771,6 +771,12 @@ dds_access_status_t dds_access_get_domain_governance(dds_access_context_t *ctx,
         return DDS_ACCESS_ERROR_INVALID_PARAM;
     }
 
+    /* Initialize the output structure up-front so that any early exit or
+     * parse failure leaves us with domain_count == 0 instead of an
+     * uninitialized garbage loop bound that would otherwise feed the
+     * 'for' statement below. */
+    (void)memset(governance, 0, sizeof(dds_governance_config_t));
+
     /* Parse governance file */
     if ((uint8_t)ctx->governance_file_path[0] != 0U) {
         (void)dds_access_parse_governance_xml(ctx, ctx->governance_file_path, governance);
@@ -783,7 +789,8 @@ dds_access_status_t dds_access_get_domain_governance(dds_access_context_t *ctx,
         }
     }
 
-    /* Use defaults */
+    /* Domain not found — fall back to well-defined defaults rather than
+     * leaking whatever the parser populated (including version fields). */
     (void)memset(governance, 0, sizeof(dds_governance_config_t));
     governance->version_major = DDS_PERMISSIONS_VERSION_MAJOR;
     governance->version_minor = DDS_PERMISSIONS_VERSION_MINOR;

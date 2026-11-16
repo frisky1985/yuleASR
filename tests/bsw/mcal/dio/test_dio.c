@@ -222,15 +222,21 @@ void test_Dio_ReadPort_PortE_ShouldReadGpio5Base(void) {
 }
 
 /**
- * PortId 5 is < DIO_NUM_PORTS (8) so it passes validation, but hits the
- * default branch of Dio_GetGpioBaseAddr (baseAddr = 0).
+ * PortId 5 is < DIO_NUM_PORTS (8) so it passes the DET range check, but hits
+ * the default branch of Dio_GetGpioBaseAddr (baseAddr = 0). The driver must
+ * report DET and refuse to dereference address 0.
  */
-void test_Dio_ReadPort_InvalidPort5_ShouldHitDefaultBranch(void) {
+void test_Dio_ReadPort_InvalidPort5_ShouldReportDet(void) {
     Dio_Init(&testConfig);
-    /* default branch returns baseAddr=0; reads from 0+PSR offset */
+    Det_Mock_Reset();
+    /* poison address 0 to prove we never read it when baseAddr is 0 */
     MockRegisters_Write32(0U + DIO_GPIO_PSR, 0xDEAD0000U);
     Dio_PortLevelType level = Dio_ReadPort(5U);
-    TEST_ASSERT_EQUAL_HEX32(0xDEAD0000U, level);
+    TEST_ASSERT_EQUAL_HEX32(0x00000000U, level);
+    TEST_ASSERT_TRUE(Det_MockData.LastCallValid);
+    TEST_ASSERT_EQUAL(DIO_MODULE_ID, Det_MockData.ModuleId);
+    TEST_ASSERT_EQUAL(DIO_SID_READ_PORT, Det_MockData.ApiId);
+    TEST_ASSERT_EQUAL(DIO_E_PARAM_INVALID_PORT_ID, Det_MockData.ErrorId);
 }
 
 void test_Dio_WritePort_PortB_ShouldWriteGpio2Base(void) {

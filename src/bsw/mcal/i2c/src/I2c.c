@@ -1193,7 +1193,14 @@ Std_ReturnType I2c_EnableInterrupt(I2c_ChannelType Channel)
     
     const I2c_ChannelConfigType* chConfig = &I2c_ConfigPtr->Channels[Channel];
     uint32 baseAddr = I2c_GetBaseAddr(chConfig->HwUnit);
-    
+
+    if (baseAddr == 0U) {
+        #if (I2C_DEV_ERROR_DETECT == STD_ON)
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_ENABLEINTERRUPT, I2C_E_PARAM_CHANNEL);
+        #endif
+        return E_NOT_OK;
+    }
+
     uint8 i2cr = REG_READ8(baseAddr + I2C_I2CR);
     i2cr |= I2CR_IIEN;
     REG_WRITE8(baseAddr + I2C_I2CR, i2cr);
@@ -1223,7 +1230,14 @@ Std_ReturnType I2c_DisableInterrupt(I2c_ChannelType Channel)
     
     const I2c_ChannelConfigType* chConfig = &I2c_ConfigPtr->Channels[Channel];
     uint32 baseAddr = I2c_GetBaseAddr(chConfig->HwUnit);
-    
+
+    if (baseAddr == 0U) {
+        #if (I2C_DEV_ERROR_DETECT == STD_ON)
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_DISABLEINTERRUPT, I2C_E_PARAM_CHANNEL);
+        #endif
+        return E_NOT_OK;
+    }
+
     uint8 i2cr = REG_READ8(baseAddr + I2C_I2CR);
     i2cr &= ~I2CR_IIEN;
     REG_WRITE8(baseAddr + I2C_I2CR, i2cr);
@@ -1254,7 +1268,14 @@ Std_ReturnType I2c_SetSlaveAddress(I2c_ChannelType Channel,
     
     const I2c_ChannelConfigType* chConfig = &I2c_ConfigPtr->Channels[Channel];
     uint32 baseAddr = I2c_GetBaseAddr(chConfig->HwUnit);
-    
+
+    if (baseAddr == 0U) {
+        #if (I2C_DEV_ERROR_DETECT == STD_ON)
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_SETSLAVEADDRESS, I2C_E_PARAM_CHANNEL);
+        #endif
+        return E_NOT_OK;
+    }
+
     if (chConfig->OpMode != I2C_MODE_SLAVE) {
         return E_NOT_OK;
     }
@@ -1285,7 +1306,14 @@ I2c_BusStateType I2c_GetBusState(I2c_ChannelType Channel)
     
     const I2c_ChannelConfigType* chConfig = &I2c_ConfigPtr->Channels[Channel];
     uint32 baseAddr = I2c_GetBaseAddr(chConfig->HwUnit);
-    
+
+    if (baseAddr == 0U) {
+        #if (I2C_DEV_ERROR_DETECT == STD_ON)
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_GETBUSSTATE, I2C_E_PARAM_CHANNEL);
+        #endif
+        return I2C_BUS_STATE_BUSY;
+    }
+
     if ((REG_READ8(baseAddr + I2C_I2SR) & I2SR_IBB) != 0U) {
         return I2C_BUS_STATE_BUSY;
     }
@@ -1310,7 +1338,14 @@ Std_ReturnType I2c_ClearBus(I2c_ChannelType Channel)
     
     const I2c_ChannelConfigType* chConfig = &I2c_ConfigPtr->Channels[Channel];
     uint32 baseAddr = I2c_GetBaseAddr(chConfig->HwUnit);
-    
+
+    if (baseAddr == 0U) {
+        #if (I2C_DEV_ERROR_DETECT == STD_ON)
+        (void)Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_CLEARBUS, I2C_E_PARAM_CHANNEL);
+        #endif
+        return E_NOT_OK;
+    }
+
     /* Send 9 clock pulses to release any stuck device */
     uint8 i2cr = REG_READ8(baseAddr + I2C_I2CR);
     i2cr &= ~I2CR_IEN;

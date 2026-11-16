@@ -136,6 +136,14 @@ Dio_LevelType Dio_ReadChannel(Dio_ChannelType ChannelId)
     uint8 port = DIO_GET_PORT(ChannelId);
     uint8 pin = DIO_GET_PIN(ChannelId);
     uint32 gpioBase = Dio_GetGpioBaseAddr(port);
+
+    if (gpioBase == 0U) {
+        #if (DIO_DEV_ERROR_DETECT == STD_ON)
+        (void)Det_ReportError(DIO_MODULE_ID, 0U, DIO_SID_READ_CHANNEL, DIO_E_PARAM_INVALID_CHANNEL_ID);
+        #endif
+        return STD_LOW;
+    }
+
     uint32 psrValue = REG_READ32(gpioBase + DIO_GPIO_PSR);
 
     level = ((psrValue & (1U << pin)) != 0U) ? STD_HIGH : STD_LOW;
@@ -160,6 +168,13 @@ void Dio_WriteChannel(Dio_ChannelType ChannelId, Dio_LevelType Level)
     uint8 pin = DIO_GET_PIN(ChannelId);
     uint32 gpioBase = Dio_GetGpioBaseAddr(port);
 
+    if (gpioBase == 0U) {
+        #if (DIO_DEV_ERROR_DETECT == STD_ON)
+        (void)Det_ReportError(DIO_MODULE_ID, 0U, DIO_SID_WRITE_CHANNEL, DIO_E_PARAM_INVALID_CHANNEL_ID);
+        #endif
+        return;
+    }
+
     if (Level == STD_HIGH) {
         REG_WRITE32(gpioBase + DIO_GPIO_PSR_SET, (1U << pin));
     } else {
@@ -183,6 +198,14 @@ Dio_PortLevelType Dio_ReadPort(Dio_PortType PortId)
     #endif
 
     uint32 gpioBase = Dio_GetGpioBaseAddr((uint8)PortId);
+
+    if (gpioBase == 0U) {
+        #if (DIO_DEV_ERROR_DETECT == STD_ON)
+        (void)Det_ReportError(DIO_MODULE_ID, 0U, DIO_SID_READ_PORT, DIO_E_PARAM_INVALID_PORT_ID);
+        #endif
+        return 0U;
+    }
+
     level = (Dio_PortLevelType)REG_READ32(gpioBase + DIO_GPIO_PSR);
     return level;
 }
@@ -202,6 +225,14 @@ void Dio_WritePort(Dio_PortType PortId, Dio_PortLevelType Level)
     #endif
 
     uint32 gpioBase = Dio_GetGpioBaseAddr((uint8)PortId);
+
+    if (gpioBase == 0U) {
+        #if (DIO_DEV_ERROR_DETECT == STD_ON)
+        (void)Det_ReportError(DIO_MODULE_ID, 0U, DIO_SID_WRITE_PORT, DIO_E_PARAM_INVALID_PORT_ID);
+        #endif
+        return;
+    }
+
     REG_WRITE32(gpioBase + DIO_GPIO_DR, (uint32)Level);
 }
 
@@ -221,6 +252,14 @@ Dio_PortLevelType Dio_ReadChannelGroup(const Dio_ChannelGroupType* ChannelGroupI
     #endif
 
     uint32 gpioBase = Dio_GetGpioBaseAddr((uint8)ChannelGroupIdPtr->port);
+
+    if (gpioBase == 0U) {
+        #if (DIO_DEV_ERROR_DETECT == STD_ON)
+        (void)Det_ReportError(DIO_MODULE_ID, 0U, DIO_SID_READ_CHANNEL_GROUP, DIO_E_PARAM_INVALID_PORT_ID);
+        #endif
+        return 0U;
+    }
+
     uint32 portValue = REG_READ32(gpioBase + DIO_GPIO_PSR);
     level = (Dio_PortLevelType)((portValue & ChannelGroupIdPtr->mask) >> ChannelGroupIdPtr->offset);
     return level;
@@ -241,6 +280,14 @@ void Dio_WriteChannelGroup(const Dio_ChannelGroupType* ChannelGroupIdPtr, Dio_Po
     #endif
 
     uint32 gpioBase = Dio_GetGpioBaseAddr((uint8)ChannelGroupIdPtr->port);
+
+    if (gpioBase == 0U) {
+        #if (DIO_DEV_ERROR_DETECT == STD_ON)
+        (void)Det_ReportError(DIO_MODULE_ID, 0U, DIO_SID_WRITE_CHANNEL_GROUP, DIO_E_PARAM_INVALID_PORT_ID);
+        #endif
+        return;
+    }
+
     uint32 drValue;
     DIO_ENTER_CRITICAL();
     drValue = REG_READ32(gpioBase + DIO_GPIO_DR);
@@ -288,6 +335,13 @@ Dio_LevelType Dio_FlipChannel(Dio_ChannelType ChannelId)
     uint8 pin = DIO_GET_PIN(ChannelId);
     uint32 gpioBase = Dio_GetGpioBaseAddr(port);
 
+    if (gpioBase == 0U) {
+        #if (DIO_DEV_ERROR_DETECT == STD_ON)
+        (void)Det_ReportError(DIO_MODULE_ID, 0U, DIO_SID_FLIP_CHANNEL, DIO_E_PARAM_INVALID_CHANNEL_ID);
+        #endif
+        return STD_LOW;
+    }
+
     uint32 drValue = REG_READ32(gpioBase + DIO_GPIO_DR);
     newLevel = ((drValue & (1U << pin)) != 0U) ? STD_LOW : STD_HIGH;
     REG_WRITE32(gpioBase + DIO_GPIO_PTOR_TOG, (1U << pin));
@@ -311,6 +365,14 @@ void Dio_MaskedWritePort(Dio_PortType PortId, Dio_PortLevelType Level, Dio_PortL
     #endif
 
     uint32 gpioBase = Dio_GetGpioBaseAddr((uint8)PortId);
+
+    if (gpioBase == 0U) {
+        #if (DIO_DEV_ERROR_DETECT == STD_ON)
+        (void)Det_ReportError(DIO_MODULE_ID, 0U, DIO_SID_MASKED_WRITE_PORT, DIO_E_PARAM_INVALID_PORT_ID);
+        #endif
+        return;
+    }
+
     uint32 drValue;
     DIO_ENTER_CRITICAL();
     drValue = REG_READ32(gpioBase + DIO_GPIO_DR);
