@@ -664,8 +664,9 @@ void WdgM_MainFunction(void)
         }
     }
     
-    /* 检查连续错误计数 */
-    if (WdgM_ConsecutiveErrors >= WdgM_CurrentConfig->failureThreshold)
+    /* 检查连续错误计数 (CurrentConfig 可能被 DeInit 清掉) */
+    if (WdgM_CurrentConfig != NULL_PTR &&
+        WdgM_ConsecutiveErrors >= WdgM_CurrentConfig->failureThreshold)
     {
         WdgM_PerformSafetyAction(WDGM_E_SUPERVISION_EXPIRED);
     }

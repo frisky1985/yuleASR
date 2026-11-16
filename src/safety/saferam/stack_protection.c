@@ -605,7 +605,7 @@ Std_ReturnType StackProtection_FullCheck(
     StackCheckResultType *result)
 {
     StackInfoType *stack;
-    boolean overflow, underflow, canary_ok;
+    boolean overflow = FALSE, underflow = FALSE, canary_ok = TRUE;
     
     if (!g_initialized || result == NULL) {
         return E_NOT_OK;
