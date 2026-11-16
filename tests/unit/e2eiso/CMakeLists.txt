@@ -65,3 +65,31 @@ set_target_properties(IsoTp_Core_UnitTest PROPERTIES
 
 add_test(NAME IsoTp_Core_UnitTest COMMAND IsoTp_Core_UnitTest)
 message(STATUS "  Unit test: IsoTp_Core_UnitTest (ISO-TP core state machine)")
+
+# ── PduR LoTp buffer interface (RX staging / TX copy) ─────────────────────
+add_executable(PduR_Interface_UnitTest
+    ${CMAKE_CURRENT_SOURCE_DIR}/test_pdur_interface.c
+    ${CMAKE_SOURCE_DIR}/src/diagnostics/isotp/pdur_interface.c
+)
+
+target_include_directories(PduR_Interface_UnitTest PRIVATE
+    ${CMAKE_SOURCE_DIR}/src/diagnostics/isotp
+    ${CMAKE_SOURCE_DIR}/src/common
+    ${TEST_FRAMEWORK_INCLUDE}
+)
+
+if(TEST_FRAMEWORK_LIB)
+    target_link_libraries(PduR_Interface_UnitTest PRIVATE ${TEST_FRAMEWORK_LIB})
+endif()
+
+target_compile_options(PduR_Interface_UnitTest PRIVATE
+    -Wall -Wextra -g -O0 -Wno-unused-parameter
+)
+
+set_target_properties(PduR_Interface_UnitTest PROPERTIES
+    C_STANDARD 99
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tests
+)
+
+add_test(NAME PduR_Interface_UnitTest COMMAND PduR_Interface_UnitTest)
+message(STATUS "  Unit test: PduR_Interface_UnitTest (PduR LoTp buffer copy)")

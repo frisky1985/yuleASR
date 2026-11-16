@@ -331,7 +331,7 @@ PduR_ReturnType PduR_LoTpCopyTxData(
     uint16_t *availableDataPtr
 )
 {
-    if (pduInfo == NULL) {
+    if (pduInfo == NULL || pduInfo->sduDataPtr == NULL) {
         return PDUR_INVALID_PARAMETER;
     }
     
@@ -340,14 +340,21 @@ PduR_ReturnType PduR_LoTpCopyTxData(
         return PDUR_NO_BUFFER;
     }
     
-    uint16_t remaining = buffer->used - buffer->used;  /* Simplified */
+    /* buffer->used 为本 PDU 已暂存的字节数; 本次最多取走 sduLength 个 */
+    uint16_t remaining = buffer->used;
     uint16_t toCopy = (pduInfo->sduLength < remaining) ? pduInfo->sduLength : remaining;
     
-    (void)memcpy(pduInfo->sduDataPtr, buffer->data, toCopy);
+    if (toCopy > 0U) {
+        (void)memcpy(pduInfo->sduDataPtr, buffer->data, toCopy);
+        buffer->used = (uint16_t)(buffer->used - toCopy);
+        if (buffer->used > 0U) {
+            (void)memmove(buffer->data, &buffer->data[toCopy], buffer->used);
+        }
+    }
     pduInfo->sduLength = toCopy;
     
     if (availableDataPtr != NULL) {
-        *availableDataPtr = remaining - toCopy;
+        *availableDataPtr = buffer->used;
     }
     
     return PDUR_OK;

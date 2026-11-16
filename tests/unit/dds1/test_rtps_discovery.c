@@ -657,6 +657,27 @@ static void test_add_endpoint_count_loop_and_remove_not_found(void)
     rtps_discovery_deinit(&ctx);
 }
 
+/** R11 回归: get_stats 的 time_elapsed_ms 之前恒为 0 (三元表达式两支都是 0)。
+ * 现在以最近一次 process 的时间为基准计算。 */
+static void test_get_stats_elapsed_time(void)
+{
+    uint32_t part = 0, matched = 0, elapsed = 0;
+
+    TEST_ASSERT_EQUAL_INT(ETH_OK, rtps_discovery_init(&ctx, &cfg));
+    TEST_ASSERT_EQUAL_INT(ETH_OK, rtps_discovery_start(&ctx));
+
+    /* 尚未调用 process: 经过时间为 0 */
+    TEST_ASSERT_EQUAL_INT(ETH_OK, rtps_discovery_get_stats(&ctx, &part, &matched, &elapsed));
+    TEST_ASSERT_EQUAL_UINT32(0, elapsed);
+
+    TEST_ASSERT_EQUAL_INT(ETH_OK, rtps_discovery_process(&ctx, 1000));
+    TEST_ASSERT_EQUAL_INT(ETH_OK, rtps_discovery_process(&ctx, 1750));
+    TEST_ASSERT_EQUAL_INT(ETH_OK, rtps_discovery_get_stats(&ctx, &part, &matched, &elapsed));
+    TEST_ASSERT_EQUAL_UINT32(750, elapsed);
+
+    rtps_discovery_deinit(&ctx);
+}
+
 int main(void)
 {
     UNITY_BEGIN();
@@ -688,5 +709,6 @@ int main(void)
     RUN_TEST(test_add_endpoint_count_loop_and_remove_not_found);
     RUN_TEST(test_is_complete_active_no_endpoints);
     RUN_TEST(test_purge_non_expired_continues);
+    RUN_TEST(test_get_stats_elapsed_time);
     return UNITY_END();
 }

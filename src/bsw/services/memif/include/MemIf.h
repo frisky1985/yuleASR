@@ -115,13 +115,9 @@ typedef struct {
 #define MEMIF_SID_INIT                      (0x01U)
 #endif
 
-#ifndef MEMIF_UNINIT
-#define MEMIF_UNINIT                        (0x00U)
-#endif
-
-#ifndef MEMIF_BUSY_INTERNAL
-#define MEMIF_BUSY_INTERNAL                 (0x02U)
-#endif
+/* MEMIF_UNINIT / MEMIF_BUSY_INTERNAL 只由 MemIf_Types.h 的 MemIf_StatusType
+ * 枚举提供。此处曾用同名宏 (0x02U) 把它们重新定义成数值, 宏会遮蔽枚举名,
+ * 导致 MEMIF_BUSY_INTERNAL 被当成 MEMIF_BUSY(2) 使用 — 状态无法区分。 */
 
 #ifndef MEMIF_E_UNINIT
 #define MEMIF_E_UNINIT                      (0x03U)

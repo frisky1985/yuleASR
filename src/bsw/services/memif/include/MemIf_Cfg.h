@@ -102,12 +102,8 @@
 #ifndef MEMIF_PATH_EA
 #define MEMIF_PATH_EA    (1U)
 #endif
-#ifndef MEMIF_BUSY_INTERNAL
-#define MEMIF_BUSY_INTERNAL    (2U)
-#endif
-#ifndef MEMIF_UNINIT
-#define MEMIF_UNINIT    (0U)
-#endif
+/* MEMIF_BUSY_INTERNAL / MEMIF_UNINIT 属于 MemIf_Types.h 的 MemIf_StatusType
+ * 枚举, 不要再用同名宏覆盖 (会遮蔽枚举导致 BUSY 与 BUSY_INTERNAL 同值)。 */
 /*==================================================================================================
 *                                    CONDITIONAL INCLUDES
 *================================================================================================*/

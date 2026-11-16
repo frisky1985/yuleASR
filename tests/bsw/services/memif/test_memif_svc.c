@@ -577,6 +577,14 @@ void test_MemIf_Init_ShouldInitializeAllDeviceStates(void) {
     TEST_ASSERT_EQUAL(TRUE, MemIf_DeviceState[0].isInitialized);
 }
 
+/** R11 回归: MemIf.h 不得用同名宏遮蔽 MemIf_StatusType 枚举。
+ * 之前 MEMIF_BUSY_INTERNAL 被宏定义为 (0x02U), 与 MEMIF_BUSY 同值,
+ * 使 NvM 的 "!= BUSY && != BUSY_INTERNAL" 判断退化为重复比较。 */
+void test_MemIf_StatusEnum_MustNotBeShadowedByMacros(void) {
+    TEST_ASSERT_EQUAL_UINT32(3U, (uint32_t)MEMIF_BUSY_INTERNAL);
+    TEST_ASSERT_TRUE(MEMIF_BUSY_INTERNAL != MEMIF_BUSY);
+}
+
 int main(void)
 {
     UNITY_BEGIN();
@@ -624,5 +632,6 @@ int main(void)
     RUN_TEST(test_MemIf_GetStatus_ValidIndex_ShouldRouteAndReturnUninit);
     RUN_TEST(test_MemIf_DeInit_ShouldResetJobResults);
     RUN_TEST(test_MemIf_Init_ShouldInitializeAllDeviceStates);
+    RUN_TEST(test_MemIf_StatusEnum_MustNotBeShadowedByMacros);
     return UnityEnd();
 }

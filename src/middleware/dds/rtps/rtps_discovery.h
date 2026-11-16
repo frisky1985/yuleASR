@@ -210,6 +210,7 @@ typedef struct {
     bool initialized;
     bool active;
     uint64_t start_timestamp;
+    uint64_t last_process_timestamp;            /* 最近一次 process 的时间 (统计用) */
     uint32_t announcement_count;
     
     /* 统计信息 */

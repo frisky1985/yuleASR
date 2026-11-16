@@ -620,7 +620,7 @@ Std_ReturnType ara_com_GetNewSamples(
     /* DDS take 接收缓冲 (简化实现取单样本; 变长样本走 E2E 头剥离) */
     uint8_t sampleData[4096];
     dds_SampleInfoType info[32];
-    int32_t maxSamples = (bufferSize < sizeof(sampleData)) ? 1 : 1;
+    uint32_t maxSamples = 1U;   /* dds_take 简化实现只产出单个样本 */
 
     dds_ReturnCode_t ret = dds_take(handle->readerHandle, sampleData, info, maxSamples, 
                                      DDS_ANY_SAMPLE_STATE, DDS_ANY_VIEW_STATE, DDS_ANY_INSTANCE_STATE);
@@ -630,14 +630,15 @@ Std_ReturnType ara_com_GetNewSamples(
     }
 
     uint32_t validSamples = 0;
-    for (int32_t i = 0; i < maxSamples; i++) {
+    for (uint32_t i = 0U; i < maxSamples; i++) {
         if (info[i].valid_data) {
             /* 验证E2E保护 */
             if (handle->service->e2eContext != NULL) {
                 uint16_t e2eStatus = 0;
                 if (E2E_Check(handle->service->e2eContext, sampleData, 
                              (uint32_t)sizeof(sampleData), &e2eStatus, E2E_PROFILE_04) == E_OK) {
-                    if ((e2eStatus & E2E_ERROR_NONE) != 0) {
+                    /* E2E_ERROR_NONE 是 0, 必须用相等判断; 之前的按位与非 0 恒假 */
+                    if (e2eStatus == E2E_ERROR_NONE) {
                         /* 复制数据到缓冲区（跳过E2E头） */
                         uint32_t headerSize = E2E_GetHeaderSize(E2E_PROFILE_04);
                         uint32_t payloadLen = (uint32_t)sizeof(sampleData) - headerSize;

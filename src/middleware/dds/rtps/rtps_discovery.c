@@ -408,6 +408,7 @@ eth_status_t rtps_discovery_process(rtps_discovery_context_t *ctx,
     if (ctx->start_timestamp == 0U) {
         ctx->start_timestamp = current_time_ms;
     }
+    ctx->last_process_timestamp = current_time_ms;
     
     /* 计算经过时间 */
     uint32_t elapsed_ms = (uint32_t)(current_time_ms - ctx->start_timestamp);
@@ -671,8 +672,11 @@ eth_status_t rtps_discovery_get_stats(rtps_discovery_context_t *ctx,
         *endpoints_matched = ctx->endpoints_matched;
     }
     if ((time_elapsed_ms) != 0U) {
-        *time_elapsed_ms = (uint32_t)((ctx->start_timestamp > 0U) ? 
-            0 : 0); /* 需要实际时间计算 */
+        /* 以最近一次 process 的时间为基准, 不引入额外时钟依赖 */
+        uint64_t last = (ctx->last_process_timestamp > ctx->start_timestamp)
+                            ? ctx->last_process_timestamp
+                            : ctx->start_timestamp;
+        *time_elapsed_ms = (uint32_t)(last - ctx->start_timestamp);
     }
     
     return ETH_OK;
