@@ -217,11 +217,15 @@ void test_Port_Init_InvalidPortGpio_ShouldRejectWithoutGpioWrite(void) {
     TEST_ASSERT_EQUAL(PORT_MODULE_ID, Det_MockData.ModuleId);
     TEST_ASSERT_EQUAL(PORT_SID_INIT, Det_MockData.ApiId);
     TEST_ASSERT_EQUAL(PORT_E_PARAM_PIN, Det_MockData.ErrorId);
-    /* GPIO1 GDIR left at reset because pin 0 was skipped (no other output pin
-     * in the test config would have touched it yet). */
-    TEST_ASSERT_EQUAL_UINT32(0U, MockRegisters_Read32(PORT_GPIO1_BASE + PORT_GPIO_GDIR_OFF));
+    /* The invalid pin must not access the null GPIO base. Other valid pins
+     * are still initialized, so only pin 7 remains configured as an output. */
+    TEST_ASSERT_EQUAL_UINT32(0U, MockRegisters_Read32(PORT_GPIO_GDIR_OFF));
+    TEST_ASSERT_EQUAL_UINT32((1UL << TEST_PIN_GPIO_OUT_LOW),
+                             MockRegisters_Read32(PORT_GPIO1_BASE + PORT_GPIO_GDIR_OFF));
 
     testPinConfigs[0].Pin = savedPin;
+    Port_DeInit();
+    Det_Mock_Reset();
 }
 
 /** @req SWS_Port_00001 */
