@@ -312,15 +312,6 @@ void LinMaster_Tp_MainFunction(void)
             }
             break;
         case LINMASTER_TP_STATE_TX_FF: /* 首帧发送完成，等待流控 */
-            if (ElapsedTime > LINMASTER_TP_N_BS_TIMEOUT)
-            {
-                if (TpTxConfirm != NULL_PTR)
-                {
-                    TpTxConfirm(TpChannel.ChannelId, LINMASTER_TP_E_TIMEOUT);
-                }
-                LinMaster_Tp_ResetChannel();
-            }
-            break;
         case LINMASTER_TP_STATE_WAIT_FC: /* 等待流控帧超时检查 */
             if (ElapsedTime > LINMASTER_TP_N_BS_TIMEOUT)
             {

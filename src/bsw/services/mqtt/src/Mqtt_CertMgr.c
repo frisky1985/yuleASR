@@ -35,7 +35,8 @@
 /*============================================================================
  * 内部宏定义
  *===========================================================================*/
-#define CERTMGR_CERT_DATA_SIZE      (MQTT_CERTMGR_MAX_CERTS * MQTT_CERTMGR_MAX_CERT_SIZE)
+#define CERTMGR_CERT_DATA_SIZE \
+    ((size_t)((uint32_t)(MQTT_CERTMGR_MAX_CERTS) * (uint32_t)(MQTT_CERTMGR_MAX_CERT_SIZE)))
 #define CERTMGR_MAX_SUBJECT_LEN     (256)
 
 /*============================================================================
