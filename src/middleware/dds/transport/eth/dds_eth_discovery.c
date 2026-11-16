@@ -714,7 +714,8 @@ eth_status_t dds_discovery_serialize_participant(
         /* 序列化域标签 */
         uint32_t tag_len = (uint32_t)strlen(proxy->domain_tag);
         if ((offset + tag_len + 1U) <= buf_size) {
-            (void)strcpy((char*)&buffer[offset], proxy->domain_tag);
+            (void)strncpy((char*)&buffer[offset], proxy->domain_tag, tag_len);
+            buffer[offset + tag_len] = 0U;
             offset += tag_len + 1U;
         }
         
@@ -792,14 +793,16 @@ eth_status_t dds_discovery_serialize_publication(
         /* 序列化主题名 */
         uint32_t topic_len = (uint32_t)strlen(pub->topic_name);
         if ((offset + topic_len + 1U) <= buf_size) {
-            (void)strcpy((char*)&buffer[offset], pub->topic_name);
+            (void)strncpy((char*)&buffer[offset], pub->topic_name, topic_len);
+            buffer[offset + topic_len] = 0U;
             offset += topic_len + 1U;
         }
         
         /* 序列化类型名 */
         uint32_t type_len = (uint32_t)strlen(pub->type_name);
         if ((offset + type_len + 1U) <= buf_size) {
-            (void)strcpy((char*)&buffer[offset], pub->type_name);
+            (void)strncpy((char*)&buffer[offset], pub->type_name, type_len);
+            buffer[offset + type_len] = 0U;
             offset += type_len + 1U;
         }
         
@@ -872,7 +875,8 @@ eth_status_t dds_discovery_serialize_subscription(
         
         uint32_t topic_len = (uint32_t)strlen(sub->topic_name);
         if ((offset + topic_len + 1U) <= buf_size) {
-            (void)strcpy((char*)&buffer[offset], sub->topic_name);
+            (void)strncpy((char*)&buffer[offset], sub->topic_name, topic_len);
+            buffer[offset + topic_len] = 0U;
             offset += topic_len + 1U;
         }
         

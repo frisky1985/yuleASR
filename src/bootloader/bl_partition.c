@@ -385,7 +385,9 @@ bl_partition_error_t bl_partition_table_init_default(
     uint32_t ota_meta_size = sector_size;       /* OTA metadata */
     
     /* Partition 0: Bootloader */
-    (void)strcpy((char*)mgr->table.partitions[0].name, "bootloader");
+    (void)strncpy((char*)mgr->table.partitions[0].name, "bootloader",
+                  BL_MAX_PARTITION_NAME_LEN - 1U);
+    mgr->table.partitions[0].name[BL_MAX_PARTITION_NAME_LEN - 1U] = (uint8_t)'\0';
     mgr->table.partitions[0].type = BL_PARTITION_TYPE_BOOTLOADER;
     mgr->table.partitions[0].state = BL_PARTITION_STATE_ACTIVE;
     mgr->table.partitions[0].attributes = BL_PARTITION_ATTR_READ_ONLY;
@@ -394,7 +396,9 @@ bl_partition_error_t bl_partition_table_init_default(
     mgr->table.partitions[0].size = bootloader_size;
     
     /* Partition 1: Application A */
-    (void)strcpy((char*)mgr->table.partitions[1].name, "app_a");
+    (void)strncpy((char*)mgr->table.partitions[1].name, "app_a",
+                  BL_MAX_PARTITION_NAME_LEN - 1U);
+    mgr->table.partitions[1].name[BL_MAX_PARTITION_NAME_LEN - 1U] = (uint8_t)'\0';
     mgr->table.partitions[1].type = BL_PARTITION_TYPE_APPLICATION;
     mgr->table.partitions[1].state = BL_PARTITION_STATE_ACTIVE;
     mgr->table.partitions[1].attributes = BL_PARTITION_ATTR_VERIFIED;
@@ -404,7 +408,9 @@ bl_partition_error_t bl_partition_table_init_default(
     mgr->table.partitions[1].max_boot_count = 3; /* 3次启动尝试 */
     
     /* Partition 2: Application B */
-    (void)strcpy((char*)mgr->table.partitions[2].name, "app_b");
+    (void)strncpy((char*)mgr->table.partitions[2].name, "app_b",
+                  BL_MAX_PARTITION_NAME_LEN - 1U);
+    mgr->table.partitions[2].name[BL_MAX_PARTITION_NAME_LEN - 1U] = (uint8_t)'\0';
     mgr->table.partitions[2].type = BL_PARTITION_TYPE_APPLICATION;
     mgr->table.partitions[2].state = BL_PARTITION_STATE_INACTIVE;
     mgr->table.partitions[2].attributes = 0;
@@ -415,7 +421,9 @@ bl_partition_error_t bl_partition_table_init_default(
     mgr->table.partitions[2].max_boot_count = 3;
     
     /* Partition 3: Calibration Data */
-    (void)strcpy((char*)mgr->table.partitions[3].name, "calibration");
+    (void)strncpy((char*)mgr->table.partitions[3].name, "calibration",
+                  BL_MAX_PARTITION_NAME_LEN - 1U);
+    mgr->table.partitions[3].name[BL_MAX_PARTITION_NAME_LEN - 1U] = (uint8_t)'\0';
     mgr->table.partitions[3].type = BL_PARTITION_TYPE_CALIBRATION;
     mgr->table.partitions[3].state = BL_PARTITION_STATE_ACTIVE;
     mgr->table.partitions[3].attributes = BL_PARTITION_ATTR_READ_ONLY;
