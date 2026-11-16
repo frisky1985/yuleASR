@@ -976,6 +976,28 @@ static void test_isotp_rx_sf_no_buffer(void)
     TEST_ASSERT_EQUAL_INT(0, s_rxCalls);
 }
 
+static void test_isotp_rx_sf_rejects_truncated_dl(void)
+{
+    /* SF 声称 DL=15，但 8 字节帧只能提供 7 字节载荷：
+     * 必须拒绝，否则 memcpy 会读过帧缓冲末尾。 */
+    uint8_t sf[8] = {0x0F, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
+
+    TEST_ASSERT_EQUAL(ISOTP_E_INVALID_FRAME, IsoTp_ProcessRxFrame(CH0, sf, 8U));
+    TEST_ASSERT_EQUAL(ISOTP_STATE_IDLE, IsoTp_GetState(CH0));
+    TEST_ASSERT_EQUAL_INT(0, s_rxCalls);
+}
+
+static void test_isotp_parse_npci_rejects_short_dlc(void)
+{
+    /* 扩展寻址需要 1 个地址字节 + 至少 1 个 PCI 字节；
+     * dlc=1 时不得读取 frame[1]。 */
+    uint8_t frame[2] = {0x10U, 0x00U};
+    Isotp_NpciType npci;
+
+    TEST_ASSERT_EQUAL(ISOTP_E_INVALID_FRAME,
+        IsoTp_ParseNpci(frame, 1U, &npci, ISOTP_EXTENDED_ADDRESSING));
+}
+
 static void test_isotp_rx_multi_frame(void)
 {
     uint8_t msg[20];
@@ -1211,6 +1233,8 @@ int main(void)
 
     RUN_TEST(test_isotp_rx_single_frame);
     RUN_TEST(test_isotp_rx_sf_no_buffer);
+    RUN_TEST(test_isotp_rx_sf_rejects_truncated_dl);
+    RUN_TEST(test_isotp_parse_npci_rejects_short_dlc);
     RUN_TEST(test_isotp_rx_multi_frame);
     RUN_TEST(test_isotp_rx_sn_error);
     RUN_TEST(test_isotp_rx_block_boundary);

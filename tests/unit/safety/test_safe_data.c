@@ -532,6 +532,33 @@ void test_monitor_lifecycle_and_stats(void)
     TEST_ASSERT_EQUAL(E_OK, SafeData_UnregisterMonitor(mon_id));
 }
 
+void test_check_all_skips_array_monitors(void)
+{
+    SafeDataArrayType arr;
+    uint8_t mon_id;
+    SafeDataStatsType st;
+
+    TEST_ASSERT_EQUAL(E_OK, SafeData_InitArray(&arr,
+        CfgP(SAFE_DATA_TYPE_ARRAY, SAFE_DATA_REDUNDANCY_NONE, SAFE_DATA_CRC_32),
+        4u, 4u));
+    TEST_ASSERT_EQUAL(E_OK, SafeData_RegisterMonitor(&arr.header, &mon_id));
+
+    SafeData_SetCorruptionCallback(CorrCb);
+    g_corr_hits = 0u;
+
+    /* 数组监视项没有容器指针可供校验，必须跳过而不能读取未初始化的校验结果 */
+    TEST_ASSERT_EQUAL_UINT32(0u, SafeData_CheckAllMonitored());
+    TEST_ASSERT_EQUAL_UINT32(0u, g_corr_hits);
+
+    /* 未实际校验的监视项不应计入 validation_count。
+     * SafeDataArrayType 与 SafeDataElementType 均以 header 开头，
+     * 因此可复用 GetStats 按 header 查表。 */
+    TEST_ASSERT_EQUAL(E_OK, SafeData_GetStats((const SafeDataElementType *)&arr, &st));
+    TEST_ASSERT_EQUAL_UINT32(0u, st.validation_count);
+
+    TEST_ASSERT_EQUAL(E_OK, SafeData_UnregisterMonitor(mon_id));
+}
+
 void test_reset_stats_all(void)
 {
     SafeDataElementType el;
@@ -609,6 +636,7 @@ int main(void)
     RUN_TEST(test_sequence_helpers);
     RUN_TEST(test_age_helpers);
     RUN_TEST(test_monitor_lifecycle_and_stats);
+    RUN_TEST(test_check_all_skips_array_monitors);
     RUN_TEST(test_reset_stats_all);
     RUN_TEST(test_state_error_type_strings);
     RUN_TEST(test_version_info);

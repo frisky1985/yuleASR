@@ -851,33 +851,38 @@ uint32_t SafeData_CheckAllMonitored(void)
 {
     uint8_t i;
     uint32_t errors = 0;
-    SafeDataValidationType result;
     
     if (!g_initialized) {
         return 0;
     }
     
     for (i = 0; i < SAFE_DATA_MAX_MONITORS; i++) {
-        if (g_monitors[i].active && g_monitors[i].header != NULL) {
-            /* Validate based on data type */
-            if (g_monitors[i].header->data_type == SAFE_DATA_TYPE_ARRAY) {
-                /* Skip arrays for now - would need container pointer */
-            } else {
-                /* Assume element type */
-                SafeDataElementType *element = (SafeDataElementType *)
-                    ((uint8_t *)g_monitors[i].header - offsetof(SafeDataElementType, header));
-                (void)SafeData_ValidateElement(element, &result);
-            }
-            
-            (void)memcpy(&g_monitors[i].last_result, &result, sizeof(SafeDataValidationType));
-            g_monitors[i].last_check_time = SafeData_GetTimestamp();
-            g_monitors[i].stats.validation_count++;
-            
-            if (!result.is_valid) {
-                errors++;
-                g_monitors[i].stats.error_count++;
-                ReportCorruption(i, result.error_code, &result);
-            }
+        if (!g_monitors[i].active || g_monitors[i].header == NULL) {
+            continue;
+        }
+        
+        /* 数组类型没有容器指针，暂无法逐元素校验；
+         * 直接跳过，避免使用未初始化的校验结果并误报损坏。 */
+        if (g_monitors[i].header->data_type == SAFE_DATA_TYPE_ARRAY) {
+            continue;
+        }
+        
+        /* 假设为元素类型 */
+        SafeDataElementType *element = (SafeDataElementType *)
+            ((uint8_t *)g_monitors[i].header - offsetof(SafeDataElementType, header));
+        SafeDataValidationType result;
+        if (SafeData_ValidateElement(element, &result) != E_OK) {
+            continue;  /* 校验未执行，result 无有效内容 */
+        }
+        
+        (void)memcpy(&g_monitors[i].last_result, &result, sizeof(SafeDataValidationType));
+        g_monitors[i].last_check_time = SafeData_GetTimestamp();
+        g_monitors[i].stats.validation_count++;
+        
+        if (!result.is_valid) {
+            errors++;
+            g_monitors[i].stats.error_count++;
+            ReportCorruption(i, result.error_code, &result);
         }
     }
     

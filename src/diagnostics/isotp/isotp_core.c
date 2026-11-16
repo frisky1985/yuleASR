@@ -120,6 +120,10 @@ Isotp_ReturnType IsoTp_ParseNpci(
     }
     
     uint8_t offset = IsoTp_GetAddrOffset(addrMode);
+    if (dlc <= offset) {
+        /* 帧长至少需要覆盖地址字节 + 1 个 PCI 字节 */
+        return ISOTP_E_INVALID_FRAME;
+    }
     uint8_t pciByte = frame[offset];
     uint8_t pciType = pciByte & ISOTP_N_PCI_TYPE_MASK;
     
@@ -144,6 +148,10 @@ Isotp_ReturnType IsoTp_ParseNpci(
         }
         
         case ISOTP_N_PCI_FF: {
+            /* 首帧固定需要 2 个 PCI 字节 */
+            if (dlc < (uint8_t)(offset + 2U)) {
+                return ISOTP_E_INVALID_FRAME;
+            }
             /* First Frame: 12-bit DL (lower nibble + next byte) */
             npci->dataLength = ((uint16_t)(pciByte & 0x0FU) << 8) | frame[offset + 1];
             /* Check for FF_DL > 4095 (32-bit length in following bytes) */
@@ -198,6 +206,10 @@ Isotp_ReturnType IsoTp_GetFramePayload(
     }
     
     uint8_t offset = IsoTp_GetAddrOffset(addrMode);
+    if (dlc <= offset) {
+        /* 帧长至少需要覆盖地址字节 + 1 个 PCI 字节 */
+        return ISOTP_E_INVALID_FRAME;
+    }
     uint8_t pciType = npci->pciType;
     
     switch (pciType) {
@@ -208,26 +220,35 @@ Isotp_ReturnType IsoTp_GetFramePayload(
                 /* Extended SF DL in CAN FD */
                 pciBytes = 2U;
             }
+            if ((uint8_t)(dlc - offset) < pciBytes) {
+                return ISOTP_E_INVALID_FRAME;
+            }
             *payload = &frame[offset + pciBytes];
-            *payloadLen = dlc - offset - pciBytes;
+            *payloadLen = (uint8_t)(dlc - offset - pciBytes);
             break;
         }
         
         case ISOTP_N_PCI_FF: {
             /* FF payload starts after 2 PCI bytes (or 6 for extended) */
             uint8_t pciBytes = 2U;
+            if (dlc < (uint8_t)(offset + 2U)) {
+                return ISOTP_E_INVALID_FRAME;
+            }
             if (((frame[offset] & 0x0FU) << 8 | frame[offset + 1]) == 0U) {
                 pciBytes = 6U;  /* Extended FF_DL format */
             }
+            if ((uint8_t)(dlc - offset) < pciBytes) {
+                return ISOTP_E_INVALID_FRAME;
+            }
             *payload = &frame[offset + pciBytes];
-            *payloadLen = dlc - offset - pciBytes;
+            *payloadLen = (uint8_t)(dlc - offset - pciBytes);
             break;
         }
         
         case ISOTP_N_PCI_CF: {
             /* CF payload starts after 1 PCI byte */
             *payload = &frame[offset + 1U];
-            *payloadLen = dlc - offset - 1U;
+            *payloadLen = (uint8_t)(dlc - offset - 1U);
             break;
         }
         
@@ -712,11 +733,17 @@ static Isotp_ReturnType IsoTp_ProcessRxSf(
     Isotp_ChannelContextType *ctx,
     const Isotp_NpciType *npci,
     const uint8_t *payload,
+    uint8_t payloadLen,
     const Isotp_ChannelConfigType *config
 )
 {
     if (ctx->rxBuffer == NULL || config->rxBufferSize < npci->dataLength) {
         return ISOTP_E_NO_BUFFER;
+    }
+
+    /* 单帧必须自带全部 DL 字节，否则会读过已接收帧的末尾 */
+    if (npci->dataLength > payloadLen) {
+        return ISOTP_E_INVALID_FRAME;
     }
 
     (void)memcpy(ctx->rxBuffer, payload, npci->dataLength);
@@ -926,7 +953,7 @@ Isotp_ReturnType IsoTp_ProcessRxFrame(
     switch (npci.pciType) {
         case ISOTP_N_PCI_SF:
             /* Single Frame - complete message */
-            result = IsoTp_ProcessRxSf(ctx, &npci, payload, config);
+            result = IsoTp_ProcessRxSf(ctx, &npci, payload, payloadLen, config);
             break;
 
         case ISOTP_N_PCI_FF:
