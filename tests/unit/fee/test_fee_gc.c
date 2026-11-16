@@ -328,7 +328,9 @@ static void test_gc_has_priority(void)
     setup_gc_minimal();
     uint32 gc_before = FeeTest_GetGcCycleCounter();
 
-    uint8 data[64] = {0};
+    /* Block 7 is configured with BlockSize == 128; Fee_Write reads that many
+     * bytes from the caller buffer, so it must be block-sized. */
+    uint8 data[128] = {0};
 
     /* 入队 Write — ModuleStatus=IDLE. Fee_Write 内部检测 IsGcNeeded=TRUE,
      * 触发 StartGarbageCollection() → GcState=SCAN, 然后入队 Write */

@@ -1899,7 +1899,11 @@ void test_Schedule_UninitErrorPaths_AllGuards(void)
 /** Init with (Entries == NULL) and with (Entries != NULL, EntryCount == 0). */
 void test_Schedule_Init_NullOrZeroEntryTables(void)
 {
-    LinMaster_ScheduleTableType zeroCount = {
+    /* The driver keeps a pointer to the table and writes IsRunning when a later
+     * test's setUp calls LinMaster_Schedule_DeInit(), so the table needs static
+     * lifetime (same pattern as the other schedule tables above). A stack local
+     * would be a stack-use-after-return there. */
+    static LinMaster_ScheduleTableType zeroCount = {
         .Entries = &test_SchEntry0, .EntryCount = 0U, .EntryIndex = 0U,
         .IsRunning = FALSE, .IsCyclic = FALSE, .LastEntryTime = 0U, .Name = "zero"
     };

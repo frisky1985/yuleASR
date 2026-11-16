@@ -160,6 +160,22 @@ void test_CertMgr_AddCert_NullEntry_ShouldFail(void) {
     TEST_ASSERT_EQUAL_UINT8(MQTT_E_NOT_OK, Mqtt_CertMgr_AddCert(NULL_PTR));
 }
 
+void test_CertMgr_AddCert_NullData_ShouldFail(void) {
+    /* A NULL data pointer must be rejected before the pool memcpy, matching
+     * the parameter validation of Mqtt_CertMgr_UpdateCert. */
+    Mqtt_CertEntryType entry = makeEntry("null-data", MQTT_CERT_TYPE_CA_ROOT);
+    entry.data = NULL_PTR;
+    TEST_ASSERT_EQUAL_UINT8(MQTT_E_NOT_OK, Mqtt_CertMgr_AddCert(&entry));
+    TEST_ASSERT_EQUAL_UINT8(0U, Mqtt_CertMgr_GetCertCount());
+}
+
+void test_CertMgr_AddCert_ZeroLength_ShouldFail(void) {
+    Mqtt_CertEntryType entry = makeEntry("zero-len", MQTT_CERT_TYPE_CA_ROOT);
+    entry.dataLen = 0U;
+    TEST_ASSERT_EQUAL_UINT8(MQTT_E_NOT_OK, Mqtt_CertMgr_AddCert(&entry));
+    TEST_ASSERT_EQUAL_UINT8(0U, Mqtt_CertMgr_GetCertCount());
+}
+
 void test_CertMgr_AddCert_TooLarge_ShouldFail(void) {
     static uint8 bigData[33000];
     Mqtt_CertEntryType entry = makeEntry("too-big", MQTT_CERT_TYPE_CA_ROOT);
@@ -639,6 +655,8 @@ int main(void) {
 
     RUN_TEST(test_CertMgr_AddCert_WithoutInit_ShouldFail);
     RUN_TEST(test_CertMgr_AddCert_NullEntry_ShouldFail);
+    RUN_TEST(test_CertMgr_AddCert_NullData_ShouldFail);
+    RUN_TEST(test_CertMgr_AddCert_ZeroLength_ShouldFail);
     RUN_TEST(test_CertMgr_AddCert_TooLarge_ShouldFail);
     RUN_TEST(test_CertMgr_AddCert_StoreFull_ShouldFail);
     RUN_TEST(test_CertMgr_AddCert_DuplicateAlias_ShouldUpdateInPlace);

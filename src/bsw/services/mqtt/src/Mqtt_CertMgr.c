@@ -128,7 +128,8 @@ Mqtt_ReturnType Mqtt_CertMgr_AddCert(const Mqtt_CertEntryType* entry)
     sint8 idx;
     uint8* dest;
     
-    if (!CertMgr_Initialized || (entry == NULL_PTR)) {
+    if (!CertMgr_Initialized || (entry == NULL_PTR) ||
+        (entry->data == NULL_PTR) || (entry->dataLen == 0U)) {
         return MQTT_E_NOT_OK;
     }
     
@@ -151,8 +152,8 @@ Mqtt_ReturnType Mqtt_CertMgr_AddCert(const Mqtt_CertEntryType* entry)
         return MQTT_E_NOT_OK; /* 证书库已满 */
     }
     
-    /* 检查数据池空间 */
-    if ((CertMgr_CertDataUsed + entry->dataLen) > CERTMGR_CERT_DATA_SIZE) {
+    /* 检查数据池空间 (减法形式避免 used + dataLen 的 32 位回绕) */
+    if (entry->dataLen > (CERTMGR_CERT_DATA_SIZE - CertMgr_CertDataUsed)) {
         return MQTT_E_NOT_OK; /* 存储空间不足 */
     }
     

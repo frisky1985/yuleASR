@@ -59,18 +59,13 @@ MemIf_StatusType Eep_GetStatus(void)
     return MEMIF_IDLE;
 }
 
-/* ABI note: Ea.c compiles against the ECUAL MemIf.h
- * (src/bsw/ecual/memif/include/MemIf.h) whose MemIf_JobResultType numeric
- * values are OK=0, FAILED=1, PENDING=2, CANCELED=3 — a different order from
- * the services MemIf.h used here (OK=0, PENDING=1, CANCELED=2, FAILED=3).
- * The tests drive stub_Eep_JobResult with services-view macros, so translate
- * to the SUT's view before returning. */
+/* Both the SUT (Ea.c via the ECUAL MemIf.h) and these tests resolve
+ * MemIf_JobResultType from the single canonical include/autosar/MemIf_Types.h
+ * (OK=0, FAILED=1, PENDING=2, CANCELED=3), so no translation is needed. */
 MemIf_JobResultType Eep_GetJobResult(void)
 {
-    static const uint8 svcToSut[4] = { 0u /*OK->OK*/, 2u /*PENDING->PENDING*/,
-                                       3u /*CANCELED->CANCELED*/, 1u /*FAILED->FAILED*/ };
     stub_Eep_GetJobResult_calls++;
-    return (MemIf_JobResultType)svcToSut[(uint32)stub_Eep_JobResult & 3u];
+    return stub_Eep_JobResult;
 }
 
 void Eep_Cancel(void)
