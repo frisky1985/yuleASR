@@ -402,7 +402,12 @@ eth_status_t automotive_phy_run_diagnostics(automotive_phy_diagnostics_t *diagno
     diagnostics->link_pass = link_status.link_up;
     diagnostics->cable_ok = link_status.link_up;
     diagnostics->cable_length_m = link_status.cable_length;
-    diagnostics->signal_quality = link_status.signal_quality;
+
+    /* link_status.signal_quality 用 -1 表示 "不可用"，而诊断结构的质量指标
+     * 是无符号的；直接赋值会得到 0xFFFFFFFF。映射为 0 = 无有效指标。 */
+    diagnostics->signal_quality = (link_status.signal_quality < 0)
+                                      ? 0U
+                                      : (uint32_t)link_status.signal_quality;
 
     /* 特定PHY诊断(如果启用) */
     if (g_phy_ctx.config.enable_cable_diag) {

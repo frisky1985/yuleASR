@@ -18,3 +18,19 @@ target_include_directories(test_eth_manager PRIVATE
 target_link_libraries(test_eth_manager PRIVATE eth_driver)
 
 add_test(NAME eth_manager COMMAND test_eth_manager)
+
+add_executable(test_eth_automotive
+    test_eth_automotive.c
+)
+
+target_include_directories(test_eth_automotive PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/..
+    ${CMAKE_CURRENT_SOURCE_DIR}/../driver
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../common/types
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../common/log
+)
+
+target_link_libraries(test_eth_automotive PRIVATE eth_driver)
+
+add_test(NAME eth_automotive COMMAND test_eth_automotive)
