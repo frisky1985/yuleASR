@@ -557,7 +557,7 @@ static void* flush_thread_func(void* arg) {
     while (queue_pop(&g_log_state.queue, &entry) == 0) {
         output_log(&entry);
     }
-    
+
     return NULL;
 }
 
@@ -1110,15 +1110,20 @@ int dds_log_get_file_list(char** files, uint32_t max_files, uint32_t* actual_cou
     if (!files || !actual_count || (max_files == 0U)) { return -1; }
     
     *actual_count = 0;
+
+    /* Defensive clamp: the static pool is only DDS_LOG_MAX_FILES deep;
+       even if the caller asks for more, we cannot supply more pointers
+       than we have storage for. */
+    if (max_files > DDS_LOG_MAX_FILES) {
+        max_files = DDS_LOG_MAX_FILES;
+    }
     
     DIR* dir = opendir(g_log_state.config.log_dir);
     if (!dir) { return -1; }
     
     struct dirent* entry;
-    while (((entry = readdir(dir)) != NULL) && (*actual_count < max_files) &&
-           (*actual_count < DDS_LOG_MAX_FILES)) {
+    while (((entry = readdir(dir)) != NULL) && (*actual_count < max_files)) {
         if ((strstr(entry->d_name, ".log")) != 0U) {
-            /* 静态文件列表缓冲 (固定上限 DDS_LOG_MAX_FILES) */
             files[*actual_count] = s_file_list_pool[*actual_count];
             if ((files[*actual_count]) != 0U) {
                 (void)Debug_Snprintf(files[*actual_count], DDS_LOG_MAX_PATH_LEN, "%s/%s",

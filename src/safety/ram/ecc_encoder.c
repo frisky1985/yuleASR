@@ -135,7 +135,7 @@ static uint8_t EccEncoder_ComputeEcc7(uint32_t data)
      * including the overall-parity row from the regenerated matrix) */
     for (i = 0U; i < 7U; i++) {
         parity = (EccEncoder_PopCount32(data & ecc7_matrix[i]) & 1U);
-        ecc |= (parity << i);
+        ecc |= (uint8_t)((uint8_t)parity << i);
     }
 
     return ecc;
@@ -153,12 +153,12 @@ static uint8_t EccEncoder_ComputeEcc8(uint64_t data)
     /* Calculate Hamming bits (P1-P64) */
     for (i = 0U; i < 7U; i++) {
         parity = (EccEncoder_PopCount64(data & ecc8_matrix[i]) & 1U);
-        ecc |= (parity << i);
+        ecc |= (uint8_t)((uint8_t)parity << i);
     }
 
     /* Calculate overall parity bit for SECDED */
     parity = (EccEncoder_PopCount64(data) & 1U);
-    ecc |= (parity << 7);
+    ecc |= (uint8_t)((uint8_t)parity << 7);
 
     return ecc;
 }

@@ -274,7 +274,7 @@ static void test_file_output(void)
     dds_log_config_t cfg;
     char path[DDS_LOG_MAX_PATH_LEN];
     char small[8];
-    char* files[4];
+    char* files[DDS_LOG_MAX_FILES];
     uint32_t count = 0U;
 
     /* 目录创建失败 + 文件打开失败分支 */
