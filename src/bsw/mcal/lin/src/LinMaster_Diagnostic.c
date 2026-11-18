@@ -515,7 +515,9 @@ LinMaster_Diag_StatusType LinMaster_Diag_WriteDataById(
         return LINMASTER_DIAG_E_NOT_INITIALIZED;
     }
     
-    if ((DataPtr == NULL_PTR) || (Length == 0U) || (Length > (LINMASTER_DIAG_MAX_BUFFER_SIZE - 2U))) {
+    /* Length is uint8, so it can never exceed the 4095-byte buffer minus 2;
+     * only the NULL / zero-length cases are meaningful here. */
+    if ((DataPtr == NULL_PTR) || (Length == 0U)) {
         return LINMASTER_DIAG_E_INVALID_PARAM;
     }
     
@@ -560,7 +562,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_SecurityAccess(
     request.SubFunction = SubFunc & 0x7FU;
     
     /* 如果是发送密钥，添加密钥数据 */
-    if ((KeyPtr != NULL_PTR) && (KeyLen > 0U) && (KeyLen <= LINMASTER_DIAG_MAX_BUFFER_SIZE)) {
+    if ((KeyPtr != NULL_PTR) && (KeyLen > 0U)) {
         for (i = 0U; i < KeyLen; i++) {
             request.Data[i] = KeyPtr[i];
         }
@@ -591,10 +593,6 @@ LinMaster_Diag_StatusType LinMaster_Diag_RoutineControl(
     
     if (DiagInitialized == 0U) {
         return LINMASTER_DIAG_E_NOT_INITIALIZED;
-    }
-    
-    if (Length > (LINMASTER_DIAG_MAX_BUFFER_SIZE - 2U)) {
-        return LINMASTER_DIAG_E_INVALID_PARAM;
     }
     
     (void)memset(&request, 0, sizeof(request));

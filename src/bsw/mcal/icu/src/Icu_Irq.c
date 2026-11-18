@@ -40,10 +40,60 @@
 /* TPM CnSC Register Bits */
 #define ICU_TPM_CnSC_CHF                    (0x80U)
 #define ICU_TPM_CnSC_CHIE                   (0x40U)
+#define ICU_TPM_CnSC_ELSB                   (0x08U)
+#define ICU_TPM_CnSC_ELSA                   (0x04U)
+
+/* Channels 0-1 -> TPM1, 2-3 -> TPM2, 4-5 -> TPM3, 6-7 -> TPM4 */
+#define ICU_TPM_CHANNELS_PER_INSTANCE       (2U)
 
 /*==================================================================================================
 *                                    STATIC FUNCTIONS
 ==================================================================================================*/
+
+/**
+ * @brief Get the TPM instance base address for a channel
+ */
+static uint32 Icu_GetTpmBaseAddr(Icu_ChannelType Channel)
+{
+    uint32 instance = (uint32)Channel / ICU_TPM_CHANNELS_PER_INSTANCE;
+
+    switch (instance) {
+        case 0U:  return ICU_TPM1_BASE_ADDR;
+        case 1U:  return ICU_TPM2_BASE_ADDR;
+        case 2U:  return ICU_TPM3_BASE_ADDR;
+        default:  return ICU_TPM4_BASE_ADDR;
+    }
+}
+
+/**
+ * @brief Get the channel index within its TPM instance
+ */
+static uint8 Icu_GetTpmChannelOffset(Icu_ChannelType Channel)
+{
+    return (uint8)((uint32)Channel % ICU_TPM_CHANNELS_PER_INSTANCE);
+}
+
+/**
+ * @brief Select the capture edge and enable the channel interrupt
+ */
+static void Icu_SetupInputCapture(Icu_ChannelType Channel, Icu_SignalEdgeType Edge)
+{
+    uint32 baseAddr = Icu_GetTpmBaseAddr(Channel);
+    uint8 chOffset = Icu_GetTpmChannelOffset(Channel);
+    uint32 cnscAddr = baseAddr + ICU_TPM_C0SC + (chOffset * ICU_TPM_CH_OFFSET);
+    uint32 cnscValue = ICU_REG_READ32(cnscAddr);
+
+    /* Clear edge select, then program rising (ELSA) or falling (ELSB) capture */
+    cnscValue &= ~(uint32)(ICU_TPM_CnSC_ELSA | ICU_TPM_CnSC_ELSB);
+    if (Edge == ICU_EDGE_FALLING) {
+        cnscValue |= ICU_TPM_CnSC_ELSB;
+    } else {
+        cnscValue |= ICU_TPM_CnSC_ELSA;
+    }
+    cnscValue |= ICU_TPM_CnSC_CHIE;
+
+    ICU_REG_WRITE32(cnscAddr, cnscValue);
+}
 
 /**
  * @brief Process edge detection interrupt

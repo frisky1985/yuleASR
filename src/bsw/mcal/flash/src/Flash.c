@@ -63,7 +63,8 @@ typedef struct {
     Flash_OpModeType opMode;
     Flash_AddressType currentAddr;
     Flash_LengthType remainingLength;
-    uint8* dataPtr;
+    const uint8* dataPtr;   /* WRITE/COMPARE 源缓冲区（只读） */
+    uint8* readDestPtr;     /* READ 目标缓冲区（可写） */
     Flash_JobResultType jobResult;
     uint32 initState;
 } Flash_DriverStateType;
@@ -581,13 +582,13 @@ static void Flash_ProcessReadJob(void)
     {
         uint32 idx;
         for (idx = 0U; idx < bytesToRead; idx++) {
-            Flash_DriverState.dataPtr[idx] =
+            Flash_DriverState.readDestPtr[idx] =
                 ((const uint8*)(uintptr)Flash_DriverState.currentAddr)[idx];
         }
     }
 
     Flash_DriverState.currentAddr += bytesToRead;
-    Flash_DriverState.dataPtr += bytesToRead;
+    Flash_DriverState.readDestPtr += bytesToRead;
     Flash_DriverState.remainingLength -= bytesToRead;
 }
 
@@ -767,6 +768,7 @@ void Flash_Init(const Flash_ConfigType* ConfigPtr)
     Flash_DriverState.currentAddr = 0U;
     Flash_DriverState.remainingLength = 0U;
     Flash_DriverState.dataPtr = NULL_PTR;
+    Flash_DriverState.readDestPtr = NULL_PTR;
     Flash_DriverState.initState = FLASH_INITIALIZED;
 
     /* WRP 写保护初始化 (P3): 消费 Fls_ProtectionConfig.WriteProtectionMask 配置
@@ -954,7 +956,7 @@ Std_ReturnType Flash_Read(Flash_AddressType SourceAddress, uint8* TargetAddressP
     /* Set up job parameters */
     Flash_DriverState.currentAddr = SourceAddress;
     Flash_DriverState.remainingLength = Length;
-    Flash_DriverState.dataPtr = TargetAddressPtr;
+    Flash_DriverState.readDestPtr = TargetAddressPtr;
     Flash_DriverState.jobType = FLASH_JOB_READ;
     Flash_DriverState.jobResult = FLASH_JOB_PENDING;
     Flash_DriverState.state = FLASH_STATE_BUSY;

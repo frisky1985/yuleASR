@@ -843,9 +843,13 @@ dds_auth_status_t dds_auth_process_handshake_request(dds_auth_context_t *ctx,
     (void)memcpy(reply->challenge, (*handshake)->local_challenge, 32);
     (void)memcpy(reply->response, response_data, 32);
 
+    /* Write the length through an aligned local: reply->signature_len is a
+     * packed member, so taking its address may produce an unaligned pointer. */
+    uint32_t reply_signature_len = 0U;
     (void)dds_auth_sign(ctx, (uint8_t*)reply, sizeof(dds_auth_handshake_reply_t) - 256U,
                   (*handshake)->identity.key_pair.private_key,
-                  reply->signature, &reply->signature_len);
+                  reply->signature, &reply_signature_len);
+    reply->signature_len = reply_signature_len;
 
     (*handshake)->state = DDS_HANDSHAKE_STATE_REPLY_SENT;
 
@@ -886,9 +890,12 @@ dds_auth_status_t dds_auth_process_handshake_reply(dds_auth_context_t *ctx,
     (void)memcpy(&final->requester_guid, &handshake->local_guid, sizeof(rtps_guid_t));
     (void)memcpy(final->response, reply->challenge, 32);
 
+    /* Aligned local: final->signature_len is a packed member. */
+    uint32_t final_signature_len = 0U;
     (void)dds_auth_sign(ctx, (uint8_t*)final, sizeof(dds_auth_handshake_final_t) - 256U,
                   handshake->identity.key_pair.private_key,
-                  final->signature, &final->signature_len);
+                  final->signature, &final_signature_len);
+    final->signature_len = final_signature_len;
 
     handshake->state = DDS_HANDSHAKE_STATE_FINAL_SENT;
     handshake->verified = true;

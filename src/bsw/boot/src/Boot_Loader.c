@@ -161,6 +161,8 @@ static void boot_loader_mark_boot_success(Boot_InfoBlock *bib)
 /**
  * fail 路径: 递增启动尝试计数 (超限永久置故障态), 保存后进入恢复模式
  */
+static void boot_loader_fail_recover(Boot_InfoBlock *bib) __attribute__((noreturn));
+
 static void boot_loader_fail_recover(Boot_InfoBlock *bib)
 {
     bib->boot_count++;

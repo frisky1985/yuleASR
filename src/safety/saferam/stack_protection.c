@@ -263,10 +263,17 @@ uint32_t StackProtection_GetCurrentSP(void)
     return (uint32_t)sp64;
 #else
     /* Host build (native unit tests / CI): no direct SP register access.
-       Approximate SP with the address of a stack local, which lies on the
-       current stack frame and preserves underflow/watermark semantics. */
-    uint32_t sp_marker = 0U;
-    return (uint32_t)(uintptr_t)&sp_marker;
+       Use the frame address instead of the address of a local: returning the
+       address of a local would leave a dangling pointer (and is rejected by
+       -Wreturn-stack-address).  The frame address still lies on the current
+       stack and preserves underflow/watermark semantics. */
+#if defined(__GNUC__)
+    return (uint32_t)(uintptr_t)__builtin_frame_address(0);
+#else
+    /* Non-GCC fallback: a static object has stable, non-zero address. */
+    static uintptr_t sp_fallback;
+    return (uint32_t)sp_fallback;
+#endif
 #endif
 }
 

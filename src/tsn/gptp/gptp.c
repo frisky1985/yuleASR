@@ -248,7 +248,6 @@ static void perform_clock_sync(uint8_t domain_index) {
     int64_t offset_ns = clock->slave_offset_ns;
     
     /* 使用PI控制器调整 */
-    static int64_t last_offset = 0;
     static int64_t integral = 0;
     
     /* 比例项 */
@@ -268,8 +267,6 @@ static void perform_clock_sync(uint8_t domain_index) {
     /* 应用时钟调整 */
     clock->slave_offset_ns = offset_ns;
     clock->rate_ratio_ppb = (uint32_t)((adjustment * 1000)) / NS_PER_MS;
-    
-    last_offset = offset_ns;
     
     /* 更新同步状态 */
     if (llabs(offset_ns) < GPTP_SYNC_PRECISION_NS) {

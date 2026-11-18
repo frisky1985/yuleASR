@@ -617,11 +617,11 @@ void MemIf_SetMode(uint8 DeviceIndex, MemIf_ModeType Mode)
     /* Route to appropriate underlying driver */
     if (DeviceIndex == MEMIF_DEVICE_INDEX_FEE) {
 #if (MEMIF_FEE_ENABLED == STD_ON)
-        Fee_SetMode((MemIf_ModeType)Mode);
+        Fee_SetMode((Fee_ModeType)Mode);
 #endif
     } else if (DeviceIndex == MEMIF_DEVICE_INDEX_EA) {
 #if (MEMIF_EA_ENABLED == STD_ON)
-        Ea_SetMode((MemIf_ModeType)Mode);
+        Ea_SetMode((Ea_ModeType)Mode);
 #endif
     }
 }

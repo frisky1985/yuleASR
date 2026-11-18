@@ -354,7 +354,7 @@ Std_ReturnType EccChecker_CheckAndCorrect64(uint64_t data,
             error_pos = (uint8_t)(hamming_syndrome - 1U);
         }
 
-        if (error_pos != 0xFFU && error_pos < 64U) {
+        if (error_pos < 64U) {
             /* Correctable single-bit error in data */
             result->error_type = ECC_ERROR_SINGLE_BIT;
             result->error_position = error_pos;

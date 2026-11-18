@@ -268,17 +268,7 @@ void SomeIpSd_RxIndication(const uint8* Data, uint32 Length)
         return;
     }
     
-    /* Parse SD message content */
-    /* Flags = Data[16] */
-/*     sdMessage.Flags = Data[SOMEIP_HEADER_SIZE]; */
-    
-    /* Reserved = Data[17-20] */
-/*     sdMessage.Reserved = ((uint32)Data[17] << 24) | */
-                         ((uint32)Data[18] << 16) |
-                         ((uint32)Data[19] << 8) |
-                         (uint32)Data[20];
-    
-    /* NOTE: Parse entries and options */
+    /* NOTE: Parse flags (Data[16]) and reserved bytes (Data[17-20]) */
     
     /* Process based on message type */
     /* NOTE: Handle Find Service, Offer Service, Subscribe, etc. */

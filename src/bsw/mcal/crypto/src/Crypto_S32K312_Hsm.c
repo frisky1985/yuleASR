@@ -1706,11 +1706,11 @@ Std_ReturnType S32K312_Hsm_Sha256(const uint8* data,
                 } else {
                     /* Read digest */
                     for (i = 0U; i < 8U; i++) {
-                        uint32 data = S32K312_Hsm_ShaRegs->DIGEST[i];
-                        digest[i * 4U] = (uint8)(data >> 24);
-                        digest[i * 4U + 1U] = (uint8)(data >> 16);
-                        digest[i * 4U + 2U] = (uint8)(data >> 8);
-                        digest[i * 4U + 3U] = (uint8)(data);
+                        uint32 word = S32K312_Hsm_ShaRegs->DIGEST[i];
+                        digest[i * 4U] = (uint8)(word >> 24);
+                        digest[i * 4U + 1U] = (uint8)(word >> 16);
+                        digest[i * 4U + 2U] = (uint8)(word >> 8);
+                        digest[i * 4U + 3U] = (uint8)(word);
                     }
                 }
             }

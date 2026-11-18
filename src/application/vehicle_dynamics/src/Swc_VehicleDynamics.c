@@ -275,7 +275,7 @@ STATIC uint16 Swc_VehicleDynamics_CalculateVehicleSpeed(void)
 STATIC boolean Swc_VehicleDynamics_CheckTractionLoss(void)
 {
     uint16 vehicleSpeed;
-    sint16 slipFL, slipFR, slipRL, slipRR;
+    sint16 slipRL, slipRR;
 
     vehicleSpeed = swcVehicleDynamics.motionData.vehicleSpeed;
 
@@ -283,11 +283,7 @@ STATIC boolean Swc_VehicleDynamics_CheckTractionLoss(void)
         return FALSE;  /* Too slow to determine slip */
     }
 
-    /* Calculate slip ratios */
-    slipFL = Swc_VehicleDynamics_CalculateSlipRatio(
-        swcVehicleDynamics.motionData.wheelSpeedFL, vehicleSpeed);
-    slipFR = Swc_VehicleDynamics_CalculateSlipRatio(
-        swcVehicleDynamics.motionData.wheelSpeedFR, vehicleSpeed);
+    /* Calculate slip ratios for the driven (rear) wheels */
     slipRL = Swc_VehicleDynamics_CalculateSlipRatio(
         swcVehicleDynamics.motionData.wheelSpeedRL, vehicleSpeed);
     slipRR = Swc_VehicleDynamics_CalculateSlipRatio(

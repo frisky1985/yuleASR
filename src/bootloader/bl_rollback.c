@@ -461,10 +461,14 @@ bl_rollback_error_t bl_rollback_execute(bl_rollback_manager_t *mgr, uint8_t reas
     bl_partition_manager_t *part_mgr = (bl_partition_manager_t*)mgr->partition_manager;
     if (part_mgr != NULL) {
         bl_partition_info_t target_info;
-        result = bl_partition_get_info_by_index(part_mgr, target_partition, &target_info);
-        
-        if ((uint32_t)(result) == (uint32_t)(BL_OK)) {
-            result = bl_partition_switch_active(part_mgr, (char*)target_info.name);
+        bl_partition_error_t part_result =
+            bl_partition_get_info_by_index(part_mgr, target_partition, &target_info);
+
+        if (part_result == BL_OK) {
+            part_result = bl_partition_switch_active(part_mgr, (char*)target_info.name);
+        }
+        if (part_result != BL_OK) {
+            result = BL_ROLLBACK_ERROR_ROLLBACK_FAILED;
         }
     }
     

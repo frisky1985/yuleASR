@@ -1253,7 +1253,9 @@ void keym_debug_print_slot(keym_context_t *ctx, uint8_t slot_id)
     }
     
     slot = &ctx->slots[slot_id];
-    
+    /* 量产构建中 Debug_Printf 展开为空操作，保留该变量供调试构建使用 */
+    (void)slot;
+
     Debug_Printf("Key Slot %d:\n", slot_id);
     Debug_Printf("  Name: %s\n", slot->name);
     Debug_Printf("  Type: %s\n", keym_get_key_type_name_internal(slot->key_type));
