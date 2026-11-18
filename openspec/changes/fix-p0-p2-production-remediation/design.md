@@ -2,8 +2,9 @@
 
 > **变更 ID**: fix-p0-p2-production-remediation
 > **关联提案**: `openspec/changes/fix-p0-p2-production-remediation/proposal.md`
-> **版本**: v1.0
+> **版本**: v1.1
 > **日期**: 2026-10-08
+> **最近更新**: 2026-11-19（补充 P0/P1 修复与全工程回归结论）
 
 ---
 
@@ -674,3 +675,37 @@ P1-13 (CAN FD) ───── 独立
 3. `python tools/analysis/static_analysis.py` — MISRA 违规数不增
 4. `bash config/tools/check_config_drift.sh` — 配置无漂移
 5. `python tools/traceability/trace_requirements.py` — 追溯一致性
+
+---
+
+## 18. P0/P1 修复与全工程回归结论（2026-11-19 补录）
+
+### 18.1 P0 阻断性缺陷：已闭环
+
+2026-11-08 整改批次的 5 个 cppcheck P0 缺陷均已修复：
+
+| 模块 | 修复结论 |
+|:-----|:---------|
+| I2c | 移除未使用的 `bestDivider` 及空操作语句 |
+| Boot_Flash | `retry` 在声明处初始化为 `BOOT_E_FLASH_ERASE`，消除未初始化使用 |
+| Fls_Hw | 空指针、地址范围及对齐检查移到 DET 配置开关之外，安全校验始终生效 |
+| Dcm Transfer | 删除与外层条件重复的冗余长度判断 |
+| DDS Log | 修正 `uint32_t` 日志格式化类型及显式转换 |
+
+**静态复核结论**：对整改文件按同一 cppcheck 口径复扫，过滤已确认误报后为 **0 error / 0 warning**。
+
+### 18.2 P1 重要缺陷：已闭环
+
+- **MISRA 17.2（递归）**：BswM 改为迭代后序遍历；NvM 冗余副本改为失败重试；Mqtt_CertMgr 消除互递归；dds_access 通配符匹配改为迭代回溯；content_filtered_topic 使用显式栈并限制解析深度。全量 MISRA 复扫 **17.2 = 0**，未依赖新增抑制。
+- **MISRA 20.9（stdio）**：日志统一收口到 `Debug.h/Debug.c` 抽象层；生产代码原始 `printf/fprintf/snprintf` 调用为 **0**。保留 `<stdio.h>` 的 6 个文件均有明确依据：`Debug.c` 封装，以及 5 个执行真实文件 I/O 的 DDS 文件。
+
+### 18.3 全工程回归结论
+
+| 验证基线 | 构建与测试 | 结果 |
+|:---------|:-----------|:-----|
+| 2026-11-08 P0/P1 整改验收 | Native / ASan / UBSan / Coverage 四种构建分别执行全量 CTest | **各 193/193 通过**；ASan、UBSan 均无 sanitizer 报错 |
+| 2026-11-19 当前复验（`83b75427`） | Debug 全量构建后串行执行 `ctest -j1` | **216/216 通过，0 失败** |
+
+当前复验期间，DDS 签名长度局部变量曾一度误用 `uint16_t`，与 API 的 `uint32_t*` 输出参数不匹配，导致 `dds_log`、`dds_security`、`test_ddssec_auth` 3 项失败；改为 `uint32_t` 后定向复测及全量回归均通过。该过程确认回归套件能够捕获此次修复引入的类型宽度回归，最终结果不是沿用历史绿状态的推断。
+
+**结论边界**：上述结果证明本批 P0/P1 静态分析与运行时缺陷已闭环，且当前主机侧全工程测试无回归；不将其等同于真实硬件 HIL/SIL、工具鉴定或全部量产成熟度条目的验收。详细证据见 `reports/quality/production-readiness-2026-11-08.md` 第 5.5 节及本轮验证记录。
