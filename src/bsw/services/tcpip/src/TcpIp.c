@@ -1243,7 +1243,9 @@ TcpIp_ReturnType TcpIp_Reset(void)
     }
     else
     {
-        TcpIp_ConfigType defaultConfig;
+        /* 栈变量地址传给 TcpIp_Init 会被存入 ConfigPtr 全局 (见 L604)，
+         * Reset 返回后栈帧失效 → 悬挂引用；故用 static 保证生命周期。 */
+        static TcpIp_ConfigType defaultConfig;
         (void)memset(&defaultConfig, 0, sizeof(defaultConfig));
         defaultConfig.NumSockets           = TCPIP_MAX_SOCKETS;
         defaultConfig.NumTcpPbufs          = TCPIP_MAX_TCP_PBUFS;
