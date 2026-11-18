@@ -6,12 +6,6 @@
  *
  * @note Mini assert 框架 (仿 src/crypto_stack/tests/test_csm.c), 无 Unity 依赖
  * @note 状态机覆盖: UNINIT -> INIT -> WAIT_REQ -> READY -> WAIT_REQ
- * @note 已知模块缺陷 (不修改源码, 测试中规避):
- *   eth_sm_create_network() 将 eth_sm_network_config_t* 误传给期望
- *   eth_sm_config_t* 的 eth_sm_validate_config(): 后者读取偏移 8 处的
- *   network_count, 对应 network 配置中的 shutdown_delay_ms 低字节。
- *   因此 shutdown_delay_ms 低字节 > 4 (ETHSM_MAX_NETWORKS) 时创建网络
- *   会错误返回 ETHSM_E_PARAM_CONFIG。测试中 shutdown_delay_ms 取 <= 4。
  *
  * 已知模块缺陷 2 (错误码掩码): 所有 getter 类 API (get_state /
  *   get_network_mode / get_network_config / is_network_ready /
@@ -114,8 +108,7 @@ static bool test_bswm_cb_reject(uint8_t net, eth_sm_mode_t mode)
  * Test helpers
  * ============================================================================ */
 
-/* 构造网络配置。startup_delay_ms 可任意; shutdown_delay_ms 必须 <= 4,
- * 否则触发 create_network -> validate_config 类型不匹配缺陷 (见文件头注释)。 */
+/* 构造网络配置。startup_delay_ms / shutdown_delay_ms 可任意取值。 */
 static eth_sm_network_config_t make_net_cfg(bool start_all, uint32_t startup_ms, uint32_t shutdown_ms)
 {
     eth_sm_network_config_t cfg;
@@ -848,26 +841,25 @@ static int test_ethsm_create_network_null_idx(void)
     return 0;
 }
 
-/* Line 134: eth_sm_create_network with invalid config (validate_config fails) */
-static int test_ethsm_create_network_invalid_config(void)
+/* Regression: eth_sm_create_network() must validate its own
+ * eth_sm_network_config_t and not reinterpret shutdown_delay_ms as the
+ * module-level network_count (offset 8 layout mismatch). */
+static int test_ethsm_create_network_large_delay(void)
 {
     uint8_t idx = 0xFFu;
+    eth_sm_network_config_t out;
 
-    printf("  Testing create_network with invalid config...\n");
+    printf("  Testing create_network with shutdown_delay_ms > ETHSM_MAX_NETWORKS...\n");
 
     eth_sm_deinit();  /* Ensure clean state */
     TEST_ASSERT_EQ(eth_sm_init(NULL), ETHSM_OK);
 
-    /* Due to known module defect: eth_sm_create_network passes
-     * eth_sm_network_config_t* to eth_sm_validate_config() which expects
-     * eth_sm_config_t*. The shutdown_delay_ms field overlaps with
-     * network_count. Setting shutdown_delay_ms > ETHSM_MAX_NETWORKS (4)
-     * triggers the validation failure (result != ETHSM_OK branch). */
-    eth_sm_network_config_t bad_cfg = make_net_cfg(false, 0u, 10u);
+    eth_sm_network_config_t cfg = make_net_cfg(false, 0u, 1000u);
 
-    /* Invalid config triggers validation failure, else branch returns ETHSM_E_PARAM_POINTER */
-    eth_sm_error_t result = eth_sm_create_network(&bad_cfg, &idx);
-    TEST_ASSERT_EQ(result, ETHSM_E_PARAM_POINTER);
+    TEST_ASSERT_EQ(eth_sm_create_network(&cfg, &idx), ETHSM_OK);
+    TEST_ASSERT_EQ(idx, 0u);
+    TEST_ASSERT_EQ(eth_sm_get_network_config(idx, &out), ETHSM_OK);
+    TEST_ASSERT_EQ(out.shutdown_delay_ms, 1000u);
 
     eth_sm_deinit();
     printf("  PASSED\n");
@@ -915,7 +907,7 @@ int main(void)
     run_test(test_ethsm_deinit_not_initialized, "EthSM Deinit Not Initialized");
     run_test(test_ethsm_get_version_null_ptrs, "EthSM Get Version NULL Ptrs");
     run_test(test_ethsm_create_network_null_idx, "EthSM Create Network NULL Idx");
-    run_test(test_ethsm_create_network_invalid_config, "EthSM Create Network Invalid Cfg");
+    run_test(test_ethsm_create_network_large_delay, "EthSM Create Network Large Delay");
 
     printf("\n============================================\n");
     printf("Results: %d/%d tests passed\n", tests_passed, tests_run);

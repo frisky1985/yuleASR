@@ -129,7 +129,17 @@ eth_sm_error_t eth_sm_create_network(const eth_sm_network_config_t *config,
     eth_sm_error_t result;
     int16_t idx;
 
-    result = eth_sm_validate_config(config);
+    /* Validate the network configuration itself.  Passing it to
+     * eth_sm_validate_config() (which expects eth_sm_config_t) would read
+     * network_count from the wrong offset and reject valid networks. */
+    if (config == NULL)
+    {
+        result = ETHSM_E_PARAM_POINTER;
+    }
+    else
+    {
+        result = ETHSM_OK;
+    }
     
     if ((result == ETHSM_OK) && (network_idx != NULL))
     {
