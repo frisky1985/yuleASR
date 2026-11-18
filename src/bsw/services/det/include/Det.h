@@ -82,7 +82,9 @@ extern "C" {
  * @brief Configuration structure for Det module
  */
 typedef struct {
-    uint16 dummy;  /* Placeholder for configuration parameters */
+    boolean enableFreezeOnError;  /* Freeze on first reported error */
+    boolean enableLogging;        /* Keep an error ring buffer */
+    uint8   maxErrorEntries;      /* Ring buffer capacity */
 } Det_ConfigType;
 
 /**

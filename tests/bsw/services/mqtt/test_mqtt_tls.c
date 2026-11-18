@@ -635,15 +635,16 @@ void test_Tls_SetErrorCallback_InvalidContext_ShouldBeIgnored(void) {
 void test_Tls_GetVersion_ShouldReportConfiguredAndNegotiatedVersion(void) {
     Mqtt_TlsContextType ctx = NULL_PTR;
     Mqtt_TlsConfigType cfg = minimalConfig();
-    TEST_ASSERT_EQUAL_UINT8(MQTT_TLS_VERSION_1_2, Mqtt_Tls_GetVersion(NULL_PTR));
+    /* 版本常量是 mbedTLS 编码 (0x0303/0x0304)，不能用 8 位断言截断比较 */
+    TEST_ASSERT_EQUAL_UINT16(MQTT_TLS_VERSION_1_2, Mqtt_Tls_GetVersion(NULL_PTR));
     TEST_ASSERT_EQUAL_UINT8(MQTT_OK, Mqtt_Tls_CreateContext(&cfg, &ctx));
     /* No negotiated version yet (context zeroed) -> config version. */
-    TEST_ASSERT_EQUAL_UINT8(MQTT_TLS_VERSION_1_2, Mqtt_Tls_GetVersion(ctx));
+    TEST_ASSERT_EQUAL_UINT16(MQTT_TLS_VERSION_1_2, Mqtt_Tls_GetVersion(ctx));
     /* Simulate negotiated TLS 1.3 through the stub-recorded ssl context. */
     stub_last_ssl->tls_version = MBEDTLS_SSL_VERSION_TLS1_3;
-    TEST_ASSERT_EQUAL_UINT8(MQTT_TLS_VERSION_1_3, Mqtt_Tls_GetVersion(ctx));
+    TEST_ASSERT_EQUAL_UINT16(MQTT_TLS_VERSION_1_3, Mqtt_Tls_GetVersion(ctx));
     stub_last_ssl->tls_version = MBEDTLS_SSL_VERSION_TLS1_2;
-    TEST_ASSERT_EQUAL_UINT8(MQTT_TLS_VERSION_1_2, Mqtt_Tls_GetVersion(ctx));
+    TEST_ASSERT_EQUAL_UINT16(MQTT_TLS_VERSION_1_2, Mqtt_Tls_GetVersion(ctx));
 }
 
 void test_Tls_GetCipherSuite_ShouldCopySuiteName(void) {

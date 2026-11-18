@@ -110,51 +110,12 @@ static const CanTrcv_ChannelConfigType CanTrcv_ChannelConfig_1 =
 };
 
 /**
- * @brief Channel 2 (Internal CAN) Configuration - TJA1042 (Simpler, no EN pin)
- */
-static const CanTrcv_ChannelConfigType CanTrcv_ChannelConfig_2 =
-{
-    /* Channel ID */
-    2U,
-    
-    /* Transceiver Type */
-    CANTRCV_TJA1042,
-    
-    /* Pin Configuration */
-    {
-        /* STB Pin only */
-        DIO_CHANNEL_CAN2_STB,
-        /* No EN pin - use invalid channel */
-        DIO_INVALID_CHANNEL,
-        /* ERR Pin */
-        DIO_CHANNEL_CAN2_ERR,
-        /* Inverted logic */
-        TRUE
-    },
-    
-    /* Spi Configuration */
-    FALSE,
-    0U,
-    0U,
-    
-    /* Wakeup Configuration */
-    TRUE,
-    FALSE,
-    ECUM_WKSOURCE_CAN2,
-    
-    /* Timing */
-    5U,
-    3U
-};
-
-/**
  * @brief Array of all channel configurations
  */
 static const CanTrcv_ChannelConfigType CanTrcv_ChannelConfig[CANTRCV_MAX_CHANNELS] =
 {
     CanTrcv_ChannelConfig_0,
-    CanTrcv_ChannelConfig_1,
-    CanTrcv_ChannelConfig_2
+    CanTrcv_ChannelConfig_1
 };
 
 /*==================================================================================================

@@ -562,7 +562,7 @@ static int socket_recvfrom(int sock, uint8_t* buffer, uint16_t buffer_size,
     ssize_t received = recvfrom(sock, buffer, buffer_size, 0,
                                 (struct sockaddr*)&addr, &addr_len);
     
-    if (received > 0U ) {
+    if (received > 0) {
         if (src_addr != NULL_PTR) {
             *src_addr = addr.sin_addr.s_addr;
         }
@@ -590,7 +590,7 @@ static bool socket_select_read(int sock, uint32_t timeout_ms) {
     tv.tv_usec = (suseconds_t)((timeout_ms % 1000U) * 1000U);
     
     int result = select(sock + 1, &read_fds, NULL_PTR, NULL_PTR, &tv);
-    return (result > 0U ) && FD_ISSET(sock, &read_fds);
+    return (result > 0) && FD_ISSET(sock, &read_fds);
 }
 
 #else
@@ -1058,7 +1058,7 @@ bool MicroDDS_UDP_Send(const uint8_t* data, uint16_t length) {
         int sent = socket_sendto(g_udp_transport.user_socket, data, length,
                                 g_udp_transport.peers[i].address,
                                 network_to_host_16(g_udp_transport.peers[i].port));
-        if ((unsigned int)(sent) > 0U ) {
+        if (sent > 0) {
             any_sent = true;
             g_udp_transport.bytes_sent += (uint32_t)sent;
         }
@@ -1130,7 +1130,7 @@ uint16_t MicroDDS_UDP_Receive(uint8_t* buffer, uint16_t buffer_size,
         
         int received = socket_recvfrom(g_udp_transport.user_socket, buffer, buffer_size, &addr, &port);
         
-        if ((unsigned int)(received) > 0U ) {
+        if (received > 0) {
             g_udp_transport.packets_received++;
             g_udp_transport.bytes_received += (uint32_t)received;
             
@@ -1152,7 +1152,7 @@ uint16_t MicroDDS_UDP_Receive(uint8_t* buffer, uint16_t buffer_size,
         
         int received = socket_recvfrom(g_udp_transport.discovery_socket, pdp_buffer, sizeof(pdp_buffer), &src_addr, NULL_PTR);
         
-        if ((unsigned int)(received) > 0U ) {
+        if (received > 0) {
             /* 处理PDP消息 */
             if (PDP_verify_message(pdp_buffer, (uint16_t)received)) {
                 const PDP_Header* header = (const PDP_Header*)pdp_buffer;

@@ -24,8 +24,10 @@ extern "C" {
 /*============================================================================
  * TLS版本定义
  *===========================================================================*/
-/* TLS version values are defined as macros in Mqtt_Cfg.h */
-typedef uint8 Mqtt_TlsVersionType;
+/* TLS version values are defined as macros in Mqtt_Cfg.h (0x0303/0x0304),
+ * so the type must hold 16 bits; uint8 truncated them to 3/4 and made the
+ * version switch in Mqtt_Tls_InitContextDefaults unreachable. */
+typedef uint16 Mqtt_TlsVersionType;
 
 typedef enum {
     MQTT_SSL_VERSION_3_0 = 0,   /**< SSL 3.0 (已弃用) */

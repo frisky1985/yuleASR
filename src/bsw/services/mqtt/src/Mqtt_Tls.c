@@ -712,8 +712,9 @@ Mqtt_TlsVersionType Mqtt_Tls_GetVersion(Mqtt_TlsContextType context)
     }
     
     /* 获取当前协议版本 */
-    int major = mbedtls_ssl_get_version_number(&ctx->ssl) >> 8;
-    int minor = (uint32)mbedtls_ssl_get_version_number(&ctx->ssl) & 0xFFU;
+    int version = mbedtls_ssl_get_version_number(&ctx->ssl);
+    int major = version >> 8;
+    int minor = version & 0xFF;
     
     if ((major == 3) && (minor == 3)) {
         return MQTT_TLS_VERSION_1_2;

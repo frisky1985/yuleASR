@@ -86,7 +86,7 @@ void Icu_ProcessSignalMeasurement(Icu_ChannelType Channel)
             firstEdge[Channel] = 1U;
             
             /* Switch to falling edge detection */
-            Icu_SetupInputCapture(Channel, ICU_FALLING_EDGE);
+            Icu_SetupInputCapture(Channel, ICU_EDGE_FALLING);
         } else {
             /* Second edge (falling) - end of active time */
             if (currentValue > Icu_ChannelState[Channel].PreviousValue) {
@@ -101,7 +101,7 @@ void Icu_ProcessSignalMeasurement(Icu_ChannelType Channel)
             firstEdge[Channel] = 0U;
             
             /* Switch back to rising edge for next period */
-            Icu_SetupInputCapture(Channel, ICU_RISING_EDGE);
+            Icu_SetupInputCapture(Channel, ICU_EDGE_RISING);
             
             /* Calculate period time on next rising edge */
             if (Icu_ChannelState[Channel].PreviousValue != 0U) {

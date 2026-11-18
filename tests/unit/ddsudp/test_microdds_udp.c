@@ -528,6 +528,26 @@ static void test_send_to_peers_loopback(void)
     MicroDDS_UDP_Shutdown();
 }
 
+/* sendto 失败 (返回 -1) 不得被计为成功: 广播地址未启用 SO_BROADCAST → EACCES */
+static void test_send_error_is_not_success(void)
+{
+    TEST_ASSERT_TRUE(MicroDDS_UDP_Init(30041));
+    MicroDDS_UDP_ClearStats();
+
+    /* 255.255.255.255 在未设置 SO_BROADCAST 时 sendto 必然失败 */
+    TEST_ASSERT_TRUE(MicroDDS_UDP_AddPeer(0xFFFFFFFFU, 9U));
+
+    uint8_t payload[4] = {'E', 'R', 'R', '!'};
+    TEST_ASSERT_FALSE(MicroDDS_UDP_Send(payload, 4));
+
+    uint32_t s1, s2, s3, s4, s5;
+    MicroDDS_UDP_GetStats(&s1, &s2, &s3, &s4, &s5);
+    TEST_ASSERT_EQUAL_UINT32(0, s1);   /* packets_sent */
+    TEST_ASSERT_EQUAL_UINT32(0, s4);   /* bytes_sent: -1 不得累加成 0xFFFFFFFF */
+
+    MicroDDS_UDP_Shutdown();
+}
+
 /* 多播组加入/离开: 守卫/去重/容量 4/重复离开/未加入离开 */
 static void test_multicast_join_leave(void)
 {
@@ -790,6 +810,7 @@ int main(void)
     RUN_TEST(test_receive_truncates_to_buffer_size);
     RUN_TEST(test_peer_management);
     RUN_TEST(test_send_to_peers_loopback);
+    RUN_TEST(test_send_error_is_not_success);
     RUN_TEST(test_multicast_join_leave);
     RUN_TEST(test_send_multicast);
     RUN_TEST(test_pdp_announce_discovery);
