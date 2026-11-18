@@ -126,6 +126,7 @@ typedef struct {
     uint8 CtrlIdx;                     /* Controller index */
     boolean InitDone;                  /* Initialization complete flag */
     const Eth_ControllerConfigType* ConfigPtr;  /* Pointer to configuration */
+    Eth_MacAddrType MacAddr;           /* Runtime MAC address (config may be read-only) */
     Eth_TxDescType* TxDesc;            /* TX descriptor array */
     Eth_RxDescType* RxDesc;            /* RX descriptor array */
     uint8 TxBufCount;                  /* Number of TX buffers */

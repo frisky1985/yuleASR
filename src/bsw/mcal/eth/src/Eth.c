@@ -170,7 +170,7 @@ void Eth_UpdateMacAddress(Eth_ControllerType CtrlIdx, const uint8* MacAddr)
     /* For now, just store in controller state */
     if (MacAddr != NULL_PTR)
     {
-        (void)memcpy(Eth_CtrlState[CtrlIdx].ConfigPtr->MacAddr, MacAddr, 6u);
+        (void)memcpy(Eth_CtrlState[CtrlIdx].MacAddr, MacAddr, 6u);
     }
 }
 
@@ -356,6 +356,8 @@ void Eth_Init(const Eth_ConfigType* CfgPtr)
         Eth_CtrlState[ctrlIdx].Mode = ETH_MODE_DOWN;
         Eth_CtrlState[ctrlIdx].CtrlIdx = ctrlIdx;
         Eth_CtrlState[ctrlIdx].ConfigPtr = &CfgPtr->CtrlConfig[ctrlIdx];
+        (void)memcpy(Eth_CtrlState[ctrlIdx].MacAddr,
+                     CfgPtr->CtrlConfig[ctrlIdx].MacAddr, 6u);
         Eth_CtrlState[ctrlIdx].InitDone = FALSE;
         Eth_CtrlState[ctrlIdx].InterruptsEnabled = FALSE;
         Eth_CtrlState[ctrlIdx].TxPendingCount = 0u;
@@ -565,7 +567,7 @@ void Eth_GetPhysAddr(Eth_ControllerType CtrlIdx, uint8* PhysAddrPtr)
     
     if (Eth_CtrlState[CtrlIdx].InitDone == TRUE)
     {
-        (void)memcpy(PhysAddrPtr, Eth_CtrlState[CtrlIdx].ConfigPtr->MacAddr, 6u);
+        (void)memcpy(PhysAddrPtr, Eth_CtrlState[CtrlIdx].MacAddr, 6u);
     }
 }
 

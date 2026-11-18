@@ -33,9 +33,8 @@ Std_ReturnType Det_ReportError(uint16 ModuleId, uint8 InstanceId, uint8 ApiId, u
     return E_OK;
 }
 
-/* Test configuration: one controller */
-/* Non-const: Eth_SetPhysAddr writes the new MAC back through
-   Eth_CtrlState[].ConfigPtr->MacAddr (production stores it in the config). */
+/* Test configuration: one controller.  The driver keeps a runtime copy of the
+   MAC address, so this table is not written back by Eth_SetPhysAddr(). */
 static Eth_ControllerConfigType testCtrlConfig = {
     0U,                            /* CtrlIdx */
     {0x02U, 0x00U, 0x00U, 0x12U, 0x34U, 0x56U},  /* MacAddr */
@@ -54,6 +53,21 @@ static const Eth_ConfigType testConfig = {
     1U,                            /* NumControllers */
     TRUE,                          /* DevErrorDetect */
     TRUE                           /* VersionInfoApi */
+};
+
+/* Read-only configuration mirroring generated production config.  The driver
+   must keep the runtime MAC in its own state instead of writing back here. */
+static const Eth_ControllerConfigType testConstCtrlConfig = {
+    0U,                            /* CtrlIdx */
+    {0x02U, 0x00U, 0x00U, 0xAAU, 0xBBU, 0xCCU},  /* MacAddr */
+    ETH_RATE_100MBPS,              /* Speed */
+    TRUE,                          /* FullDuplex */
+    FALSE,                         /* RxChecksumOffload */
+    FALSE,                         /* TxChecksumOffload */
+    0x01U,                         /* PhyAddress */
+    ETH_MAX_TX_BUFS,               /* TxBufCount */
+    ETH_MAX_RX_BUFS,               /* RxBufCount */
+    ETH_DEFAULT_FRAME_SIZE         /* BufSize */
 };
 
 /* Direct module-state reset: Eth_DeInit() would report DET when already
@@ -301,6 +315,32 @@ void test_Eth_SetPhysAddr_AfterCtrlInit_ShouldUpdateMac(void) {
     TEST_ASSERT_EQUAL_UINT32(0U, mock_DetCallCount);
     Eth_GetPhysAddr(0U, mac);
     TEST_ASSERT_EQUAL_UINT8_ARRAY(newMac, mac, 6U);
+}
+
+/** @req SWS_Eth_00009 - runtime MAC must not be written into read-only config */
+void test_Eth_SetPhysAddr_ConstConfig_ShouldKeepConfigUnmodified(void) {
+    const uint8 newMac[6] = {0x10U, 0x20U, 0x30U, 0x40U, 0x50U, 0x60U};
+    const uint8 expectedCfgMac[6] = {0x02U, 0x00U, 0x00U, 0xAAU, 0xBBU, 0xCCU};
+    uint8 mac[6] = {0U};
+
+    Eth_Init(&testConfig);
+    Eth_ControllerInit(0U, &testConstCtrlConfig);
+
+    Eth_SetPhysAddr(0U, newMac);
+    Eth_GetPhysAddr(0U, mac);
+
+    TEST_ASSERT_EQUAL_UINT8_ARRAY(newMac, mac, 6U);
+    TEST_ASSERT_EQUAL_UINT8_ARRAY(expectedCfgMac, testConstCtrlConfig.MacAddr, 6U);
+}
+
+/** @req SWS_Eth_00003 - controller init must not depend on a previous Eth_Init */
+void test_Eth_ControllerInit_WithoutPriorInit_ShouldSucceed(void) {
+    Eth_CtrlState[0].ConfigPtr = NULL_PTR;
+
+    Eth_ControllerInit(0U, &testCtrlConfig);
+
+    TEST_ASSERT_EQUAL_UINT32(0U, mock_DetCallCount);
+    TEST_ASSERT_TRUE(Eth_CtrlState[0].InitDone);
 }
 
 /** @req SWS_Eth_00010 */
@@ -607,6 +647,8 @@ int main(void) {
     RUN_TEST(test_Eth_GetPhysAddr_InvalidCtrl_ShouldReportError);
     RUN_TEST(test_Eth_GetPhysAddr_AfterCtrlInit_ShouldReturnConfiguredMac);
     RUN_TEST(test_Eth_SetPhysAddr_AfterCtrlInit_ShouldUpdateMac);
+    RUN_TEST(test_Eth_SetPhysAddr_ConstConfig_ShouldKeepConfigUnmodified);
+    RUN_TEST(test_Eth_ControllerInit_WithoutPriorInit_ShouldSucceed);
     RUN_TEST(test_Eth_UpdatePhysAddrFilter_Uninit_ShouldFail);
     RUN_TEST(test_Eth_UpdatePhysAddrFilter_NullPtr_ShouldReportError);
     RUN_TEST(test_Eth_UpdatePhysAddrFilter_InvalidAction_ShouldReportError);
