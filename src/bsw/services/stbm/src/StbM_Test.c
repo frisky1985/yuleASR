@@ -52,7 +52,7 @@ static int tests_failed = 0;
 /*==================================================================================================
  *                                    MOCK FUNCTIONS
  *==================================================================================================*/
-static Eth_TimeStampType mock_timestamp = { 0, 0, 0 };
+static Eth_TimeStampType mock_timestamp = { 0, 0 };
 
 Std_ReturnType Eth_GetCurrentTime(uint8 CtrlIdx, Eth_TimeStampType* timeStampPtr, Eth_RxStatusType* statusPtr)
 {

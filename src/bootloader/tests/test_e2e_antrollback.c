@@ -225,6 +225,9 @@ static bl_secure_boot_error_t sbl_boot_verify(
 )
 {
     uint32_t counter = 0U;
+    if (out_sb != NULL) {
+        memset(out_sb, 0, sizeof(*out_sb));
+    }
     if (Boot_AntiRollback_Read(arb, &counter) != BL_ANTIROLLBACK_OK) {
         return BL_SB_ERROR_INVALID_PARAM;   /* NVM 装载失败: fail-closed */
     }

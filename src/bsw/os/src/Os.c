@@ -1430,6 +1430,11 @@ static void Os_InitResources(void)
 {
     uint32 i;
 
+    if (Os_GlobalState.Resources == NULL_PTR)
+    {
+        return;
+    }
+
     for (i = 0; i < Os_GlobalState.NumResources; i++)
     {
         Os_ResourceConfigType* resource = &Os_GlobalState.Resources[i];
@@ -1449,6 +1454,11 @@ static void Os_InitResources(void)
 static void Os_InitAlarms(void)
 {
     uint32 i;
+
+    if (Os_GlobalState.Alarms == NULL_PTR)
+    {
+        return;
+    }
 
     for (i = 0; i < Os_GlobalState.NumAlarms; i++)
     {
@@ -1477,6 +1487,11 @@ static void Os_InitTasks(AppModeType Mode)
 {
     uint32 i;
     (void)Mode;
+
+    if (Os_GlobalState.Tasks == NULL_PTR)
+    {
+        return;
+    }
 
     for (i = 0; i < Os_GlobalState.NumTasks; i++)
     {

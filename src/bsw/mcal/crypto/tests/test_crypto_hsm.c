@@ -120,7 +120,7 @@ static void test_hsm_process_job(void)
 
 static void test_hsm_operations_ready(void)
 {
-    Crypto_HsmConfigType   config;
+    static Crypto_HsmConfigType config;
     uint8                  buffer[8];
     uint8                  hash[4];
     uint8                  signature[8];

@@ -476,7 +476,8 @@ static void test_mbedtls_processjob_encrypt_decrypt(void)
     uint8  plaintext[32];
     uint8  ciphertext[32];
     uint8  decrypted[32];
-    uint8  tag[16];
+    uint32 tagWords[4];
+    uint8* tag = (uint8*)tagWords;
     uint8  inputBuf[48];
     uint8* aad = (uint8*)aadWords;
     uint8* iv  = (uint8*)ivWords;
@@ -492,7 +493,7 @@ static void test_mbedtls_processjob_encrypt_decrypt(void)
     g_io.secondaryInputLength  = 8U;
     g_io.tertiaryInputPtr      = ivWords;
     g_io.output8Ptr            = ciphertext;
-    g_io.secondaryOutputPtr    = (uint32*)(void*)tag;
+    g_io.secondaryOutputPtr    = tagWords;
     TEST_ASSERT_EQUAL_UINT8(E_OK, Crypto_MbedTLS_ProcessJob(&g_job));
 
     /* ProcessJob DECRYPT expects ciphertext || tag in one buffer */
@@ -515,7 +516,7 @@ static void test_mbedtls_processjob_encrypt_decrypt(void)
     g_io.inputLength        = 32U;
     g_io.tertiaryInputPtr   = ivWords;
     g_io.output8Ptr         = ciphertext;
-    g_io.secondaryOutputPtr = (uint32*)(void*)tag;
+    g_io.secondaryOutputPtr = tagWords;
     TEST_ASSERT_EQUAL_UINT8(E_OK, Crypto_MbedTLS_ProcessJob(&g_job));
 }
 
@@ -554,7 +555,8 @@ static void test_mbedtls_processjob_hash_mac(void)
 static void test_mbedtls_processjob_sign_verify(void)
 {
     uint8  digest[32];
-    uint8  signature[64];
+    uint32 signatureWords[16];
+    uint8* signature = (uint8*)signatureWords;
     uint8  priv[32];
     uint8  pub[65];
     uint32 sigLen = 0U;
@@ -578,7 +580,7 @@ static void test_mbedtls_processjob_sign_verify(void)
     job_init(CRYPTO_SERVICE_VERIFY);
     g_io.input8Ptr            = digest;
     g_io.inputLength          = 32U;
-    g_io.secondaryInputPtr    = (uint32*)(void*)signature;
+    g_io.secondaryInputPtr    = signatureWords;
     g_io.secondaryInputLength = 64U;
     g_io.verifyPtr            = &verifyResult;
     TEST_ASSERT_EQUAL_UINT8(E_OK, Crypto_MbedTLS_ProcessJob(&g_job));
@@ -588,7 +590,7 @@ static void test_mbedtls_processjob_sign_verify(void)
     job_init(CRYPTO_SERVICE_VERIFY);
     g_io.input8Ptr            = digest;
     g_io.inputLength          = 32U;
-    g_io.secondaryInputPtr    = (uint32*)(void*)signature;
+    g_io.secondaryInputPtr    = signatureWords;
     g_io.secondaryInputLength = 64U;
     TEST_ASSERT_EQUAL_UINT8(E_OK, Crypto_MbedTLS_ProcessJob(&g_job));
 

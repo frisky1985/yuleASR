@@ -109,7 +109,7 @@ void test_dem_deinit(void)
     Dem_DeInit();
 
     ASSERT_EQ(DEM_STATE_UNINIT, Dem_InternalState.State);
-    ASSERT_EQ(NULL_PTR, Dem_InternalState.ConfigPtr);
+    ASSERT_TRUE(Dem_InternalState.ConfigPtr == NULL_PTR);
     TEST_PASS();
 }
 
@@ -201,7 +201,7 @@ void test_dem_debounce_counter_failed(void)
 {
     Std_ReturnType result;
     Dem_FaultDetectionCounterType fdc;
-    sint8 i;
+    sint16 i;
 
     reset_mocks();
     reset_dem_state();
@@ -272,7 +272,7 @@ void test_dem_debounce_counter_passed(void)
 void test_dem_time_debounce(void)
 {
     Std_ReturnType result;
-    Dem_EventStatusType status;
+    boolean eventFailed;
 
     reset_mocks();
     reset_dem_state();
@@ -286,9 +286,9 @@ void test_dem_time_debounce(void)
     ASSERT_EQ(E_OK, result);
 
     /* Status should not be failed yet */
-    result = Dem_GetEventFailed(2U, &status);
+    result = Dem_GetEventFailed(2U, &eventFailed);
     ASSERT_EQ(E_OK, result);
-    ASSERT_EQ(FALSE, status);
+    ASSERT_EQ(FALSE, eventFailed);
 
     /* Simulate time passing in MainFunction */
     Dem_InternalState.LastMainFunctionTimestamp = 0U;

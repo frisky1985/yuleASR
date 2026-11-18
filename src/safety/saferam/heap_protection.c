@@ -799,11 +799,13 @@ uint32_t HeapProtection_FullCheck(void)
             if (block->state == HEAP_BLOCK_STATE_ALLOCATED) {
                 void *user_ptr = HeapProtection_GetUserPtr(block);
                 
-                (void)HeapProtection_CheckOverflow(user_ptr, &overflow);
-                if (overflow) errors++;
-                
-                (void)HeapProtection_CheckUnderflow(user_ptr, &underflow);
-                if (underflow) errors++;
+                if ((HeapProtection_CheckOverflow(user_ptr, &overflow) != E_OK) || overflow) {
+                    errors++;
+                }
+
+                if ((HeapProtection_CheckUnderflow(user_ptr, &underflow) != E_OK) || underflow) {
+                    errors++;
+                }
             }
             block = block->next;
         }
