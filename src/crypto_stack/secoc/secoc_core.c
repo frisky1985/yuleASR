@@ -148,11 +148,11 @@ static void sha256_transform(uint32_t state[8], const uint8_t data[64]) {
     uint32_t a, b, c, d, e, f, g, h;
     
     /* 准备消息日志 */
-    for (int i = 0; i < 16; i++) {
-        w[i] = ((uint32_t)data[i * 4] << 24) | ((uint32_t)data[(i * 4) + 1] << 16) |
-               ((uint32_t)data[(i * 4) + 2] << 8) | ((uint32_t)data[(i * 4) + 3]);
+    for (uint32_t i = 0U; i < 16U; i++) {
+        w[i] = ((uint32_t)data[(size_t)i * 4U] << 24) | ((uint32_t)data[(size_t)i * 4U + 1U] << 16) |
+               ((uint32_t)data[(size_t)i * 4U + 2U] << 8) | ((uint32_t)data[(size_t)i * 4U + 3U]);
     }
-    for (int i = 16; i < 64; i++) {
+    for (uint32_t i = 16U; i < 64U; i++) {
         w[i] = sha256_sig1(w[i - 2]) + w[i - 7] + sha256_sig0(w[i - 15]) + w[i - 16];
     }
     
@@ -161,7 +161,7 @@ static void sha256_transform(uint32_t state[8], const uint8_t data[64]) {
     e = state[4]; f = state[5]; g = state[6]; h = state[7];
     
     /* 主循环 */
-    for (int i = 0; i < 64; i++) {
+    for (uint32_t i = 0U; i < 64U; i++) {
         t1 = h + sha256_ep1(e) + sha256_ch(e, f, g) + sha256_k[i] + w[i];
         t2 = sha256_ep0(a) + sha256_maj(a, b, c);
         h = g; g = f; f = e; e = d + t1;
@@ -203,7 +203,7 @@ static void sha256_final(uint32_t state[8], uint8_t *buffer, uint32_t *buf_len, 
     while (i < 56U) { buffer[i] = 0; i++; }
     
     /* 添加长度 */
-    *bit_len += *buf_len * 8;
+    *bit_len += (uint64_t)(*buf_len) * 8ULL;
     buffer[63] = (uint8_t)(*bit_len);
     buffer[62] = (uint8_t)(*bit_len >> 8);
     buffer[61] = (uint8_t)(*bit_len >> 16);
@@ -216,10 +216,10 @@ static void sha256_final(uint32_t state[8], uint8_t *buffer, uint32_t *buf_len, 
     
     /* 输出 */
     for (i = 0; i < 8U; i++) {
-        hash[i * 4U] = (uint8_t)(state[i] >> 24);
-        hash[(i * 4U) + 1U] = (uint8_t)(state[i] >> 16);
-        hash[(i * 4U) + 2U] = (uint8_t)(state[i] >> 8);
-        hash[(i * 4U) + 3U] = (uint8_t)(state[i]);
+        hash[(size_t)i * 4U] = (uint8_t)(state[i] >> 24);
+        hash[(size_t)i * 4U + 1U] = (uint8_t)(state[i] >> 16);
+        hash[(size_t)i * 4U + 2U] = (uint8_t)(state[i] >> 8);
+        hash[(size_t)i * 4U + 3U] = (uint8_t)(state[i]);
     }
 }
 
