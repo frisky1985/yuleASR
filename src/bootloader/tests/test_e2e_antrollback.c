@@ -755,7 +755,7 @@ int main(void)
 
     printf("\n============================================\n");
     printf("Results: %d/%d tests passed", tests_passed, tests_run);
-    if (tests_skipped > 0U) {
+    if (tests_skipped > 0) {
         printf(", %d skipped (待接线)", tests_skipped);
     }
     printf("\n============================================\n");

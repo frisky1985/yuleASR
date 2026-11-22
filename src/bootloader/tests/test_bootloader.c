@@ -506,7 +506,7 @@ static int test_rollback_trigger(void)
     TEST_ASSERT_EQ(bl_rollback_record_install(&mgr, 0x200, 1, hash_new), BL_ROLLBACK_OK);
 
     /* 连续多次启动失败 → 尝试次数超限, 需要回滚 */
-    for (int i = 0; i < cfg.max_boot_attempts; i++) {
+    for (uint32_t i = 0; i < cfg.max_boot_attempts; i++) {
         TEST_ASSERT_EQ(bl_rollback_record_boot_attempt(&mgr), BL_ROLLBACK_OK);
         TEST_ASSERT_EQ(bl_rollback_record_boot_result(&mgr, BL_BOOT_RESULT_FAILURE), BL_ROLLBACK_OK);
     }

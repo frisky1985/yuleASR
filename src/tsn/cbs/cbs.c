@@ -308,8 +308,7 @@ eth_status_t cbs_can_transmit(uint16_t port_id, uint8_t queue_id,
     }
     
     cbs_queue_state_t *queue = &port->queue_states[queue_id];
-    cbs_queue_config_t *config = &port->config.queue_configs[queue_id];
-    
+
     /* 先更新信用 */
     uint64_t current_time = get_current_time_ns();
     uint64_t elapsed = current_time - port->last_update_time_ns;
@@ -690,6 +689,8 @@ eth_status_t cbs_print_status(uint16_t port_id) {
     
     for (int i = 0; (unsigned int)((unsigned int)(i)) < CBS_SR_CLASS_MAX; i++) {
         cbs_queue_state_t *queue = &port->queue_states[i];
+        /* 量产构建中 Debug_Printf 展开为空操作 */
+        (void)queue;
         Debug_Printf("  Queue %d (SR Class %c):\n", i, (i == 0) ? 'A' : 'B');
         Debug_Printf("    Current Credit: %ld\n", (long)queue->current_credit);
         Debug_Printf("    Min/Max Credit: %ld / %ld\n", 

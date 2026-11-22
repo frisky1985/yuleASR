@@ -700,6 +700,7 @@ static void test_audit_callback_pool_full(void)
     while (dds_log_register_audit_callback(audit_cb, NULL) == 0) {
         audit_used++;
     }
+    (void)audit_used;
     /* output + audit = 8+8=16, 再注册一个应该失败 — 行 884 return -1 */
     int ret = dds_log_register_audit_callback(audit_cb, NULL);
     CHECK(ret == -1);

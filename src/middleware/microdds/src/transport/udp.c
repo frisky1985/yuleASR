@@ -558,7 +558,10 @@ static int socket_recvfrom(int sock, uint8_t* buffer, uint16_t buffer_size,
                            uint32_t* src_addr, uint16_t* src_port) {
     struct sockaddr_in addr;
     socklen_t addr_len = sizeof(addr);
-    
+
+    /* 清零源地址：避免 recvfrom 未写入字段时读取到未初始化内容 */
+    (void)memset(&addr, 0, sizeof(addr));
+
     ssize_t received = recvfrom(sock, buffer, buffer_size, 0,
                                 (struct sockaddr*)&addr, &addr_len);
     

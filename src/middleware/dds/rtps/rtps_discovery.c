@@ -472,7 +472,6 @@ eth_status_t rtps_discovery_handle_packet(rtps_discovery_context_t *ctx,
     /* GUID Prefix */
     rtps_guid_prefix_t src_prefix;
     (void)memcpy(src_prefix, &data[pos], RTPS_GUID_PREFIX_SIZE);
-    pos += RTPS_GUID_PREFIX_SIZE;
     
     /* 查找已存在的参与者 */
     rtps_participant_proxy_t *participant = rtps_discovery_find_participant(ctx, src_prefix);

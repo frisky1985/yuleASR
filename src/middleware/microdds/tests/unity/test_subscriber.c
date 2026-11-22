@@ -176,7 +176,7 @@ void test_Publisher_and_Subscriber_same_participant(void) {
     
     TEST_ASSERT_NOT_NULL(publisher);
     TEST_ASSERT_NOT_NULL(subscriber);
-    TEST_ASSERT(publisher != subscriber);
+    TEST_ASSERT((void*)publisher != (void*)subscriber);
     
     DDS_Publisher_delete(publisher);
     DDS_Subscriber_delete(subscriber);
@@ -198,7 +198,7 @@ void test_Multiple_Publishers_Subscribers_same_participant(void) {
     
     TEST_ASSERT(p1 != p2);
     TEST_ASSERT(s1 != s2);
-    TEST_ASSERT(p1 != s1);
+    TEST_ASSERT((void*)p1 != (void*)s1);
     
     DDS_Publisher_delete(p1);
     DDS_Publisher_delete(p2);

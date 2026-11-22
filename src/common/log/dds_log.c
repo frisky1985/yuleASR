@@ -495,8 +495,8 @@ static void format_log_entry(const dds_log_entry_t* entry, char* buffer, size_t 
         offset += Debug_Snprintf(buffer + offset, size - (size_t)offset, " [SEQ:%u]", entry->sequence_num);
     }
     
-    /* 消息内容 */
-    offset += Debug_Snprintf(buffer + offset, size - (size_t)offset, " %s\n", entry->message);
+    /* 消息内容（最后一段，返回值不再使用） */
+    (void)Debug_Snprintf(buffer + offset, size - (size_t)offset, " %s\n", entry->message);
 }
 
 static void output_log(const dds_log_entry_t* entry) {

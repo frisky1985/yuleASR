@@ -115,8 +115,7 @@ tcpip_error_t tcpip_socket_create(tcpip_socket_type_t type,
                 g_sockets[idx].tx_timeout_ms = 0xFFFFFFFFu;
                 
                 *socket_id = (tcpip_socket_id_t)idx;
-                result = TCPIP_OK;
-                
+
                 /* Initialize transport layer */
                 if (type == TCPIP_SOCK_STREAM)
                 {

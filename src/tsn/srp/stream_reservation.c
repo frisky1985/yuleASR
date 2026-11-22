@@ -123,7 +123,8 @@ static uint32_t calc_bandwidth(const srp_tspec_t *tspec) {
 
 static eth_status_t update_reservation_state(srp_stream_reservation_t *stream) {
     srp_reservation_state_t old_state = stream->state;
-    srp_reservation_state_t new_state = old_state;
+    /* 所有分支都会赋值，无需旧值作为初始值 */
+    srp_reservation_state_t new_state;
     
     /* 根据Talker和Listener状态更新预留状态 */
     if (!stream->talker_registered) {
@@ -708,6 +709,8 @@ eth_status_t srp_print_reservation(const srp_stream_id_t stream_id) {
     }
     
     srp_stream_reservation_t *stream = &g_srp_state.streams[idx];
+    /* 量产构建中 Debug_Printf 展开为空操作 */
+    (void)stream;
     char id_str[24];
     (void)srp_stream_id_to_string(stream_id, id_str, sizeof(id_str));
     
@@ -729,7 +732,10 @@ eth_status_t srp_print_port_status(uint16_t port_id) {
     }
     
     srp_port_state_t *port = get_port(port_id);
-    
+
+    /* 量产构建中 Debug_Printf 展开为空操作 */
+    (void)port;
+
     Debug_Printf("=== SRP Port %d Status ===\n", port_id);
     Debug_Printf("Configured: %s\n", port->configured ? "Yes" : "No");
     Debug_Printf("Total Bandwidth: %u bps\n", port->bandwidth.total_bandwidth_bps);

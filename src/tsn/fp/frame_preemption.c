@@ -763,7 +763,10 @@ eth_status_t fp_print_status(uint16_t port_id) {
     }
     
     fp_port_runtime_t *port = &g_fp_state.ports[port_id];
-    
+
+    /* 量产构建中 Debug_Printf 展开为空操作 */
+    (void)port;
+
     Debug_Printf("=== Frame Preemption Port %d Status ===\n", port_id);
     Debug_Printf("Configured: %s\n", port->configured ? "Yes" : "No");
     Debug_Printf("Preemption Enabled: %s\n", port->config.preemption_enabled ? "Yes" : "No");

@@ -337,7 +337,6 @@ dds_DataReaderHandleType dds_create_reader(
     /* 默认接收缓冲: 静态池 (每个 reader 槽位一个固定 4KB 缓冲) */
     reader->receive_buffer_size = 4096;
     {
-        uintptr_t base = (uintptr_t)s_recv_buf_pool;
         uintptr_t p = (uintptr_t)reader;
         uint32_t slot = (uint32_t)((p - (uintptr_t)s_reader_pool) / sizeof(dds_data_reader_t));
         if (slot >= DDS_POOL_READERS) {

@@ -367,7 +367,7 @@ static void test_end_to_end(void)
     bib.anti_rollback_counter = 0;
     Boot_Flash_Write(BOOT_BIB_ADDR, (uint8_t*)&bib, sizeof(bib));
 
-    printf("  [WRITE] App at 0x%08X, %u bytes\n", base, sizeof(app));
+    printf("  [WRITE] App at 0x%08X, %zu bytes\n", base, sizeof(app));
 
     /* Read back and verify */
     Boot_ImageHeader rhdr;

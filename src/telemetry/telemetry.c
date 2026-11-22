@@ -197,7 +197,9 @@ TelStatus_t Tel_LogEvent(TelModuleId_t module, uint8_t event_id,
         len = TEL_MAX_EVENT_SIZE - sizeof(TelEventHeader_t);
     }
     
+    /* 逐字节清零整个事件，避免未初始化字节被写入环形缓冲区 */
     TelEvent_t event;
+    (void)memset(&event, 0, sizeof(event));
     event.header.event_id = event_id;
     
 #if TEL_ENABLE_TIMESTAMP
@@ -207,6 +209,7 @@ TelStatus_t Tel_LogEvent(TelModuleId_t module, uint8_t event_id,
     
     if (relative > 255) {
         TelEvent_t ts_event;
+        (void)memset(&ts_event, 0, sizeof(ts_event));
         ts_event.header.event_id = 0xFF;
         ts_event.header.ts_lo = (relative >> 8) & 0xFF;
         (void)Tel_RB_Write(&s_tel_state.ring_buffer, (uint8_t*)&ts_event, 2);
