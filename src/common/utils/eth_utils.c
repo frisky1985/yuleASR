@@ -7,6 +7,7 @@
 
 #include "eth_utils.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "Debug.h"
 
@@ -21,9 +22,34 @@ void eth_mac_to_str(const eth_mac_addr_t mac, char *str, size_t len)
 /* 字符串转换为MAC地址 */
 eth_status_t eth_str_to_mac(const char *str, eth_mac_addr_t mac)
 {
-    int ret = sscanf(str, "%hhx:%hhx:%hhx:%hhx:%hhx:%hhx",
-                     &mac[0], &mac[1], &mac[2], &mac[3], &mac[4], &mac[5]);
-    return (ret == 6) ? ETH_OK : ETH_ERROR;
+    /* CERT ERR34-C: 用 strtoul 替代 sscanf，显式检测转换错误、越界与分隔符 */
+    if ((str == NULL) || (mac == NULL)) {
+        return ETH_ERROR;
+    }
+
+    const char *p = str;
+    char *end = NULL;
+    for (int i = 0; i < 6; i++) {
+        unsigned long val = strtoul(p, &end, 16);
+        if (end == p) {            /* 未消费任何十六进制数字 */
+            return ETH_ERROR;
+        }
+        if (val > 0xFFUL) {        /* 字节越界 */
+            return ETH_ERROR;
+        }
+        mac[i] = (uint8_t)val;
+        p = end;
+        if (i < 5) {
+            if (*p != ':') {
+                return ETH_ERROR;
+            }
+            p++;
+        }
+    }
+    if (*p != '\0') {              /* 尾部多余字符 */
+        return ETH_ERROR;
+    }
+    return ETH_OK;
 }
 
 /* IP地址转换为字符串 */
@@ -40,12 +66,35 @@ void eth_ip_to_str(eth_ip_addr_t ip, char *str, size_t len)
 /* 字符串转换为IP地址 */
 eth_status_t eth_str_to_ip(const char *str, eth_ip_addr_t *ip)
 {
-    unsigned int a, b, c, d;
-    int ret = sscanf(str, "%u.%u.%u.%u", &a, &b, &c, &d);
-    if ((ret != 4) || (a > 255U) || (b > 255U) || ((uint32_t)c > 255U) || (d > 255U)) {
+    /* CERT ERR34-C: 用 strtoul 替代 sscanf，显式检测转换错误、越界与分隔符 */
+    if ((str == NULL) || (ip == NULL)) {
         return ETH_ERROR;
     }
-    *ip = (a << 24) | (b << 16) | (c << 8) | d;
+
+    const char *p = str;
+    char *end = NULL;
+    uint32_t octet[4];
+    for (int i = 0; i < 4; i++) {
+        unsigned long val = strtoul(p, &end, 10);
+        if (end == p) {            /* 未消费任何十进制数字 */
+            return ETH_ERROR;
+        }
+        if (val > 255UL) {         /* 字节越界 */
+            return ETH_ERROR;
+        }
+        octet[i] = (uint32_t)val;
+        p = end;
+        if (i < 3) {
+            if (*p != '.') {
+                return ETH_ERROR;
+            }
+            p++;
+        }
+    }
+    if (*p != '\0') {              /* 尾部多余字符 */
+        return ETH_ERROR;
+    }
+    *ip = (octet[0] << 24) | (octet[1] << 16) | (octet[2] << 8) | octet[3];
     return ETH_OK;
 }
 
