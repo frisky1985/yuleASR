@@ -135,7 +135,7 @@ public:
     
     /* Request protocol with callback */
     Result<void> RequestStateTransitionAsync(MachineState targetState,
-                                              RequestConfirmationCallback callback);
+                                              const RequestConfirmationCallback& callback);
     
     /* Cancel pending state request */
     Result<void> CancelStateRequest();

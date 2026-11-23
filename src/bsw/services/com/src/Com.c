@@ -1305,7 +1305,7 @@ void Com_ClearIpduGroup(Com_IpduGroupVector ipduGroupVector, Com_IpduGroupIdType
 }
 
 /** @req SWS_Com_00021 */
-void Com_IpduGroupControl(Com_IpduGroupVector ipduGroupVector, boolean enable)
+void Com_IpduGroupControl(Com_IpduGroupVector IpduGroupVector, boolean Initialize)
 {
     uint16 i;
     uint8 b;
@@ -1325,9 +1325,9 @@ void Com_IpduGroupControl(Com_IpduGroupVector ipduGroupVector, boolean enable)
             Com_IpduGroupIdType grp = cfg->IPdus[i].IpduGroupRef;
 
             if ((grp < COM_NUM_OF_IPDU_GROUPS) &&
-                ((ipduGroupVector[grp / 8U] & (uint8)(1U << (grp % 8U))) != 0U))
+                ((IpduGroupVector[grp / 8U] & (uint8)(1U << (grp % 8U))) != 0U))
             {
-                Com_InternalState.IPduStates[i].GroupEnabled = enable;
+                Com_InternalState.IPduStates[i].GroupEnabled = Initialize;
             }
         }
     }
@@ -1335,7 +1335,7 @@ void Com_IpduGroupControl(Com_IpduGroupVector ipduGroupVector, boolean enable)
     /* Keep the module-wide group vector in sync with the requested state */
     for (b = 0U; b < (uint8)(((COM_NUM_OF_IPDU_GROUPS + 7U) / 8U)); b++)
     {
-        Com_InternalState.IPduGroupVector[b] = ipduGroupVector[b];
+        Com_InternalState.IPduGroupVector[b] = IpduGroupVector[b];
     }
 }
 

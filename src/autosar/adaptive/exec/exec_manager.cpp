@@ -14,6 +14,7 @@
 #include "ara/exec/sandbox.h"
 #include <cstring>
 #include <algorithm>
+#include <utility>
 
 namespace ara {
 namespace exec {
@@ -242,7 +243,7 @@ Result<ResourceUsage> ExecManager::GetResourceUsage(ProcessId pid) const {
     return Result<ResourceUsage>(usage);
 }
 
-Result<void> ExecManager::RegisterHealthCheck(ProcessId pid, HealthCheckCallback callback) {
+Result<void> ExecManager::RegisterHealthCheck(ProcessId pid, const HealthCheckCallback& callback) {
     if (!pImpl_->initialized_) {
         return Result<void>(E_NOT_OK);
     }
@@ -285,7 +286,7 @@ Result<HealthStatus> ExecManager::CheckHealth(ProcessId pid) {
 }
 
 void ExecManager::RegisterStateChangeCallback(StateChangeCallback callback) {
-    pImpl_->stateCallback_ = callback;
+    pImpl_->stateCallback_ = std::move(callback);
 }
 
 void ExecManager::UnregisterStateChangeCallback() {

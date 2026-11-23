@@ -182,7 +182,7 @@ public:
     Result<ResourceUsage> GetResourceUsage(ProcessId pid) const;
     
     /* Health Monitoring */
-    Result<void> RegisterHealthCheck(ProcessId pid, HealthCheckCallback callback);
+    Result<void> RegisterHealthCheck(ProcessId pid, const HealthCheckCallback& callback);
     Result<void> UnregisterHealthCheck(ProcessId pid);
     Result<HealthStatus> CheckHealth(ProcessId pid);
     

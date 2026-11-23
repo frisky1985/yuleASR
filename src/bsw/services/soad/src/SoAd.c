@@ -565,7 +565,7 @@ Std_ReturnType SoAd_OpenUdpConnection(uint16 SoConId)
 
 /** @brief Close a TCP connection */
 /** @req SWS_SoAd_00006 */
-Std_ReturnType SoAd_CloseTcpConnection(uint16 SoConId, boolean Force)
+Std_ReturnType SoAd_CloseTcpConnection(uint16 SoConId, boolean Abort)
 {
     SoAd_ConnectionStateType* connState;
 
@@ -586,12 +586,12 @@ Std_ReturnType SoAd_CloseTcpConnection(uint16 SoConId, boolean Force)
 
     if (connState->SocketId != TCPIP_SOCKETID_INVALID)
     {
-        (void)TcpIp_Close(connState->SocketId, Force);
+        (void)TcpIp_Close(connState->SocketId, Abort);
         connState->SocketId = TCPIP_SOCKETID_INVALID;
     }
 
     connState->State = SOAD_CONN_STATE_CLOSED;
-    (void)Force;
+    (void)Abort;
     return E_OK;
 }
 

@@ -63,12 +63,12 @@ extern Std_ReturnType Crypto_MbedTLS_ECDSA_Sign(Crypto_KeyIdType keyId, const ui
                                                 uint8* sig, uint32* sigLen);
 extern Std_ReturnType Crypto_MbedTLS_ECDSA_Verify(Crypto_KeyIdType keyId, const uint8* digest, uint32 digestLen,
                                                   const uint8* sig, uint32 sigLen);
-extern Std_ReturnType Crypto_MbedTLS_AES_GCM_Encrypt(Crypto_KeyIdType keyId, const uint8* pt, uint32 ptLen,
-                                                     const uint8* aad, uint32 aadLen, const uint8* iv, uint8* ct,
+extern Std_ReturnType Crypto_MbedTLS_AES_GCM_Encrypt(Crypto_KeyIdType keyId, const uint8* plaintext, uint32 plaintextLen,
+                                                     const uint8* aad, uint32 aadLen, const uint8* iv, uint8* ciphertext,
                                                      uint8* tag);
-extern Std_ReturnType Crypto_MbedTLS_AES_GCM_Decrypt(Crypto_KeyIdType keyId, const uint8* ct, uint32 ctLen,
+extern Std_ReturnType Crypto_MbedTLS_AES_GCM_Decrypt(Crypto_KeyIdType keyId, const uint8* ciphertext, uint32 ciphertextLen,
                                                      const uint8* aad, uint32 aadLen, const uint8* iv, const uint8* tag,
-                                                     uint8* pt);
+                                                     uint8* plaintext);
 extern Std_ReturnType Crypto_MbedTLS_SHA256(const uint8* data, uint32 dataLen, uint8* digest);
 extern Std_ReturnType Crypto_MbedTLS_HMAC(Crypto_KeyIdType keyId, const uint8* data, uint32 dataLen, uint8* mac);
 extern Std_ReturnType Crypto_MbedTLS_HKDF(Crypto_KeyIdType ikmKeyId, const uint8* salt, uint32 saltLen,

@@ -14,6 +14,7 @@
 #include "ara/sm/sm_interface.h"
 #include <cstring>
 #include <chrono>
+#include <utility>
 
 namespace ara {
 namespace sm {
@@ -162,7 +163,7 @@ FunctionGroupState StateManager::GetFunctionGroupState(FunctionGroupName fg) con
 }
 
 Result<void> StateManager::RequestStateTransitionAsync(MachineState targetState,
-                                                        RequestConfirmationCallback callback) {
+                                                        const RequestConfirmationCallback& callback) {
     if (!pImpl_->initialized_) {
         return Result<void>(E_NOT_OK);
     }
@@ -203,7 +204,7 @@ Result<void> StateManager::CancelStateRequest() {
 }
 
 void StateManager::RegisterStateChangeCallback(StateChangeCallback callback) {
-    pImpl_->stateCallback_ = callback;
+    pImpl_->stateCallback_ = std::move(callback);
     
     /* Register C callback */
     StateMachine_RegisterCallback([](MachineStateType oldState, MachineStateType newState) {
@@ -224,7 +225,7 @@ void StateManager::UnregisterStateChangeCallback() {
 void StateManager::RegisterFGStateCallback(FunctionGroupName fg, FGStateCallback callback) {
     uint32_t idx = static_cast<uint32_t>(fg);
     if (idx < static_cast<uint32_t>(FunctionGroupName::kCount)) {
-        pImpl_->fgCallbacks_[idx] = callback;
+        pImpl_->fgCallbacks_[idx] = std::move(callback);
         
         /* Register C callback */
         StateMachine_RegisterFGCallback(

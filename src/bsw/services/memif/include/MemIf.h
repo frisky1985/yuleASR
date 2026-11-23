@@ -219,7 +219,7 @@ extern void MemIf_Cancel(uint8 DeviceIndex);
  * @param BlockNumber Block number to read
  * @param BlockOffset Offset within the block
  * @param Length Number of bytes to read
- * @param DataPtr Pointer to data buffer
+ * @param DataBufferPtr Pointer to data buffer
  * @return Std_ReturnType E_OK if successful, E_NOT_OK otherwise
  */
 /**
@@ -227,33 +227,33 @@ extern void MemIf_Cancel(uint8 DeviceIndex);
  * @param[in] DeviceIndex Index value
  * @param[in] BlockNumber BlockNumber value
  * @param[in] BlockOffset Memory offset
- * @param[in] DataPtr Data buffer
+ * @param[in] DataBufferPtr Data buffer
  * @param[in] Length Data length
  * @return Operation status
  */
 extern Std_ReturnType MemIf_Read(uint8 DeviceIndex, 
                                   uint16 BlockNumber, 
                                   uint16 BlockOffset, 
-                                  uint8* DataPtr, 
+                                  uint8* DataBufferPtr, 
                                   uint16 Length);
 
 /**
  * @brief Write data to memory device
  * @param DeviceIndex Index of the device
  * @param BlockNumber Block number to write
- * @param DataPtr Pointer to data buffer
+ * @param DataBufferPtr Pointer to data buffer
  * @return Std_ReturnType E_OK if successful, E_NOT_OK otherwise
  */
 /**
  * @brief Write data to channel
  * @param[in] DeviceIndex Index value
  * @param[in] BlockNumber BlockNumber value
- * @param[in] DataPtr Data buffer
+ * @param[in] DataBufferPtr Data buffer
  * @return Operation status
  */
 extern Std_ReturnType MemIf_Write(uint8 DeviceIndex, 
                                    uint16 BlockNumber, 
-                                   const uint8* DataPtr);
+                                   const uint8* DataBufferPtr);
 
 /**
  * @brief Invalidate a block in memory device
