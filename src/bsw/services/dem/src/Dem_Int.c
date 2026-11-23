@@ -242,12 +242,24 @@ void Dem_IntUpdateDebounceCounter(Dem_EventIdType EventId, Dem_EventStatusType E
             {
                 case DEM_EVENT_STATUS_PASSED:
                     eventState->DebounceCounter = eventConfig->DebounceCounterPassedThreshold;
-                    eventState->FaultDetectionCounter = eventConfig->DebounceCounterPassedThreshold;
+                    /* sint16 -> sint8 收窄: 钳位到 [-128, 127] 再显式强转 */
+                    {
+                        sint16 th = eventConfig->DebounceCounterPassedThreshold;
+                        if (th > 127) { th = 127; }
+                        if (th < -128) { th = -128; }
+                        eventState->FaultDetectionCounter = (Dem_FaultDetectionCounterType)th;
+                    }
                     break;
 
                 case DEM_EVENT_STATUS_FAILED:
                     eventState->DebounceCounter = eventConfig->DebounceCounterFailedThreshold;
-                    eventState->FaultDetectionCounter = eventConfig->DebounceCounterFailedThreshold;
+                    /* sint16 -> sint8 收窄: 钳位到 [-128, 127] 再显式强转 */
+                    {
+                        sint16 th = eventConfig->DebounceCounterFailedThreshold;
+                        if (th > 127) { th = 127; }
+                        if (th < -128) { th = -128; }
+                        eventState->FaultDetectionCounter = (Dem_FaultDetectionCounterType)th;
+                    }
                     break;
 
                 case DEM_EVENT_STATUS_PREPASSED:

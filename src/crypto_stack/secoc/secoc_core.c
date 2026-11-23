@@ -41,7 +41,7 @@ static const uint8_t sbox[256] = {
 };
 
 /* 基本AES加密单块 */
-static void aes_encrypt_block(const uint8_t *in, uint8_t *out, const uint8_t *key, int key_bits) {
+static void aes_encrypt_block(const uint8_t *in, uint8_t *out, const uint8_t *key, uint32_t key_bits) {
     /* 简化的AES加密实现 - 生产环境应使用硬件加密或优化库 */
     /* 此处仅作为演示，实际项目中应使用OpenSSL或硬件加密 */
     (void)key_bits;
@@ -63,7 +63,7 @@ static void left_shift_one(const uint8_t *in, uint8_t *out) {
 }
 
 /* 生成AES-CMAC子密钥 */
-static void generate_subkeys(const uint8_t *key, int key_bits, uint8_t *k1, uint8_t *k2) {
+static void generate_subkeys(const uint8_t *key, uint32_t key_bits, uint8_t *k1, uint8_t *k2) {
     uint8_t l[AES_BLOCK_SIZE] = {0};
     uint8_t tmp[AES_BLOCK_SIZE] = {0};
     const uint8_t rb[16] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
