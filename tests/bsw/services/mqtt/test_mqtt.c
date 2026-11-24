@@ -25,6 +25,7 @@
 
 #include "unity.h"
 #include "Mqtt.h"
+#include "Mqtt_Tls.h"
 #include <string.h>
 #include <stdint.h>
 

@@ -49,8 +49,10 @@
 #define ETH_MULTICAST_SUPPORT    STD_ON
 #define ETH_PROMISCUOUS_MODE    STD_OFF
 
-/* Include Eth.h after macros are defined so conditional declarations work */
-#include "Eth.h"
+/* NOTE: this configuration header intentionally does not include Eth.h.
+ * Eth.h includes Eth_Cfg.h (defining these macros first), so including Eth.h
+ * back here would create a circular header dependency.  Consumers that need
+ * the Eth API include Eth.h directly. */
 
 #endif /* ETH_CFG_H */
 

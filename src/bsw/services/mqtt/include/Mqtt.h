@@ -157,13 +157,12 @@ typedef enum {
     MQTT_E_DISCONNECTED         /**< 已断开 */
 } Mqtt_ReturnType;
 
-/** @brief Include Mqtt TLS header for TLS types */
-#include "Mqtt_Tls.h"
-
 /**
  * @brief 连接配置结构
  */
-/* Forward declaration (defined in Mqtt_Tls.h) */
+/* Forward declaration (defined in Mqtt_Tls.h).  Only an opaque pointer is
+ * used here, so the full header is not needed; including Mqtt_Tls.h would
+ * create a circular Mqtt.h <-> Mqtt_Tls.h dependency. */
 typedef struct Mqtt_TlsConfigType_s Mqtt_TlsConfigType;
 
 typedef struct {
