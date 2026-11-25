@@ -40,8 +40,8 @@ extern "C" {
 /** @brief 最大多播组数量 */
 #define MICRODDS_MAX_MULTICAST_GROUPS 4U
 
-/** @brief 默认DDS发现多播地址 */
-#define MICRODDS_DEFAULT_MULTICAST_ADDR "239.255.0.1"
+/** @brief 默认DDS发现多播地址 (239.255.0.1, 网络字节序整数) */
+#define MICRODDS_DEFAULT_MULTICAST_ADDR 0xEFFF0001U
 
 /** @brief PDP宣告周期 (毫秒) */
 #define MICRODDS_PDP_ANNOUNCE_PERIOD_MS 3000U
