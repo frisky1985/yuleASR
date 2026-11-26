@@ -13,6 +13,16 @@
 #ifndef S32K312_H
 #define S32K312_H
 
+#if defined(YULE_USE_NXP_RTD)
+/*
+ * Target build: use NXP RTD official register definitions.
+ * S32K312_RTD.h includes all 53 IP header files (ADC, FLEXCAN, SIUL2, etc.)
+ * plus S32K312_COMMON.h with register access macros and IRQ definitions.
+ */
+#include "S32K312_RTD.h"
+
+#else /* !YULE_USE_NXP_RTD -- host simulation fallback */
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -711,5 +721,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+#endif /* !YULE_USE_NXP_RTD */
 
 #endif /* S32K312_H */
