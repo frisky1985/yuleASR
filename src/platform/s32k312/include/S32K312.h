@@ -19,7 +19,10 @@
  * S32K312_RTD.h includes all 53 IP header files (ADC, FLEXCAN, SIUL2, etc.)
  * plus S32K312_COMMON.h with register access macros and IRQ definitions.
  */
+/* Include S32K312_RTD.h plus the legacy-name compatibility mapping so the
+ * MCAL drivers keep compiling unchanged against the official definitions. */
 #include "S32K312_RTD.h"
+#include "S32K312_LegacyCompat.h"
 
 #else /* !YULE_USE_NXP_RTD -- host simulation fallback */
 
