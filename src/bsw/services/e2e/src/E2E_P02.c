@@ -125,6 +125,9 @@ Std_ReturnType E2E_P02Protect(
     /* Write counter */
     Data[Config->CounterOffset] = State->Counter;
     
+    /* Clear CRC field before calculation so the CRC byte is not part of its own input */
+    Data[Config->CRCOffset] = 0U;
+    
     /* Calculate CRC */
     crc = E2E_P02_CalculateCRC(Data, Config->DataLength, Config->DataID);
     
@@ -173,8 +176,14 @@ Std_ReturnType E2E_P02Check(
     /* Get received CRC */
     receivedCrc = Data[Config->CRCOffset];
     
+    /* Temporarily clear CRC field for calculation (exclude CRC byte from input).
+     * Data is const, so operate on a local copy (mirrors E2E_P04Check). */
+    uint8 tempData[E2E_MAX_DATA_LENGTH_P02];
+    (void)memcpy(tempData, Data, Config->DataLength);
+    tempData[Config->CRCOffset] = 0U;
+    
     /* Calculate CRC */
-    calculatedCrc = E2E_P02_CalculateCRC(Data, Config->DataLength, Config->DataID);
+    calculatedCrc = E2E_P02_CalculateCRC(tempData, Config->DataLength, Config->DataID);
     
     /* Check CRC */
     if (receivedCrc != calculatedCrc) {
