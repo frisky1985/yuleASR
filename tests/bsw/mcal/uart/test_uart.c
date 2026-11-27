@@ -41,8 +41,8 @@
 /*===========================================================================
  * i.MX8M Mini UART register model (channel 0 = UART1, channel 1 = UART2)
  *==========================================================================*/
-#define TEST_UART0_BASE              (0x30860000UL)
-#define TEST_UART1_BASE              (0x30890000UL)
+#define TEST_UART0_BASE              (0x40180000UL)  /* S32K312_LPUART0_BASE */
+#define TEST_UART1_BASE              (0x40182000UL)  /* S32K312_LPUART1_BASE */
 
 #define TEST_UART_URXD_OFF           (0x00UL)
 #define TEST_UART_UTXD_OFF           (0x40UL)

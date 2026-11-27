@@ -21,8 +21,8 @@
 #include "Adc.h"
 #include "Adc_Cfg.h"
 
-/* ADC1 base address (non-S32K312 build) — must match Adc.c */
-#define ADC1_BASE           (0x30610000UL)
+/* ADC1 base address on S32K312 — must match Adc.c S32K312 build */
+#define ADC1_BASE           (0x400C0000UL)  /* S32K312_ADC0_BASE */
 #define ADC_HC0_OFF         (0x00U)
 #define ADC_HS_OFF          (0x04U)
 #define ADC_R0_OFF          (0x08U)

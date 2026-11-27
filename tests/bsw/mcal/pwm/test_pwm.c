@@ -19,11 +19,11 @@
 #include "Pwm.h"
 #include "Pwm_Cfg.h"
 
-/* i.MX8M Mini PWM register bases (must match Pwm.c non-S32K312 build) */
-#define PWM1_TEST_BASE      (0x30660000UL)
-#define PWM2_TEST_BASE      (0x30670000UL)
-#define PWM3_TEST_BASE      (0x30680000UL)
-#define PWM4_TEST_BASE      (0x30690000UL)
+/* S32K312 FTM register bases (must match Pwm.c S32K312 build) */
+#define PWM1_TEST_BASE      (0x400D0000UL)  /* S32K312_FTM0_BASE */
+#define PWM2_TEST_BASE      (0x400D2000UL)  /* S32K312_FTM1_BASE */
+#define PWM3_TEST_BASE      (0x400D4000UL)  /* S32K312_FTM2_BASE */
+#define PWM4_TEST_BASE      (0x400D6000UL)  /* S32K312_FTM3_BASE */
 
 /* Register offsets (Pwm.c internal defines, mirrored here with _OFF suffix) */
 #define PWM_CR_OFF          (0x00U)

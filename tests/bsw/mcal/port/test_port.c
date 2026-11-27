@@ -22,9 +22,11 @@
 #include "Port.h"
 #include "Port_Cfg.h"
 
-/* Register bases (non-S32K312 build) — must match Port.c */
-#define PORT_IOMUXC_BASE        (0x30330000UL)
-#define PORT_GPIO1_BASE         (0x30200000UL)
+/* Register bases on S32K312 (must match Port.c S32K312 build). Port.c
+ * re-defines the mux/pad offsets unconditionally after its S32K312 block,
+ * so the effective offsets remain 0x00 / 0x204 as asserted here. */
+#define PORT_IOMUXC_BASE        (0x40290000UL)  /* S32K312_SIUL2_BASE */
+#define PORT_GPIO1_BASE         (0x40810000UL)  /* S32K312_SIUL2_GPIO_BASE */
 #define PORT_GPIO_DR_OFF        (0x00U)
 #define PORT_GPIO_GDIR_OFF      (0x14U)  /* PDDR: matches Port.c */
 
@@ -447,11 +449,11 @@ void test_Port_GetVersionInfo_NullPtr_ShouldReportDet(void) {
 
 /* --- Port_GetGpioBaseAddr switch coverage (line 136) --- */
 
-/* GPIO base addresses for ports B-E (must match Port.c) */
-#define PORT_GPIO2_BASE  (0x30210000UL)
-#define PORT_GPIO3_BASE  (0x30220000UL)
-#define PORT_GPIO4_BASE  (0x30230000UL)
-#define PORT_GPIO5_BASE  (0x30240000UL)
+/* GPIO base addresses for ports B-E (must match Port.c S32K312 build) */
+#define PORT_GPIO2_BASE  (0x40811000UL)
+#define PORT_GPIO3_BASE  (0x40812000UL)
+#define PORT_GPIO4_BASE  (0x40813000UL)
+#define PORT_GPIO5_BASE  (0x40814000UL)
 
 /**
  * Port_Init has no pin-range check, so pins on ports B-E exercise the

@@ -16,10 +16,14 @@
 #include "Mcu.h"
 #include "Mcu_Cfg.h"
 
-/* i.MX8M Mini register bases (must match Mcu.c non-S32K312 build) */
+/* S32K312 MCU register bases. GPC (power gating) tracks S32K312_MCU_BASE;
+ * CCM/SRC keep the legacy i.MX addresses because Mcu.c still re-defines
+ * MCU_CCM_BASE_ADDR / MCU_SRC_BASE_ADDR unconditionally after its S32K312
+ * block (see "Original defines" lines in Mcu.c) — the tests assert the
+ * behaviour the driver actually compiles. */
 #define MCU_CCM_BASE        (0x30380000UL)
 #define MCU_SRC_BASE        (0x30390000UL)
-#define MCU_GPC_BASE        (0x303A0000UL)
+#define MCU_GPC_BASE        (0x402A0000UL)  /* S32K312_MCU_BASE */
 
 #define MCU_CCM_CCR         (MCU_CCM_BASE + 0x0000U)
 #define MCU_CCM_CSR         (MCU_CCM_BASE + 0x0008U)

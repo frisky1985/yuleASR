@@ -135,6 +135,8 @@ function(add_mcal_test)
 
     # Compile definitions — redirect REG_READ32/REG_WRITE32 to mock_hal
     target_compile_definitions(${TEST_TARGET} PRIVATE
+        # N1 verification: exercise the shipped S32K312 code path
+        S32K312
         # Redirect register access macros to MockHAL
         REG_READ32=mock_hal_read32
         REG_WRITE32=mock_hal_write32
@@ -181,9 +183,10 @@ endfunction()
 # Helper function: add_bsw_mcal_test
 #
 # Builds substantiated MCAL unit tests from tests/bsw/mcal/<module>/.
-# These tests use mock_registers/mock_det (i.MX8M register model) instead
-# of MockHAL/S32K312, and the production sources must be compiled without
-# the global S32K312/S32K3XX macros so they take the i.MX8M code path.
+# N1 verification: the production sources must be exercised on the shipped
+# S32K312 code path, so S32K312 is defined for every translation unit and the
+# S32K312 register map header is on the include path. mock_registers.h still
+# supplies the host-side register array backing (REG_READ32/WRITE32 redirect).
 #
 # Usage:
 #   add_bsw_mcal_test(
@@ -264,12 +267,11 @@ function(add_bsw_mcal_test)
 
     add_executable(${TEST_TARGET} ${SOURCES})
 
-    # Make mock_registers.h visible everywhere and undefine the S32K312/S32K3XX
-    # macros so the i.MX8M code path is selected.
+    # Make mock_registers.h visible everywhere and compile the shipped
+    # S32K312 code path (not the legacy i.MX8M branch).
     target_compile_options(${TEST_TARGET} PRIVATE
         -include ${BSW_MCAL_MOCK_DIR}/mock_registers.h
-        -US32K312
-        -US32K3XX
+        -DS32K312
     )
 
     target_include_directories(${TEST_TARGET} PRIVATE
@@ -524,8 +526,7 @@ if(EXISTS ${MCAL_TEST_SRC_DIR}/i2c/test_i2c_full.c)
     )
     target_compile_options(mcal_i2c_full_test PRIVATE
         -include ${MCAL_TEST_SRC_DIR}/i2c/i2c_reg_mock.h
-        -US32K312
-        -US32K3XX
+        -DS32K312
         -Wall
         -Wextra
         -Wno-unused-parameter

@@ -16,9 +16,9 @@
 #include "Gpt.h"
 #include "Gpt_Cfg.h"
 
-/* GPT base addresses (non-S32K312 build) — must match Gpt.c */
-#define GPT1_BASE       (0x302E0000UL)
-#define GPT2_BASE       (0x302F0000UL)
+/* GPT base addresses on S32K312 — both timer groups share the PIT block */
+#define GPT1_BASE       (0x400E0000UL)  /* S32K312_PIT_BASE */
+#define GPT2_BASE       (0x400E0000UL)  /* S32K312_PIT_BASE */
 #define GPT_CR_OFF      (0x00U)
 #define GPT_PR_OFF      (0x04U)
 #define GPT_SR_OFF      (0x08U)

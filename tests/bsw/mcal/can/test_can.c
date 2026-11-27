@@ -16,9 +16,9 @@
 #include "Can.h"
 #include "Can_Cfg.h"
 
-/* FlexCAN1 base (non-S32K312 build) — must match Can.c */
-#define CAN1_BASE       (0x308C0000UL)
-#define CAN2_BASE       (0x308D0000UL)
+/* FlexCAN bases on S32K312 — must match Can.c S32K312 build */
+#define CAN1_BASE       (0x40050000UL)  /* S32K312_CAN0_BASE */
+#define CAN2_BASE       (0x40052000UL)  /* S32K312_CAN1_BASE */
 #define CAN_MCR_OFF     (0x00U)
 #define CAN_CTRL1_OFF   (0x04U)
 #define CAN_IMASK1_OFF  (0x28U)

@@ -79,9 +79,14 @@ static sint32 AddRegisterEntry(uint32 address)
 /*==================================================================================================
 *                                      GPIO REGISTER SIMULATION
 ==================================================================================================*/
-/* GPIO base addresses (must match Dio.c) */
+/* GPIO base addresses (must match Dio.c). Both the legacy i.MX8M bases and
+ * the S32K312 SIUL2 GPIO bases (0x40810000 + n*0x1000) are recognised so the
+ * atomic PSOR/PCOR/PTOR simulation applies to whichever code path is built. */
 #define MOCK_GPIO1_BASE                 (0x30200000UL)
 #define MOCK_GPIO5_BASE                 (0x30240000UL)
+#define MOCK_S32K312_GPIO_BASE          (0x40810000UL)
+#define MOCK_S32K312_GPIO_STRIDE        (0x1000UL)
+#define MOCK_S32K312_GPIO_PORTS         (5U)
 /* GPIO register offsets */
 #define MOCK_GPIO_DR_OFF                (0x00U)
 #define MOCK_GPIO_PSOR_OFF              (0x04U)  /* atomic bit set */
@@ -90,7 +95,20 @@ static sint32 AddRegisterEntry(uint32 address)
 
 static boolean IsGpioBase(uint32 addr)
 {
-    return (addr == MOCK_GPIO1_BASE) || (addr == MOCK_GPIO5_BASE);
+    if ((addr == MOCK_GPIO1_BASE) || (addr == MOCK_GPIO5_BASE))
+    {
+        return TRUE;
+    }
+
+    for (uint32 i = 0U; i < MOCK_S32K312_GPIO_PORTS; i++)
+    {
+        if (addr == (MOCK_S32K312_GPIO_BASE + (i * MOCK_S32K312_GPIO_STRIDE)))
+        {
+            return TRUE;
+        }
+    }
+
+    return FALSE;
 }
 
 /*==================================================================================================

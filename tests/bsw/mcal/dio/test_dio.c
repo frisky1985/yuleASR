@@ -14,17 +14,17 @@
 #include "Dio.h"
 #include "Dio_Cfg.h"
 
-/* GPIO base addresses (must match Dio.c non-S32K312 build) */
-#define DIO_GPIO1_BASE  (0x30200000UL)
-#define DIO_GPIO2_BASE  (0x30210000UL)
-#define DIO_GPIO3_BASE  (0x30220000UL)
-#define DIO_GPIO4_BASE  (0x30230000UL)
-#define DIO_GPIO5_BASE  (0x30240000UL)
-#define DIO_GPIO_DR     (0x00U)
+/* S32K312 SIUL2 GPIO base addresses (must match Dio.c S32K312 build) */
+#define DIO_GPIO1_BASE  (0x40810000UL)
+#define DIO_GPIO2_BASE  (0x40811000UL)
+#define DIO_GPIO3_BASE  (0x40812000UL)
+#define DIO_GPIO4_BASE  (0x40813000UL)
+#define DIO_GPIO5_BASE  (0x40814000UL)
+#define DIO_GPIO_DR     (0x00U)   /* PDOR */
 #define DIO_GPIO_PSR_SET (0x04U)  /* PSOR: atomic bit set */
 #define DIO_GPIO_PCR_CLR (0x08U)  /* PCOR: atomic bit clear */
 #define DIO_GPIO_PTOR_TOG (0x0CU) /* PTOR: atomic bit toggle */
-#define DIO_GPIO_PSR    (0x08U)   /* PDIR: data input */
+#define DIO_GPIO_PSR    (0x10U)   /* PDIR: data input */
 
 static Dio_ConfigType testConfig;
 

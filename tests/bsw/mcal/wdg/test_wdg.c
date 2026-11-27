@@ -14,8 +14,8 @@
 #include "Wdg.h"
 #include "Wdg_Cfg.h"
 
-/* WDG base address (must match Wdg.c non-S32K312 build) */
-#define WDG_BASE_ADDR   (0x30280000UL)
+/* WDG base address on S32K312 — must match Wdg.c S32K312 build */
+#define WDG_BASE_ADDR   (0x40053000UL)  /* S32K312_WDOG_BASE */
 #define WDG_WCR_OFF     (0x00U)
 #define WDG_WICR_OFF    (0x06U)
 

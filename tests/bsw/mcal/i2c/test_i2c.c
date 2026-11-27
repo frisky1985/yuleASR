@@ -37,8 +37,8 @@
 /*===========================================================================
  * Register model (i.MX8M Mini I2C, 8-bit accesses)
  *==========================================================================*/
-#define TEST_I2C1_BASE                  (0x30A20000UL)
-#define TEST_I2C2_BASE                  (0x30A30000UL)
+#define TEST_I2C1_BASE                  (0x40040000UL)  /* S32K312_LPI2C0_BASE */
+#define TEST_I2C2_BASE                  (0x40042000UL)  /* S32K312_LPI2C1_BASE */
 
 #define TEST_I2C_IADR(base)             ((base) + 0x00U)
 #define TEST_I2C_IFDR(base)             ((base) + 0x04U)

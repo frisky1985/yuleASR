@@ -31,8 +31,11 @@ static uint8_t I2cMock_RxByte;
 static uint8_t I2cMock_Row(uint32_t Address, uint8_t* Offset)
 {
     uint8_t row = 4U;
+    uint32_t s32kBase = Address & 0xFFFFF000UL;
 
-    if (((Address & 0xFFFF0000UL) == 0x30A20000UL)) { row = 0U; }
+    if (s32kBase == 0x40040000UL) { row = 0U; }        /* S32K312 LPI2C0 */
+    else if (s32kBase == 0x40042000UL) { row = 1U; }   /* S32K312 LPI2C1 */
+    else if (((Address & 0xFFFF0000UL) == 0x30A20000UL)) { row = 0U; }
     else if (((Address & 0xFFFF0000UL) == 0x30A30000UL)) { row = 1U; }
     else if (((Address & 0xFFFF0000UL) == 0x30A40000UL)) { row = 2U; }
     else if (((Address & 0xFFFF0000UL) == 0x30A50000UL)) { row = 3U; }

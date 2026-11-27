@@ -25,6 +25,12 @@ include_directories(
 # mbedTLS private-field access is required by the crypto/MQTT backends
 add_compile_definitions(MBEDTLS_ALLOW_PRIVATE_ACCESS)
 
+# N1: build the shipped S32K312 code path by default (chip selection).
+# Previously the MCAL libraries compiled the legacy i.MX #else branch because
+# S32K312 was never defined here. YULE_USE_NXP_RTD stays an opt-in switch
+# handled in src/platform/CMakeLists.txt.
+add_compile_definitions(S32K312 S32K3XX)
+
 # Get all submodule directories
 file(GLOB MCAL_SUBDIRS LIST_DIRECTORIES true ${CMAKE_CURRENT_SOURCE_DIR}/*)
 
