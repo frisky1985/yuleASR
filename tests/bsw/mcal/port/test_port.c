@@ -22,29 +22,32 @@
 #include "Port.h"
 #include "Port_Cfg.h"
 
-/* Register bases on S32K312 (must match Port.c S32K312 build). Port.c
- * re-defines the mux/pad offsets unconditionally after its S32K312 block,
- * so the effective offsets remain 0x00 / 0x204 as asserted here. */
+/* Register bases on S32K312 (must match Port.c S32K312 build). SIUL2 exposes
+ * a single MSCR per pin at 0x40290020 + pin*4 holding both mux (SSS) and pad. */
 #define PORT_IOMUXC_BASE        (0x40290000UL)  /* S32K312_SIUL2_BASE */
 #define PORT_GPIO1_BASE         (0x40810000UL)  /* S32K312_SIUL2_GPIO_BASE */
 #define PORT_GPIO_DR_OFF        (0x00U)
 #define PORT_GPIO_GDIR_OFF      (0x14U)  /* PDDR: matches Port.c */
 
-#define PORT_MUX_REG(pin)   (PORT_IOMUXC_BASE + (((uint32)((pin) >> 8) * 32U + ((pin) & 0xFFU)) * 4U))
-#define PORT_PAD_REG(pin)   (PORT_IOMUXC_BASE + 0x204UL + (((uint32)((pin) >> 8) * 32U + ((pin) & 0xFFU)) * 4U))
+/* S32K312 SIUL2 exposes ONE MSCR per pin holding both mux (SSS) and pad fields. */
+#define PORT_MUX_REG(pin)   (PORT_IOMUXC_BASE + 0x20UL + (((uint32)((pin) >> 8) * 32U + ((pin) & 0xFFU)) * 4U))
+#define PORT_PAD_REG(pin)   PORT_MUX_REG(pin)
 
-/* mux mode values written by Port_ConfigurePinMux */
-#define PORT_MUX_VAL_GPIO       (5U)
-#define PORT_MUX_VAL_ALT0       (0U)
-#define PORT_MUX_VAL_ALT1       (1U)
-#define PORT_MUX_VAL_ALT2       (2U)
-#define PORT_MUX_VAL_ALT3       (3U)
+#define PORT_SSS_MASK           (0x0F000000UL)
+#define PORT_PAD_FIELD_MASK     (0x1FE0UL)
 
-/* pad values composed by Port_ConfigurePinPad */
-#define PORT_PAD_GPIO_NO_PULL   (0x02UL) /* SRE slow | DSE | keeper          */
-#define PORT_PAD_GPIO_PULLUP    (0x1AUL) /* SRE slow | DSE | PUS up | PUE    */
-#define PORT_PAD_ALT_PULLDOWN   (0x13UL) /* SRE fast | DSE | PUE (down)      */
-#define PORT_PAD_ALT_NO_PULL    (0x03UL) /* SRE fast | DSE | keeper          */
+/* mux mode values (SSS field, bits 27:24) written by Port_ConfigurePinMux */
+#define PORT_MUX_VAL_GPIO       (0x00000000UL)
+#define PORT_MUX_VAL_ALT0       (0x01000000UL)
+#define PORT_MUX_VAL_ALT1       (0x01000000UL)
+#define PORT_MUX_VAL_ALT2       (0x02000000UL)
+#define PORT_MUX_VAL_ALT3       (0x03000000UL)
+
+/* pad field values composed by Port_ConfigurePinPad on S32K312 */
+#define PORT_PAD_GPIO_NO_PULL   (0x1000UL) /* PKE                          */
+#define PORT_PAD_GPIO_PULLUP    (0x0400UL) /* PU                           */
+#define PORT_PAD_ALT_PULLDOWN   (0x0900UL) /* SRC fast | PD                */
+#define PORT_PAD_ALT_NO_PULL    (0x1100UL) /* SRC fast | PKE               */
 
 /*
  * Configured pins (all on Port A, Pin = pinNum):
@@ -238,29 +241,29 @@ void test_Port_Init_ValidConfig_ShouldProgramPinRegisters(void) {
     port_driverReady = TRUE;
     TEST_ASSERT_EQUAL_UINT32(0U, Det_MockData.CallCount);
 
-    /* mux mode mapping: GPIO=5, UART(ALT1)=1, CAN(ALT2)=2 */
+    /* mux mode mapping on S32K312 (SSS field): GPIO=ALT0, UART=ALT1, CAN=ALT2 */
     TEST_ASSERT_EQUAL_UINT32(PORT_MUX_VAL_GPIO,
-                             MockRegisters_Read32(PORT_MUX_REG(TEST_PIN_GPIO_OUT_HIGH)));
+                             MockRegisters_Read32(PORT_MUX_REG(TEST_PIN_GPIO_OUT_HIGH)) & PORT_SSS_MASK);
     TEST_ASSERT_EQUAL_UINT32(PORT_MUX_VAL_GPIO,
-                             MockRegisters_Read32(PORT_MUX_REG(TEST_PIN_GPIO_IN_PULLUP)));
+                             MockRegisters_Read32(PORT_MUX_REG(TEST_PIN_GPIO_IN_PULLUP)) & PORT_SSS_MASK);
     TEST_ASSERT_EQUAL_UINT32(PORT_MUX_VAL_ALT1,
-                             MockRegisters_Read32(PORT_MUX_REG(TEST_PIN_UART)));
+                             MockRegisters_Read32(PORT_MUX_REG(TEST_PIN_UART)) & PORT_SSS_MASK);
     TEST_ASSERT_EQUAL_UINT32(PORT_MUX_VAL_ALT2,
-                             MockRegisters_Read32(PORT_MUX_REG(TEST_PIN_CAN)));
+                             MockRegisters_Read32(PORT_MUX_REG(TEST_PIN_CAN)) & PORT_SSS_MASK);
     TEST_ASSERT_EQUAL_UINT32(PORT_MUX_VAL_GPIO,
-                             MockRegisters_Read32(PORT_MUX_REG(TEST_PIN_GPIO_OUT_LOW)));
+                             MockRegisters_Read32(PORT_MUX_REG(TEST_PIN_GPIO_OUT_LOW)) & PORT_SSS_MASK);
 
-    /* pad control: GPIO slow slew, alternate fast slew, pull config */
+    /* pad control: pull keep (PKE), pull-up (PU), alternate fast slew + PD */
     TEST_ASSERT_EQUAL_UINT32(PORT_PAD_GPIO_NO_PULL,
-                             MockRegisters_Read32(PORT_PAD_REG(TEST_PIN_GPIO_OUT_HIGH)));
+                             MockRegisters_Read32(PORT_PAD_REG(TEST_PIN_GPIO_OUT_HIGH)) & PORT_PAD_FIELD_MASK);
     TEST_ASSERT_EQUAL_UINT32(PORT_PAD_GPIO_PULLUP,
-                             MockRegisters_Read32(PORT_PAD_REG(TEST_PIN_GPIO_IN_PULLUP)));
+                             MockRegisters_Read32(PORT_PAD_REG(TEST_PIN_GPIO_IN_PULLUP)) & PORT_PAD_FIELD_MASK);
     TEST_ASSERT_EQUAL_UINT32(PORT_PAD_ALT_PULLDOWN,
-                             MockRegisters_Read32(PORT_PAD_REG(TEST_PIN_UART)));
+                             MockRegisters_Read32(PORT_PAD_REG(TEST_PIN_UART)) & PORT_PAD_FIELD_MASK);
     TEST_ASSERT_EQUAL_UINT32(PORT_PAD_ALT_NO_PULL,
-                             MockRegisters_Read32(PORT_PAD_REG(TEST_PIN_CAN)));
+                             MockRegisters_Read32(PORT_PAD_REG(TEST_PIN_CAN)) & PORT_PAD_FIELD_MASK);
     TEST_ASSERT_EQUAL_UINT32(PORT_PAD_GPIO_NO_PULL,
-                             MockRegisters_Read32(PORT_PAD_REG(TEST_PIN_GPIO_OUT_LOW)));
+                             MockRegisters_Read32(PORT_PAD_REG(TEST_PIN_GPIO_OUT_LOW)) & PORT_PAD_FIELD_MASK);
 
     /* GPIO direction: outputs pin3 and pin7 set, input pin4 clear */
     TEST_ASSERT_EQUAL_UINT32(((1UL << TEST_PIN_GPIO_OUT_HIGH) | (1UL << TEST_PIN_GPIO_OUT_LOW)),
@@ -296,7 +299,7 @@ void test_Port_DeInit_AfterInit_ShouldAllowReInit(void) {
     port_driverReady = TRUE;
     TEST_ASSERT_EQUAL_UINT32(0U, Det_MockData.CallCount);
     TEST_ASSERT_EQUAL_UINT32(PORT_MUX_VAL_GPIO,
-                             MockRegisters_Read32(PORT_MUX_REG(TEST_PIN_GPIO_OUT_HIGH)));
+                             MockRegisters_Read32(PORT_MUX_REG(TEST_PIN_GPIO_OUT_HIGH)) & PORT_SSS_MASK);
     TEST_ASSERT_EQUAL_UINT32(((1UL << TEST_PIN_GPIO_OUT_HIGH) | (1UL << TEST_PIN_GPIO_OUT_LOW)),
                              MockRegisters_Read32(PORT_GPIO1_BASE + PORT_GPIO_GDIR_OFF));
 }
@@ -365,7 +368,8 @@ void test_Port_SetPinMode_Changeable_ShouldUpdateMux(void) {
     MockRegisters_Write32(muxAddr, 0xFFU);
     Port_SetPinMode(TEST_PIN_UART, PORT_PIN_MODE_SPI);
     TEST_ASSERT_EQUAL_UINT32(0U, Det_MockData.CallCount);
-    TEST_ASSERT_EQUAL_UINT32(0xF8UL | PORT_MUX_VAL_ALT3, MockRegisters_Read32(muxAddr));
+    /* S32K312 clears only the SSS field, so the low bits (0xFF) are preserved */
+    TEST_ASSERT_EQUAL_UINT32(0xFFUL | PORT_MUX_VAL_ALT3, MockRegisters_Read32(muxAddr));
 }
 
 /** @req SWS_Port_00006 */

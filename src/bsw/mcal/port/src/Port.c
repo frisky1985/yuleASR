@@ -23,7 +23,9 @@
 ==================================================================================================*/
 #ifdef S32K312
 #include "S32K312.h"
-/* S32K312 SIUL2 replaces IOMUXC + GPIO */
+/* S32K312 SIUL2 replaces IOMUXC + GPIO. Each pin owns a single MSCR register
+ * that carries both the pad mux select (SSS, bits 27:24) and the pad
+ * configuration fields, so mux and pad writes target the same address. */
 #define PORT_IOMUXC_BASE_ADDR           (S32K312_SIUL2_BASE)
 #define PORT_GPIO1_BASE_ADDR            (S32K312_SIUL2_GPIO_BASE + (0U * 0x1000U))
 #define PORT_GPIO2_BASE_ADDR            (S32K312_SIUL2_GPIO_BASE + (1U * 0x1000U))
@@ -31,10 +33,33 @@
 #define PORT_GPIO4_BASE_ADDR            (S32K312_SIUL2_GPIO_BASE + (3U * 0x1000U))
 #define PORT_GPIO5_BASE_ADDR            (S32K312_SIUL2_GPIO_BASE + (4U * 0x1000U))
 #define PORT_IOMUXC_SW_MUX_CTL_PAD_OFFSET   (SIUL2_MSCR0_OFF)
-#define PORT_IOMUXC_SW_PAD_CTL_PAD_OFFSET   (SIUL2_MSCR0_OFF + 4U)
-#define PORT_MUX_MODE_GPIO              (SIUL2_MSCR_SSS_SHIFT >> 24)
-#define PORT_MUX_MODE_ALT0              (1U)
-#define PORT_MUX_MODE_ALT1              (1U)
+#define PORT_IOMUXC_SW_PAD_CTL_PAD_OFFSET   (SIUL2_MSCR0_OFF)
+
+#define PORT_MUX_MASK                   (SIUL2_MSCR_SSS_MASK)
+#define PORT_MUX_MODE_GPIO              (SIUL2_MSCR_ALT0)
+#define PORT_MUX_MODE_ALT0              (SIUL2_MSCR_ALT1)
+#define PORT_MUX_MODE_ALT1              (SIUL2_MSCR_ALT1)
+#define PORT_MUX_MODE_ALT2              (SIUL2_MSCR_ALT2)
+#define PORT_MUX_MODE_ALT3              (SIUL2_MSCR_ALT3)
+#define PORT_MUX_MODE_ALT4              (SIUL2_MSCR_ALT4)
+#define PORT_MUX_MODE_ALT5              (SIUL2_MSCR_ALT5)
+#define PORT_MUX_MODE_ALT6              (SIUL2_MSCR_ALT6)
+
+/* Pad fields live in the same MSCR: slew (SRC), open drain, pull up/down/keep. */
+#define PORT_PAD_MASK                   (SIUL2_MSCR_SRC_MASK | SIUL2_MSCR_ODE | SIUL2_MSCR_PU | \
+                                         SIUL2_MSCR_PD | SIUL2_MSCR_PKE | SIUL2_MSCR_OBE | SIUL2_MSCR_IBE)
+#define PORT_SRE_SLOW                   (0U << 8)
+#define PORT_SRE_FAST                   (1U << 8)
+#define PORT_DSE_DISABLE                (0U)
+#define PORT_DSE_ENABLE                 (0U)
+#define PORT_HYS_DISABLE                (0U)
+#define PORT_HYS_ENABLE                 (0U)
+#define PORT_PUS_DOWN                   (SIUL2_MSCR_PD)
+#define PORT_PUS_UP                     (SIUL2_MSCR_PU)
+#define PORT_PUE_KEEPER                 (SIUL2_MSCR_PKE)
+#define PORT_PUE_PULL                   (0U)
+#define PORT_ODE_DISABLE                (0U)
+#define PORT_ODE_ENABLE                 (SIUL2_MSCR_ODE)
 #else
 #define PORT_IOMUXC_BASE_ADDR           (0x30330000UL)
 #define PORT_GPIO1_BASE_ADDR            (0x30200000UL)
@@ -44,23 +69,8 @@
 #define PORT_GPIO5_BASE_ADDR            (0x30240000UL)
 #define PORT_IOMUXC_SW_MUX_CTL_PAD_OFFSET   (0x0000)
 #define PORT_IOMUXC_SW_PAD_CTL_PAD_OFFSET   (0x0204)
-#define PORT_MUX_MODE_GPIO              (5U)
-#define PORT_MUX_MODE_ALT0              (0U)
-#define PORT_MUX_MODE_ALT1              (1U)
-#endif
 
-#define PORT_IOMUXC_SW_MUX_CTL_PAD_OFFSET   (0x0000)
-#define PORT_IOMUXC_SW_PAD_CTL_PAD_OFFSET   (0x0204)
-
-#define PORT_GPIO_DR                    (0x00U)
-#define PORT_GPIO_GDIR                  (0x14U)  /* PDDR: Port Data Direction Register */
-#define PORT_GPIO_PSR                   (0x08)
-#define PORT_GPIO_ICR1                  (0x0C)
-#define PORT_GPIO_ICR2                  (0x10)
-#define PORT_GPIO_IMR                   (0x14)
-#define PORT_GPIO_ISR                   (0x18)
-#define PORT_GPIO_EDGE_SEL              (0x1C)
-
+#define PORT_MUX_MASK                   (0x07U)
 #define PORT_MUX_MODE_GPIO              (5U)
 #define PORT_MUX_MODE_ALT0              (0U)
 #define PORT_MUX_MODE_ALT1              (1U)
@@ -70,6 +80,7 @@
 #define PORT_MUX_MODE_ALT5              (5U)
 #define PORT_MUX_MODE_ALT6              (6U)
 
+#define PORT_PAD_MASK                   (0x3FU)
 #define PORT_SRE_SLOW                   (0U << 0)
 #define PORT_SRE_FAST                   (1U << 0)
 #define PORT_DSE_DISABLE                (0U << 1)
@@ -82,6 +93,16 @@
 #define PORT_PUE_PULL                   (1U << 4)
 #define PORT_ODE_DISABLE                (0U << 5)
 #define PORT_ODE_ENABLE                 (1U << 5)
+#endif
+
+#define PORT_GPIO_DR                    (0x00U)
+#define PORT_GPIO_GDIR                  (0x14U)  /* PDDR: Port Data Direction Register */
+#define PORT_GPIO_PSR                   (0x08)
+#define PORT_GPIO_ICR1                  (0x0C)
+#define PORT_GPIO_ICR2                  (0x10)
+#define PORT_GPIO_IMR                   (0x14)
+#define PORT_GPIO_ISR                   (0x18)
+#define PORT_GPIO_EDGE_SEL              (0x1C)
 
 /*==================================================================================================
 *                                    LOCAL TYPES
@@ -205,7 +226,7 @@ static void Port_ConfigurePinMux(Port_PinType pin, Port_PinModeType mode)
     uint32 muxValue;
 
     muxValue = REG_READ32(muxRegAddr);
-    muxValue &= ~0x07U; /* Clear MUX_MODE bits */
+    muxValue &= ~PORT_MUX_MASK; /* Clear MUX_MODE bits */
 
     switch (mode) {
         case PORT_PIN_MODE_GPIO:
@@ -278,7 +299,14 @@ static void Port_ConfigurePinPad(Port_PinType pin, const Port_PinConfigType* con
     /* Configure open drain */
     padValue |= PORT_ODE_DISABLE;
 
-    REG_WRITE32(padRegAddr, padValue);
+    /* Read-modify-write: on S32K312 the pad fields share the MSCR with the
+     * mux selection (SSS), so preserve the mux bits instead of overwriting. */
+    {
+        uint32 pinValue = REG_READ32(padRegAddr);
+        pinValue &= ~PORT_PAD_MASK;
+        pinValue |= padValue;
+        REG_WRITE32(padRegAddr, pinValue);
+    }
 }
 
 /*==================================================================================================

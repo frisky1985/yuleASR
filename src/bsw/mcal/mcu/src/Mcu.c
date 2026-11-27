@@ -33,11 +33,6 @@
 #define MCU_CCM_BASE_ADDR               (0x30380000UL)
 #define MCU_SRC_BASE_ADDR               (0x30390000UL)
 #endif
-/* End of S32K312 adaptation */
-
-/* Original defines for i.MX8M Mini */
-#define MCU_CCM_BASE_ADDR               (0x30380000UL)
-#define MCU_SRC_BASE_ADDR               (0x30390000UL)
 
 #define MCU_GPC_PGC_CPU_MAPPING         (MCU_GPC_BASE_ADDR + 0x0ECU)
 #define MCU_GPC_PU_PGC_SW_PUP_REQ       (MCU_GPC_BASE_ADDR + 0x0F8)
