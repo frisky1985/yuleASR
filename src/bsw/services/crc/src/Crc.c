@@ -278,6 +278,97 @@ uint32 Crc_CalculateCRC32(
 #endif /* CRC_32_MODE */
 }
 
+/*==================================================================================================
+ * CRC-64 (ECMA-182) — dependency of E2E Profile 5/6
+ *
+ * Crc_Cfg.h carries no CRC64 section, so the polynomial/init/xorOut are kept
+ * local to this translation unit. Convention: non-reflected, MSB-first,
+ * matching CRC-64/ECMA (check value of "123456789" == 0x6C40DF5F0B497347).
+ * Only the runtime (bitwise) variant is provided — no lookup table — to avoid
+ * adding a 2 KB table to the config / generated Crc_Lcfg.c.
+ ==================================================================================================*/
+#define CRC_64_POLYNOMIAL      ((uint64)0x42F0E1EBA9EA3693ULL)
+#define CRC_64_INITIAL_VALUE   ((uint64)0x0000000000000000ULL)
+#define CRC_64_XOR_OUT         ((uint64)0x0000000000000000ULL)
+#define CRC_64_MSB_MASK        ((uint64)0x8000000000000000ULL)
+
+static uint64 Crc64_RuntimeCalculate(const uint8* dataPtr, uint32 length, uint64 startValue)
+{
+    uint64 crc = startValue;
+    uint32 i;
+    uint8 bit;
+
+    for (i = 0U; i < length; i++) {
+        crc ^= ((uint64)dataPtr[i] << 56U);
+        for (bit = 0U; bit < 8U; bit++) {
+            if ((crc & CRC_64_MSB_MASK) != 0U) {
+                crc = (crc << 1U) ^ CRC_64_POLYNOMIAL;
+            } else {
+                crc = crc << 1U;
+            }
+        }
+    }
+    return crc;
+}
+
+/**
+ * @brief Calculate CRC64 using the ECMA-182 polynomial
+ *
+ * CRC-64/ECMA:
+ * - Polynomial: 0x42F0E1EBA9EA3693
+ * - Initial value: 0x0000000000000000
+ * - Final XOR: 0x0000000000000000
+ * - Input reflected: No
+ * - Output reflected: No
+ *
+ * Used by E2E Profile 5/6. Incremental chaining is supported by passing the
+ * previous return value as Crc_StartValue64 with Crc_IsFirstCall == FALSE.
+ *
+ * @param Crc_DataPtr Pointer to data buffer
+ * @param Crc_Length Length of data in bytes
+ * @param Crc_StartValue64 Initial CRC value (used when Crc_IsFirstCall == FALSE)
+ * @param Crc_IsFirstCall TRUE if first call for this data stream
+ * @return Calculated CRC64 value
+ */
+uint64 Crc_CalculateCRC64(
+    const uint8* Crc_DataPtr,
+    uint32 Crc_Length,
+    uint64 Crc_StartValue64,
+    boolean Crc_IsFirstCall)
+{
+    uint64 crc;
+
+#if (CRC_DEV_ERROR_DETECT == STD_ON)
+    if (Crc_InitStatus == FALSE) {
+        Det_ReportError(CRC_MODULE_ID, CRC_INSTANCE_ID, 0x05U, CRC_E_UNINIT);
+        return (uint64)0ULL;
+    }
+    if (Crc_DataPtr == NULL_PTR) {
+        Det_ReportError(CRC_MODULE_ID, CRC_INSTANCE_ID, 0x05U, CRC_E_PARAM_POINTER);
+        return (uint64)0ULL;
+    }
+    if (Crc_Length == 0U) {
+        Det_ReportError(CRC_MODULE_ID, CRC_INSTANCE_ID, 0x05U, CRC_E_PARAM_DATA);
+        return (uint64)0ULL;
+    }
+#endif
+
+    /* Determine start value */
+    if (Crc_IsFirstCall == TRUE) {
+        crc = CRC_64_INITIAL_VALUE;
+    } else {
+        crc = Crc_StartValue64;
+    }
+
+    /* Runtime calculation */
+    crc = Crc64_RuntimeCalculate(Crc_DataPtr, Crc_Length, crc);
+
+    /* Apply final XOR */
+    crc = crc ^ CRC_64_XOR_OUT;
+
+    return crc;
+}
+
 /**
  * @brief Get version information of CRC module
  * @req SHALL_CRC - Get version information of CRC module
