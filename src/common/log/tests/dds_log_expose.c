@@ -22,18 +22,26 @@ uint64_t dds_log_test_get_audit_mask(void) { return g_log_state.audit_mask; }
 /* 直接调 rotate_log_file — enable_rotation=false 时覆盖行 401 早退 */
 void dds_log_test_call_rotate_log_file(void) { (void)rotate_log_file(); }
 
-/* write_to_file fputs EOF — 手动塞已关闭的 FILE* (行 421) */
+/* write_to_file fputs EOF — 用 /dev/full 制造真实写失败 (行 425)
+ *
+ * 注意: 不能塞"已 fclose 的 FILE*"。异步模式下 flush_thread 仍持有该指针并会
+ * 并发 fflush, 对已释放的 FILE 做 I/O 属未定义行为, 会破坏 glibc 堆元数据,
+ * 表现为概率性 munmap_chunk(): invalid pointer。
+ * /dev/full 的写入返回 ENOSPC, 配 _IONBF 让 fputs 立即失败返回 EOF,
+ * 既覆盖行 426 的错误分支, 又不产生 UB。 */
 void dds_log_test_trigger_fputs_eof(void) {
-    FILE* closed_fp = fopen("/tmp/yule_closed_fp_test.log", "w");
-    if (closed_fp != NULL) { (void)fclose(closed_fp); }
+    FILE* full_fp = fopen("/dev/full", "w");
+    if (full_fp == NULL) { return; }
+    (void)setvbuf(full_fp, NULL, _IONBF, 0);
+
     pthread_mutex_lock(&g_log_state.mutex);
-    g_log_state.log_fp = closed_fp;
+    FILE* saved_fp = g_log_state.log_fp;
+    g_log_state.log_fp = full_fp;
+    (void)write_to_file("EOF test line\n");   /* fputs 返回 EOF */
+    g_log_state.log_fp = saved_fp;            /* 恢复原文件句柄, 避免泄漏 */
     pthread_mutex_unlock(&g_log_state.mutex);
-    (void)write_to_file("EOF test line\n");
-    pthread_mutex_lock(&g_log_state.mutex);
-    g_log_state.log_fp = NULL;
-    pthread_mutex_unlock(&g_log_state.mutex);
-    (void)remove("/tmp/yule_closed_fp_test.log");
+
+    (void)fclose(full_fp);
 }
 
 /*******************************************************************************
@@ -126,6 +134,11 @@ void dds_log_test_force_flush_thread_fflush(void) {
  ******************************************************************************/
 void dds_log_test_stop_flush_thread(void) {
     if (!g_log_state.initialized || !g_log_state.config.enable_async) { return; }
+
+    /* 幂等保护: flush_running 为 false 说明线程已停(deinit/本函数已 join 过)。
+     * 对同一 pthread_t 二次 join 是未定义行为: glibc 会重复释放 TCB/线程栈,
+     * 表现为概率性 "munmap_chunk(): invalid pointer" 或 SIGSEGV。 */
+    if (!g_log_state.flush_running) { return; }
 
     g_log_state.config.flush_interval_ms = 1U;
     g_log_state.flush_running = false;
