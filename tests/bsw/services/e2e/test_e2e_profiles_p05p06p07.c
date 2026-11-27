@@ -289,8 +289,16 @@ static void test_P06_Check_NullArgs(void)
 
 static void test_P06_Check_InvalidLength_ReportsWrongCrc(void)
 {
-    /* Check-side length validation sets Status = WRONGCRC but returns E_OK. */
+    /* Check-side length validation sets Status = WRONGCRC but returns E_OK.
+     * Exercise both arms of (Length < Min) || (Length > Max):
+     *   - below minimum  -> left operand true
+     *   - above maximum  -> right operand true (Length must stay <= 256 so the
+     *                       later `Length > 256` guard does not fire first)     */
     TEST_ASSERT_EQUAL_UINT8(E_OK, E2E_P06Check(&cfgP06_aligned, &cs6, frame, 2U));
+    TEST_ASSERT_EQUAL_UINT8(E2E_P_WRONGCRC, cs6.Status);
+
+    cs6.Status = (E2E_PCheckStatusType)0xFFU;   /* prove the call re-sets it */
+    TEST_ASSERT_EQUAL_UINT8(E_OK, E2E_P06Check(&cfgP06_aligned, &cs6, frame, 100U));
     TEST_ASSERT_EQUAL_UINT8(E2E_P_WRONGCRC, cs6.Status);
 }
 
@@ -381,7 +389,13 @@ static void test_P07_Check_NullArgs(void)
 
 static void test_P07_Check_InvalidLength_ReportsWrongCrc(void)
 {
+    /* Both arms of (Length < Min) || (Length > Max); Length <= 256 so the
+     * `Length > 256` guard does not preempt the range check. */
     TEST_ASSERT_EQUAL_UINT8(E_OK, E2E_P07Check(&cfgP07_aligned, &cs7, frame, 2U));
+    TEST_ASSERT_EQUAL_UINT8(E2E_P_WRONGCRC, cs7.Status);
+
+    cs7.Status = (E2E_PCheckStatusType)0xFFU;
+    TEST_ASSERT_EQUAL_UINT8(E_OK, E2E_P07Check(&cfgP07_aligned, &cs7, frame, 100U));
     TEST_ASSERT_EQUAL_UINT8(E2E_P_WRONGCRC, cs7.Status);
 }
 
