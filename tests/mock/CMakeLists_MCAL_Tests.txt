@@ -421,6 +421,21 @@ if(EXISTS ${MCAL_TEST_SRC_DIR}/wdg/test_wdg.c)
 endif()
 
 #----------------------------------------------------------------------
+# WDG hardware-abstraction (Wdg_Hw.c) test
+# MCAL_SRCS is the expose wrapper: wdg_hw_expose.c defines `static` away and
+# #includes Wdg_Hw.c so the test can drive the mock IWDG/WWDG status registers
+# (to reach the busy-wait timeout paths) and call the internal helpers.
+#----------------------------------------------------------------------
+if(EXISTS ${MCAL_TEST_SRC_DIR}/wdg/wdg_hw_expose.c)
+    add_bsw_mcal_test(
+        NAME        mcal_wdg_hw_test
+        TEST_FILE   ${MCAL_TEST_SRC_DIR}/wdg/test_wdg_hw.c
+        MCAL_SRCS
+            ${MCAL_TEST_SRC_DIR}/wdg/wdg_hw_expose.c
+    )
+endif()
+
+#----------------------------------------------------------------------
 # WDG OFF mode test (compiled with patched Wdg_offmode.c)
 # Wdg_offmode.c is a copy of Wdg.c with the compile-time guard
 #   #if (WDG_DISABLE_ALLOWED == STD_OFF)
