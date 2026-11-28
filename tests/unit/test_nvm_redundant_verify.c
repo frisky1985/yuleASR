@@ -233,6 +233,75 @@ int main(void)
     assert(memcmp(out, data, TEST_BLOCK_LEN) == 0);
     printf("[PASS] 13. Primary read failure -> mirror recovery (line 168)\n");
 
-    printf("\n=== ALL NvM_REDUNDANT VERIFY TESTS PASSED (%u/%u) ===\n", 13U, 13U);
+    /* 14. CheckConsistency: 越界 BlockId -> E_NOT_OK (line 215) */
+    assert(NvM_RedundantCheckConsistency((NvM_BlockIdType)NVM_NUM_REDUNDANT_BLOCKS) == E_NOT_OK);
+    printf("[PASS] 14. CheckConsistency 越界 BlockId 返回 E_NOT_OK\n");
+
+    /* 15. CheckConsistency: BlockDesc == NULL -> E_NOT_OK (line 221) */
+    reset_mock();
+    assert(NvM_RedundantCheckConsistency((NvM_BlockIdType)2U) == E_NOT_OK);
+    printf("[PASS] 15. CheckConsistency BlockDesc==NULL 返回 E_NOT_OK\n");
+
+    /* 16. CheckConsistency: primary 读失败 -> E_NOT_OK (line 229) */
+    reset_mock();
+    mock_read_fail_primary = TRUE;
+    assert(NvM_RedundantCheckConsistency(RED_GROUP) == E_NOT_OK);
+    printf("[PASS] 16. CheckConsistency primary 读失败返回 E_NOT_OK\n");
+
+    /* 17. CheckConsistency: mirror 读失败 -> E_NOT_OK (line 235) */
+    reset_mock();
+    mock_read_fail_mirror = TRUE;
+    assert(NvM_RedundantCheckConsistency(RED_GROUP) == E_NOT_OK);
+    printf("[PASS] 17. CheckConsistency mirror 读失败返回 E_NOT_OK\n");
+
+    /* 18. CheckConsistency: 两实例内容不一致 -> E_NOT_OK (line 245) */
+    reset_mock();
+    assert(NvM_RedundantWrite(RED_GROUP, data) == E_OK);
+    mockStorage[1][0] ^= 0xFFU;
+    assert(NvM_RedundantCheckConsistency(RED_GROUP) == E_NOT_OK);
+    printf("[PASS] 18. CheckConsistency 内容不一致返回 E_NOT_OK\n");
+
+    /* 19. Repair: 越界 BlockId -> E_NOT_OK (line 262) */
+    assert(NvM_RedundantRepair((NvM_BlockIdType)NVM_NUM_REDUNDANT_BLOCKS) == E_NOT_OK);
+    printf("[PASS] 19. Repair 越界 BlockId 返回 E_NOT_OK\n");
+
+    /* 20. Repair: BlockDesc == NULL -> E_NOT_OK (line 268) */
+    reset_mock();
+    assert(NvM_RedundantRepair((NvM_BlockIdType)2U) == E_NOT_OK);
+    printf("[PASS] 20. Repair BlockDesc==NULL 返回 E_NOT_OK\n");
+
+    /* 21. Repair: primary 有效 -> 修复 mirror (line 283/286) */
+    reset_mock();
+    assert(NvM_RedundantWrite(RED_GROUP, data) == E_OK);   /* 记录 Crc + 写两实例 */
+    mockStorage[1][0] ^= 0xFFU;                            /* 损坏 mirror */
+    assert(NvM_RedundantRepair(RED_GROUP) == E_OK);
+    assert(memcmp(mockStorage[1], data, TEST_BLOCK_LEN) == 0);
+    printf("[PASS] 21. Repair primary 有效修复 mirror\n");
+
+    /* 22. Repair: mirror 有效 -> 修复 primary (line 288/291) */
+    reset_mock();
+    assert(NvM_RedundantWrite(RED_GROUP, data) == E_OK);
+    mockStorage[0][0] ^= 0xFFU;                            /* 损坏 primary */
+    assert(NvM_RedundantRepair(RED_GROUP) == E_OK);
+    assert(memcmp(mockStorage[0], data, TEST_BLOCK_LEN) == 0);
+    printf("[PASS] 22. Repair mirror 有效修复 primary\n");
+
+    /* 23. Repair: 两实例均无效 -> E_NOT_OK (line 296) */
+    reset_mock();
+    assert(NvM_RedundantWrite(RED_GROUP, data) == E_OK);
+    mockStorage[0][0] ^= 0xFFU;
+    mockStorage[1][0] ^= 0xFFU;
+    assert(NvM_RedundantRepair(RED_GROUP) == E_NOT_OK);
+    printf("[PASS] 23. Repair 两实例均无效返回 E_NOT_OK\n");
+
+    /* 24. Read: mirror 读失败(short-circuit) + primary 有效 -> 从 primary 恢复 mirror (line 169) */
+    reset_mock();
+    assert(NvM_RedundantWrite(RED_GROUP, data) == E_OK);
+    mock_read_fail_mirror = TRUE;    /* MirrorRetVal != E_OK -> MirrorValid 短路为 FALSE */
+    assert(NvM_RedundantRead(RED_GROUP, out) == E_OK);
+    assert(memcmp(out, data, TEST_BLOCK_LEN) == 0);
+    printf("[PASS] 24. Read mirror 读失败但从 primary 恢复\n");
+
+    printf("\n=== ALL NvM_REDUNDANT VERIFY TESTS PASSED (%u/%u) ===\n", 24U, 24U);
     return 0;
 }
