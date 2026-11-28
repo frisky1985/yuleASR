@@ -726,6 +726,7 @@ if(EXISTS ${CMAKE_SOURCE_DIR}/tests/unit/autosar/mcal/test_Crypto.c)
         TEST_FILE   ${CMAKE_SOURCE_DIR}/tests/unit/autosar/mcal/test_Crypto.c
         MCAL_SRCS
             ${SRC_MCAL}/crypto/src/Crypto.c
+            ${SRC_MCAL}/crypto/src/Crypto_Backend.c
             ${SRC_MCAL}/crypto/src/Crypto_MbedTLS.c
             ${SRC_MCAL}/crypto/src/Crypto_MbedTLS_Mem.c
             ${SRC_MCAL}/crypto/src/Crypto_Hsm.c

@@ -74,3 +74,28 @@ set_target_properties(Crypto_Hsm_UnitTest PROPERTIES
 )
 
 add_test(NAME Crypto_Hsm_UnitTest COMMAND Crypto_Hsm_UnitTest)
+
+# ---------------------------------------------------------------------------
+# Backend dispatch (vtable) — real Crypto_Backend.c + mbedTLS software backend
+# ---------------------------------------------------------------------------
+add_executable(Crypto_Backend_UnitTest
+    ${CMAKE_CURRENT_SOURCE_DIR}/test_crypto_backend.c
+    ${CRYPTO_MCAL_ROOT}/src/Crypto_Backend.c
+    ${CRYPTO_MCAL_ROOT}/src/Crypto_MbedTLS.c
+    ${CRYPTO_MCAL_ROOT}/src/Crypto_MbedTLS_Mem.c
+    ${CRYPTO_UNITY_DIR}/unity.c
+)
+
+target_include_directories(Crypto_Backend_UnitTest BEFORE PRIVATE ${CRYPTO_MCAL_INCLUDE})
+target_include_directories(Crypto_Backend_UnitTest PRIVATE ${CRYPTO_COMMON_INCLUDES})
+target_compile_definitions(Crypto_Backend_UnitTest PRIVATE MBEDTLS_ALLOW_PRIVATE_ACCESS)
+target_compile_options(Crypto_Backend_UnitTest PRIVATE ${CRYPTO_TEST_WARNINGS})
+target_link_libraries(Crypto_Backend_UnitTest PRIVATE mbedcrypto)
+set_target_properties(Crypto_Backend_UnitTest PROPERTIES
+    C_STANDARD 99
+    C_STANDARD_REQUIRED ON
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tests
+)
+
+add_test(NAME Crypto_Backend_UnitTest COMMAND Crypto_Backend_UnitTest)
+

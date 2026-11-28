@@ -34,6 +34,9 @@ add_subdirectory(services)
 # Cdd_Fvm 单元测试 (B3-1: Flash 虚拟化多 bank — 搬移/保护/故障切换)
 add_subdirectory(cdd)
 
+# 平台层软件 RAM 自检 (March C- / 棋盘图)
+add_subdirectory(platform)
+
 # Libraries 独立算法库测试 (B3-2: crc + aes)
 add_subdirectory(libs)
 
@@ -291,6 +294,7 @@ add_executable(Crypto_UnitTest
     ${CMAKE_CURRENT_SOURCE_DIR}/mcal/test_crypto.c
     ${CMAKE_CURRENT_SOURCE_DIR}/crypto_stubs/crypto_backend_stubs.c
     ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/mcal/crypto/src/Crypto.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/mcal/crypto/src/Crypto_Backend.c
     ${CMAKE_CURRENT_SOURCE_DIR}/../../third_party/crypto/blake2/src/blake2b.c
     ${CMAKE_CURRENT_SOURCE_DIR}/../../third_party/crypto/blake2/src/blake2s.c
 )

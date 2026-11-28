@@ -8,6 +8,7 @@
  * * INCLUDES
  * *********************************************************************************************************************/
 #include "Crypto.h"
+#include "Crypto_Backend.h"
 #include "blake2.h"
 #include "Det.h"
 #include "MemMap.h"
@@ -51,28 +52,8 @@ STATIC boolean Crypto_HsmAvailable = FALSE;
 /**********************************************************************************************************************
  * * EXTERNAL DECLARATIONS
  * *********************************************************************************************************************/
-extern Std_ReturnType Crypto_MbedTLS_Init(void);
-extern void Crypto_MbedTLS_DeInit(void);
-extern Std_ReturnType Crypto_MbedTLS_ProcessJob(Crypto_JobType* job);
-extern Std_ReturnType Crypto_MbedTLS_RandomGenerate(uint8* resultPtr, uint32 resultLength);
-extern Std_ReturnType Crypto_MbedTLS_KeyGenerate(Crypto_KeyIdType keyId);
-extern Std_ReturnType Crypto_MbedTLS_KeyDerive(Crypto_KeyIdType srcKeyId, Crypto_KeyIdType dstKeyId);
-extern Std_ReturnType Crypto_MbedTLS_ECDH_CalcSecret(Crypto_KeyIdType privKeyId, const uint8* pubKeyPtr,
-                                                     uint32 pubKeyLen);
-extern Std_ReturnType Crypto_MbedTLS_ECDSA_Sign(Crypto_KeyIdType keyId, const uint8* digest, uint32 digestLen,
-                                                uint8* sig, uint32* sigLen);
-extern Std_ReturnType Crypto_MbedTLS_ECDSA_Verify(Crypto_KeyIdType keyId, const uint8* digest, uint32 digestLen,
-                                                  const uint8* sig, uint32 sigLen);
-extern Std_ReturnType Crypto_MbedTLS_AES_GCM_Encrypt(Crypto_KeyIdType keyId, const uint8* pt, uint32 ptLen,
-                                                     const uint8* aad, uint32 aadLen, const uint8* iv, uint8* ct,
-                                                     uint8* tag);
-extern Std_ReturnType Crypto_MbedTLS_AES_GCM_Decrypt(Crypto_KeyIdType keyId, const uint8* ct, uint32 ctLen,
-                                                     const uint8* aad, uint32 aadLen, const uint8* iv, const uint8* tag,
-                                                     uint8* pt);
-extern Std_ReturnType Crypto_MbedTLS_SHA256(const uint8* data, uint32 dataLen, uint8* digest);
-extern Std_ReturnType Crypto_MbedTLS_HMAC(Crypto_KeyIdType keyId, const uint8* data, uint32 dataLen, uint8* mac);
-extern Std_ReturnType Crypto_MbedTLS_HKDF(Crypto_KeyIdType ikmKeyId, const uint8* salt, uint32 saltLen,
-                                          const uint8* info, uint32 infoLen, uint8* okm, uint32 okmLen);
+/* Software primitives are reached through the Crypto_Backend vtable
+ * (Crypto_Backend.c), which selects mbedTLS by default. */
 #if (CRYPTO_CFG_HSM_ENABLED == STD_ON)
 extern Std_ReturnType Crypto_Hsm_Init(const Crypto_HsmConfigType* config);
 extern void Crypto_Hsm_DeInit(void);
@@ -126,7 +107,7 @@ void Crypto_Init(const Crypto_ConfigType* configPtr)
     Crypto_JobQueueTail = NULL_PTR;
     Crypto_QueueCount = 0U;
     /* Initialize Mbed TLS software implementation */
-    if (Crypto_MbedTLS_Init() != E_OK)
+    if (Crypto_Backend_Init() != E_OK)
     {
 #if (CRYPTO_CFG_DEV_ERROR_DETECT == STD_ON)
         (void)Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_MBEDTLS_INIT, CRYPTO_E_NOT_SUPPORTED);
@@ -166,7 +147,7 @@ void Crypto_DeInit(void)
 #if (CRYPTO_CFG_HSM_ENABLED == STD_ON)
     Crypto_Hsm_DeInit();
 #endif
-    Crypto_MbedTLS_DeInit();
+    Crypto_Backend_DeInit();
     Crypto_DriverState = CRYPTO_DRIVER_UNINIT;
     Crypto_InitMagic = 0U;
     Crypto_ConfigPtr = NULL_PTR;
@@ -482,7 +463,7 @@ Std_ReturnType Crypto_KeyGenerate(Crypto_KeyIdType cryptoKeyId)
     }
 #endif
     /* Fall back to software implementation */
-    return Crypto_MbedTLS_KeyGenerate(cryptoKeyId);
+    return Crypto_Backend_KeyGenerate(cryptoKeyId);
 }
 /**********************************************************************************************************************
  * * Crypto_KeyDerive
@@ -505,7 +486,7 @@ Std_ReturnType Crypto_KeyDerive(Crypto_KeyIdType cryptoKeyId, Crypto_KeyIdType t
         return E_NOT_OK;
     }
 #endif
-    return Crypto_MbedTLS_KeyDerive(cryptoKeyId, targetCryptoKeyId);
+    return Crypto_Backend_KeyDerive(cryptoKeyId, targetCryptoKeyId);
 }
 /**********************************************************************************************************************
  * * Crypto_KeyExchangeCalcSecret
@@ -526,7 +507,7 @@ Std_ReturnType Crypto_KeyExchangeCalcSecret(Crypto_KeyIdType cryptoKeyId, const 
         return E_NOT_OK;
     }
 #endif
-    return Crypto_MbedTLS_ECDH_CalcSecret(cryptoKeyId, partnerPublicKeyPtr, partnerPublicKeyLength);
+    return Crypto_Backend_EcdhCalcSecret(cryptoKeyId, partnerPublicKeyPtr, partnerPublicKeyLength);
 }
 /**********************************************************************************************************************
  * * Crypto_RandomGenerate
@@ -564,7 +545,7 @@ Std_ReturnType Crypto_RandomGenerate(Crypto_KeyIdType cryptoKeyId, uint8* result
         /* HSM random generation would go here */
     }
 #endif
-    return Crypto_MbedTLS_RandomGenerate(resultPtr, resultLength);
+    return Crypto_Backend_RandomGenerate(resultPtr, resultLength);
 }
 /**********************************************************************************************************************
  * * Crypto_RandomSeed
@@ -892,12 +873,12 @@ Std_ReturnType Crypto_CccGenerateAttestation(const uint8* challengePtr, uint32 c
     }
 #endif
     /* Hash the challenge */
-    if (Crypto_MbedTLS_SHA256(challengePtr, challengeLength, digest) != E_OK)
+    if (Crypto_Backend_Sha256(challengePtr, challengeLength, digest) != E_OK)
     {
         return E_NOT_OK;
     }
     /* Sign with device attestation key */
-    return Crypto_MbedTLS_ECDSA_Sign(CRYPTO_KEY_ID_CCC_DEVICE_KEY, digest, 32, signaturePtr, signatureLengthPtr);
+    return Crypto_Backend_EcdsaSign(CRYPTO_KEY_ID_CCC_DEVICE_KEY, digest, 32, signaturePtr, signatureLengthPtr);
 }
 /**********************************************************************************************************************
  * * Crypto_CccVerifyOwnerCertificate
@@ -923,7 +904,7 @@ Std_ReturnType Crypto_CccDeriveSessionKey(const uint8* ephemeralPublicKeyPtr, ui
                                           Crypto_KeyIdType sessionKeyId)
 {
     /* Perform ECDH to derive shared secret */
-    return Crypto_MbedTLS_ECDH_CalcSecret(CRYPTO_KEY_ID_EPHEMERAL, ephemeralPublicKeyPtr, ephemeralPublicKeyLength);
+    return Crypto_Backend_EcdhCalcSecret(CRYPTO_KEY_ID_EPHEMERAL, ephemeralPublicKeyPtr, ephemeralPublicKeyLength);
 }
 /**********************************************************************************************************************
  * * Crypto_CccEncrypt
@@ -938,7 +919,7 @@ Std_ReturnType Crypto_CccEncrypt(Crypto_KeyIdType keyId, const uint8* plaintextP
     {
         *tagLengthPtr = CRYPTO_CFG_CCC_TAG_SIZE;
     }
-    return Crypto_MbedTLS_AES_GCM_Encrypt(keyId, plaintextPtr, plaintextLength, aadPtr, aadLength, ivPtr, ciphertextPtr,
+    return Crypto_Backend_AesGcmEncrypt(keyId, plaintextPtr, plaintextLength, aadPtr, aadLength, ivPtr, ciphertextPtr,
                                           tagPtr);
 }
 /**********************************************************************************************************************
@@ -955,7 +936,7 @@ Std_ReturnType Crypto_CccDecrypt(Crypto_KeyIdType keyId, const uint8* ciphertext
     {
         *plaintextLengthPtr = ciphertextLength;
     }
-    return Crypto_MbedTLS_AES_GCM_Decrypt(keyId, ciphertextPtr, ciphertextLength, aadPtr, aadLength, ivPtr, tagPtr,
+    return Crypto_Backend_AesGcmDecrypt(keyId, ciphertextPtr, ciphertextLength, aadPtr, aadLength, ivPtr, tagPtr,
                                           plaintextPtr);
 }
 /**********************************************************************************************************************
@@ -1050,7 +1031,7 @@ STATIC Std_ReturnType Crypto_ProcessJobInternal(Crypto_JobType* job)
     }
 #endif
     /* Process via software implementation */
-    result = Crypto_MbedTLS_ProcessJob(job);
+    result = Crypto_Backend_ProcessJob(job);
     if (result == E_OK)
     {
         job->jobState = CRYPTO_JOBSTATE_IDLE;

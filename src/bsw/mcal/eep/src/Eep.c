@@ -32,6 +32,10 @@
 #include "Eep.h"
 #include "Eep_Cfg.h"
 
+#if (EEP_USE_FLS_BACKEND == STD_ON)
+#include "Fls.h"
+#endif
+
 #if (EEP_DEV_ERROR_DETECT == STD_ON)
 #include "Det.h"
 #endif
@@ -198,6 +202,78 @@ static boolean Eep_ValidateAddress(Eep_AddressType Address, Eep_LengthType Lengt
 }
 
 /**
+ * @brief Reads from the EEPROM backing store
+ * @param Address Offset within the EEPROM area
+ * @param DataPtr Destination buffer
+ * @param Length Number of bytes to read
+ *
+ * This is the single convergence point for the EEPROM backing store.  With
+ * EEP_USE_FLS_BACKEND == STD_ON it delegates to the Fls driver; otherwise the
+ * legacy memory-mapped access is kept (host tests point BaseAddress at RAM).
+ */
+static void Eep_BackendRead(uint32 Address, uint8* DataPtr, uint32 Length)
+{
+#if (EEP_USE_FLS_BACKEND == STD_ON)
+    (void)Fls_ReadSync(Eep_State.BaseAddress + Address, DataPtr, Length);
+#else
+    uint32 i;
+    const uint8* srcPtr = (const uint8*)(uintptr)(Eep_State.BaseAddress + Address);
+
+    for (i = 0U; i < Length; i++)
+    {
+        DataPtr[i] = srcPtr[i];
+    }
+#endif
+}
+
+/**
+ * @brief Writes to the EEPROM backing store
+ * @param Address Offset within the EEPROM area
+ * @param DataPtr Source buffer
+ * @param Length Number of bytes to write
+ */
+static void Eep_BackendWrite(uint32 Address, const uint8* DataPtr, uint32 Length)
+{
+#if (EEP_USE_FLS_BACKEND == STD_ON)
+    if (Fls_Write(Eep_State.BaseAddress + Address, DataPtr, Length) == E_OK)
+    {
+        Fls_MainFunction();
+    }
+#else
+    uint32 i;
+    uint8* dstPtr = (uint8*)(uintptr)(Eep_State.BaseAddress + Address);
+
+    for (i = 0U; i < Length; i++)
+    {
+        dstPtr[i] = DataPtr[i];
+    }
+#endif
+}
+
+/**
+ * @brief Erases (0xFF fill) the EEPROM backing store range
+ * @param Address Offset within the EEPROM area
+ * @param Length Number of bytes to erase
+ */
+static void Eep_BackendErase(uint32 Address, uint32 Length)
+{
+#if (EEP_USE_FLS_BACKEND == STD_ON)
+    if (Fls_Erase(Eep_State.BaseAddress + Address, Length) == E_OK)
+    {
+        Fls_MainFunction();
+    }
+#else
+    uint32 i;
+    uint8* dstPtr = (uint8*)(uintptr)(Eep_State.BaseAddress + Address);
+
+    for (i = 0U; i < Length; i++)
+    {
+        dstPtr[i] = 0xFFU;
+    }
+#endif
+}
+
+/**
  * @brief Executes memory read operation from backing store
  * @req SHALL_EEP - Executes memory read operation from backing store
  */
@@ -205,15 +281,8 @@ static boolean Eep_ValidateAddress(Eep_AddressType Address, Eep_LengthType Lengt
 /** @req SWS_Eep_00103 */
 static void Eep_ProcessRead(void)
 {
-    uint32 i;
-    const uint8* srcPtr;
-
     /* Read from backing memory */
-    srcPtr = (uint8*)(uintptr)(Eep_State.BaseAddress + Eep_State.CurrentAddress);
-
-    for (i = 0U; i < Eep_State.CurrentLength; i++) {
-        Eep_State.CurrentDataPtr[i] = srcPtr[i];
-    }
+    Eep_BackendRead((uint32)Eep_State.CurrentAddress, Eep_State.CurrentDataPtr, (uint32)Eep_State.CurrentLength);
 
     Eep_State.ProcessedLength = Eep_State.CurrentLength;
     Eep_State.JobResult = EEP_JOB_OK;
@@ -229,15 +298,8 @@ static void Eep_ProcessRead(void)
 /** @req SWS_Eep_00104 */
 static void Eep_ProcessWrite(void)
 {
-    uint32 i;
-    uint8* dstPtr;
-
     /* Write to backing memory */
-    dstPtr = (uint8*)(uintptr)(Eep_State.BaseAddress + Eep_State.CurrentAddress);
-
-    for (i = 0U; i < Eep_State.CurrentLength; i++) {
-        dstPtr[i] = Eep_State.CurrentDataPtr[i];
-    }
+    Eep_BackendWrite((uint32)Eep_State.CurrentAddress, Eep_State.CurrentDataPtr, (uint32)Eep_State.CurrentLength);
 
     Eep_State.ProcessedLength = Eep_State.CurrentLength;
     Eep_State.JobResult = EEP_JOB_OK;
@@ -253,14 +315,7 @@ static void Eep_ProcessWrite(void)
 /** @req SWS_Eep_00105 */
 static void Eep_ProcessErase(void)
 {
-    uint32 i;
-    uint8* dstPtr;
-
-    dstPtr = (uint8*)(uintptr)(Eep_State.BaseAddress + Eep_State.CurrentAddress);
-
-    for (i = 0U; i < Eep_State.CurrentLength; i++) {
-        dstPtr[i] = 0xFFU;
-    }
+    Eep_BackendErase((uint32)Eep_State.CurrentAddress, (uint32)Eep_State.CurrentLength);
 
     Eep_State.ProcessedLength = Eep_State.CurrentLength;
     Eep_State.JobResult = EEP_JOB_OK;

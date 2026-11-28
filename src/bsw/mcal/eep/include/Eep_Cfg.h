@@ -27,6 +27,17 @@
 #define EEP_POLLING_MODE    STD_ON
 
 /*==================================================================================================
+*                                    Backend Selection
+*================================================================================================*/
+/* STD_ON  : route EEPROM accesses through the AUTOSAR Fls driver
+ *           (src/bsw/mcal/fls) - the production S32K3 path.
+ * STD_OFF : keep the legacy memory-mapped backend.
+ * Default OFF so the host unit tests keep their RAM-mirror behaviour. */
+#ifndef EEP_USE_FLS_BACKEND
+#define EEP_USE_FLS_BACKEND    STD_OFF
+#endif
+
+/*==================================================================================================
 *                                    Other Configuration
 *================================================================================================*/
 #define EEP_CANCEL_API    STD_ON
