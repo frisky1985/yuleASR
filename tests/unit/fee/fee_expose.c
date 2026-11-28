@@ -42,6 +42,23 @@ boolean FeeTest_IsInitialized(void)
     return Fee_Initialized;
 }
 
+/** 直接注入当前 job 类型 / 模块状态, 用于驱动 ProcessJob 的 default 分支 */
+void FeeTest_SetJobType(uint8 type)
+{
+    Fee_CurrentJob.JobType = type;
+}
+
+void FeeTest_SetModuleStatus(uint8 status)
+{
+    Fee_ModuleStatus = (Fee_StatusType)status;
+}
+
+/** 注入/恢复 ConfigPtr, 用于驱 Fee_Write 的 "无配置" 分支 */
+void FeeTest_SetConfigPtr(const Fee_ConfigType* cfg)
+{
+    Fee_ConfigPtr = cfg;
+}
+
 /** 获取 Fee_CurrentJob.JobResult (验证 FinishJob 后结果) */
 uint8 FeeTest_GetJobResult(void)
 {
