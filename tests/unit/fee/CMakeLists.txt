@@ -74,6 +74,9 @@ if(TEST_FRAMEWORK_LIB)
     target_link_libraries(${target_name} PRIVATE ${TEST_FRAMEWORK_LIB})
 endif()
 
+add_test(NAME ${target_name} COMMAND ${target_name})
+message(STATUS "  Unit test: ${target_name} (Fee mainloop)")
+
 # ---- Group 3: GC driver (fee_expose already includes Fee.c) ----
 set(target_name "Fee_gc_UnitTest")
 
@@ -96,3 +99,26 @@ endif()
 
 add_test(NAME ${target_name} COMMAND ${target_name})
 message(STATUS "  Unit test: ${target_name} (Fee GC driver)")
+
+# ---- Group 4: internal white-box driver (explicit init, no setUp dependency) ----
+set(target_name "Fee_internal_UnitTest")
+
+add_executable(${target_name}
+    ${CMAKE_CURRENT_SOURCE_DIR}/test_fee_internal.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/fee_test_support.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/fee_expose.c     # 内部 #include Fee.c
+)
+
+target_include_directories(${target_name} PRIVATE ${FEE_TEST_FRAMEWORK_INCLUDE})
+target_compile_options(${target_name} PRIVATE ${FEE_TEST_COMMON_OPTS})
+set_target_properties(${target_name} PROPERTIES
+    C_STANDARD 99
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tests
+)
+
+if(TEST_FRAMEWORK_LIB)
+    target_link_libraries(${target_name} PRIVATE ${TEST_FRAMEWORK_LIB})
+endif()
+
+add_test(NAME ${target_name} COMMAND ${target_name})
+message(STATUS "  Unit test: ${target_name} (Fee internal)")
