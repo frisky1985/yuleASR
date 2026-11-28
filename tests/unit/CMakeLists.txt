@@ -216,6 +216,52 @@ add_os_unit_test(OsTask_UnitTest test_os_task.c)
 add_os_unit_test(OsEvent_UnitTest test_os_event.c)
 add_os_unit_test(OsAlarm_UnitTest test_os_alarm.c)
 
+# ── OS Timing Protection ──
+# Compiles Os_TimingProtection.c through os_timing_expose.c (static removed)
+# so arrival/resource/interrupt helpers are reachable. configTICK_RATE_HZ
+# drives OS_TIMING_GET_US(); the config budget tables (declared extern but
+# undefined in the tree) and FreeRTOS/hook stubs live in the test file.
+add_executable(OsTiming_UnitTest
+    ${CMAKE_CURRENT_SOURCE_DIR}/test_os_timing_protection.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/os_timing_expose.c
+)
+target_include_directories(OsTiming_UnitTest
+    BEFORE PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/os_mocks
+)
+target_include_directories(OsTiming_UnitTest PRIVATE ${OS_TEST_COMMON_INCLUDES})
+target_compile_definitions(OsTiming_UnitTest PRIVATE configTICK_RATE_HZ=1000)
+target_compile_options(OsTiming_UnitTest PRIVATE -Wno-unused-parameter -Wno-unused-function)
+target_link_libraries(OsTiming_UnitTest PRIVATE Unity)
+set_target_properties(OsTiming_UnitTest PROPERTIES
+    C_STANDARD 99
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tests
+)
+add_test(NAME OsTiming_UnitTest COMMAND OsTiming_UnitTest)
+message(STATUS "  Unit test: OsTiming_UnitTest")
+
+# ── OS Task Entries ──
+# Os_TaskEntries.c is all infinite task loops; the test stubs the blocking
+# primitives and siglongjmp()s out after one body pass. Rte/OS services are
+# stubbed in the test file.
+add_executable(OsTaskEntries_UnitTest
+    ${CMAKE_CURRENT_SOURCE_DIR}/test_os_taskentries.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/os/src/Os_TaskEntries.c
+)
+target_include_directories(OsTaskEntries_UnitTest
+    BEFORE PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/os_mocks
+)
+target_include_directories(OsTaskEntries_UnitTest PRIVATE ${OS_TEST_COMMON_INCLUDES})
+target_compile_options(OsTaskEntries_UnitTest PRIVATE -Wno-unused-parameter -Wno-unused-function)
+target_link_libraries(OsTaskEntries_UnitTest PRIVATE Unity)
+set_target_properties(OsTaskEntries_UnitTest PROPERTIES
+    C_STANDARD 99
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tests
+)
+add_test(NAME OsTaskEntries_UnitTest COMMAND OsTaskEntries_UnitTest)
+message(STATUS "  Unit test: OsTaskEntries_UnitTest")
+
 # ── Coverage uplift: domains that previously had no registered tests ──
 # Fee (ECUAL) — Flash EEPROM emulation
 add_subdirectory(fee)
