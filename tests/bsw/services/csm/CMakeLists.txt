@@ -9,7 +9,10 @@
 
 cmake_minimum_required(VERSION 3.16)
 
-set(CSM_PROD_SRC ${CMAKE_SOURCE_DIR}/src/bsw/services/csm/src/Csm.c)
+# Compile Csm.c through csm_expose.c (static removed) so the tests can reach
+# the file-scope helpers (queue, job execution, key element load, KDF) that
+# the public API cannot otherwise exercise.
+set(CSM_PROD_SRC ${CMAKE_CURRENT_SOURCE_DIR}/csm_expose.c)
 
 set(CSM_TEST_SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/test_csm.c
