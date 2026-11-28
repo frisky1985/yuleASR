@@ -4110,6 +4110,164 @@ void test_Cov2_RegisterCallback_MultipleJobs(void) {
 }
 
 /* ======================================================================
+ * STATIC HELPER TESTS (reachable only via csm_expose.c)
+ *
+ * These directly exercise the file-scope helpers that the public API cannot
+ * reach: the job-queue insert/dequeue logic and the KDF/HKDF building blocks.
+ * ====================================================================== */
+extern Csm_QueueType Csm_JobQueue;
+extern Std_ReturnType Csm_QueueJob(uint32 jobId, Csm_JobPriorityType priority);
+extern Std_ReturnType Csm_DequeueJob(uint32* jobId);
+extern void Csm_KdfAppendBytes(uint8* buf, uint32 bufSize, uint32* len, const uint8* data, uint32 dataLen);
+extern void Csm_KdfAppendU32Be(uint8* buf, uint32 bufSize, uint32* len, uint32 value);
+extern void Csm_KdfXorFallback(const uint8* input, uint32 inputLen, uint8 mul, uint8 add,
+                               uint8* hashOut, uint32* hashOutLen);
+extern void Csm_KdfHash(const uint8* input, uint32 inputLen, uint8 mul, uint8 add,
+                        boolean clampHwLen, uint8* hashOut, uint32* hashOutLen);
+extern uint32 Csm_KdfBuildCounterInput(uint8* buf, uint32 bufSize, uint8 counter,
+                                       const uint8* srcData, uint32 srcLen, uint32 targetKeyId);
+
+void test_Statics_QueueJob_PriorityReorderAndDequeue(void)
+{
+    uint32 jid = 0U;
+    (void)memset(&Csm_JobQueue, 0, sizeof(Csm_JobQueue));
+
+    /* Insert with ascending priority so the second/third land ahead of the
+     * existing head (covers the priority-compare + element-shift loops). */
+    TEST_ASSERT_EQUAL(E_OK, Csm_QueueJob(1001U, CSM_JOB_PRIORITY_LOW));
+    TEST_ASSERT_EQUAL(E_OK, Csm_QueueJob(1002U, CSM_JOB_PRIORITY_NORMAL));
+    TEST_ASSERT_EQUAL(E_OK, Csm_QueueJob(1003U, CSM_JOB_PRIORITY_HIGH));
+    TEST_ASSERT_EQUAL_UINT8(3U, Csm_JobQueue.count);
+
+    /* Dequeue: out-ptr set, out-ptr NULL, then drain to empty. */
+    TEST_ASSERT_EQUAL(E_OK, Csm_DequeueJob(&jid));
+    TEST_ASSERT_EQUAL(E_OK, Csm_DequeueJob(NULL_PTR));
+    TEST_ASSERT_EQUAL(E_OK, Csm_DequeueJob(&jid));
+    TEST_ASSERT_EQUAL(E_NOT_OK, Csm_DequeueJob(&jid));   /* empty */
+}
+
+void test_Statics_QueueJob_Full(void)
+{
+    (void)memset(&Csm_JobQueue, 0, sizeof(Csm_JobQueue));
+    Csm_JobQueue.count = (uint8)CSM_CFG_QUEUE_SIZE;   /* pretend full */
+    TEST_ASSERT_EQUAL(E_NOT_OK, Csm_QueueJob(1U, CSM_JOB_PRIORITY_LOW));
+}
+
+void test_Statics_KdfAppendBytes_NormalAndClamp(void)
+{
+    uint8 buf[8] = {0};
+    uint32 len = 0U;
+    const uint8 data[3] = {0x11U, 0x22U, 0x33U};
+
+    /* Normal append */
+    Csm_KdfAppendBytes(buf, sizeof(buf), &len, data, 3U);
+    TEST_ASSERT_EQUAL_UINT32(3U, len);
+    TEST_ASSERT_EQUAL_HEX8(0x11U, buf[0]);
+
+    /* Clamp: only 1 byte fits (bufSize 4, len 3) */
+    {
+        uint8 small[4] = {0};
+        uint32 slen = 3U;
+        Csm_KdfAppendBytes(small, sizeof(small), &slen, data, 3U);
+        TEST_ASSERT_EQUAL_UINT32(4U, slen);
+    }
+}
+
+void test_Statics_KdfAppendU32Be_FitsAndNoSpace(void)
+{
+    uint8 buf[8] = {0};
+    uint32 len = 0U;
+
+    Csm_KdfAppendU32Be(buf, sizeof(buf), &len, 0x11223344U);
+    TEST_ASSERT_EQUAL_UINT32(4U, len);
+    TEST_ASSERT_EQUAL_HEX8(0x11U, buf[0]);
+    TEST_ASSERT_EQUAL_HEX8(0x44U, buf[3]);
+
+    /* No space: len+4 > bufSize -> nothing appended */
+    {
+        uint8 small[4] = {0};
+        uint32 slen = 2U;
+        Csm_KdfAppendU32Be(small, sizeof(small), &slen, 0xAABBCCDDU);
+        TEST_ASSERT_EQUAL_UINT32(2U, slen);
+    }
+}
+
+void test_Statics_KdfXorFallback_BasicAndClamp(void)
+{
+    uint8 in[3] = {0x00U, 0x00U, 0x00U};
+    uint8 out[CSM_MAX_HASH_LENGTH];
+    uint32 outLen = 0U;
+
+    Csm_KdfXorFallback(in, 3U, 1U, 0U, out, &outLen);  /* out[j] = 0 ^ j */
+    TEST_ASSERT_EQUAL_UINT32(3U, outLen);
+    TEST_ASSERT_EQUAL_HEX8(0x00U, out[0]);
+    TEST_ASSERT_EQUAL_HEX8(0x02U, out[2]);
+
+    /* Clamp: input length beyond CSM_MAX_HASH_LENGTH */
+    {
+        uint8 big[CSM_MAX_HASH_LENGTH + 8U];
+        uint8 bigOut[CSM_MAX_HASH_LENGTH];
+        uint32 bigLen = 0U;
+        (void)memset(big, 0, sizeof(big));
+        Csm_KdfXorFallback(big, sizeof(big), 1U, 0U, bigOut, &bigLen);
+        TEST_ASSERT_EQUAL_UINT32(CSM_MAX_HASH_LENGTH, bigLen);
+    }
+}
+
+void test_Statics_KdfHash_HwSuccess_ClampAndKeep(void)
+{
+    uint8 in[2] = {1U, 2U};
+    uint8 out[CSM_MAX_HASH_LENGTH];
+    uint32 outLen;
+
+    stub_Csm_Cfg_HwService_ret = E_OK;
+    stub_Csm_Cfg_HwService_outputLen = 8U;
+
+    /* clampHwLen TRUE: length clamped to reported HW length */
+    outLen = 0U;
+    Csm_KdfHash(in, 2U, 1U, 0U, TRUE, out, &outLen);
+    TEST_ASSERT_EQUAL_UINT32(8U, outLen);
+
+    /* clampHwLen FALSE: caller-preset length is preserved */
+    outLen = 16U;
+    Csm_KdfHash(in, 2U, 1U, 0U, FALSE, out, &outLen);
+    TEST_ASSERT_EQUAL_UINT32(16U, outLen);
+}
+
+void test_Statics_KdfHash_HwFail_FallsBackToXor(void)
+{
+    uint8 in[4] = {0xA0U, 0xA1U, 0xA2U, 0xA3U};
+    uint8 out[CSM_MAX_HASH_LENGTH];
+    uint32 outLen = 0U;
+
+    stub_Csm_Cfg_HwService_ret = E_NOT_OK;
+    Csm_KdfHash(in, 4U, 1U, 0U, TRUE, out, &outLen);
+    TEST_ASSERT_EQUAL_UINT32(4U, outLen);   /* XOR fallback keeps input length */
+}
+
+void test_Statics_KdfBuildCounterInput_BuildAndClamp(void)
+{
+    uint8 buf[32];
+    const uint8 src[4] = {0xDEU, 0xADU, 0xBEU, 0xEFU};
+    uint32 len;
+
+    len = Csm_KdfBuildCounterInput(buf, sizeof(buf), 0x05U, src, 4U, 0x01020304U);
+    TEST_ASSERT_EQUAL_UINT32(10U, len);       /* counter + 4 src + 4 id + 1 separator */
+    TEST_ASSERT_EQUAL_HEX8(0x05U, buf[0]);
+    TEST_ASSERT_EQUAL_HEX8(0xDEU, buf[1]);
+    TEST_ASSERT_EQUAL_HEX8(0x01U, buf[5]);
+    TEST_ASSERT_EQUAL_HEX8(0x04U, buf[8]);
+    TEST_ASSERT_EQUAL_HEX8(0x00U, buf[9]);
+
+    /* Tiny buffer forces the source-length clamp path */
+    {
+        uint8 small[4];
+        uint32 slen = Csm_KdfBuildCounterInput(small, sizeof(small), 0x01U, src, 10U, 0x00U);
+        TEST_ASSERT_TRUE(slen <= sizeof(small));
+    }
+}
+
+/* ======================================================================
  * TEST RUNNER
  * ====================================================================== */
 
@@ -4474,6 +4632,15 @@ int main(void) {
     RUN_TEST(test_Cov3_RandomGenerate_NullPtr);
     RUN_TEST(test_Cov3_MainFunction_WithProcessingJobs);
     RUN_TEST(test_Cov3_MainFunction_WithQueueProcessing);
+
+    RUN_TEST(test_Statics_QueueJob_PriorityReorderAndDequeue);
+    RUN_TEST(test_Statics_QueueJob_Full);
+    RUN_TEST(test_Statics_KdfAppendBytes_NormalAndClamp);
+    RUN_TEST(test_Statics_KdfAppendU32Be_FitsAndNoSpace);
+    RUN_TEST(test_Statics_KdfXorFallback_BasicAndClamp);
+    RUN_TEST(test_Statics_KdfHash_HwSuccess_ClampAndKeep);
+    RUN_TEST(test_Statics_KdfHash_HwFail_FallsBackToXor);
+    RUN_TEST(test_Statics_KdfBuildCounterInput_BuildAndClamp);
 
     return UnityEnd();
 }
