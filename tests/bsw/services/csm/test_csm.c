@@ -4268,6 +4268,88 @@ void test_Statics_KdfBuildCounterInput_BuildAndClamp(void)
 }
 
 /* ======================================================================
+ * Direct static-helper coverage: find guards / config length / persistence
+ * ====================================================================== */
+extern Std_ReturnType Csm_FindKeyIndex(uint32 keyId, uint8* index);
+extern Std_ReturnType Csm_FindJobIndex(uint32 jobId, uint8* index);
+extern Std_ReturnType Csm_FindKeyElementIndex(uint8 keyIdx, uint32 elementId, uint8* index);
+extern uint32 Csm_GetKeyMaxLengthFromConfig(uint32 keyId);
+extern Std_ReturnType Csm_LoadKeyElement(uint32 keyId, uint32 elementId);
+extern Std_ReturnType Csm_PersistKeyElement(uint32 keyId, uint32 elementId);
+
+void test_Cov_FindHelpers_GuardBranches(void) {
+    setUp();
+    (void)test_Csm_DoInit();
+    TEST_ASSERT_EQUAL(E_NOT_OK, Csm_FindKeyIndex(CSM_KEY_ID_MASTER, NULL_PTR));       /* 284 */
+    TEST_ASSERT_EQUAL(E_NOT_OK, Csm_FindJobIndex(CSM_JOB_ID_HASH_DEFAULT, NULL_PTR)); /* 308 */
+    TEST_ASSERT_EQUAL(E_NOT_OK, Csm_FindKeyElementIndex(CSM_MAX_KEYS, 0U, NULL_PTR));  /* 332 */
+}
+
+void test_Cov_GetKeyMaxLengthFromConfig(void) {
+    setUp();
+    (void)test_Csm_DoInit();
+    uint32 len = Csm_GetKeyMaxLengthFromConfig(CSM_KEY_ID_MASTER);   /* 1315-1338 */
+    TEST_ASSERT_TRUE(len > 0U);
+    (void)Csm_GetKeyMaxLengthFromConfig(999U);                      /* 未命中 → 默认值 */
+}
+
+void test_Cov_LoadKeyElement_SuccessAndFailure(void) {
+    setUp();
+    (void)test_Csm_DoInit();
+    uint8 d[8] = {1, 2, 3, 4, 5, 6, 7, 8};
+    (void)Csm_KeyElementSet(CSM_KEY_ID_MASTER, CSM_KEY_ELEMENT_ID_SECRET, d, 8U);
+
+    stub_Csm_Cfg_KeyRead_ret = E_OK;
+    (void)Csm_LoadKeyElement(CSM_KEY_ID_MASTER, CSM_KEY_ELEMENT_ID_SECRET);  /* 627-635 */
+
+    stub_Csm_Cfg_KeyRead_ret = E_NOT_OK;
+    (void)Csm_LoadKeyElement(CSM_KEY_ID_MASTER, CSM_KEY_ELEMENT_ID_SECRET);  /* 638 */
+
+    /* 未知 key: LoadKeyElement/PersistKeyElement 的 FindKeyIndex 失败分支 */
+    TEST_ASSERT_EQUAL(E_NOT_OK, Csm_LoadKeyElement(999U, CSM_KEY_ELEMENT_ID_SECRET));  /* 617-619 */
+    TEST_ASSERT_EQUAL(E_NOT_OK, Csm_PersistKeyElement(999U, CSM_KEY_ELEMENT_ID_SECRET)); /* 584-586 */
+    stub_Csm_Cfg_KeyRead_ret = E_OK;
+}
+
+/* ---- 派生/交换 软件回退: 通过桥接强制 elements[0] 有效 ---- */
+extern void CsmTest_ForceKeyElement(uint32 keyId, const uint8* data, uint32 length);
+
+static const uint8 kCovKey[16] = {0x10,0x11,0x12,0x13,0x14,0x15,0x16,0x17,
+                                  0x18,0x19,0x1A,0x1B,0x1C,0x1D,0x1E,0x1F};
+
+void test_Cov_KeyDerive_SwFallback_ForcedSrc(void) {
+    setUp();
+    (void)test_Csm_DoInit();
+    CsmTest_ForceKeyElement(CSM_KEY_ID_MASTER, kCovKey, 16U);
+    stub_CryIf_KeyDerive_ret = E_NOT_OK;   /* 跳到 SW 回退 */
+    Std_ReturnType r = Csm_KeyDerive(CSM_KEY_ID_MASTER, CSM_KEY_ID_SESSION);
+    TEST_ASSERT_EQUAL(E_OK, r);
+    stub_CryIf_KeyDerive_ret = E_OK;
+}
+
+void test_Cov_KeyExchangePubVal_SwFallback(void) {
+    setUp();
+    (void)test_Csm_DoInit();
+    CsmTest_ForceKeyElement(CSM_KEY_ID_MASTER, kCovKey, 16U);
+    stub_CryIf_KeyExchangeCalcPubValue_ret = E_NOT_OK;
+    uint8 out[CSM_MAX_KEY_LENGTH];
+    uint32 len = (uint32)sizeof(out);
+    (void)Csm_KeyExchangeCalcPubVal(CSM_KEY_ID_MASTER, out, &len);
+    stub_CryIf_KeyExchangeCalcPubValue_ret = E_OK;
+}
+
+void test_Cov_KeyExchangeSecret_SwFallback(void) {
+    setUp();
+    (void)test_Csm_DoInit();
+    CsmTest_ForceKeyElement(CSM_KEY_ID_MASTER, kCovKey, 16U);
+    uint8 partner[16] = {0x20,0x21,0x22,0x23,0x24,0x25,0x26,0x27,
+                         0x28,0x29,0x2A,0x2B,0x2C,0x2D,0x2E,0x2F};
+    stub_CryIf_KeyExchangeCalcSecret_ret = E_NOT_OK;
+    (void)Csm_KeyExchangeCalcSecret(CSM_KEY_ID_MASTER, partner, 16U);
+    stub_CryIf_KeyExchangeCalcSecret_ret = E_OK;
+}
+
+/* ======================================================================
  * TEST RUNNER
  * ====================================================================== */
 
@@ -4641,6 +4723,13 @@ int main(void) {
     RUN_TEST(test_Statics_KdfHash_HwSuccess_ClampAndKeep);
     RUN_TEST(test_Statics_KdfHash_HwFail_FallsBackToXor);
     RUN_TEST(test_Statics_KdfBuildCounterInput_BuildAndClamp);
+
+    RUN_TEST(test_Cov_FindHelpers_GuardBranches);
+    RUN_TEST(test_Cov_GetKeyMaxLengthFromConfig);
+    RUN_TEST(test_Cov_LoadKeyElement_SuccessAndFailure);
+    RUN_TEST(test_Cov_KeyDerive_SwFallback_ForcedSrc);
+    RUN_TEST(test_Cov_KeyExchangePubVal_SwFallback);
+    RUN_TEST(test_Cov_KeyExchangeSecret_SwFallback);
 
     return UnityEnd();
 }
