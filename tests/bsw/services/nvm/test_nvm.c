@@ -4033,6 +4033,75 @@ void test_NvM_ProcessWriteJob_RedundantCRC16_ShouldCoverBlockDescBranches(void)
     NvM_MainFunction(); /* Complete */
 }
 
+/* ==================================================================
+ * NvM_EccHandler — write-verify retry loop, callback path, Dem dispatch
+ * ================================================================== */
+
+static uint32 eccCbCount;
+
+static void eccTestCallback(const NvM_EccErrorInfoType* errorInfo,
+                            const uint8* dataBuffer, uint16 dataLength)
+{
+    (void)errorInfo; (void)dataBuffer; (void)dataLength;
+    eccCbCount++;
+}
+
+void test_NvM_EccHandler_HandleWriteVerifyFailure_RetryExhaust_ReportsDem(void)
+{
+    uint8 dataBuf[4] = {0x11, 0x22, 0x33, 0x44};
+    NvM_EccHandler_Init(eccTestConfig, 4U);
+
+    /* Block 1: write-verify enabled; stored CRC is 0 so verification never
+     * passes -> retry loop runs to exhaustion, then NotifyDem(WRITE_VERIF). */
+    Std_ReturnType ret = NvM_EccHandler_HandleWriteVerifyFailure(1U, dataBuf, 4U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+
+    NvM_EccHandler_DeInit();
+}
+
+void test_NvM_EccHandler_HandleReadError_WithCallback_RecoveredAndReset(void)
+{
+    NvM_EccErrorInfoType errorInfo;
+    uint8 dataBuf[4] = {0};
+
+    eccCbCount = 0U;
+    NvM_EccHandler_Init(eccTestConfig, 4U);
+    TEST_ASSERT_EQUAL(E_OK, NvM_EccHandler_RegisterCallback(eccTestCallback));
+
+    /* An earlier test mutated the shared config block 1 to REDUNDANT_COPY;
+     * restore ROM-default so double-bit recovery succeeds deterministically. */
+    TEST_ASSERT_EQUAL(E_OK,
+        NvM_EccHandler_SetRecoveryStrategy(1U, NVM_ECC_RECOVERY_USE_ROM_DEFAULT));
+
+    (void)memset(&errorInfo, 0, sizeof(errorInfo));
+    errorInfo.blockId = 1U;
+    errorInfo.errorType = NVM_ECC_ERROR_DOUBLE_BIT_UNCORRECTABLE; /* ROM recovery */
+
+    Std_ReturnType ret = NvM_EccHandler_HandleReadError(1U, &errorInfo, dataBuf, 4U);
+    TEST_ASSERT_EQUAL(E_OK, ret);
+    TEST_ASSERT_EQUAL_UINT32(1U, eccCbCount);   /* callback invoked */
+    TEST_ASSERT_EQUAL_HEX8(0xAA, dataBuf[0]);   /* ROM default restored */
+
+    NvM_EccHandler_DeInit();
+}
+
+void test_NvM_EccHandler_HandleReadError_NoError_DefaultDispatch(void)
+{
+    NvM_EccErrorInfoType errorInfo;
+    uint8 dataBuf[4] = {0};
+
+    NvM_EccHandler_Init(eccTestConfig, 4U);
+
+    (void)memset(&errorInfo, 0, sizeof(errorInfo));
+    errorInfo.blockId = 1U;
+    errorInfo.errorType = NVM_ECC_ERROR_NONE;   /* default switch branches */
+
+    Std_ReturnType ret = NvM_EccHandler_HandleReadError(1U, &errorInfo, dataBuf, 4U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+
+    NvM_EccHandler_DeInit();
+}
+
 /* ================================================================== */
 /* Runner — before-init tests must run first (module is UNINIT)      */
 /* ================================================================== */
@@ -4332,6 +4401,9 @@ int main(void)
     RUN_TEST(test_NvM_EccHandler_HandleWriteVerifyFailure_NotInitialized_ShouldFail);
     RUN_TEST(test_NvM_EccHandler_HandleWriteVerifyFailure_NullData_ShouldFail);
     RUN_TEST(test_NvM_EccHandler_HandleWriteVerifyFailure_UnknownBlock_ShouldFail);
+    RUN_TEST(test_NvM_EccHandler_HandleWriteVerifyFailure_RetryExhaust_ReportsDem);
+    RUN_TEST(test_NvM_EccHandler_HandleReadError_WithCallback_RecoveredAndReset);
+    RUN_TEST(test_NvM_EccHandler_HandleReadError_NoError_DefaultDispatch);
 
     return UnityEnd();
 }
